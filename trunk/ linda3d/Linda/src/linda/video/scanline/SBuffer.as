@@ -1,9 +1,12 @@
 package linda.video.scanline
 {
+	import __AS3__.vec.Vector;
+	
+	import flash.geom.Rectangle;
+	
 	import linda.video.TRType;
 	
-	import flash.display.BitmapData;
-	import flash.geom.Rectangle;
+	import flash.display.*;
 	
 
 	internal class SBuffer 
@@ -11,7 +14,7 @@ package linda.video.scanline
 		/** variable: lines
 		 * Array of <Scanline>, one for each vert
 		 */
-		public var lines:Array;
+		public var lines:Vector.<Scanline>;
 		/** variable: lineCount
 		 * Total line count
 		 */
@@ -20,12 +23,12 @@ package linda.video.scanline
 		/** variable: segments
 		 * Array of <Seg>, seg buffer
 		 */
-		public var segments:Array;
+		public var segments:Vector.<Seg>;
 		
 		/** variable: materials
 		 * Array of <Mat>, mat buffer
 		 */
-		public var materials:Array;
+		public var materials:Vector.<Mat>;
 		
 		/** variable: segmentCount
 		 * Total segment count
@@ -89,7 +92,7 @@ package linda.video.scanline
 			// create the scan lines based on the height of the render target
 			if(!lines)
 			{
-				lines = new Array();
+				lines = new Vector.<Scanline>();
 			}	
 			else
 			{
@@ -112,7 +115,7 @@ package linda.video.scanline
 			
 			if(!segments)
 			{
-				segments = new Array();
+				segments = new Vector.<Seg>();
 			}
 			else	
 			{
@@ -130,7 +133,7 @@ package linda.video.scanline
 			to allocate more if needed*/
 			if(!materials)
 			{
-				materials = new Array();
+				materials = new Vector.<Mat>();
 			}
 			else
 			{

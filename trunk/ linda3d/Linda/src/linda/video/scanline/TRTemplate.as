@@ -2,11 +2,11 @@ package linda.video.scanline
 {
 	import __AS3__.vec.Vector;
 	
+	import flash.display.*;
+	
 	import linda.material.*;
 	import linda.math.Vertex4D;
 	import linda.video.ITriangleRenderer;
-	
-	import flash.display.*;
 
 	internal class TRTemplate implements ITriangleRenderer
 	{
@@ -45,9 +45,9 @@ package linda.video.scanline
 		
 		// buffer
 		private var _buffer:SBuffer;
-		private var _buffer_mat_array:Array;
-		private var _buffer_seg_array:Array;
-		private var _buffer_line_array:Array;
+		private var _buffer_mat_array:Vector.<Mat>;
+		private var _buffer_seg_array:Vector.<Seg>;
+		private var _buffer_line_array:Vector.<Scanline>;
 		private var _buffer_seg:Seg;
 		
 		// textures
