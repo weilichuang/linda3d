@@ -126,7 +126,7 @@ package linda.video.pixel
 			_transformedLinePoints = new Vector.<Vertex4D> ();
 			for (i = 0; i < 100; i ++)
 			{
-				_transformedLinePoints [i] = new Vertex4D ();
+				_transformedLinePoints.push(new Vertex4D ());
 			}
 			_clipped_line_vertices = new Vector.<Vertex4D> ();
 			_clipped_line_indices = new Vector.<int> ();
@@ -320,38 +320,7 @@ package linda.video.pixel
 			_invCamPos.x = (_world_inv.m00 * x + _world_inv.m10 * y + _world_inv.m20 * z + _world_inv.m30);
 			_invCamPos.y = (_world_inv.m01 * x + _world_inv.m11 * y + _world_inv.m21 * z + _world_inv.m31);
 			_invCamPos.z = (_world_inv.m02 * x + _world_inv.m12 * y + _world_inv.m22 * z + _world_inv.m32);
-			var light : Light;
-			var dir : Vector3D;
-			var pos : Vector3D;
-			// transfrom lights into object's world space
-			var len : int = _lights.length;
-			for (var i : int = 0; i < len; i ++)
-			{
-				dir = _lightsDir [i];
-				pos = _lightsPos [i];
-				light = _lights [i];
-				if ((light.type == Light.SPOT) || (light.type == Light.DIRECTIONAL))
-				{
-					//_world_inv.rotateVector2(light.direction,dir);
-					x = light.direction.x;
-					y = light.direction.y;
-					z = light.direction.z;
-					dir.x = x * _world_inv.m00 + y * _world_inv.m10 + z * _world_inv.m20;
-					dir.y = x * _world_inv.m01 + y * _world_inv.m11 + z * _world_inv.m21;
-					dir.z = x * _world_inv.m02 + y * _world_inv.m12 + z * _world_inv.m22;
-					dir.normalize ();
-				}
-				if ((light.type == Light.SPOT) || (light.type == Light.POINT))
-				{
-					//_world_inv.transformVector2(light.position,pos);
-					x = light.position.x;
-					y = light.position.y;
-					z = light.position.z;
-					pos.x = (_world_inv.m00 * x + _world_inv.m10 * y + _world_inv.m20 * z + _world_inv.m30);
-					pos.y = (_world_inv.m01 * x + _world_inv.m11 * y + _world_inv.m21 * z + _world_inv.m31);
-					pos.z = (_world_inv.m02 * x + _world_inv.m12 * y + _world_inv.m22 * z + _world_inv.m32);
-				}
-			}
+			
 		}
 
 		public override function setTransformView (mat : Matrix4) : void
@@ -421,8 +390,7 @@ package linda.video.pixel
 					_transformedPoints [i] = new Vertex4D ();
 				}
 			}
-			
-			//trace("_transformedPoints.length========="+_transformedPoints.length);
+
 			tCount = 0;
 			iCount = 0;
 			vCount = 0;
@@ -432,6 +400,44 @@ package linda.video.pixel
 			var backfaceCulling : Boolean = material.backfaceCulling;
 			var hasTexture : Boolean = (texture!=null);
 			var gouraudShading : Boolean = material.gouraudShading;
+			
+			if(lighting)
+			{
+			    var light : Light;
+			    var dir : Vector3D;
+			    var pos : Vector3D;
+			    // transfrom lights into object's world space
+			    len = _lights.length;
+			    for (i = 0; i < len; i ++)
+			    {
+				    dir = _lightsDir [i];
+				    pos = _lightsPos [i];
+				    light = _lights [i];
+				    if ((light.type == Light.SPOT) || (light.type == Light.DIRECTIONAL))
+				    {
+				    	//_world_inv.rotateVector2(light.direction,dir);
+				    	var x:Number = light.direction.x;
+				    	var y:Number = light.direction.y;
+				    	var z:Number = light.direction.z;
+				    	dir.x = x * _world_inv.m00 + y * _world_inv.m10 + z * _world_inv.m20;
+				    	dir.y = x * _world_inv.m01 + y * _world_inv.m11 + z * _world_inv.m21;
+				    	dir.z = x * _world_inv.m02 + y * _world_inv.m12 + z * _world_inv.m22;
+				    	dir.normalize ();
+				    }
+				    if ((light.type == Light.SPOT) || (light.type == Light.POINT))
+				    {
+					    //_world_inv.transformVector2(light.position,pos);
+					    x = light.position.x;
+					    y = light.position.y;
+					    z = light.position.z;
+					    pos.x = (_world_inv.m00 * x + _world_inv.m10 * y + _world_inv.m20 * z + _world_inv.m30);
+					    pos.y = (_world_inv.m01 * x + _world_inv.m11 * y + _world_inv.m21 * z + _world_inv.m31);
+					    pos.z = (_world_inv.m02 * x + _world_inv.m12 * y + _world_inv.m22 * z + _world_inv.m32);
+				    }
+			    }
+			}
+			
+			
 			var m00 : Number = _current.m00;
 			var m10 : Number = _current.m10;
 			var m20 : Number = _current.m20;
@@ -618,9 +624,6 @@ package linda.video.pixel
 					//var spe_r_sum0 : Number = 0;var spe_g_sum0 : Number = 0;var spe_b_sum0 : Number = 0;
 					//var spe_r_sum1 : Number = 0;var spe_g_sum1 : Number = 0;var spe_b_sum1 : Number = 0;
 					//var spe_r_sum2 : Number = 0;var spe_g_sum2 : Number = 0;var spe_b_sum2 : Number = 0;
-					var light : Light;
-					var pos : Vector3D;
-					var dir : Vector3D;
 					var diffuse : Color;
 					var ambient : Color;
 					var specular : Color;
