@@ -12,7 +12,7 @@
 			var temp : Number;
 			var side : int;
 		 	var ys : int;
-		 	var tri_type : int;
+		 	var type : int;
 		 	var oldZ:int;
 		 	var ii:int;
 			for (var i : int = 0; i < indexCount; i += 3)
@@ -37,17 +37,17 @@
 					temp1 = vt1; vt1 = vt2; vt2 = temp1;
 				}
 				
-				tri_type = 0;
+				type = 0;
 				if (vt0.iy == vt1.iy)
 				{
-					tri_type = 1;
+					type = 1;
 					if (vt1.x < vt0.x)
 					{
 						temp1 = vt0; vt0 = vt1; vt1 = temp1;
 					}
 				} else if (vt1.iy == vt2.iy)
 				{
-					tri_type = 2;
+					type = 2;
 					if (vt2.x < vt1.x)
 					{
 						temp1 = vt1; vt1 = vt2; vt2 = temp1;
@@ -66,7 +66,7 @@
 				ys = y1;
 				ystart = y0;
 				//更多的可能是普通三角形，所以调到前面来
-				if(tri_type == 0)
+				if(type == 0)
 				{
 						dyl = 1 / (y1 - y0);
 						dxdyl = (x1 - x0) * dyl;
@@ -135,7 +135,7 @@
 				}
 				else //平底或平顶
 				{
-				    if (tri_type == 1)
+				    if (type == 1)
 					{
 						dy = 1 / (y2 - y0);
 						dxdyl = (x2 - x0) * dy; dxdyr = (x2 - x1) * dy;
