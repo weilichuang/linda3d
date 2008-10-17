@@ -15,7 +15,7 @@
 		public var interpolateBuffer : MeshBuffer;
 		public var frameList : Vector.<Vector.<Vertex>>;
 		public var boxList : Vector.<AABBox3D>;
-		public var frameData : Array;
+		public var frameData : Vector.<MD2Frame>;
 		public var frameCount : int;
 		public var name:String;
 		public function AnimatedMeshMD2 ()
@@ -23,7 +23,7 @@
 			interpolateBuffer = new MeshBuffer ();
 			frameList = new Vector.<Vector.<Vertex>> ();
 			boxList = new Vector.<AABBox3D> ();
-			frameData = new Array ();
+			frameData = new Vector.<MD2Frame> ();
 			name='md2';
 		}
 		public function getFrameList () : Vector.<Vector.<Vertex>>
@@ -34,7 +34,7 @@
 		{
 			return boxList;
 		}
-		public function getFrameData () : Array
+		public function getFrameData () : Vector.<MD2Frame>
 		{
 			return frameData;
 		}
@@ -42,10 +42,10 @@
 		{
 			return interpolateBuffer;
 		}
-		public function getFrameLoopByType (type : int) : MD2FrameData
+		public function getFrameLoopByType (type : int) : MD2Frame
 		{
 			if (type < 0 || type >= MD2AnimationType.COUNT) return null;
-			var data : MD2FrameData = new MD2FrameData ();
+			var data : MD2Frame = new MD2Frame ();
 			var animationList:Array=MD2AnimationType.animationList;
 			data.begin = animationList[type][0] << FRAME_SHIFT;
 			data.end = animationList[type][1] << FRAME_SHIFT;

@@ -65,9 +65,7 @@ package linda.utils
 			_container.stage.addEventListener(MouseEvent.MOUSE_UP, onMouseEvent);
 			
 		}
-		// =================================================================
-		// focus methods
-		// =================================================================
+
 		public function setFocus():void
 		{
 			hasFocus = true;

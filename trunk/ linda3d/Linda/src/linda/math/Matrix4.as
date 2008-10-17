@@ -68,7 +68,7 @@
 			return true;
 		}
 		// Builds a left-handed look-at matrix.
-		public function buildCameraLookAtMatrixLH (position : Vector3D, target : Vector3D, upVector : Vector3D) : void
+		public function buildCameraLookAtMatrix (position : Vector3D, target : Vector3D, upVector : Vector3D) : void
 		{
 			//var zaxis:Vector3D = target.subtract(position);
 			//zaxis.normalize();
@@ -121,7 +121,7 @@
 			m33 = 1.0;
 		}
 		// Builds a left-handed perspective projection matrix based on a field of view
-		public function buildProjectionMatrixPerspectiveFovLH (fov : Number, aspect : Number, zNear : Number, zFar : Number) : void
+		public function buildProjectionMatrixPerspectiveFov (fov : Number, aspect : Number, zNear : Number, zFar : Number) : void
 		{
 			var halffov : Number = fov * 0.5 * 0.01745329;
 			var h : Number = Math.tan(halffov);
@@ -167,7 +167,7 @@
 			m33 = plane.d * point;
 		}
 		// Builds a left-handed orthogonal projection matrix.
-		public function buildProjectionMatrixOrthoLH (width : Number, height : Number, zNear : Number, zFar : Number) : void
+		public function buildProjectionMatrixOrtho (width : Number, height : Number, zNear : Number, zFar : Number) : void
 		{
 			m00 = 2. / width;
 			m01 = 0.;
@@ -282,88 +282,6 @@
 			var rx : Number = rotation.x * 0.017453292519943;
 			var ry : Number = rotation.y * 0.017453292519943;
 			var rz : Number = rotation.z * 0.017453292519943;
-			
-			var angle:Number;
-			/*
-			var f:int;
-			var sin:int;
-			var ssin:int;
-			
-			//fast cosine
-			var cr : Number;
-			angle=rx;
-			f    = (int(angle * 683565275.57643158978229477811035) + 1073741824) >> 16;
-            sin  = (f - ((f * ((f < 0)?-f:f)) >> 15)) * 41721;
-            ssin = sin >> 15;
-            cr=(((ssin * (sin < 0?-ssin:ssin)) >> 9) * 467 + sin) / 441009855.21060102566599663103894;
-
-			//fast sine
-			var sr : Number;
-			angle=rx; 
-			f    = int(angle * 683565275.57643158978229477811035) >> 16;
-            sin  = (f - ((f * ((f < 0)?-f:f)) >> 15)) * 41721;
-            ssin = sin >> 15;
-            sr=(((ssin * (sin < 0?-ssin:ssin)) >> 9) * 467 + sin) / 441009855.21060102566599663103894;
-		 	
-		 	
-		 	var cp : Number;
-			angle=ry;
-			f    = (int(angle * 683565275.57643158978229477811035) + 1073741824) >> 16;
-            sin  = (f - ((f * ((f < 0)?-f:f)) >> 15)) * 41721;
-            ssin = sin >> 15;
-            cp=(((ssin * (sin < 0?-ssin:ssin)) >> 9) * 467 + sin) / 441009855.21060102566599663103894;
-
-			//fast sine
-			var sp : Number;
-			angle=ry; 
-			f    = int(angle * 683565275.57643158978229477811035) >> 16;
-            sin  = (f - ((f * ((f < 0)?-f:f)) >> 15)) * 41721;
-            ssin = sin >> 15;
-            sp=(((ssin * (sin < 0?-ssin:ssin)) >> 9) * 467 + sin) / 441009855.21060102566599663103894;
-		 	
-		 	
-		 	var cy : Number;
-			angle=rz;
-			f    = (int(angle * 683565275.57643158978229477811035) + 1073741824) >> 16;
-            sin  = (f - ((f * ((f < 0)?-f:f)) >> 15)) * 41721;
-            ssin = sin >> 15;
-            cy=(((ssin * (sin < 0?-ssin:ssin)) >> 9) * 467 + sin) / 441009855.21060102566599663103894;
-
-			//fast sine
-			var sy : Number;
-			angle=rz; 
-			f    = int(angle * 683565275.57643158978229477811035) >> 16;
-            sin  = (f - ((f * ((f < 0)?-f:f)) >> 15)) * 41721;
-            ssin = sin >> 15;
-            sy=(((ssin * (sin < 0?-ssin:ssin)) >> 9) * 467 + sin) / 441009855.21060102566599663103894;
-		 	
-		 	*/
-		 	/***/
-		 	
-			var cr : Number = Math.cos (rx );
-			var sr : Number = Math.sin (rx );
-			var cp : Number = Math.cos (ry );
-			var sp : Number = Math.sin (ry );
-			var cy : Number = Math.cos (rz );
-			var sy : Number = Math.sin (rz );
-			
-			m00 = (cp * cy );
-			m01 = (cp * sy );
-			m02 = ( - sp );
-			var srsp : Number = sr * sp;
-			var crsp : Number = cr * sp;
-			m10 = (srsp * cy - cr * sy );
-			m11 = (srsp * sy + cr * cy );
-			m12 = (sr * cp );
-			m20 = (crsp * cy + sr * sy );
-			m21 = (crsp * sy - sr * cy );
-			m22 = (cr * cp );
-		}
-		public function setRotationDegreesXYZ (rx:Number,ry:Number,rz:Number) : void
-		{
-			rx *= 0.017453292519943;
-			ry *= 0.017453292519943;
-			rz *= 0.017453292519943;
 
 			var cr : Number = Math.cos (rx );
 			var sr : Number = Math.sin (rx );
@@ -384,6 +302,7 @@
 			m21 = (crsp * sy - sr * cy );
 			m22 = (cr * cp );
 		}
+
 		public function setRotation (rotation : Vector3D) : void
 		{
 			var cr : Number = Math.cos (rotation.x );

@@ -21,7 +21,7 @@
 		protected var fogEnd : Number = 100;
 		
 		protected var renderTarget : Sprite;
-		protected var _lights : Array;
+		protected var _lights : Vector.<Light>;
 		private var _debugColor : uint = 0x00ff00;
 		
 		protected var perspectiveDistance:Number=400;
@@ -35,7 +35,7 @@
 			primitivesDrawn = 0;
 			renderTarget = new Sprite ();
 			screenSize = new Dimension2D(400, 400);
-			_lights = new Array ();
+			_lights = new Vector.<Light> ();
 			
 			_tmp_lines= new Vector.<Vertex>();
 			_tmp_lines.push(new Vertex () , new Vertex () , new Vertex ());
@@ -156,7 +156,7 @@
 		//--------------------------------light--------------------------------//
 		public function deleteAllDynamicLights () : void
 		{
-			_lights = [];
+			_lights = new Vector.<Light>();
 		}
 		public function addDynamicLight (light : Light) : void
 		{
@@ -183,7 +183,7 @@
 		
 		public function draw3DBox (box : AABBox3D, color : uint) : void
 		{
-			var edges : Array = box.getEdges ();
+			var edges : Vector.<Vector3D> = box.getEdges ();
 			draw3DLine (edges [5] , edges [1] , color);
 			draw3DLine (edges [1] , edges [3] , color);
 			draw3DLine (edges [3] , edges [7] , color);
