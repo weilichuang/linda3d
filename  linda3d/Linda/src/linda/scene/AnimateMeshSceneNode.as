@@ -8,7 +8,7 @@
 	import linda.mesh.animation.AnimatedMeshMD2;
 	import linda.mesh.animation.AnimatedMeshType;
 	import linda.mesh.animation.IAnimateMesh;
-	import linda.mesh.animation.MD2FrameData;
+	import linda.mesh.animation.MD2Frame;
 	import linda.video.IVideoDriver;
 	
 	import flash.geom.Vector3D;
@@ -195,7 +195,7 @@
 			if ( ! mesh || mesh.getMeshType () != AnimatedMeshType.AMT_MD2) return false;
 			var m : AnimatedMeshMD2 = mesh as AnimatedMeshMD2;
 			if(!m) return false;
-			var frameData : MD2FrameData = m.getFrameLoopByType (anim);
+			var frameData : MD2Frame = m.getFrameLoopByType (anim);
 			if (frameData)
 			{
 				setAnimationSpeed (frameData.fps);

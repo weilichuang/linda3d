@@ -12,7 +12,7 @@
 	import linda.mesh.MeshBuffer;
 	import linda.mesh.animation.AnimatedMeshMD2;
 	import linda.mesh.animation.IAnimateMesh;
-	import linda.mesh.animation.MD2FrameData;
+	import linda.mesh.animation.MD2Frame;
 	import linda.mesh.loader.MeshLoader;
 	
 
@@ -183,7 +183,7 @@
 				}// end loop all vertices
 				
 				// store frame data
-				var frame_data:MD2FrameData = new MD2FrameData();
+				var frame_data:MD2Frame = new MD2Frame();
 				frame_data.begin = i;
 				frame_data.end = i;
 				frame_data.fps = 7;
@@ -205,7 +205,7 @@
 					}
 					else
 					{
-						var frame_data_last:MD2FrameData = mesh.frameData[mesh.frameData.length-1];
+						var frame_data_last:MD2Frame = mesh.frameData[mesh.frameData.length-1];
 						if(frame_data_last.name == frame_data.name)
 						{
 							// frames are in the same group - just another keyframe

@@ -1,5 +1,7 @@
 ﻿package linda.math
 {
+	import __AS3__.vec.Vector;
+	
 	import flash.geom.Vector3D;
 	
 	public class AABBox3D
@@ -247,9 +249,14 @@
 			_extent.z=(maxZ - minZ) * 0.5;
 			return _extent;
 		}
-		private static var _edges:Array=[new Vector3D(),new Vector3D(),new Vector3D(),new Vector3D(),new Vector3D(),new Vector3D(),new Vector3D(),new Vector3D()];
-		public function getEdges () : Array
+		
+		public function getEdges () : Vector.<Vector3D>
 		{
+			var _edges:Vector.<Vector3D>=new Vector.<Vector3D>();
+			for(var i:int=0;i<8;i++)
+			{
+				_edges.push(new Vector3D());
+			}
 			var centerX : Number = (maxX + minX) / 2;
 			var centerY : Number = (maxY + minY) / 2;
 			var centerZ : Number = (maxZ + minZ) / 2;

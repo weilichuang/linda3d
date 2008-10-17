@@ -103,7 +103,7 @@
 					tmp_up.x += 0.5;
 				}
 				// create the new lookat matrix
-				view.buildCameraLookAtMatrixLH (_tmp_position, target, tmp_up);
+				view.buildCameraLookAtMatrix (_tmp_position, target, tmp_up);
 				
 				/*
 				// multiply projection * view
@@ -251,13 +251,13 @@
 		{	
 			if ( ! orthogonal)
 			{
-					projection.buildProjectionMatrixPerspectiveFovLH (fovy, aspect, near, far);
+					projection.buildProjectionMatrixPerspectiveFov (fovy, aspect, near, far);
 			} else
 			{
 				if(sceneManager && sceneManager.getVideoDriver ())
 				{
 				    var size :Dimension2D = sceneManager.getVideoDriver ().getScreenSize();
-				    projection.buildProjectionMatrixOrthoLH (size.width, size.height, near, far);
+				    projection.buildProjectionMatrixOrtho (size.width, size.height, near, far);
 				}
 			}
 		}
