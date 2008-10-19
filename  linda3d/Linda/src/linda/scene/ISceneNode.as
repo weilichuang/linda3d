@@ -93,16 +93,16 @@ package linda.scene
 		function getTriangleSelector () : TriangleSelector;
 		function setTriangleSelector (selector : TriangleSelector) : void;
 		
-		function addChild (child : SceneNode) : void;
-		function removeChild (child : SceneNode) : Boolean;
+		function addChild (child : SceneNode) : SceneNode;
+		function removeChild (child : SceneNode) : SceneNode;
 		function removeAll () : void;
 		function remove () : void;
 		function getChildren () : Vector.<SceneNode>;
 		function getChildAt (i : int) : SceneNode;
 		function getChildById(i:int):SceneNode;
 
-		function addAnimator (animator : ISceneNodeAnimator) : void;
-		function removeAnimator (animator : ISceneNodeAnimator) : Boolean;
+		function addAnimator (animator : ISceneNodeAnimator) : ISceneNodeAnimator;
+		function removeAnimator (animator : ISceneNodeAnimator) : ISceneNodeAnimator;
 		function removeAnimators () : void;
 		function getMaterial (i : int = 0) : Material;
 		function getMaterialCount () : int;

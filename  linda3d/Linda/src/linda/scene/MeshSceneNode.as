@@ -1,5 +1,7 @@
 ﻿package linda.scene
 {
+	import __AS3__.vec.Vector;
+	
 	import flash.geom.Vector3D;
 	
 	import linda.material.Material;
@@ -13,12 +15,12 @@
 	import linda.video.IVideoDriver;
 	public class MeshSceneNode extends SceneNode
 	{
-		private var materials : Array;
+		private var materials : Vector.<Material>;
 		private var mesh : IMesh;
 		public function MeshSceneNode (mesh : IMesh = null, pos : Vector3D = null, rotation : Vector3D = null, scale : Vector3D = null)
 		{
 			super (pos, rotation, scale);
-			materials = new Array ();
+			materials = new Vector.<Material> ();
 
 			setMesh (mesh);
 
@@ -32,7 +34,7 @@
 		public function clear () : void
 		{
 			mesh = null;
-			materials = [];
+			materials = new Vector.<Material>();
 		}
 		public function setMesh (m : IMesh) : void
 		{
@@ -46,7 +48,7 @@
 		}
 		public function copyMaterials () : void
 		{
-			materials = [];
+			materials = new Vector.<Material>();
 			if (mesh)
 			{
 				var mat : Material;
@@ -60,9 +62,9 @@
 				}
 			}
 		}
-		public function cloneMaterials():Array
+		public function cloneMaterials():Vector.<Material>
 		{
-			var mats:Array=new Array();
+			var mats:Vector.<Material>=new Vector.<Material>();
 			if (mesh)
 			{
 				var mat : Material;

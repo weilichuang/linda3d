@@ -44,19 +44,19 @@
 		{
 			return this;
 		}
-		override public function addChild (child : SceneNode) : void
+		override public function addChild (child : SceneNode) : SceneNode
 		{
-			if (child)
+			if (!child) return null;
+			if (child.parent)
 			{
-				if (child.parent)
-				{
-					child.parent.removeChild (child);
-				}
-				child.parent = this;
-				child.sceneManager =this;
-				children.push (child);
-				child.updateAbsoluteMatrix ();
+				child.parent.removeChild (child);
 			}
+			child.parent = this;
+			child.sceneManager =this;
+			children.push (child);
+			child.updateAbsoluteMatrix ();
+			
+			return child;
 		}
 		public function getVideoDriver () : IVideoDriver
 		{

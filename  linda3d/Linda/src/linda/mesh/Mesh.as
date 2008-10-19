@@ -25,18 +25,12 @@
 		{
 			return meshBuffers;
 		}
-		public function removeMeshBuffer (buffer : IMeshBuffer) : Boolean
+		public function removeMeshBuffer (buffer : IMeshBuffer) : IMeshBuffer
 		{
-			var len : int = meshBuffers.length;
-			for (var i:int = 0; i < len; i ++)
-			{
-				if (buffer == meshBuffers [i])
-				{
-					meshBuffers.splice (i, 1);
-					return true;
-				}
-			}
-			return false;
+			if(!buffer) return null;
+			var idx:int = meshBuffers.indexOf(buffer);
+			meshBuffers.splice(idx,1);
+			return buffer;
 		}
 		public function removeMeshBufferByIndex (i : int) : IMeshBuffer
 		{
