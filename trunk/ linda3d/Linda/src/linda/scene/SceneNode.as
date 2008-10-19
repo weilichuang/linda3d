@@ -80,9 +80,9 @@
 			
 			_triangleSelector=null;
 		}
-		public function addChild (child : SceneNode) : void
+		public function addChild (child : SceneNode) : SceneNode
 		{
-			if ( ! child) return;
+			if ( ! child) return null;
 			if (child._parent)
 			{
 				child._parent.removeChild (child);
@@ -90,23 +90,17 @@
 			child._parent = this;
 			child._sceneManager = _sceneManager;
 			_children.push (child);
+			
+			return child;
 		}
-		public function removeChild (child : SceneNode) : Boolean
+		public function removeChild (child : SceneNode) : SceneNode
 		{
-			var len : int = _children.length;
-			var child_node : SceneNode;
-			for (var i : int = 0; i < len; i ++)
-			{
-				child_node = _children [i];
-				if (child_node == child)
-				{
-					_children.splice (i, 1);
-					child_node._parent = null;
-					child_node._sceneManager = null;
-					return true;
-				}
-			}
-			return false;
+			if(child == null) return null;
+			var idx:int = _children.indexOf(child);
+			_children.splice(idx,1);
+			child._parent=null;
+			child._sceneManager=null;
+			return child;
 		}
 		public function removeAll () : void
 		{
@@ -146,7 +140,7 @@
 			for (var j : int = 0; j < l; j ++)
 			{
 				node = _children [j];
-				if (node._id == i)
+				if (node.id == i)
 				{
 					return _children[j];
 				}
@@ -189,30 +183,18 @@
 	         return _debug;
 		}
 
-		public function addAnimator (animator : ISceneNodeAnimator) : void
+		public function addAnimator (animator : ISceneNodeAnimator) : ISceneNodeAnimator
 		{
-			if (animator)
-			{
-				_animators.push (animator);
-			}
+			if (!animator) return null;
+			_animators.push (animator);
+			return animator;
 		}
-		public function removeAnimator (animator : ISceneNodeAnimator) : Boolean
+		public function removeAnimator (animator : ISceneNodeAnimator) : ISceneNodeAnimator
 		{
-			if (animator)
-			{
-				var l : int = _animators.length;
-				var node_animator : ISceneNodeAnimator;
-				for (var i : int = 0; i < l; i ++)
-				{
-					node_animator = _animators [i];
-					if (node_animator == animator)
-					{
-						_animators.splice (i, 1);
-						return true;
-					}
-				}
-			}
-			return false;
+			if(!animator) return null;
+			var idx:int = _animators.indexOf(animator);
+			_animators.splice(idx,1);
+			return animator;
 		}
 		
 		public function removeAnimators () : void
