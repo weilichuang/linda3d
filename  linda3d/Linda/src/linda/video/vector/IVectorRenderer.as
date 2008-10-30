@@ -3,7 +3,6 @@ package linda.video.vector
 	import __AS3__.vec.Vector;
 	
 	import linda.material.Material;
-	import linda.math.Face3D;
 	
 	import flash.display.*;
 	
