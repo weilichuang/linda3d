@@ -7,7 +7,7 @@ package linda.scene
 	import linda.math.AABBox3D;
 	import linda.math.Matrix4;
 	import linda.math.Vertex;
-	import linda.scene.camera.CameraSceneNode;
+	import linda.scene.CameraSceneNode;
 	import linda.video.IVideoDriver;
 
 	public class SkyBoxSceneNode extends SceneNode
