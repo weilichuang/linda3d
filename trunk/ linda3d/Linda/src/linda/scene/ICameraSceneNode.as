@@ -1,4 +1,4 @@
-package linda.scene.camera
+package linda.scene
 {
 	import linda.collision.ViewFrustum;
 	import linda.math.Matrix4;

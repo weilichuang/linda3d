@@ -6,7 +6,7 @@
 	import linda.math.AABBox3D;
 	import linda.math.Matrix4;
 	import linda.mesh.MeshCache;
-	import linda.scene.camera.CameraSceneNode;
+	import linda.scene.CameraSceneNode;
 	import linda.video.IVideoDriver;
 
 	public class SceneManager extends SceneNode

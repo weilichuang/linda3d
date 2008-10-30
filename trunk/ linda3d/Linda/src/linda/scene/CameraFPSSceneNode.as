@@ -1,4 +1,4 @@
-package linda.scene.camera
+package linda.scene
 {
 	import flash.geom.Vector3D;
 	import flash.utils.getTimer;

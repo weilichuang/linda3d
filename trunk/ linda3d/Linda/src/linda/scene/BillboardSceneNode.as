@@ -9,7 +9,7 @@
 	import linda.math.Matrix4;
 	import linda.math.Vector2D;
 	import linda.math.Vertex;
-	import linda.scene.camera.CameraSceneNode;
+	import linda.scene.CameraSceneNode;
 	import linda.video.IVideoDriver;
 	//广告牌
 	public class BillboardSceneNode extends SceneNode
