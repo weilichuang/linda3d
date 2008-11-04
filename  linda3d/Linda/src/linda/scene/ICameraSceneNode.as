@@ -1,6 +1,5 @@
 package linda.scene
 {
-	import linda.collision.ViewFrustum;
 	import linda.math.Matrix4;
 	import linda.scene.ISceneNode;
 	

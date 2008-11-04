@@ -3,7 +3,6 @@ package linda.scene
 	import __AS3__.vec.Vector;
 	
 	import linda.animator.ISceneNodeAnimator;
-	import linda.collision.TriangleSelector;
 	import linda.material.Material;
 	import linda.material.Texture;
 	import linda.math.AABBox3D;
