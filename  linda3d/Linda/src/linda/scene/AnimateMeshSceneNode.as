@@ -190,16 +190,18 @@
 		{
 			return materials.length;
 		}
-		public function setMD2Animation (anim : int) : Boolean
+		public function setMD2Animation (data : MD2Frame) : Boolean
 		{
 			if ( ! mesh || mesh.getMeshType () != AnimatedMeshType.AMT_MD2) return false;
+			
 			var m : AnimatedMeshMD2 = mesh as AnimatedMeshMD2;
 			if(!m) return false;
-			var frameData : MD2Frame = m.getFrameLoopByType (anim);
+            var frameData : MD2Frame = m.getFrame(data);
 			if (frameData)
 			{
 				setAnimationSpeed (frameData.fps);
 				setFrameLoop (frameData.begin, frameData.end);
+				frameData=null;
 				return true;
 			}
 			return false;

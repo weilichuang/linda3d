@@ -42,15 +42,12 @@
 		{
 			return interpolateBuffer;
 		}
-		public function getFrameLoopByType (type : int) : MD2Frame
+		public function getFrame(frame : MD2Frame) : MD2Frame
 		{
-			if (type < 0 || type >= MD2AnimationType.COUNT) return null;
-			var data : MD2Frame = new MD2Frame ();
-			var animationList:Array=MD2AnimationType.animationList;
-			data.begin = animationList[type][0] << FRAME_SHIFT;
-			data.end = animationList[type][1] << FRAME_SHIFT;
-			data.end += (FRAME_SHIFT == 0) ? 1 : ((1 << FRAME_SHIFT) - 1);
-			data.fps = animationList[type][2] << FRAME_SHIFT;
+			var data : MD2Frame = new MD2Frame();
+			data.begin = frame.begin << FRAME_SHIFT;
+			data.end = frame.end << FRAME_SHIFT;
+			data.fps = frame.fps << FRAME_SHIFT;
 			return data;
 		}
 		public function getMeshBuffer (i : int) : IMeshBuffer
