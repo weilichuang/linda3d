@@ -20,7 +20,6 @@ package linda.scene
 		function set y(py:Number):void;
 		function get z():Number;
 		function set z(pz:Number):void;
-		function setPositionXYZ(x:Number,y:Number,z:Number):void;
 		function setPosition(pos:Vector3D):void;
 		function getPosition():Vector3D;
 		//rotation,use degree
@@ -30,7 +29,6 @@ package linda.scene
 		function set rotationY(ry:Number):void;
 		function get rotationZ():Number;
 		function set rotationZ(rz:Number):void;
-		function setRotationXYZ(rx:Number,ry:Number,rz:Number):void;
 		function setRotation(rot:Vector3D):void;
 		function getRotation():Vector3D;
 		//scale, 0 ~ 1
@@ -40,7 +38,6 @@ package linda.scene
 		function set scaleY(sy:Number):void;
 		function get scaleZ():Number;
 		function set scaleZ(sz:Number):void;
-		function setScaleXYZ(sx:Number,sy:Number,sz:Number):void;
 		function setScale(sca:Vector3D):void;
 		function getScale():Vector3D;
 		
@@ -108,11 +105,7 @@ package linda.scene
 		function setMaterialFlag (flag : int, value : Boolean) : void;
 
 		function setMaterialTexture (texture : Texture, textureLayer : int = 1) : void;
-		
-		/**
-		 * 设置所有materials的透明度,如果几个SceneNode使用的是同一个Mesh,
-		 * 以下设置将同时改变其它几个的Material属性,因为修改的都是同一个Mesh
-		 */
+
 		function setMaterialAlpha (alpha : Number) : void;
 		function setMaterialColor (diffuse : uint = 0xFFFFFF, ambient : uint = 0xFFFFFF, emissive : uint = 0x0000FF, specular : uint = 0x0000FF) : void;
 		function setMaterialDiffuseColor (color : uint) : void;

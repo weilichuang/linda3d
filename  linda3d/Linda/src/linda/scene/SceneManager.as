@@ -72,16 +72,16 @@
 		{
 			switch (type)
 			{
-				case SceneNodeType.CAMERA :
+				case CAMERA :
 				_cameraList.push (node);
 				break;
-				case SceneNodeType.LIGHT :
+				case LIGHT :
 				_lightList.push (node);
 				break;
-				case SceneNodeType.SKYBOX :
+				case SKYBOX :
 				_skyBoxList.push (node);
 				break;
-				case SceneNodeType.SOLID :
+				case SOLID :
 				{
 					if ( ! isCulled (node))
 					{
@@ -89,7 +89,7 @@
 					}
 				}
 				break;
-				case SceneNodeType.TRANSPARENT :
+				case TRANSPARENT :
 				{
 					if ( ! isCulled (node))
 					{
@@ -97,7 +97,7 @@
 					}
 				}
 				break;
-				case SceneNodeType.SHADOW :
+				case SHADOW :
 				_shadowList.push (node);
 				break;
 			}

@@ -11,6 +11,14 @@
 	import linda.math.*;
 	public class SceneNode extends EventDispatcher implements ISceneNode
 	{
+		public static const CAMERA : int = 0;
+		public static const LIGHT : int = 1;
+		public static const SKYBOX : int = 2;
+		public static const SOLID : int = 3;
+		public static const TRANSPARENT : int = 4;
+		public static const SHADOW : int = 5;
+		
+		
 		protected var _parent : SceneNode;
 		protected var _children : Vector.<SceneNode> ;
 		protected var _animators : Vector.<ISceneNodeAnimator> ;
@@ -455,24 +463,6 @@
 		public function getRelativeMatrix () : Matrix4
 		{
 			return _relativeMatrix;
-		}
-		public function setPositionXYZ (x : Number, y : Number, z : Number) : void
-		{
-			_relativeTranslation.x = x;
-			_relativeTranslation.y = y;
-			_relativeTranslation.z = z;
-		}
-		public function setScaleXYZ (x : Number, y : Number, z : Number) : void
-		{
-			_relativeScale.x = x;
-			_relativeScale.y = y;
-			_relativeScale.z = z;
-		}
-		public function setRotationXYZ (x : Number, y : Number, z : Number) : void
-		{
-			_relativeRotation.x = x;
-			_relativeRotation.y = y;
-			_relativeRotation.z = z;
 		}
 		public function get x () : Number
 		{

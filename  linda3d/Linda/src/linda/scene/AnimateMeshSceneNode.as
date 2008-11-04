@@ -1,5 +1,10 @@
 ﻿package linda.scene
 {
+	import __AS3__.vec.Vector;
+	
+	import flash.geom.Vector3D;
+	import flash.utils.getTimer;
+	
 	import linda.events.AnimationEvent;
 	import linda.material.Material;
 	import linda.math.AABBox3D;
@@ -11,13 +16,11 @@
 	import linda.mesh.animation.MD2Frame;
 	import linda.video.IVideoDriver;
 	
-	import flash.geom.Vector3D;
-	import flash.utils.getTimer;
     [Event(name="start",type="cj7.events.AnimationEvent")]
     [Event(name="end",type="cj7.events.AnimationEvent")]
 	public class AnimateMeshSceneNode extends SceneNode
 	{
-		private var materials : Array;
+		private var materials : Vector.<Material>;
 		private var mesh : IAnimateMesh;
 		private var beginFrameTime : int;
 		private var startFrame : int;
@@ -34,7 +37,7 @@
 			endFrame = 0;
 			framesPerSecond = 25 / 1000;
 			looping = true;
-			materials = new Array ();
+			materials = new Vector.<Material> ();
 			if (mesh)
 			{
 				setMesh (mesh);
@@ -52,50 +55,28 @@
 			currentFrameNr = frame;
 			beginFrameTime = getTimer () - (currentFrameNr - startFrame) / framesPerSecond;
 		}
-		public function buildFrameNr (timeMs : int) : int
+		public function buildFrameNumber (timeMs : int) : int
 		{
 			if (startFrame == endFrame) return startFrame;
 			if (framesPerSecond == 0) return startFrame;
 			if (looping)
 			{
-				//play animation looped
-				if (framesPerSecond > 0) //forwards...
-				{
 					var lenInTime : int = (endFrame - startFrame) / framesPerSecond;
 					return startFrame + ((timeMs - beginFrameTime) % lenInTime) * framesPerSecond;
-				} else //backwards...
-				{
-					lenInTime = - (endFrame - startFrame) / framesPerSecond;
-					return endFrame + ((timeMs - beginFrameTime) % lenInTime) * framesPerSecond;
-				}
 			} else
 			{
-				// play animation non looped
-				var frame : int;
-				if (framesPerSecond > 0) //forwards...
+				// play animation no looped
+				var deltaFrame : Number = (timeMs - beginFrameTime ) * framesPerSecond;
+				var frame : int = startFrame + deltaFrame;
+				if (frame > endFrame)
 				{
-					var deltaFrame : Number = (timeMs - beginFrameTime ) * framesPerSecond;
-					frame = startFrame + deltaFrame;
-					if (frame > endFrame)
-					{
-						frame = endFrame;
-						dispatchEvent(new AnimationEvent("end"));
-					}
-				} 
-				else //backwards... (untested)
-				{
-					deltaFrame = (timeMs - beginFrameTime ) * - framesPerSecond ;
-					frame = endFrame - deltaFrame;
-					if (frame < startFrame)
-					{
-						frame = startFrame;
-						dispatchEvent(new AnimationEvent("end"));
-					}
+					frame = endFrame;
+					dispatchEvent(new AnimationEvent("end"));
 				}
 				return frame;
 			}
 		}
-		public function getFrameNr () : int
+		public function getFrameNumber () : int
 		{
 			return currentFrameNr;
 		}
@@ -106,10 +87,10 @@
 				var dirver : IVideoDriver = sceneManager.getVideoDriver ();
                 if(transparent)
                 {
-                	sceneManager.registerNodeForRendering (this, SceneNodeType.TRANSPARENT);
+                	sceneManager.registerNodeForRendering (this, TRANSPARENT);
                 }else
                 {
-                	sceneManager.registerNodeForRendering (this, SceneNodeType.SOLID);
+                	sceneManager.registerNodeForRendering (this, SOLID);
                 }
 				
 				super.onPreRender ();
@@ -117,7 +98,7 @@
 		}
 		override public function onAnimate (timeMs : int) : void
 		{
-			currentFrameNr = buildFrameNr (timeMs);
+			currentFrameNr = buildFrameNumber (timeMs);
 			super.onAnimate (timeMs);
 		}
 		override public function render () : void
@@ -130,14 +111,10 @@
 			driver.setTransformWorld (_absoluteMatrix);
 			
 			var len:int=m.getMeshBufferCount ();
-			var mb : IMeshBuffer;
-			var mat:Material;
 			for (var i : int = 0; i < len; i ++)
-			{
-				mb = m.getMeshBuffer (i);
-				mat = materials [i];
-				driver.setMaterial (mat);
-				driver.drawIndexedTriangleList (mb.getVertices () , mb.getVertexCount () , mb.getIndices () , mb.getIndexCount ());
+			{	
+			    driver.setMaterial(materials[i]);
+				driver.drawMeshBuffer(m.getMeshBuffer(i));
 			}
 			if(debug)
 			{
@@ -170,6 +147,7 @@
 		}
 		public function setAnimationSpeed (per : int) : void
 		{
+			per = per > 0 ? per : -per;
 			framesPerSecond = per * 0.001;
 		}
 		public function getAnimationSpeed () : int
@@ -212,22 +190,22 @@
 		}
 		public function setMesh (mesh : IAnimateMesh) : void
 		{
-			if ( ! mesh) return;
+			if ( mesh == null ) return;
 			this.mesh = mesh;
+			
 			var m : IMesh = mesh.getMesh (0, 255);
+			
 			if (!m) return;
             
-            materials=new Array();
+            materials=new Vector.<Material> ();
 			var mat : Material;
-			var mb : IMeshBuffer;
 			var len:int=m.getMeshBufferCount ();
 			for (var i : int = 0; i < len; i ++)
 			{
-				mb = m.getMeshBuffer (i);
-				if (mb) mat = mb.getMaterial ();
-				materials.push (mat);
+				mat = m.getMeshBuffer (i).getMaterial ();
+				materials.push (mat.clone());
 			}
-			// get start and begin time
+			
 			setFrameLoop (0, mesh.getFrameCount () - 1);
 		}
 	}

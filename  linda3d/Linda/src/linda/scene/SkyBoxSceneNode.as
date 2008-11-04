@@ -204,7 +204,7 @@ package linda.scene
 	    {
 	    	if(visible)
 	    	{
-	    		sceneManager.registerNodeForRendering(this,SceneNodeType.SKYBOX);
+	    		sceneManager.registerNodeForRendering(this,SKYBOX);
 	    		super.onPreRender();
 	    	}
 	    }
