@@ -5,8 +5,6 @@
 	import linda.math.AABBox3D;
 	import linda.math.Dimension2D;
 	import linda.math.Matrix4;
-	import linda.scene.SceneNode;
-	import linda.scene.SceneNodeType;
 	import linda.video.IVideoDriver;
 	public class CameraSceneNode extends SceneNode implements ICameraSceneNode
 	{
@@ -160,7 +158,7 @@
 				viewFrustum.cameraPosition.z=_tmp_position.z;
 				
 				driver.setCameraPosition(_tmp_position);
-				sceneManager.registerNodeForRendering (this, SceneNodeType.CAMERA);
+				sceneManager.registerNodeForRendering (this, CAMERA);
 				super.onPreRender ();
 			}
 		}

@@ -64,10 +64,10 @@ package linda.scene
                         {
                                 if(material.transparenting)
                                 {
-                                         sceneManager.registerNodeForRendering (this, SceneNodeType.SOLID);
+                                         sceneManager.registerNodeForRendering (this, SOLID);
                                 }else
                                 {
-                                        sceneManager.registerNodeForRendering(this,SceneNodeType.TRANSPARENT);
+                                        sceneManager.registerNodeForRendering(this,TRANSPARENT);
                                 }
                                 super.onPreRender ();
                         }

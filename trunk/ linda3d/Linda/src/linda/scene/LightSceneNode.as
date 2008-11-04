@@ -65,7 +65,7 @@
 					lightData.position.y=matrix.m31;
 					lightData.position.z=matrix.m32;
 				}				
-				sceneManager.registerNodeForRendering (this, SceneNodeType.LIGHT);
+				sceneManager.registerNodeForRendering (this, LIGHT);
 				super.onPreRender ();
 			}
 		}

@@ -40,28 +40,13 @@
 		{
 			if ( ! m) return;
 			mesh = m;
-			copyMaterials ();
+			cloneMaterials ();
 		}
 		public function getMesh () : IMesh
 		{
 			return mesh;
 		}
-		public function copyMaterials () : void
-		{
-			materials = new Vector.<Material>();
-			if (mesh)
-			{
-				var mat : Material;
-				var mb : IMeshBuffer;
-				var count:int=mesh.getMeshBufferCount ();
-				for (var i : int = 0; i < count; i ++)
-				{
-					mb = mesh.getMeshBuffer (i);
-					if (mb) mat = mb.getMaterial ();
-					materials.push (mat);
-				}
-			}
-		}
+		
 		public function cloneMaterials():Vector.<Material>
 		{
 			var mats:Vector.<Material>=new Vector.<Material>();
@@ -97,10 +82,10 @@
 				}
 				if (transparent)
 				{
-					sceneManager.registerNodeForRendering (this, SceneNodeType.TRANSPARENT);
+					sceneManager.registerNodeForRendering (this, TRANSPARENT);
 				} else
 				{
-					sceneManager.registerNodeForRendering (this, SceneNodeType.SOLID);
+					sceneManager.registerNodeForRendering (this, SOLID);
 				}
 				super.onPreRender ();
 			}
@@ -122,7 +107,7 @@
 				{
 					material = materials [i];
 					driver.setMaterial (material);
-					driver.drawIndexedTriangleList (mb.getVertices () , mb.getVertexCount () , mb.getIndices () , mb.getIndexCount ());
+					driver.drawMeshBuffer(mb);
 				}
 			}
 			if(debug)
@@ -140,7 +125,6 @@
 		}
 		override public function getMaterial (i : int = 0) : Material
 		{
-			if (i < 0 || i >= materials.length) return super.getMaterial (i);
 			return materials [i];
 		}
 		override public function getMaterialCount () : int
