@@ -1,4 +1,4 @@
-﻿package linda.collision
+﻿package linda.scene
 {
 	import flash.geom.Matrix;
 	/**

@@ -2,7 +2,6 @@
 {
 	import flash.utils.getTimer;
 
-	import linda.collision.ViewFrustum;
 	import linda.math.AABBox3D;
 	import linda.math.Matrix4;
 	import linda.mesh.MeshCache;

@@ -6,7 +6,6 @@
 	import flash.geom.Vector3D;
 	
 	import linda.animator.ISceneNodeAnimator;
-	import linda.collision.TriangleSelector;
 	import linda.material.Material;
 	import linda.material.Texture;
 	import linda.math.*;

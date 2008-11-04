@@ -2,7 +2,6 @@
 {
 	import flash.geom.Vector3D;
 	
-	import linda.collision.ViewFrustum;
 	import linda.math.AABBox3D;
 	import linda.math.Dimension2D;
 	import linda.math.Matrix4;
