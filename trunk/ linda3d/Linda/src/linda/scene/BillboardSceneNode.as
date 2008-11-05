@@ -64,7 +64,7 @@
 			}
 		}
 		//TODO medium optimization
-		private static var _tmpMatrix:Matrix4=new Matrix4();
+		private var _tmpMatrix:Matrix4=new Matrix4();
 		override public function render () : void
 		{
 			var driver : IVideoDriver = sceneManager.getVideoDriver ();
@@ -101,7 +101,7 @@
 			view.scaleBy ( - 1);
 			
 			var vertex : Vertex;
-			for (var i : int = 0; i < 4; i ++)
+			for (var i : int = 0; i < 4; i+=1)
 			{
 				vertex = vertices [i];
 				vertex.nx = view.x;

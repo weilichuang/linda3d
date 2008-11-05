@@ -84,7 +84,7 @@
 			triangleRenderers [TRType.TEXTURE_GOURAUD_ALPHA] = new TRTextureGouraudAlpha ();
 			//预存一些点
 			_transformedPoints = new Vector.<Vertex4D> ();
-			for (var i : int = 0; i < 2000; i ++)
+			for (var i : int = 0; i < 2000; i+=1)
 			{
 				_transformedPoints [i] = new Vertex4D ();
 			}
@@ -96,7 +96,7 @@
 			_world_inv = new Matrix4 ();
 			_lightsDir = new Vector.<Vector3D> ();
 			_lightsPos = new Vector.<Vector3D> ();
-			for (i = 0; i < getMaximalDynamicLightAmount (); i ++)
+			for (i = 0; i < getMaximalDynamicLightAmount (); i+=1)
 			{
 				_lightsDir.push (new Vector3D ());
 				_lightsPos.push (new Vector3D ());
@@ -384,7 +384,7 @@
 			var i : int;
 			if (_transformLen < len)
 			{
-				for (i = _transformLen; i < len; i ++)
+				for (i = _transformLen; i < len; i+=1)
 				{
 					_transformedPoints [i] = new Vertex4D ();
 				}
@@ -407,7 +407,7 @@
 			    var pos : Vector3D;
 			    // transfrom lights into object's world space
 			    len = _lights.length;
-			    for (i = 0; i < len; i ++)
+			    for (i = 0; i < len; i+=1)
 			    {
 				    dir = _lightsDir [i];
 				    pos = _lightsPos [i];
@@ -643,7 +643,7 @@
 						if ( ! gouraudShading) //flat Light
 						{
 							
-							for (var j : int = 0; j < lightLen; j ++)
+							for (var j : int = 0; j < lightLen; j+=1)
 							{
 								light = _lights [j];
 								pos = _lightsPos [j];
@@ -743,7 +743,7 @@
 							tv2.b = tv0.b;
 						} else
 						{
-							for (j = 0; j < lightLen; j ++)
+							for (j = 0; j < lightLen; j+=1)
 							{
 								light = _lights [j];
 								pos = _lightsPos [j];
@@ -1041,34 +1041,29 @@
 				plane = _ndc_planes [0];
 				b = _unclipped_vertices [0];
 				bDotPlane = (b.z * plane.z) + (b.w * plane.w);
-				for (var ii : int = 1; ii < inCount + 1; ii ++)
+				for (var ii : int = 1; ii < inCount + 1; ii+=1)
 				{
 					a = _unclipped_vertices [int (ii % inCount)];
 					aDotPlane = (a.z * plane.z) + (a.w * plane.w);
-					// current point inside
 					if (aDotPlane <= 0.0 )
 					{
-						// last point outside
 						if (bDotPlane > 0.0 )
 						{
-							// intersect line segment with plane
-							//out = dest[outCount++];
 							out = _transformedPoints [int (tCount ++)];
 							_clipped_vertices0 [int (outCount ++)] = out;
-							// get t intersection
+
 							t = bDotPlane / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
-							// interpolate position
+
 							out.x = b.x + (a.x - b.x ) * t ;
 							out.y = b.y + (a.y - b.y ) * t ;
 							out.z = b.z + (a.z - b.z ) * t ;
 							out.w = b.w + (a.w - b.w ) * t ;
-							// interpolate color
+
 							out.r = b.r + (a.r - b.r ) * t ;
 							out.g = b.g + (a.g - b.g ) * t ;
 							out.b = b.b + (a.b - b.b ) * t ;
 							if (hasTexture)
 							{
-								// interpolate texture
 								out.u = b.u + (a.u - b.u ) * t ;
 								out.v = b.v + (a.v - b.v ) * t ;
 							}
@@ -1077,11 +1072,8 @@
 					} 
 					else
 					{
-						// current point outside
 						if (bDotPlane <= 0.0 )
 						{
-							// previous was inside
-							// intersect line segment with plane
 							out = _transformedPoints [int (tCount ++)];
 							_clipped_vertices0 [int (outCount ++)] = out;
 							// get t intersection
@@ -1111,7 +1103,7 @@
 				if (outCount < 3) continue;
 				// put back into screen space.
 				vCount2 = vCount;
-				for (var g : int = 0; g < outCount; g ++)
+				for (var g : int = 0; g < outCount; g+=1)
 				{
 					tv0 = _clipped_vertices0 [g];
 					tmp = 1 / (tv0.w );
@@ -1121,14 +1113,13 @@
 					_clipped_vertices [int (vCount ++)] = tv0;
 				}
 				//( triangle-fan, 0-1-2,0-2-3.. )
-				for (g = 0; g <= outCount - 3; g ++)
+				for (g = 0; g <= outCount - 3; g+=1)
 				{
 					_clipped_indices [int (iCount ++)] = (vCount2);
 					_clipped_indices [int (iCount ++)] = (vCount2 + g + 1);
 					_clipped_indices [int (iCount ++)] = (vCount2 + g + 2);
 				}
 			}
-			trace("tCount="+tCount);
 			primitivesDrawn += int (iCount / 3);
 			currentTriangleRenderer.drawIndexedTriangleList (_clipped_vertices, vCount, _clipped_indices, iCount);
 		}
@@ -1151,7 +1142,7 @@
 			var len : int = _transformedLinePoints.length;
 			if (len < indexCount)
 			{
-				for (var i : int = len; i < indexCount; i ++)
+				for (var i : int = len; i < indexCount; i+=1)
 				{
 					_transformedLinePoints [i] = new Vertex4D ();
 				}
@@ -1332,7 +1323,7 @@
 			if (distance <= 0) distance = 1;
 			perspectiveDistance = distance;
 			var len : int = triangleRenderers.length;
-			for (var i : int = 0; i < len; i ++)
+			for (var i : int = 0; i < len; i+=1)
 			{
 				var render : ITriangleRenderer = triangleRenderers [i];
 				render.setPerspectiveCorrectDistance (distance);
@@ -1343,7 +1334,7 @@
 			if (distance < 1) distance = 1;
 			mipMapDistance = distance;
 			var len : int = triangleRenderers.length;
-			for (var i : int = 0; i < len; i ++)
+			for (var i : int = 0; i < len; i+=1)
 			{
 				var render : ITriangleRenderer = triangleRenderers [i];
 				render.setMipMapDistance (distance);

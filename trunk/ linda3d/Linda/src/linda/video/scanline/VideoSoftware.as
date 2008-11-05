@@ -86,7 +86,7 @@ package linda.video.scanline
 
 
 			_transformedPoints = new Vector.<Vertex4D> ();
-			for (var i : int = 0; i < 2000; i ++)
+			for (var i : int = 0; i < 2000; i+=1)
 			{
 				_transformedPoints [i] = new Vertex4D ();
 			}
@@ -98,7 +98,7 @@ package linda.video.scanline
 			_world_inv = new Matrix4 ();
 			_lightsDir = new Vector.<Vector3D> ();
 			_lightsPos = new Vector.<Vector3D> ();
-			for (i = 0; i < getMaximalDynamicLightAmount (); i ++)
+			for (i = 0; i < getMaximalDynamicLightAmount (); i+=1)
 			{
 				_lightsDir.push (new Vector3D ());
 				_lightsPos.push (new Vector3D ());
@@ -243,38 +243,6 @@ package linda.video.scanline
 			_cam_position.x = (_world_inv.m00 * x + _world_inv.m10 * y + _world_inv.m20 * z + _world_inv.m30);
 			_cam_position.y = (_world_inv.m01 * x + _world_inv.m11 * y + _world_inv.m21 * z + _world_inv.m31);
 			_cam_position.z = (_world_inv.m02 * x + _world_inv.m12 * y + _world_inv.m22 * z + _world_inv.m32);
-			
-			
-			var light : Light;
-			var dir : Vector3D;
-			var pos : Vector3D;
-			// transfrom lights into object's world space
-			var len : int = _lights.length;
-			for (var i : int = 0; i < len; i ++)
-			{
-				dir = _lightsDir [i];
-				pos = _lightsPos [i];
-				light = _lights [i];
-				if ((light.type == Light.SPOT) || (light.type == Light.DIRECTIONAL))
-				{
-					x = light.direction.x;
-					y = light.direction.y;
-					z = light.direction.z;
-					dir.x = x * _world_inv.m00 + y * _world_inv.m10 + z * _world_inv.m20;
-					dir.y = x * _world_inv.m01 + y * _world_inv.m11 + z * _world_inv.m21;
-					dir.z = x * _world_inv.m02 + y * _world_inv.m12 + z * _world_inv.m22;
-					dir.normalize ();
-				}
-				if ((light.type == Light.SPOT) || (light.type == Light.POINT))
-				{
-					x = light.position.x;
-					y = light.position.y;
-					z = light.position.z;
-					pos.x = (_world_inv.m00 * x + _world_inv.m10 * y + _world_inv.m20 * z + _world_inv.m30);
-					pos.y = (_world_inv.m01 * x + _world_inv.m11 * y + _world_inv.m21 * z + _world_inv.m31);
-					pos.z = (_world_inv.m02 * x + _world_inv.m12 * y + _world_inv.m22 * z + _world_inv.m32);
-				}
-			}
 		}
 		public override function setTransformView (mat : Matrix4) : void
 		{
@@ -430,7 +398,7 @@ package linda.video.scanline
 			var _transformLen : int = _transformedPoints.length;
 			if (_transformLen < len)
 			{
-				for (var tc : int = _transformLen; tc < len; tc ++)
+				for (var tc : int = _transformLen; tc < len; tc+=1)
 				{
 					_transformedPoints [tc] = new Vertex4D ();
 				}
@@ -444,6 +412,39 @@ package linda.video.scanline
 			var backfaceCulling : Boolean = material.backfaceCulling;
 			var hasTexture : Boolean = (texture!=null);
 			var gouraudShading : Boolean = material.gouraudShading;
+			if(lighting)
+			{
+			    // transfrom lights into object's world space
+			    len = _lights.length;
+			    for (i = 0; i < len; i+=1)
+			    {
+				    dir = _lightsDir [i];
+				    pos = _lightsPos [i];
+				    light = _lights [i];
+				    if ((light.type == Light.SPOT) || (light.type == Light.DIRECTIONAL))
+				    {
+				    	//_world_inv.rotateVector2(light.direction,dir);
+				    	var x:Number = light.direction.x;
+				    	var y:Number = light.direction.y;
+				    	var z:Number = light.direction.z;
+				    	dir.x = x * _world_inv.m00 + y * _world_inv.m10 + z * _world_inv.m20;
+				    	dir.y = x * _world_inv.m01 + y * _world_inv.m11 + z * _world_inv.m21;
+				    	dir.z = x * _world_inv.m02 + y * _world_inv.m12 + z * _world_inv.m22;
+				    	dir.normalize ();
+				    }
+				    if ((light.type == Light.SPOT) || (light.type == Light.POINT))
+				    {
+					    //_world_inv.transformVector2(light.position,pos);
+					    x = light.position.x;
+					    y = light.position.y;
+					    z = light.position.z;
+					    pos.x = (_world_inv.m00 * x + _world_inv.m10 * y + _world_inv.m20 * z + _world_inv.m30);
+					    pos.y = (_world_inv.m01 * x + _world_inv.m11 * y + _world_inv.m21 * z + _world_inv.m31);
+					    pos.z = (_world_inv.m02 * x + _world_inv.m12 * y + _world_inv.m22 * z + _world_inv.m32);
+				    }
+			    }
+			}
+			
 			var m00 : Number = _current.m00;
 			var m10 : Number = _current.m10;
 			var m20 : Number = _current.m20;
@@ -510,7 +511,7 @@ package linda.video.scanline
 				var inside : Boolean = true;
 				var clipcount : int = 0;
 				var plane:Vector3D;
-				for (var p : int = 0; p < 6; p ++)
+				for (var p : int = 0; p < 6; p+=1)
 				{
 					plane = _ndc_planes [p];
 					if (((tv0.x * plane.x) + (tv0.y * plane.y) + (tv0.z * plane.z) + (tv0.w * plane.w)) > 0.0)
@@ -564,7 +565,7 @@ package linda.video.scanline
 					lightLen = _lights.length;
 					if (lightLen > 0)
 					{
-							for (var j:int = 0; j < lightLen; j ++)
+							for (var j:int = 0; j < lightLen; j+=1)
 							{
 								light = _lights [j];
 								pos = _lightsPos [j];
@@ -823,7 +824,7 @@ package linda.video.scanline
 					plane = _ndc_planes [1];
 					b = source [0];
 					bDotPlane = (b.z * plane.z) + (b.w * plane.w);
-					for (var i:int = 1; i < inCount + 1; i ++)
+					for (var i:int = 1; i < inCount + 1; i+=1)
 					{
 						a = source [int(i % inCount)];
 						aDotPlane = (a.z * plane.z) + (a.w * plane.w);
@@ -991,7 +992,7 @@ package linda.video.scanline
 					plane = _ndc_planes [3];
 					b = source [0];
 					bDotPlane = (b.x * plane.x) + (b.w * plane.w);
-					for (i = 1; i < inCount + 1; i ++)
+					for (i = 1; i < inCount + 1; i+=1)
 					{
 						a = source [i % inCount];
 						aDotPlane = (a.x * plane.x) + (a.w * plane.w);
@@ -1076,7 +1077,7 @@ package linda.video.scanline
 					plane = _ndc_planes [4];
 					b = source [0];
 					bDotPlane = (b.y * plane.y) + (b.w * plane.w);
-					for (i = 1; i < inCount + 1; i ++)
+					for (i = 1; i < inCount + 1; i+=1)
 					{
 						a = source [i % inCount];
 						aDotPlane = (a.y * plane.y) + (a.w * plane.w);
@@ -1118,7 +1119,6 @@ package linda.video.scanline
 							{
 								// previous was inside
 								// intersect line segment with plane
-								//out = dest[outCount++];
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 								// get t intersection
@@ -1162,7 +1162,7 @@ package linda.video.scanline
 					plane = _ndc_planes [5];
 					b = source [0];
 					bDotPlane = (b.y * plane.y) + (b.w * plane.w);
-					for (i = 1; i < inCount + 1; i ++)
+					for (i = 1; i < inCount + 1; i+=1)
 					{
 						a = source [i % inCount];
 						aDotPlane = (a.y * plane.y) + (a.w * plane.w);
@@ -1236,7 +1236,7 @@ package linda.video.scanline
 				// ----------------------------------------------------------------
 				// put back into screen space.
 				vCount2 = vCount;
-				for (var g : int = 0; g < outCount; g ++)
+				for (var g : int = 0; g < outCount; g+=1)
 				{
 					tv0 = source [g];
 					tmp = 1 / tv0.w ;
@@ -1248,7 +1248,7 @@ package linda.video.scanline
 					_clipped_vertices [int(vCount ++)] = tv0;
 				}
 				// re-tesselate ( triangle-fan, 0-1-2,0-2-3.. )
-				for (g = 0; g <= outCount - 3; g ++)
+				for (g = 0; g <= outCount - 3; g+=1)
 				{
 					// add the three points
 					_clipped_indices [int(iCount ++)] = (vCount2);
@@ -1284,7 +1284,7 @@ package linda.video.scanline
 			perspectiveDistance = distance;
 			var len : int = triangleRenderers.length;
 			var render : ITriangleRenderer;
-			for (var i : int = 0; i < len; i ++)
+			for (var i : int = 0; i < len; i+=1)
 			{
 				render = triangleRenderers [i];
 				render.setPerspectiveCorrectDistance (distance);
@@ -1296,7 +1296,7 @@ package linda.video.scanline
 			mipMapDistance = distance;
 			var len : int = triangleRenderers.length;
 			var render : ITriangleRenderer;
-			for (var i : int = 0; i < len; i ++)
+			for (var i : int = 0; i < len; i+=1)
 			{
 				render = triangleRenderers [i];
 				render.setMipMapDistance (distance);

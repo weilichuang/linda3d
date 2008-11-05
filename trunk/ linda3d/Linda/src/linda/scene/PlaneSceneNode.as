@@ -28,7 +28,7 @@ package linda.scene
                         vertices [3] = new Vertex (0, 1, 0, 0, 1, 0, 0x0000FF, 0, 1);
 
                         box = new AABBox3D ();
-                        for (var i : int = 0; i < 4; ++ i)
+                        for (var i : int = 0; i < 4; i+=1)
                         {
                                 var vertex : Vertex = vertices [i];
                                 vertex.x -= 0.5;

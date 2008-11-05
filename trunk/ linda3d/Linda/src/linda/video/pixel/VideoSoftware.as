@@ -84,7 +84,7 @@ package linda.video.pixel
 			triangleRenderers [TRType.TEXTURE_GOURAUD_ALPHA] = new TRTextureGouraudAlpha ();
 			//预存一些点
 			_transformedPoints = new Vector.<Vertex4D>();
-			for (var i : int = 0; i < 2000; i ++)
+			for (var i : int = 0; i < 2000; i+=1)
 			{
 				_transformedPoints [i] = new Vertex4D ();
 			}
@@ -96,7 +96,7 @@ package linda.video.pixel
 			_world_inv = new Matrix4 ();
 			_lightsDir = new Vector.<Vector3D> ();
 			_lightsPos = new Vector.<Vector3D> ();
-			for (i = 0; i < getMaximalDynamicLightAmount (); i ++)
+			for (i = 0; i < getMaximalDynamicLightAmount (); i+=1)
 			{
 				_lightsDir.push (new Vector3D ());
 				_lightsPos.push (new Vector3D ());
@@ -124,7 +124,7 @@ package linda.video.pixel
 			_unclipped_vertices = new Vector.<Vertex4D> ();
 			//for drawIndexedLineList
 			_transformedLinePoints = new Vector.<Vertex4D> ();
-			for (i = 0; i < 100; i ++)
+			for (i = 0; i < 100; i+=1)
 			{
 				_transformedLinePoints.push(new Vertex4D ());
 			}
@@ -221,14 +221,6 @@ package linda.video.pixel
 		public override function setTransformWorld (mat : Matrix4) : void
 		{
 			_world = mat;
-			/*
-			_current.copy (_view_project);
-			_current.multiplyE (_world);
-			// transfrom camera into object's world space
-			_world.getInverse (_world_inv);
-			_world_inv.transformVector2(_camPos,_invCamPos);
-			*/
-			//_current.copy (_view_project);
 			_current.m00 = _view_project.m00;
 			_current.m01 = _view_project.m01;
 			_current.m02 = _view_project.m02;
@@ -278,7 +270,7 @@ package linda.video.pixel
 			_current.m31 = m01 * _world.m30 + m11 * _world.m31 + m21 * _world.m32 + m31 ;
 			_current.m32 = m02 * _world.m30 + m12 * _world.m31 + m22 * _world.m32 + m32 ;
 			_current.m33 = m03 * _world.m30 + m13 * _world.m31 + m23 * _world.m32 + m33 ;
-			//_world.getInverse (_world_inv);
+
 			m00 = _world.m00;
 			m01 = _world.m01;
 			m02 = _world.m02;
@@ -313,7 +305,7 @@ package linda.video.pixel
 			_world_inv.m31 = d * (m20 * (m02 * m31 - m01 * m32) + m21 * (m00 * m32 - m02 * m30) + m22 * (m01 * m30 - m00 * m31));
 			_world_inv.m32 = d * (m30 * (m02 * m11 - m01 * m12) + m31 * (m00 * m12 - m02 * m10) + m32 * (m01 * m10 - m00 * m11));
 			_world_inv.m33 = 1;
-			//_world_inv.transformVector2(_camPos,_invCamPos);
+
 			var x : Number = _camPos.x;
 			var y : Number = _camPos.y;
 			var z : Number = _camPos.z;
@@ -385,7 +377,7 @@ package linda.video.pixel
 			var i : int;
 			if (_transformLen < len)
 			{
-				for (i = _transformLen; i < len; i ++)
+				for (i = _transformLen; i < len; i+=1)
 				{
 					_transformedPoints [i] = new Vertex4D ();
 				}
@@ -408,7 +400,7 @@ package linda.video.pixel
 			    var pos : Vector3D;
 			    // transfrom lights into object's world space
 			    len = _lights.length;
-			    for (i = 0; i < len; i ++)
+			    for (i = 0; i < len; i+=1)
 			    {
 				    dir = _lightsDir [i];
 				    pos = _lightsPos [i];
@@ -645,7 +637,7 @@ package linda.video.pixel
 						if ( ! gouraudShading) //flat Light
 						{
 							
-							for (var j : int = 0; j < lightLen; j ++)
+							for (var j : int = 0; j < lightLen; j+=1)
 							{
 								light = _lights [j];
 								pos = _lightsPos [j];
@@ -745,7 +737,7 @@ package linda.video.pixel
 							tv2.b = tv0.b;
 						} else
 						{
-							for (j = 0; j < lightLen; j ++)
+							for (j = 0; j < lightLen; j+=1)
 							{
 								light = _lights [j];
 								pos = _lightsPos [j];
@@ -1044,7 +1036,7 @@ package linda.video.pixel
 				plane = _ndc_planes [0];
 				b = _unclipped_vertices [0];
 				bDotPlane = (b.z * plane.z) + (b.w * plane.w);
-				for (var ii : int = 1; ii < inCount + 1; ii ++)
+				for (var ii : int = 1; ii < inCount + 1; ii+=1)
 				{
 					a = _unclipped_vertices [int (ii % inCount)];
 					aDotPlane = (a.z * plane.z) + (a.w * plane.w);
@@ -1114,7 +1106,7 @@ package linda.video.pixel
 				if (outCount < 3) continue;
 				// put back into screen space.
 				vCount2 = vCount;
-				for (var g : int = 0; g < outCount; g ++)
+				for (var g : int = 0; g < outCount; g+=1)
 				{
 					tv0 = _clipped_vertices0 [g];
 					tmp = 1 / (tv0.w );
@@ -1124,14 +1116,13 @@ package linda.video.pixel
 					_clipped_vertices [int (vCount ++)] = tv0;
 				}
 				//( triangle-fan, 0-1-2,0-2-3.. )
-				for (g = 0; g <= outCount - 3; g ++)
+				for (g = 0; g <= outCount - 3; g+=1)
 				{
 					_clipped_indices [int (iCount ++)] = (vCount2);
 					_clipped_indices [int (iCount ++)] = (vCount2 + g + 1);
 					_clipped_indices [int (iCount ++)] = (vCount2 + g + 2);
 				}
 			}
-			trace("tCount="+tCount);
 			primitivesDrawn += int (iCount / 3);
 			currentTriangleRenderer.drawIndexedTriangleList (_clipped_vertices, vCount, _clipped_indices, iCount);
 		}
@@ -1154,7 +1145,7 @@ package linda.video.pixel
 			var len : int = _transformedLinePoints.length;
 			if (len < indexCount)
 			{
-				for (var i : int = len; i < indexCount; i ++)
+				for (var i : int = len; i < indexCount; i+=1)
 				{
 					_transformedLinePoints [i] = new Vertex4D ();
 				}
@@ -1335,7 +1326,7 @@ package linda.video.pixel
 			if (distance <= 0) distance = 1;
 			perspectiveDistance = distance;
 			var len : int = triangleRenderers.length;
-			for (var i : int = 0; i < len; i ++)
+			for (var i : int = 0; i < len; i+=1)
 			{
 				var render : ITriangleRenderer = triangleRenderers [i];
 				render.setPerspectiveCorrectDistance (distance);
@@ -1346,7 +1337,7 @@ package linda.video.pixel
 			if (distance < 1) distance = 1;
 			mipMapDistance = distance;
 			var len : int = triangleRenderers.length;
-			for (var i : int = 0; i < len; i ++)
+			for (var i : int = 0; i < len; i+=1)
 			{
 				var render : ITriangleRenderer = triangleRenderers [i];
 				render.setMipMapDistance (distance);

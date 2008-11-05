@@ -117,7 +117,7 @@
 			_driver.deleteAllDynamicLights ();
 			
 			var len : int = _lightList.length;
-			for (var i : int = 0; i < len; i ++)
+			for (var i : int = 0; i < len; i+=1)
 			{
 				var node : SceneNode = _lightList [i];
 				node.render ();
@@ -127,7 +127,7 @@
 			
 			// render skyboxes
 			len = _skyBoxList.length;
-			for (i = 0; i < len; i ++)
+			for (i = 0; i < len; i+=1)
 			{
 				node = _skyBoxList [i];
 				node.render ();
@@ -140,7 +140,7 @@
 			//就不需要绘制了，应该可以部分提高速度,有待验证 ～～～～～～～～～～～～
 			_solidList.sortOn ('distance', Array.NUMERIC );//| Array.DESCENDING);
 			len = _solidList.length;
-			for (i = 0; i < len; i ++)
+			for (i = 0; i < len; i+=1)
 			{
 				node = _solidList [i];
 				node.render ();
@@ -150,7 +150,7 @@
 			
 			//render shadow
 			len = _shadowList.length;
-			for (i = 0; i < len; i ++)
+			for (i = 0; i < len; i+=1)
 			{
 				node = _shadowList [i];
 				node.render ();
@@ -165,7 +165,7 @@
 			_transparentList.sortOn ('distance', Array.NUMERIC); //| Array.DESCENDING);
 			
 			len = _transparentList.length;
-			for (i = 0; i < len; i ++)
+			for (i = 0; i < len; i+=1)
 			{
 				node = _transparentList [i];
 				node.render ();
