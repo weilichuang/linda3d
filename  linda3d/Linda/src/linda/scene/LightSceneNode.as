@@ -22,8 +22,8 @@
 			lightData.type = type;
 			
 			box = new AABBox3D ();
-			box.addInternalPointXYZ (-5, -5, -5);
-			box.addInternalPointXYZ (5, 5, 5);
+			box.addXYZ (-5, -5, -5);
+			box.addXYZ (5, 5, 5);
 			autoCulling = false;
 		}
 		override public function destroy():void

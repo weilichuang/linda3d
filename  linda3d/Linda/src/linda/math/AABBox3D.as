@@ -17,12 +17,12 @@
 		{
 			if (min == null || max == null)
 			{
-				minX = 0.;
-				minY = 0.;
-				minZ = 0.;
-				maxX = 0.;
-				maxY = 0.;
-				maxZ = 0.;
+				minX = 0;
+				minY = 0;
+				minZ = 0;
+				maxX = 0;
+				maxY = 0;
+				maxZ = 0;
 			} 
 			else
 			{
@@ -62,6 +62,15 @@
 			maxY = v.y;
 			maxZ = v.z;
 		}
+		public function resetAABBox (box : AABBox3D) : void
+		{
+			minX = box.minX;
+			minY = box.minY;
+			minZ = box.minZ;
+			maxX = box.maxX;
+			maxY = box.maxY;
+			maxZ = box.maxZ;
+		}
 		public function copy (other : AABBox3D) : void
 		{
 			minX = other.minX;
@@ -73,14 +82,10 @@
 		}
 		public function equals (other : AABBox3D) : Boolean
 		{
-			return minX == other.minX &&
-			minY == other.minY &&
-			minZ == other.minZ &&
-			maxX == other.maxX &&
-			maxY == other.maxY &&
-			maxZ == other.maxZ;
+			return (minX == other.minX && minY == other.minY && minZ == other.minZ &&
+			       maxX == other.maxX && maxY == other.maxY && maxZ == other.maxZ);
 		}
-		public function addInternalPoint (point : Vector3D) : void
+		public function addVector (point : Vector3D) : void
 		{
 			if (point.x > maxX)
 			{
@@ -107,7 +112,7 @@
 				minZ = point.z;
 			}
 		}
-		public function addInternalVertex (point : Vertex) : void
+		public function addVertex (point : Vertex) : void
 		{
 			if (point.x > maxX)
 			{
@@ -134,7 +139,7 @@
 				minZ = point.z;
 			}
 		}
-		public function addInternalPointXYZ (x : Number, y : Number, z : Number) : void
+		public function addXYZ (x : Number, y : Number, z : Number) : void
 		{
 			if (x > maxX)
 			{
@@ -161,19 +166,10 @@
 				minZ = z;
 			}
 		}
-		public function addInternalBox (box : AABBox3D) : void
+		public function addAABBox (box : AABBox3D) : void
 		{
-			addInternalPointXYZ (box.maxX, box.maxY, box.maxZ);
-			addInternalPointXYZ (box.minX, box.minY, box.minZ);
-		}
-		public function resetFromAABBox3D (box : AABBox3D) : void
-		{
-			minX = box.minX;
-			minY = box.minY;
-			minZ = box.minZ;
-			maxX = box.maxX;
-			maxY = box.maxY;
-			maxZ = box.maxZ;
+			addXYZ (box.maxX, box.maxY, box.maxZ);
+			addXYZ (box.minX, box.minY, box.minZ);
 		}
 		public function isPointInside (point : Vector3D) : Boolean
 		{
@@ -228,7 +224,6 @@
 			return (minX <= box.maxX && minY <= box.maxY && minZ <= box.maxZ &&
 			        maxX >= box.minX && maxY >= box.minY && maxZ >= box.minZ);
 		}
-		//! Check if this box is completely inside the 'other' box.
 		public function isFullInside(box:AABBox3D):Boolean
 		{
 			return (minX >= box.minX && minY >= box.minY && minZ >= box.minZ &&
@@ -253,7 +248,7 @@
 		public function getEdges () : Vector.<Vector3D>
 		{
 			var _edges:Vector.<Vector3D>=new Vector.<Vector3D>();
-			for(var i:int=0;i<8;i++)
+			for(var i:int=0;i<8;i+=1)
 			{
 				_edges.push(new Vector3D());
 			}

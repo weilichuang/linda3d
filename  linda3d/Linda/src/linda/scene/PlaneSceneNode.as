@@ -35,7 +35,7 @@ package linda.scene
                                 vertex.y -= 0.5;
                                 vertex.x *= width;
                                 vertex.y *= height;
-                                box.addInternalPointXYZ (vertex.x, vertex.y, vertex.z);
+                                box.addXYZ (vertex.x, vertex.y, vertex.z);
                         }
                 }
                 override public function destroy():void

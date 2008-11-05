@@ -57,10 +57,10 @@
 		public function recalculateBoundingBox () : void
 		{
 			boundingBox.resetVector (cameraPosition);
-			boundingBox.addInternalPoint (getFarLeftUp ());
-			boundingBox.addInternalPoint (getFarRightUp ());
-			boundingBox.addInternalPoint (getFarLeftDown ());
-			boundingBox.addInternalPoint (getFarRightDown ());
+			boundingBox.addVector (getFarLeftUp ());
+			boundingBox.addVector (getFarRightUp ());
+			boundingBox.addVector (getFarLeftDown ());
+			boundingBox.addVector (getFarRightDown ());
 		}
 		public function getBoundingBox():AABBox3D
 		{
@@ -171,10 +171,10 @@
 			// make bounding box
 			//recalculateBoundingBox();
 			boundingBox.resetVector (cameraPosition);
-			boundingBox.addInternalPoint (getFarLeftUp ());
-			boundingBox.addInternalPoint (getFarRightUp ());
-			boundingBox.addInternalPoint (getFarLeftDown ());
-			boundingBox.addInternalPoint (getFarRightDown ());
+			boundingBox.addVector (getFarLeftUp ());
+			boundingBox.addVector (getFarRightUp ());
+			boundingBox.addVector (getFarLeftDown ());
+			boundingBox.addVector (getFarRightDown ());
 		}
 	}
 }
