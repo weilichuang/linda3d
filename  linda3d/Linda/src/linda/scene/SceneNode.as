@@ -113,7 +113,7 @@
 		{
 			var len : int = _children.length;
 			var child_node : SceneNode;
-			for (var i : int = 0; i < len; i ++)
+			for (var i : int = 0; i < len; i+=1)
 			{
 				child_node = _children [i];
 				child_node._parent = null;
@@ -144,7 +144,7 @@
 		{
 			var l : int = _children.length;
 			var node : SceneNode;
-			for (var j : int = 0; j < l; j ++)
+			for (var j : int = 0; j < l; j+=1)
 			{
 				node = _children [j];
 				if (node.id == i)
@@ -169,7 +169,7 @@
 			_sceneManager = manager;
 			var len : int = _children.length;
 			var child_node : SceneNode;
-			for (var i : int = 0; i < len; i ++)
+			for (var i : int = 0; i < len; i+=1)
 			{
 				child_node = _children [i];
 				child_node._sceneManager =manager;
@@ -220,7 +220,7 @@
 		{
 			var count:int=this.getMaterialCount();
 			var material:Material;
-			for (var i : int = 0; i < count; i ++)
+			for (var i : int = 0; i < count; i+=1)
 			{
 				material=getMaterial (i);
 				if(material)
@@ -235,7 +235,7 @@
 			if (textureLayer < 1 || textureLayer > 2) return;
 			var count:int=this.getMaterialCount();
 			var material:Material;
-			for (var i : int = 0; i < count; i ++)
+			for (var i : int = 0; i < count; i+=1)
 			{
 				material=getMaterial (i);
 				if(material)
@@ -251,7 +251,7 @@
 		{
 			var count:int=this.getMaterialCount();
 			var material:Material;
-			for (var i : int = 0; i < count; i ++)
+			for (var i : int = 0; i < count; i+=1)
 			{
 				material=getMaterial (i);
 				if(material)
@@ -264,7 +264,7 @@
 		{
 			var count:int=this.getMaterialCount();
 			var material:Material;
-			for (var i : int = 0; i < count; i ++)
+			for (var i : int = 0; i < count; i+=1)
 			{
 				material=getMaterial (i);
 				if(material)
@@ -280,7 +280,7 @@
 		{
 			var count:int=this.getMaterialCount();
 			var material:Material;
-			for (var i : int = 0; i < count; i ++)
+			for (var i : int = 0; i < count; i+=1)
 			{
 				material=getMaterial (i);
 				if(material)
@@ -293,7 +293,7 @@
 		{
 			var count:int=this.getMaterialCount();
 			var material:Material;
-			for (var i : int = 0; i < count; i ++)
+			for (var i : int = 0; i < count; i+=1)
 			{
 				material=getMaterial (i);
 				if(material)
@@ -306,7 +306,7 @@
 		{
 			var count:int=this.getMaterialCount();
 			var material:Material;
-			for (var i : int = 0; i < count; i ++)
+			for (var i : int = 0; i < count; i+=1)
 			{
 				material=getMaterial (i);
 				if(material)
@@ -319,7 +319,7 @@
 		{
 			var count:int=this.getMaterialCount();
 			var material:Material;
-			for (var i : int = 0; i < count; i ++)
+			for (var i : int = 0; i < count; i+=1)
 			{
 				material=getMaterial (i);
 				if(material)
@@ -334,7 +334,7 @@
 			{
 				var len : int = _children.length;
 				var child:SceneNode;
-				for (var i : int = 0; i < len; i ++)
+				for (var i : int = 0; i < len; i+=1)
 				{
 					child=_children[i];
 					child.onPreRender ();
@@ -347,7 +347,7 @@
 			{
 				var len:int=_animators.length;
 				var animator:ISceneNodeAnimator;
-				for (var i : int = 0; i < len; i ++)
+				for (var i : int = 0; i < len; i+=1)
 				{
 					animator=_animators [i];
 					animator.animateNode (this, timeMs);

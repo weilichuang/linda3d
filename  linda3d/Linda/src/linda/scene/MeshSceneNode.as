@@ -53,7 +53,7 @@
 				var mat : Material;
 				var mb : IMeshBuffer;
 				var count:int=mesh.getMeshBufferCount ();
-				for (var i : int = 0; i < count; i ++)
+				for (var i : int = 0; i < count; i+=1)
 				{
 					mb = mesh.getMeshBuffer (i);
 					if (mb) mat = mb.getMaterial ();
@@ -68,7 +68,7 @@
 				var len:int=materials.length;
 				var transparent:Boolean=false;
 				var mt : Material;
-				for (var i : int = 0; i < len; i ++)
+				for (var i : int = 0; i < len; i+=1)
 				{
 					mt = materials [i];
 					if (mt.transparenting)
@@ -97,7 +97,7 @@
 			var mb : IMeshBuffer;
 			var material : Material;
 			var len:int=mesh.getMeshBufferCount ();
-			for (var i : int = 0; i < len; i ++)
+			for (var i : int = 0; i < len; i+=1)
 			{
 				mb = mesh.getMeshBuffer (i);
 				if (mb)
@@ -144,11 +144,11 @@
 			    var len:int=clone.getMeshBufferCount();
 			    var buffer:IMeshBuffer;
 			    var vertex:Vertex;
-			    for(var i:int=0;i<len;i++)
+			    for(var i:int=0;i<len;i+=1)
 			    {
 				    buffer=clone.getMeshBuffer(i);
 				    var blen:int=buffer.getVertexCount();
-				    for(var j:int=0;j<blen;j++)
+				    for(var j:int=0;j<blen;j+=1)
 				    {
 					    vertex=buffer.getVertex(j);
 					    absolute.transformVertex(vertex);
@@ -160,7 +160,7 @@
 			var child:MeshSceneNode;
 			var childClone:IMesh;
 			len=children.length;
-			for(i=0;i<len;i++)
+			for(i=0;i<len;i+=1)
 			{
 				child=children[i] as MeshSceneNode;
 				if(child)

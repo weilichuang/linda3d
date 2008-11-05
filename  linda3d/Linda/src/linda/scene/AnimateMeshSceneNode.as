@@ -111,7 +111,7 @@
 			driver.setTransformWorld (_absoluteMatrix);
 			
 			var len:int=m.getMeshBufferCount ();
-			for (var i : int = 0; i < len; i ++)
+			for (var i : int = 0; i < len; i+=1)
 			{	
 			    driver.setMaterial(materials[i]);
 				driver.drawMeshBuffer(m.getMeshBuffer(i));
@@ -200,7 +200,7 @@
             materials=new Vector.<Material> ();
 			var mat : Material;
 			var len:int=m.getMeshBufferCount ();
-			for (var i : int = 0; i < len; i ++)
+			for (var i : int = 0; i < len; i+=1)
 			{
 				mat = m.getMeshBuffer (i).getMaterial ();
 				materials.push (mat.clone());

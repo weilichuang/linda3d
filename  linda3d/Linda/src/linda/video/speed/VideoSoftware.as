@@ -93,7 +93,7 @@
 			triangleRenderers [TRType.TEXTURE_GOURAUD_ALPHA] = new TRTextureGouraudAlpha ();
 			//预存一些点
 			_transformedPoints = new Vector.<Vertex4D> ();
-			for (var i : int = 0; i < 1000; i ++)
+			for (var i : int = 0; i < 1000; i+=1)
 			{
 				_transformedPoints [i] = new Vertex4D ();
 			}
@@ -105,7 +105,7 @@
 			_world_inv = new Matrix4 ();
 			_lightsDir = new Vector.<Vector3D> ();
 			_lightsPos = new Vector.<Vector3D> ();
-			for (i = 0; i < getMaximalDynamicLightAmount (); i ++)
+			for (i = 0; i < getMaximalDynamicLightAmount (); i+=1)
 			{
 				_lightsDir.push (new Vector3D ());
 				_lightsPos.push (new Vector3D ());
@@ -132,7 +132,7 @@
 			_unclipped_vertices = new Vector.<Vertex4D> ();
 			//for drawIndexedLineList
 			_transformedLinePoints = new Vector.<Vertex4D> ();
-			for (i = 0; i < 100; i ++)
+			for (i = 0; i < 100; i+=1)
 			{
 				_transformedLinePoints [i] = new Vertex4D ();
 			}
@@ -417,7 +417,7 @@
 			var _transformLen : int = _transformedPoints.length;
 			if (_transformLen < len)
 			{
-				for (var tc : int = _transformLen; tc < len; tc ++)
+				for (var tc : int = _transformLen; tc < len; tc+=1)
 				{
 					_transformedPoints [tc] = new Vertex4D ();
 				}
@@ -439,7 +439,7 @@
 			    var pos : Vector3D;
 			    // transfrom lights into object's world space
 			    len = _lights.length;
-			    for (i = 0; i < len; i ++)
+			    for (i = 0; i < len; i+=1)
 			    {
 				    dir = _lightsDir [i];
 				    pos = _lightsPos [i];
@@ -532,7 +532,7 @@
 
 				var inside : Boolean = true;
 				var clipcount : int = 0;
-				for (var p : int = 0; p < 6; p ++)
+				for (var p : int = 0; p < 6; p+=1)
 				{
 					plane = _ndc_planes [p];
 					if (((tv0.x * plane.x) + (tv0.y * plane.y) + (tv0.z * plane.z) + (tv0.w * plane.w)) > 0.0)
@@ -589,7 +589,7 @@
 					{
 						if ( ! gouraudShading) //flat Light
 						{
-							for (var j : int = 0; j < lightLen; j ++)
+							for (var j : int = 0; j < lightLen; j+=1)
 							{
 								light = _lights [j];
 								pos = _lightsPos [j];
@@ -674,7 +674,7 @@
 							tv2.b = tv0.b;
 						} else
 						{
-							for (j = 0; j < lightLen; j ++)
+							for (j = 0; j < lightLen; j+=1)
 							{
 								light = _lights [j];
 								pos = _lightsPos [j];
@@ -931,7 +931,7 @@
 					plane = _ndc_planes [1];
 					b = source [0];
 					bDotPlane = (b.z * plane.z) + (b.w * plane.w);
-					for (var i:int = 1; i < inCount + 1; i ++)
+					for (var i:int = 1; i < inCount + 1; i+=1)
 					{
 						a = source [int(i % inCount)];
 						aDotPlane = (a.z * plane.z) + (a.w * plane.w);
@@ -1015,7 +1015,7 @@
 					plane = _ndc_planes [2];
 					b = source [0];
 					bDotPlane = (b.x * plane.x) + (b.w * plane.w);
-					for (i = 1; i < inCount + 1; i ++)
+					for (i = 1; i < inCount + 1; i+=1)
 					{
 						a = source [i % inCount];
 						aDotPlane = (a.x * plane.x) + (a.w * plane.w);
@@ -1099,7 +1099,7 @@
 					plane = _ndc_planes [3];
 					b = source [0];
 					bDotPlane = (b.x * plane.x) + (b.w * plane.w);
-					for (i = 1; i < inCount + 1; i ++)
+					for (i = 1; i < inCount + 1; i+=1)
 					{
 						a = source [i % inCount];
 						aDotPlane = (a.x * plane.x) + (a.w * plane.w);
@@ -1184,7 +1184,7 @@
 					plane = _ndc_planes [4];
 					b = source [0];
 					bDotPlane = (b.y * plane.y) + (b.w * plane.w);
-					for (i = 1; i < inCount + 1; i ++)
+					for (i = 1; i < inCount + 1; i+=1)
 					{
 						a = source [i % inCount];
 						aDotPlane = (a.y * plane.y) + (a.w * plane.w);
@@ -1268,7 +1268,7 @@
 					plane = _ndc_planes [5];
 					b = source [0];
 					bDotPlane = (b.y * plane.y) + (b.w * plane.w);
-					for (i = 1; i < inCount + 1; i ++)
+					for (i = 1; i < inCount + 1; i+=1)
 					{
 						a = source [i % inCount];
 						aDotPlane = (a.y * plane.y) + (a.w * plane.w);
@@ -1335,7 +1335,7 @@
 				// ----------------------------------------------------------------
 				// put back into screen space.
 				vCount2 = vCount;
-				for (var g : int = 0; g < outCount; g ++)
+				for (var g : int = 0; g < outCount; g+=1)
 				{
 					tv0 = source [g];
 					tmp = 1 / tv0.w ;
@@ -1345,7 +1345,7 @@
 					_clipped_vertices [int(vCount ++)] = tv0;
 				}
 				// re-tesselate ( triangle-fan, 0-1-2,0-2-3.. )
-				for (g = 0; g <= outCount - 3; g ++)
+				for (g = 0; g <= outCount - 3; g+=1)
 				{
 					// add the three points
 					_clipped_indices [int(iCount ++)] = (vCount2);
@@ -1375,7 +1375,7 @@
 			var len : int = _transformedLinePoints.length;
 			if (len < indexCount)
 			{
-				for (var i : int = len; i < indexCount; i ++)
+				for (var i : int = len; i < indexCount; i+=1)
 				{
 					_transformedLinePoints [i] = new Vertex4D ();
 				}
@@ -1557,7 +1557,7 @@
 			perspectiveDistance = distance;
 			var len : int = triangleRenderers.length;
 			var render : ITriangleRenderer
-			for (var i : int = 0; i < len; i ++)
+			for (var i : int = 0; i < len; i+=1)
 			{
 				render = triangleRenderers [i];
 				render.setPerspectiveCorrectDistance (distance);
@@ -1569,7 +1569,7 @@
 			mipMapDistance = distance;
 			var len : int = triangleRenderers.length;
 			var render : ITriangleRenderer;
-			for (var i : int = 0; i < len; i ++)
+			for (var i : int = 0; i < len; i+=1)
 			{
 				render = triangleRenderers [i];
 				render.setMipMapDistance (distance);
