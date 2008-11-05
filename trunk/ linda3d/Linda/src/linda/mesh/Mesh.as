@@ -5,13 +5,10 @@
 	{
 		public var meshBuffers : Vector.<IMeshBuffer>;
 		public var boundingBox : AABBox3D;
-		public var name : String ;
-		private static var _id:int=0;
 		public function Mesh ()
 		{
 			meshBuffers = new Vector.<IMeshBuffer> ();
 			boundingBox = new AABBox3D ();
-			name="mesh"+(_id++);
 		}
 		public function getMeshBufferCount () : int
 		{
@@ -19,7 +16,7 @@
 		}
 		public function getMeshBuffer (nr : int) : IMeshBuffer
 		{
-			return meshBuffers [nr];
+			return meshBuffers[nr];
 		}
 		public function getMeshBuffers():Vector.<IMeshBuffer>
 		{
@@ -53,11 +50,11 @@
 			if (len > 0)
 			{
 				buffer=meshBuffers [0];
-				boundingBox.resetFromAABBox3D (buffer.getBoundingBox ());
-				for (var i:int = 1; i < len; i ++)
+				boundingBox.resetAABBox (buffer.getBoundingBox ());
+				for (var i:int = 1; i < len; i+=1)
 				{
 					buffer=meshBuffers [i];
-					boundingBox.addInternalBox (buffer.getBoundingBox ());
+					boundingBox.addAABBox (buffer.getBoundingBox ());
 				}
 			}
 		}
@@ -65,7 +62,7 @@
 		{
 			var len:int=meshBuffers.length;
 			var buffer:IMeshBuffer;
-			for (var i:int = 0; i < len; i ++)
+			for (var i:int = 0; i < len; i+=1)
 			{
 				buffer = meshBuffers [i];
 				buffer.getMaterial().setFlag (flag, value);
@@ -76,7 +73,7 @@
 			var triangleCount : int;
 			var len:int=meshBuffers.length;
 			var buffer:IMeshBuffer;
-			for (var i:int = 0; i < len; i ++)
+			for (var i:int = 0; i < len; i+=1)
 			{
 				buffer = meshBuffers [i];
 				triangleCount += buffer.getTriangleCount ();
@@ -93,19 +90,11 @@
 		{
 			var len:int=m.getMeshBufferCount();
 			var buffer:IMeshBuffer;
-			for(var i:int =0; i < len; i++)
+			for(var i:int =0; i < len; i+=1)
 			{
 				buffer=m.getMeshBuffer(i);
 				meshBuffers.push(buffer);
 			}
-		}
-		public function getName():String
-		{
-			return name;
-		}
-		public function toString():String
-		{
-			return name;
 		}
 	}
 }

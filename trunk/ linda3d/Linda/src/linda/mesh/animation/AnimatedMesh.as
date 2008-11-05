@@ -38,11 +38,11 @@
 			{
 				var mesh:IMesh=meshes [0];
 				var len:int=meshes.length;
-				boundingBox.resetFromAABBox3D(mesh.getBoundingBox());
+				boundingBox.resetAABBox(mesh.getBoundingBox());
 				for (var i : int = 1; i < len; i ++)
 				{
 					mesh=meshes[i];
-					boundingBox.addInternalBox (mesh.getBoundingBox ());
+					boundingBox.addAABBox(mesh.getBoundingBox ());
 				}
 			}
 		}

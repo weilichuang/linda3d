@@ -176,7 +176,7 @@
 						box.resetVector(v);
 					}else
 					{
-						box.addInternalPoint(v);
+						box.addVector(v);
 					}
 					
 					frame_normals.push(nml);

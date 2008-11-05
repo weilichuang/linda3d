@@ -54,16 +54,5 @@
 			if (num < 0 || num >= meshes.length) return null;
 			return meshes [num];
 		}
-		public function getMeshByName(name:String):IMesh
-		{
-			var len:int=meshes.length;
-			var mesh:IMesh;
-			for (var i:int = 0; i < len; i ++)
-			{
-				mesh=meshes [i];
-				if (mesh.getName() == name) return mesh;
-			}
-			return null;
-		}
 	}
 }

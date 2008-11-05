@@ -121,12 +121,12 @@
 			vertices [n] = new Vertex (0, - radius, 0, - 1, - 1, - 1, clr, 0.5, 1);
 			// recalculate bounding box
 			var box : AABBox3D = new AABBox3D ();
-			box.addInternalPointXYZ (vertices [n].x, vertices [n].y, vertices [n].z);
-			box.addInternalPointXYZ (vertices [n - 1].x, vertices [n - 1].y, vertices [n - 1].z);
-			box.addInternalPointXYZ (radius, 0, 0);
-			box.addInternalPointXYZ ( - radius, 0, 0);
-			box.addInternalPointXYZ (0, 0, radius);
-			box.addInternalPointXYZ (0, 0, - radius);
+			box.addXYZ (vertices [n].x, vertices [n].y, vertices [n].z);
+			box.addXYZ (vertices [n - 1].x, vertices [n - 1].y, vertices [n - 1].z);
+			box.addXYZ (radius, 0, 0);
+			box.addXYZ ( - radius, 0, 0);
+			box.addXYZ (0, 0, radius);
+			box.addXYZ (0, 0, - radius);
 			meshBuffer.indices = indices;
 			meshBuffer.vertices = vertices;
 			meshBuffer.boundingBox = box;

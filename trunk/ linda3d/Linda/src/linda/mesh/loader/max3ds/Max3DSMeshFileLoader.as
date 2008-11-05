@@ -98,7 +98,8 @@
 						case Max3DSChunk.EDIT_OBJECT :
 						{
 							meshBuffer = new MeshBuffer ();
-							meshBuffer.name = readString (data);
+							//meshBuffer.name = 
+							readString (data);
 							mesh.addMeshBuffer (meshBuffer);
 							break;
 						}

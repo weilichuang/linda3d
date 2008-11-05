@@ -48,7 +48,7 @@
 				vertex.x *= width;
 				vertex.y *= height;
 				vertex.z *= len;
-				box.addInternalPointXYZ (vertex.x, vertex.y, vertex.z);
+				box.addXYZ (vertex.x, vertex.y, vertex.z);
 			}
 			meshBuffer.indices = indices;
 			meshBuffer.vertices = vertices;

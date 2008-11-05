@@ -143,7 +143,7 @@
 			if (size.y == 0) size.y = 1;
 			var avg : Number = (size.x + size.y) / 6;
 			box.reset ( - avg, - avg, - avg);
-			box.addInternalPointXYZ (avg, avg, avg);
+			box.addXYZ (avg, avg, avg);
 		}
 		public function getSize () : Vector2D
 		{

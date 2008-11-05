@@ -301,9 +301,7 @@
 				idxCnt = _tmpBuffer.getIndexCount ();
 				idx = _tmpBuffer.getIndices ();
 				buffer = new MeshBuffer ();
-				buffer.name = (_tmpBuffer as MeshBuffer).name;
 				buffer.setMaterial (_tmpBuffer.getMaterial ().clone ());
-				//buffer.boundingBox=_tmpBuffer.getBoundingBox().clone();
 				vertices = _tmpBuffer.getVertices ();
 				for (j = 0; j < vtxCnt; j ++)
 				{
@@ -321,7 +319,7 @@
 			return clone;
 		}
 		//只拷贝点的信息，不复制材质
-		public static function cloneMeshNoMaterials (mesh : IMesh) : Mesh
+		public static function cloneMeshWithoutMaterial (mesh : IMesh) : Mesh
 		{
 			if ( ! mesh) return null;
 			var clone : Mesh = new Mesh ();
@@ -341,8 +339,6 @@
 				idxCnt = _tmpBuffer.getIndexCount ();
 				idx = _tmpBuffer.getIndices ();
 				buffer = new MeshBuffer ();
-				buffer.name = (_tmpBuffer as MeshBuffer).name;
-				//buffer.boundingBox=_tmpBuffer.getBoundingBox().clone();
 				vertices = _tmpBuffer.getVertices ();
 				for (j = 0; j < vtxCnt; j ++)
 				{

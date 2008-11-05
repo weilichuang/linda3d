@@ -21,9 +21,7 @@
 		{
 			super (pos, rotation, scale);
 			materials = new Vector.<Material> ();
-
 			setMesh (mesh);
-
 		}
 		override public function destroy():void
 		{
@@ -38,18 +36,18 @@
 		}
 		public function setMesh (m : IMesh) : void
 		{
-			if ( ! m) return;
+			if ( !m) return;
 			mesh = m;
-			cloneMaterials ();
+			cloneMaterials();
 		}
 		public function getMesh () : IMesh
 		{
 			return mesh;
 		}
 		
-		public function cloneMaterials():Vector.<Material>
+		public function cloneMaterials():void
 		{
-			var mats:Vector.<Material>=new Vector.<Material>();
+			materials=new Vector.<Material>();
 			if (mesh)
 			{
 				var mat : Material;
@@ -59,10 +57,9 @@
 				{
 					mb = mesh.getMeshBuffer (i);
 					if (mb) mat = mb.getMaterial ();
-					mats.push (mat.clone());
+					materials.push (mat.clone());
 				}
 			}
-			return mats;
 		}
 		override public function onPreRender () : void
 		{

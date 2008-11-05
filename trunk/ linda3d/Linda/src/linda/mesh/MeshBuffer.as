@@ -11,15 +11,12 @@
 		public var vertices : Vector.<Vertex>;
 		public var indices : Vector.<int>;
 		public var boundingBox : AABBox3D;
-		public var name : String ;
-		private static var _id:int=0;
 		public function MeshBuffer ()
 		{
 			vertices = new Vector.<Vertex> ();
 			indices = new Vector.<int> ();
 			boundingBox = new AABBox3D ();
 			material = new Material ();
-			name='meshBuffer'+(_id++);
 		}
 		public function setVertexColor (color : uint) : void
 		{
@@ -29,7 +26,7 @@
 			var vdxcnt : int = vertices.length;
 			var j:int;
 			var vertex:Vertex;
-			for (j = 0; j < vdxcnt; j ++)
+			for (j = 0; j < vdxcnt; j+=1)
 			{
 				vertex=vertices [j];
 				vertex.r = r;
@@ -51,7 +48,6 @@
 		}
 		public function getVertex(i:int):Vertex
 		{
-			if(i<0 || i>=vertices.length) return null;
 			return vertices[i];
 		}
 		public function getVertexCount () : int
@@ -87,10 +83,10 @@
 			     // reset bounding box with first vertex
 			     var vertex : Vertex = vertices [0];
 			     boundingBox.resetVertex(vertex);
-			     for (i = 1; i < l; i ++)
+			     for (i = 1; i < l; i+=1)
 			     {
 				     vertex = vertices [i];
-				     boundingBox.addInternalPointXYZ (vertex.x, vertex.y, vertex.z);
+				     boundingBox.addXYZ (vertex.x, vertex.y, vertex.z);
 			     }
 			}
 		}
@@ -100,13 +96,13 @@
 			var vertexCount : int = getVertexCount ();
 			var i:int;
 			var vertex:Vertex;
-			for (i = 0; i < numVertices; i ++)
+			for (i = 0; i < numVertices; i+=1)
 			{
 				vertex = verts [i];
 				vertices.push (vertex);
-				boundingBox.addInternalPointXYZ (vertex.x, vertex.y, vertex.z);
+				boundingBox.addXYZ (vertex.x, vertex.y, vertex.z);
 			}
-			for (i = 0; i < numIndices; i ++)
+			for (i = 0; i < numIndices; i+=1)
 			{
 				indices.push (int(inds [i] + vertexCount));
 			}
@@ -122,16 +118,12 @@
 			var vertexCount : int = getVertexCount ();
 			var otherindexC:int=other.getIndexCount();
 			var otherIndices:Vector.<int>=other.getIndices ();
-			for (i = 0; i < otherindexC; i ++)
+			for (i = 0; i < otherindexC; i+=1)
 			{
 				var index:int=otherIndices[i];
 				indices.push (index + vertexCount);
 			}
-			boundingBox.addInternalBox (other.getBoundingBox ());
-		}
-		public function toString():String
-		{
-			return name;
+			boundingBox.addAABBox (other.getBoundingBox ());
 		}
 	}
 }

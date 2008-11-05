@@ -48,7 +48,7 @@
 					_bytes.writeShort (Max3DSChunk.EDIT_OBJECT);
 					var editObjPos : uint = _bytes.position;
 					_bytes.writeUnsignedInt (0);
-					_bytes.writeMultiByte (buffer.name == null  ? 'Object'+(defaultNameCount++) : buffer.name, 'utf-8');
+					_bytes.writeMultiByte ('Object'+(defaultNameCount++),'utf-8');
 					_bytes.writeByte (0);
 					
 					_bytes.writeShort (Max3DSChunk.OBJ_TRIMESH);
