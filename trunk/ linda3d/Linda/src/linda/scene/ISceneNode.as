@@ -112,7 +112,7 @@ package linda.scene
 		function setMaterialAmbientColor (color : uint) : void;
 		function setMaterialEmissiveColor (color : uint) : void;
 		function setMaterialSpecularColor (color : uint) : void;
-		//清除数据
+		//销毁
 		function destroy():void;
 	}
 }
