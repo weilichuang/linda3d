@@ -74,7 +74,7 @@
 		public function destroy():void
 		{
 			_parent=null;
-			_children=null;
+			
 			_animators=null;
 			_sceneManager=null;
 			_name=null;
@@ -84,8 +84,17 @@
 			
 			_relativeRotation=null;
 			_relativeScale=null;
-			
 			_triangleSelector=null;
+			
+			var i:int;
+			var len:int=_children.length;
+			for(i=0;i<len;i++)
+			{
+				var node:SceneNode=_children[i];
+				node.destroy();
+				node=null;
+			}
+			_children=null;
 		}
 		public function addChild (child : SceneNode) : SceneNode
 		{
