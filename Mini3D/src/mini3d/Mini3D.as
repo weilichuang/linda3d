@@ -5,7 +5,7 @@ package mini3d
 	public class Mini3D
 	{
 		static public var NAME     :String = 'Mini3D';
-		static public var VERSION:String   = "0.1.1";
+		static public var VERSION:String   = "0.1.2";
 		static public var AUTHOR   :String = '(c) 2008-2009 Copyright by Wish ';
 	}
 }

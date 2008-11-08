@@ -12,6 +12,10 @@ package mini3d.texture
 		}
 		public function setDisplayObject(value:DisplayObject):void
 		{
+			if(_bitmapData)
+			{
+				_bitmapData.dispose();
+			}
 			displayObject=value;
 			if(displayObject==null)
 			{
