@@ -186,7 +186,6 @@
 			if (camera)
 			{
 				_activeCamera = camera;
-				_activeCamera.recalculateProjectionMatrix();
 				_viewFrustum = _activeCamera.getViewFrustum ();
 			}
 		}
@@ -231,13 +230,11 @@
 			
 			
 			var fBox:AABBox3D=frust.getBoundingBox();
-
-
 			//if(!(tmpBox.intersectsWithBox(fBox))) return true;
-			
 			if( !(tmpBox.minX <= fBox.maxX && tmpBox.minY <= fBox.maxY && tmpBox.minZ <= fBox.maxZ &&
 			      tmpBox.maxX >= fBox.minX && tmpBox.maxY >= fBox.minY && tmpBox.maxZ >= fBox.minZ))
 			return true;
+			
 			// set distance for render order purposes
 			var camera_matrix : Matrix4 = _activeCamera.getAbsoluteMatrix ();
 			vx  = node_matrix.m30 - camera_matrix.m30;
