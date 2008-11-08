@@ -14,30 +14,59 @@ package linda.scene
                 private var indices : Vector.<int>;
                 private var vertices : Vector.<Vertex>;
                 private var material : Material;
-                public function PlaneSceneNode (width:Number,height:Number, pos : Vector3D = null, rotation : Vector3D = null,scale:Vector3D=null)
+                public function PlaneSceneNode (width : Number,height : Number,segsW : int=2, segsH : int=2, pos : Vector3D = null, rotation : Vector3D = null,scale:Vector3D=null)
                 {
                         super ( pos, rotation, scale);
                         
-                        indices = new Vector.<int>(0, 1, 2,0,2,3);
+                        indices = new Vector.<int>();
                         material = new Material ();
-                        var color : uint = 0x0066FF;
                         vertices=new Vector.<Vertex>();
-                        vertices [0] = new Vertex (0, 0, 0, 1, 0, 0, 0xFF0000, 0, 1);
-                        vertices [1] = new Vertex (1, 0, 0, 0, 1, 0, 0x00FF00, 1, 1);
-                        vertices [2] = new Vertex (1, 1, 0, 0, 0, 1, 0xFF0000, 1, 0);
-                        vertices [3] = new Vertex (0, 1, 0, 0, 1, 0, 0x0000FF, 0, 1);
-
                         box = new AABBox3D ();
-                        for (var i : int = 0; i < 4; i+=1)
-                        {
-                                var vertex : Vertex = vertices [i];
-                                vertex.x -= 0.5;
-                                vertex.y -= 0.5;
-                                vertex.x *= width;
-                                vertex.y *= height;
-                                box.addXYZ (vertex.x, vertex.y, vertex.z);
-                        }
+
+                        createPlane (width,height,segsW,segsH);
                 }
+                private function createPlane (width : Number,height : Number,segsW : int, segsH : int) : void
+		    {
+			        if (segsW < 1) segsW = 1;
+			        if (segsH < 1) segsH = 1;
+			        var perH : Number = height / segsH;
+			        var perW : Number = width / segsW;
+			        var wid2 : Number = width * 0.5;
+			        var hei2 : Number = height * 0.5;
+
+			        for (var i : int = 0; i <= segsH; i+=1)
+			        {
+				        for (var j : int = 0; j <= segsW; j+=1)
+				        {
+					        var vertex : Vertex = new Vertex ();
+					        vertex.x = j * perW - wid2;
+					        vertex.y = i * perH - hei2;
+					        vertex.z = 0;
+					        vertex.u = j / segsW;
+					        vertex.v = i / segsH;
+
+					        if(i==0 && j==0)
+					        {
+					        	box.resetVertex(vertex);
+					        }else
+					        {
+					            box.addVertex(vertex);
+					        }
+					        
+					        vertices.push(vertex);
+				        }
+			        }
+			        // indices
+			        var segsW1:int=segsW+1;
+			        for (i = 0; i < segsH; i+=1)
+			        {
+				        for (j = 0; j < segsW; j+=1)
+				        {
+					        indices.push (i * segsW1 + j, (i) * segsW1 + j + 1, (i + 1) * segsW1 + j + 1);
+					        indices.push (i * segsW1 + j, (i + 1)* segsW1 + j + 1, (i + 1) * segsW1 + j);
+				        }
+			        }
+		    }
                 override public function destroy():void
 		        {
 			        super.destroy();
