@@ -9,8 +9,7 @@
 	public class ViewFrustum
 	{
 		public var cameraPosition : Vector3D;
-		public var planes : Array;
-		
+
 		private var farPlane : Plane3D;
 		private var nearPlane : Plane3D;
 		private var leftPlane : Plane3D;
@@ -38,25 +37,19 @@
 			farPlane = new Plane3D ();
 			nearPlane = new Plane3D ();
 			boundingBox = new AABBox3D ();
-			// store frustum planes in array
-			planes = new Array ();
-			planes.push (nearPlane);
-			planes.push (farPlane);
-			planes.push (leftPlane);
-			planes.push (rightPlane);
-			planes.push (bottomPlane);
-			planes.push (topPlane);
-			
+
 			_farLeftUpVector   = new Vector3D();
 			_farLeftDownVector = new Vector3D();
 			_farRightUpVector  = new Vector3D();
 			_farRightDownVector= new Vector3D();
+			
 			// create the planes from a matrix
 			setFrom (matrix);
 		}
 		public function recalculateBoundingBox () : void
 		{
 			boundingBox.resetVector (cameraPosition);
+
 			boundingBox.addVector (getFarLeftUp ());
 			boundingBox.addVector (getFarRightUp ());
 			boundingBox.addVector (getFarLeftDown ());
@@ -75,6 +68,7 @@
 			matrix.transformPlane (bottomPlane);
 			matrix.transformPlane (nearPlane);
 			matrix.transformPlane (farPlane);
+			
 			matrix.transformVector(cameraPosition);
 			recalculateBoundingBox();
 		}
@@ -169,12 +163,7 @@
 			nearPlane.d *= len;
 			
 			// make bounding box
-			//recalculateBoundingBox();
-			boundingBox.resetVector (cameraPosition);
-			boundingBox.addVector (getFarLeftUp ());
-			boundingBox.addVector (getFarRightUp ());
-			boundingBox.addVector (getFarLeftDown ());
-			boundingBox.addVector (getFarRightDown ());
+			recalculateBoundingBox();
 		}
 	}
 }

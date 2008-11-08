@@ -272,8 +272,8 @@
 								oldZ=buffer.getPixel (xi, yi);
 								if (zi < oldZ)
 								{
-									target.setPixel (xi, yi,(int(ri) << 16 | int(gi) << 8 | int(bi) ));
-									buffer.setPixel (xi, yi,int(zi));
+									target.setPixel (xi, yi,(ri << 16 | gi << 8 | bi ));
+									buffer.setPixel (xi, yi,zi);
 								}
 								zi += dz;
 								ri += dr; gi += dg; bi += db;
