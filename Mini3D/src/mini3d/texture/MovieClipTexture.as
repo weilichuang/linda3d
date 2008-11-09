@@ -6,9 +6,11 @@ package mini3d.texture
 	public class MovieClipTexture implements ITexture
 	{
 		private var _mc:MovieClip;
+		private var _bitmapData:BitmapData;
 		public function MovieClipTexture(mc:MovieClip=null)
 		{
 			_mc=mc;
+			_bitmapData=new BitmapData(_mc.width,_mc.height,true,0x0);
 		}
 		public function setMovieClip(mc:MovieClip):void
 		{
@@ -33,7 +35,7 @@ package mini3d.texture
 		public function get bitmapData():BitmapData
 		{
 			if(_mc==null) return null;
-			var _bitmapData:BitmapData=new BitmapData(_mc.width,_mc.height,true,0x0);
+			_bitmapData.fillRect(_mc.getRect(_mc),0x0);
 			_bitmapData.draw(_mc);
 			return _bitmapData;
 		}

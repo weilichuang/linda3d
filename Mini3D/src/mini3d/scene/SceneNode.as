@@ -83,10 +83,17 @@ package mini3d.scene
 		
 		public function destroy():void
 		{
-			_parent=null;
-			_container=null;
-			_animators=null;
-			_sceneManager=null;
+			_container.removeEventListener(MouseEvent.CLICK,__clickHandler,false);
+			_container.removeEventListener(MouseEvent.DOUBLE_CLICK,__doubleClickHandler,false);
+			_container.removeEventListener(MouseEvent.MOUSE_DOWN,__mouseDownHandler,false);
+			_container.removeEventListener(MouseEvent.MOUSE_MOVE,__mouseMoveHandler,false);
+			_container.removeEventListener(MouseEvent.MOUSE_OUT,__mouseOutHandler,false);
+			_container.removeEventListener(MouseEvent.MOUSE_OVER,__mouseOverHandler,false);
+			_container.removeEventListener(MouseEvent.MOUSE_UP,__mouseUpHandler,false);
+			_container.removeEventListener(MouseEvent.MOUSE_WHEEL,__mouseWheelHandler,false);
+			_container.removeEventListener(MouseEvent.ROLL_OUT,__rollOutHandler,false);
+			_container.removeEventListener(MouseEvent.ROLL_OVER,__rollOverHandler,false);
+
 			_absoluteMatrix=null;
 			_relativeMatrix=null;
 			_relativeTranslation=null;
@@ -103,6 +110,11 @@ package mini3d.scene
 				node=null;
 			}
 			_children=null;
+			
+			_parent=null;
+			_container=null;
+			_animators=null;
+			_sceneManager=null;
 		}
 		
 		public function addChild (child : SceneNode) : void
