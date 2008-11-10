@@ -12,17 +12,16 @@ package mini3d.texture
 		}
 		public function setDisplayObject(value:DisplayObject):void
 		{
-			if(_bitmapData)
-			{
-				_bitmapData.dispose();
-			}
 			displayObject=value;
-			if(displayObject==null)
+			if(displayObject)
 			{
-				_bitmapData=null;
-			}else
-			{
-				_bitmapData=new BitmapData(value.width,value.height,true,0x0);
+				if(_bitmapData)
+				{
+					_bitmapData.fillRect(displayObject.getRect(displayObject),0);
+				}else
+				{
+					_bitmapData=new BitmapData(displayObject.width,displayObject.height,true,0x0);
+				}
 				_bitmapData.draw(displayObject);
 			}
 		}
@@ -37,6 +36,7 @@ package mini3d.texture
 
 		public function get bitmapData():BitmapData
 		{
+			if(displayObject == null) return null;
 			return _bitmapData;
 		}
 	}
