@@ -12,9 +12,9 @@ package mini3d.scene
                 private var indices : Array;
                 private var vertices : Array;
                 private var material : Material;
-            public function PlaneSceneNode (width:Number,height:Number,segsW : int=2, segsH : int=2, pos : Vector3D = null, rotation : Vector3D = null,scale:Vector3D=null)
+            public function PlaneSceneNode (mgr:SceneManager,width:Number,height:Number,segsW : int=2, segsH : int=2)
             {
-                        super ( pos, rotation, scale);
+                        super (mgr);
                         
                         indices = new Array();
                         vertices = new Array();

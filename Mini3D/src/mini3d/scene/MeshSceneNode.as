@@ -10,9 +10,9 @@ package mini3d.scene
 	{
 		private var materials : Array;
 		private var mesh : Mesh;
-		public function MeshSceneNode (mesh : Mesh = null, pos : Vector3D = null, rotation : Vector3D = null, scale : Vector3D = null)
+		public function MeshSceneNode (mgr:SceneManager,mesh : Mesh = null)
 		{
-			super (pos, rotation, scale);
+			super (mgr);
 			materials = new Array ();
 			setMesh (mesh);
 		}

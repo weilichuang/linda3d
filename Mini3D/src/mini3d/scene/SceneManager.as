@@ -16,7 +16,7 @@ package mini3d.scene
 		private var _nodeList : Array;
 		public function SceneManager (driver : RenderManager)
 		{
-			super ();
+			super(null);
 			_nodeList=new Array();
 			setRenderManager(driver);
 		}
@@ -34,29 +34,6 @@ package mini3d.scene
 		public function setRootContainer(root:DisplayObjectContainer):void
 		{
 			root.addChild(container);
-		}
-		override public function addChild (child : SceneNode) : void
-		{
-			if (child)
-			{
-				if (child.parent)
-				{
-					child.parent.removeChild (child);
-				}
-
-				child.parent = this;
-				children.push (child);
-				child.updateAbsoluteMatrix ();
-			}
-		}
-
-		override public function set sceneManager(manager : SceneManager) : void
-		{
-		}
-
-		override public function get sceneManager() : SceneManager
-		{
-			return this;
 		}
 
 		public function getRenderManager () : RenderManager

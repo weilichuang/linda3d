@@ -12,9 +12,9 @@ package mini3d.scene
 		private var vertices:Array;
 		private var box:AABBox3D;
 		private var material:Material;
-		public function SphereSceneNode(radius : Number=50, polyCount : int=10,pos:Vector3D=null,rotation:Vector3D=null,scale:Vector3D=null)
+		public function SphereSceneNode(mgr:SceneManager,radius : Number=50, polyCount : int=10)
 		{
-			super(pos,rotation,scale);
+			super(mgr);
 			
 			material=new Material();
 			if (polyCount < 2 )

@@ -12,9 +12,9 @@ package mini3d.scene
 		private var vertices:Array;
 		private var box:AABBox3D;
 		private var material:Material;
-		public function CubeSceneNode(size:Vector3D,pos:Vector3D=null,rotation:Vector3D=null,scale:Vector3D=null):void
+		public function CubeSceneNode(mgr:SceneManager,size:Vector3D):void
 		{
-			super(pos,rotation,scale);
+			super(mgr);
 			material=new Material();
 			indices = [0, 2, 1, 0, 3, 2, 1, 5, 4, 1, 2, 5, 4, 6, 7, 4, 5, 6,
 			           7, 3, 0, 7, 6, 3, 9, 5, 2, 9, 8, 5, 0, 11, 10, 0, 10, 7];

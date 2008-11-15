@@ -31,9 +31,11 @@ package mini3d.scene
 		private var _parent : SceneNode;
 		private var _children : Array;
 		
+		private var _id:int;
+		
 		private var _animators:Array;
 		
-		private var _sceneManager : SceneManager;
+		protected var sceneManager : SceneManager;
 		
 		protected var _absoluteMatrix:Matrix4;
 		protected var _relativeMatrix:Matrix4;
@@ -42,29 +44,32 @@ package mini3d.scene
 		protected var _relativeRotation : Vector3D;
 		protected var _relativeScale : Vector3D;
 
-		private var _autoCulling : Boolean;
+		public var autoCulling : Boolean;
 
-		private var _distance : Number;
+		public var distance : Number;
 		
-		public static const LIGHT_AND_CAMERA : int = 0;
-		public static const NODE : int = 1;
+		public var name:String;
+		
+		public static const CAMERA :int = 0;
+		public static const LIGHT  :int = 1;
+		public static const NODE   :int = 2;
 
-		public function SceneNode(pos : Vector3D = null, rotation : Vector3D = null, scale : Vector3D = null)
+		public function SceneNode(mgr:SceneManager)
 		{
-			_relativeTranslation = pos ? pos : new Vector3D(0,0,0);
-			_relativeRotation = rotation ? rotation : new Vector3D(0,0,0);
-			_relativeScale = scale ? scale : new Vector3D(1,1,1);
+			sceneManager=mgr;
+			
+			_relativeTranslation = new Vector3D(0,0,0);
+			_relativeRotation = new Vector3D(0,0,0);
+			_relativeScale = new Vector3D(1,1,1);
 			
 			_absoluteMatrix=new Matrix4();
 			_relativeMatrix=new Matrix4();
 			
 			_children=new Array();
 			_animators=new Array();
-			
-			updateAbsoluteMatrix ();
 
-			_autoCulling=true;
-			_distance=0;
+			autoCulling=true;
+			distance=0;
 			
 			_container=new Sprite();
 			
@@ -100,57 +105,54 @@ package mini3d.scene
 			
 			_relativeRotation=null;
 			_relativeScale=null;
+			
+			_parent=null;
+			_container=null;
+			_animators=null;
+			sceneManager=null;
 
 			var i:int;
 			var len:int=_children.length;
-			for(i=0;i<len;i++)
+			for(i=0;i<len;i+=1)
 			{
 				var node:SceneNode=_children[i];
 				node.destroy();
 				node=null;
 			}
 			_children=null;
-			
-			_parent=null;
-			_container=null;
-			_animators=null;
-			_sceneManager=null;
 		}
 		
 		public function addChild (child : SceneNode) : void
 		{
-			if ( ! child) return;
-			if (child.parent)
+			if (child && (child != this))
 			{
-				child.parent.removeChild (child);
+				child.remove(); // remove from old parent
+				child._parent = this;
+				child.updateAbsoluteMatrix ();
+				
+				_children.push(child);
 			}
-			child.parent = this;
-			_children.push (child);
 		}
-		public function removeChild (child : SceneNode) : SceneNode
+		public function removeChild (child : SceneNode) : Boolean
 		{
-			if (!child) return null;
-
 			var i:int=_children.indexOf(child);
 				
-			if(i == -1) return null;
+			if(i == -1) return false;
+			
+			child._parent=null;
 			
 			_children.splice (i, 1);
-			
-			child.parent=null;
-			child.sceneManager=null;
-			
-			return child;
+
+			return true;
 		}
 		public function removeAll () : void
 		{
 			var len : int = _children.length;
-			var child_node : SceneNode;
-			for (var i : int = 0; i < len; i ++)
+			var child : SceneNode;
+			for (var i : int = 0; i < len; i+=1)
 			{
-				child_node = _children [i];
-				child_node.parent = null;
-				child_node.sceneManager = null;
+				child = _children [i];
+				child._parent = null;
 			}
 			_children = [];
 		}
@@ -159,9 +161,6 @@ package mini3d.scene
 			if (_parent)
 			{
 				_parent.removeChild (this);
-			} else
-			{
-				_sceneManager = null;
 			}
 		}
 		public function hasChild(child:SceneNode):Boolean
@@ -174,46 +173,27 @@ package mini3d.scene
 		}
 		public function getChildAt (i : int) : SceneNode
 		{
-			return _children [i];
+			return _children[i];
 		}
 		public function set parent (newParent : SceneNode) : void
 		{
 			if (_parent)
 			{
-				_parent.removeChild (this);
-			} else
-			{
-				_sceneManager = null;
+				_parent.removeChild(this);
 			}
 			
 			_parent = newParent;
+			
 			if(_parent)
 			{
-				_sceneManager = _parent.sceneManager;
-			}else
-			{
-				_sceneManager=null;
+				_parent.addChild(this);
 			}
 		}
 		public function get parent():SceneNode
 		{
 	          return _parent;
 		}
-		public function set sceneManager (manager : SceneManager) : void
-		{
-			_sceneManager = manager;
-			var len : int = _children.length;
-			var node : SceneNode;
-			for (var i : int = 0; i < len; i ++)
-			{
-				node = _children [i];
-				node.sceneManager = manager;
-			}
-		}
-		public function get sceneManager():SceneManager
-		{
-	          return _sceneManager;
-		}
+
 		public function getMaterial (i : int = 0) : Material
 		{
 			return null;
@@ -301,17 +281,15 @@ package mini3d.scene
 				_animators.push (animator);
 			}
 		}
-		public function removeAnimator (animator : IAnimator) : IAnimator
+		public function removeAnimator (animator : IAnimator) : Boolean
 		{
-			if (animator) return null;
-
 			var i:int=_animators.indexOf(animator);
 				
-			if(i == -1) return null;
+			if(i == -1) return false;
 			
 			_animators.splice (i, 1);
 			
-			return animator;
+			return true;
 		}
 		
 		public function removeAnimators () : void
@@ -337,7 +315,7 @@ package mini3d.scene
 				for (i = 0; i < len; i+=1)
 				{
 					child=_children[i];
-					child.onAnimate (timeMs);
+					child.onAnimate(timeMs);
 				}
 			}
 		}
@@ -570,38 +548,7 @@ package mini3d.scene
 		{
 	          container.visible=value;
 		}
-		
-		public function get name():String
-		{
-	          return container.name;
-		}
-		public function set name(value:String):void
-		{
-	          container.name=value;
-		}
-		
-		public function get autoCulling():Boolean
-		{
-	           return _autoCulling;
-		}
-		public function set autoCulling(cull:Boolean):void
-		{
-	           _autoCulling=cull;
-		}
-		
-		
-		public function get distance():Number
-		{
-	           return _distance;
-		}
-		/** 
-		 *不要手动改变这个值，此值由系统自动计算
-		 */
-		public function set distance(d:Number):void
-		{
-	           _distance=d;
-		}
-		
+
 		/**
 		 *read only
 		 */
@@ -618,7 +565,9 @@ package mini3d.scene
 		{
 			return _container;
 		}
-		
+		/**
+		 * _container的本地坐标
+		 */
 		public function get contentX():Number
 		{
 			return _container.x;

@@ -4,7 +4,6 @@
 	
 	import mini3d.core.Material;
 	import mini3d.math.AABBox3D;
-	import mini3d.math.Vector3D;
 	import mini3d.mesh.AnimatedMeshType;
 	import mini3d.mesh.IAnimateMesh;
 	import mini3d.mesh.IMesh;
@@ -22,9 +21,9 @@
 		private var framesPerSecond : Number;
 		private var currentFrame : int;
 		private var looping : Boolean;
-		public function AnimateMeshSceneNode (mesh : IAnimateMesh = null, pos : Vector3D = null, rotation : Vector3D = null, scale : Vector3D = null)
+		public function AnimateMeshSceneNode (mgr:SceneManager,mesh : IAnimateMesh=null)
 		{
-			super (pos, rotation, scale);
+			super (mgr);
 			beginFrameTime = getTimer ();
 			startFrame = 0;
 			endFrame = 0;

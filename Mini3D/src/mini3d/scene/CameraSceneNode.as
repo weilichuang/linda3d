@@ -21,9 +21,9 @@ package mini3d.scene
 		private var viewFrustum : ViewFrustum;
 		private var orthogonal : Boolean;
 		private var box:AABBox3D;
-		public function CameraSceneNode (pos : Vector3D = null, target : Vector3D = null)
+		public function CameraSceneNode (mgr:SceneManager , target : Vector3D = null)
 		{
-			super (pos);
+			super (mgr);
 			
 			autoCulling = false;
 			view = new Matrix4 ();
@@ -107,7 +107,7 @@ package mini3d.scene
 				
 				driver.setCameraPosition(_tmp_position);
 				
-				sceneManager.registerNodeForRendering (this, SceneNode.LIGHT_AND_CAMERA);
+				sceneManager.registerNodeForRendering (this, SceneNode.CAMERA);
 				super.onPreRender ();
 			}
 		}
