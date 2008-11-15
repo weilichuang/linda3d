@@ -24,12 +24,12 @@ package linda.scene
 
 		private static const MAX_VERTICAL_ANGLE:Number = 88.0;
 
-		public function CameraFPSSceneNode(	inputControl:InputControl, 
+		public function CameraFPSSceneNode(mgr:SceneManager,inputControl:InputControl, 
 											rotateSpeed:Number = 0.2,
 											moveSpeed:Number = 200.0,
 											verticalMovement:Boolean = false)
 		{
-			super();
+			super(mgr);
 			
 			if(inputControl == null)
 			{

@@ -9,14 +9,13 @@
 	import linda.math.Matrix4;
 	import linda.math.Vector2D;
 	import linda.math.Vertex;
-	import linda.scene.CameraSceneNode;
 	import linda.video.IVideoDriver;
 	//广告牌
 	public class BillboardSceneNode extends SceneNode
 	{
-		public function BillboardSceneNode (size : Vector2D = null, shade_top : uint = 0xFFFFFF, shade_down : uint = 0xFFFFFF, pos : Vector3D = null, rotation : Vector3D = null, scale : Vector3D = null)
+		public function BillboardSceneNode (mgr:SceneManager,size : Vector2D = null, shade_top : uint = 0xFFFFFF, shade_down : uint = 0xFFFFFF)
 		{
-			super (pos, rotation, scale);
+			super (mgr);
 			//indices and vertices
 			indices = new Vector.<int>(0, 2, 1, 0, 3, 2);
 			vertices = new Vector.<Vertex>();

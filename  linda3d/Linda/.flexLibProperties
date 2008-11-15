@@ -19,7 +19,6 @@
     <classEntry path="linda.video.pixel32.TRTextureFlat"/>
     <classEntry path="linda.math.Vertex4D"/>
     <classEntry path="linda.mesh.export.IEncoder"/>
-    <classEntry path="linda.scene.ISceneNode"/>
     <classEntry path="linda.scene.SceneManager"/>
     <classEntry path="linda.video.pixel.TRTextureFlat"/>
     <classEntry path="linda.math.Quaternion"/>
@@ -87,7 +86,6 @@
     <classEntry path="linda.events.RenderEvent"/>
     <classEntry path="linda.scene.AnimateMeshSceneNode"/>
     <classEntry path="linda.scene.BillboardSceneNode"/>
-    <classEntry path="linda.scene.ICameraSceneNode"/>
     <classEntry path="linda.math.Dimension2D"/>
     <classEntry path="linda.video.speed.TRTextureGouraudAlpha"/>
     <classEntry path="linda.mesh.objects.Cylinder"/>

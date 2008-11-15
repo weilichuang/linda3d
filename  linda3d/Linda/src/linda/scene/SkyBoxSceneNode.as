@@ -7,7 +7,6 @@ package linda.scene
 	import linda.math.AABBox3D;
 	import linda.math.Matrix4;
 	import linda.math.Vertex;
-	import linda.scene.CameraSceneNode;
 	import linda.video.IVideoDriver;
 
 	public class SkyBoxSceneNode extends SceneNode
@@ -35,14 +34,14 @@ package linda.scene
 		private var indices:Vector.<int>;
 		
 		private var materials:Vector.<Material>;
-		public function SkyBoxSceneNode(top:Texture, 
+		public function SkyBoxSceneNode(mgr:SceneManager,top:Texture, 
 			                            bottom:Texture,
 			                            left:Texture,
 			                            right:Texture, 
 			                            front:Texture, 
 			                            back:Texture)
 		{
-			super();
+			super(mgr);
 			debug=false;
 			autoCulling=false;
 			

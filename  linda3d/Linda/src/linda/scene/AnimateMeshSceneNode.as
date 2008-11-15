@@ -9,7 +9,6 @@
 	import linda.material.Material;
 	import linda.math.AABBox3D;
 	import linda.mesh.IMesh;
-	import linda.mesh.IMeshBuffer;
 	import linda.mesh.animation.AnimatedMeshMD2;
 	import linda.mesh.animation.AnimatedMeshType;
 	import linda.mesh.animation.IAnimateMesh;
@@ -29,9 +28,9 @@
 		private var currentFrameNr : int;
 		private var looping : Boolean;
 		private var transparent : Boolean;
-		public function AnimateMeshSceneNode (mesh : IAnimateMesh = null, pos : Vector3D = null, rotation : Vector3D = null, scale : Vector3D = null)
+		public function AnimateMeshSceneNode (mgr:SceneManager,mesh : IAnimateMesh = null)
 		{
-			super (pos, rotation, scale);
+			super (mgr);
 			beginFrameTime = getTimer ();
 			startFrame = 0;
 			endFrame = 0;
