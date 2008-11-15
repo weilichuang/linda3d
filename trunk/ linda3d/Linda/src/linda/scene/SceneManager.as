@@ -23,7 +23,7 @@
 		private var _ambientColor:uint=0x0;
 		public function SceneManager (driver : IVideoDriver = null)
 		{
-			super ();
+			super (null);
 			setVideoDriver(driver);
 		}
 		override public function destroy():void
@@ -43,20 +43,7 @@
 		{
 			return this;
 		}
-		override public function addChild (child : SceneNode) : SceneNode
-		{
-			if (!child) return null;
-			if (child.parent)
-			{
-				child.parent.removeChild (child);
-			}
-			child.parent = this;
-			child.sceneManager =this;
-			children.push (child);
-			child.updateAbsoluteMatrix ();
-			
-			return child;
-		}
+
 		public function getVideoDriver () : IVideoDriver
 		{
 			return _driver;

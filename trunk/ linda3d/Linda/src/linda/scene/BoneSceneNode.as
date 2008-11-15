@@ -10,9 +10,9 @@
 		public var positionHint : int;
 		public var scaleHint : int;
 		public var rotationHint : int;
-		public function BoneSceneNode (boneIndex : int, boneName : String, pos : Vector3D = null, rotation : Vector3D = null, scale : Vector3D = null)
+		public function BoneSceneNode (mgr:SceneManager,boneIndex : int, boneName : String)
 		{
-			super (pos, rotation, scale);
+			super (mgr);
 			this.boneIndex = boneIndex;
 			this.boneName = boneName;
 		}
@@ -45,12 +45,12 @@
 				//updateAbsoluteTransformation ();
 				for (i = 0; i < children.length; i ++)
 				{
-					var child : ISceneNode = children [i];
+					var child : SceneNode = children [i];
 					child.onAnimate (timeMs);
 				}
 			}
 		}
-		public function helper_updateAbsolutePositionOfAllChildren (node : ISceneNode) : void
+		public function helper_updateAbsolutePositionOfAllChildren (node : SceneNode) : void
 		{
 			node.updateAbsoluteMatrix ();
 			for (var i : int = 0; i < node.getChildren ().length; i ++)

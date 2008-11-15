@@ -6,7 +6,7 @@
 	import linda.math.Dimension2D;
 	import linda.math.Matrix4;
 	import linda.video.IVideoDriver;
-	public class CameraSceneNode extends SceneNode implements ICameraSceneNode
+	public class CameraSceneNode extends SceneNode
 	{
 		protected var upVector : Vector3D;
 		protected var target : Vector3D;
@@ -21,9 +21,9 @@
 		private var viewFrustum : ViewFrustum;
 		private var orthogonal : Boolean;
 		private var box:AABBox3D;
-		public function CameraSceneNode (pos : Vector3D = null, target : Vector3D = null)
+		public function CameraSceneNode (mgr:SceneManager,target:Vector3D=null)
 		{
-			super (pos);
+			super (mgr);
 			autoCulling = false;
 			view = new Matrix4 ();
 			projection = new Matrix4 ();

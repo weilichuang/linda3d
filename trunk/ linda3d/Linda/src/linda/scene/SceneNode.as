@@ -9,7 +9,7 @@
 	import linda.material.Material;
 	import linda.material.Texture;
 	import linda.math.*;
-	public class SceneNode extends EventDispatcher implements ISceneNode
+	public class SceneNode extends EventDispatcher
 	{
 		public static const CAMERA : int = 0;
 		public static const LIGHT : int = 1;
@@ -23,7 +23,7 @@
 		protected var _children : Vector.<SceneNode> ;
 		protected var _animators : Vector.<ISceneNodeAnimator> ;
 		
-		protected var _sceneManager : SceneManager;
+		protected var sceneManager : SceneManager;
 
 		protected var _absoluteMatrix : Matrix4;
 		protected var _relativeMatrix : Matrix4;
@@ -31,29 +31,34 @@
 		protected var _relativeTranslation : Vector3D;
 		protected var _relativeRotation : Vector3D;
 		protected var _relativeScale : Vector3D;
+
 		
-		
-		private var _name : String ;
-		private var _autoCulling : Boolean;
-		private var _visible : Boolean ;
-		private var _hasShadow : Boolean ;
-		
-		private var _id:int=-1;
-		
-		private var _debug:Boolean;
-		
+
 		private static var _totalId:int=-1;
 
 		private var _triangleSelector : TriangleSelector;
 
-		private var _distance : Number=0;
+		public var distance : Number=0;
 		
-		public function SceneNode (pos : Vector3D = null, rotation : Vector3D = null, scale : Vector3D = null)
+		public var debug:Boolean;
+		
+		public var name : String ;
+		
+		public var autoCulling : Boolean;
+		
+		public var visible : Boolean ;
+		
+		public var hasShadow : Boolean ;
+		
+		public var id:int=-1;
+		
+		public function SceneNode (mgr:SceneManager)
 		{
+			this.sceneManager=mgr;
 			
-			_relativeTranslation = pos ? pos : new Vector3D(0,0,0);
-			_relativeRotation = rotation ? rotation : new Vector3D(0,0,0);
-			_relativeScale = scale ? scale : new Vector3D(1,1,1);
+			_relativeTranslation = new Vector3D(0,0,0);
+			_relativeRotation = new Vector3D(0,0,0);
+			_relativeScale = new Vector3D(1,1,1);
 			
 			_absoluteMatrix=new Matrix4();
 			_relativeMatrix=new Matrix4();
@@ -63,21 +68,21 @@
 			
 			updateAbsoluteMatrix ();
 			
-			_debug=false;
-			_distance=0;
-			_visible=true;
-			_hasShadow=false;
-			_autoCulling=true;
-			_id=_totalId++;
-			_name="node"+_id;
+			debug=false;
+			distance=0;
+			visible=true;
+			hasShadow=false;
+			autoCulling=true;
+			id=_totalId++;
+			name="node"+id;
 		}
 		public function destroy():void
 		{
 			_parent=null;
 			
 			_animators=null;
-			_sceneManager=null;
-			_name=null;
+			sceneManager=null;
+			name=null;
 			_absoluteMatrix=null;
 			_relativeMatrix=null;
 			_relativeTranslation=null;
@@ -96,50 +101,53 @@
 			}
 			_children=null;
 		}
-		public function addChild (child : SceneNode) : SceneNode
+		
+		public function addChild (child : SceneNode) : void
 		{
-			if ( ! child) return null;
-			if (child._parent)
+			if (child && (child != this))
 			{
-				child._parent.removeChild (child);
+				child.remove(); // remove from old parent
+				child._parent = this;
+				child.updateAbsoluteMatrix ();
+				
+				_children.push(child);
 			}
-			child._parent = this;
-			child._sceneManager = _sceneManager;
-			_children.push (child);
-			
-			return child;
 		}
-		public function removeChild (child : SceneNode) : SceneNode
+		public function removeChild (child : SceneNode) : Boolean
 		{
-			if(child == null) return null;
-			var idx:int = _children.indexOf(child);
-			_children.splice(idx,1);
+			var i:int=_children.indexOf(child);
+				
+			if(i == -1) return false;
+			
 			child._parent=null;
-			child._sceneManager=null;
-			return child;
+			
+			_children.splice (i, 1);
+
+			return true;
 		}
 		public function removeAll () : void
 		{
 			var len : int = _children.length;
-			var child_node : SceneNode;
+			var child : SceneNode;
 			for (var i : int = 0; i < len; i+=1)
 			{
-				child_node = _children [i];
-				child_node._parent = null;
-				child_node._sceneManager = null;
+				child = _children [i];
+				child._parent = null;
 			}
-			_children = new Vector.<SceneNode>();
+			_children = new Vector.<SceneNode>();;
 		}
 		public function remove () : void
 		{
 			if (_parent)
 			{
 				_parent.removeChild (this);
-			} else
-			{
-				_sceneManager = null;
 			}
 		}
+		public function hasChild(child:SceneNode):Boolean
+		{
+			return child.parent == this;
+		}
+
 		public function getChildren () : Vector.<SceneNode>
 		{
 			return _children;
@@ -165,52 +173,38 @@
 		}
 		public function set parent (newParent : SceneNode) : void
 		{
-			remove ();
+			if (_parent)
+			{
+				_parent.removeChild(this);
+			}
+			
 			_parent = newParent;
-			_sceneManager = _parent._sceneManager;
+			
+			if(_parent)
+			{
+				_parent.addChild(this);
+			}
 		}
 		public function get parent():SceneNode
 		{
 	          return _parent;
 		}
-		public function set sceneManager (manager : SceneManager) : void
+
+		public function addAnimator (animator : ISceneNodeAnimator) : void
 		{
-			_sceneManager = manager;
-			var len : int = _children.length;
-			var child_node : SceneNode;
-			for (var i : int = 0; i < len; i+=1)
+			if(animator)
 			{
-				child_node = _children [i];
-				child_node._sceneManager =manager;
+				_animators.push(animator);
 			}
 		}
-		public function get sceneManager():SceneManager
+		public function removeAnimator (animator : ISceneNodeAnimator) : Boolean
 		{
-	          return _sceneManager;
-		}
-		
-		
-		public function set debug(d:Boolean):void
-        {
-        	_debug=d;
-        }
-		public function get debug():Boolean
-		{
-	         return _debug;
-		}
-
-		public function addAnimator (animator : ISceneNodeAnimator) : ISceneNodeAnimator
-		{
-			if (!animator) return null;
-			_animators.push (animator);
-			return animator;
-		}
-		public function removeAnimator (animator : ISceneNodeAnimator) : ISceneNodeAnimator
-		{
-			if(!animator) return null;
 			var idx:int = _animators.indexOf(animator);
+			if(idx == -1) return false;
+			
 			_animators.splice(idx,1);
-			return animator;
+			
+			return true;
 		}
 		
 		public function removeAnimators () : void
@@ -339,7 +333,7 @@
 		}
 		public function onPreRender () : void
 		{
-			if (_visible)
+			if (visible)
 			{
 				var len : int = _children.length;
 				var child:SceneNode;
@@ -352,7 +346,7 @@
 		}
 		public function onAnimate (timeMs : int) : void
 		{
-			if (_visible)
+			if (visible)
 			{
 				var len:int=_animators.length;
 				var animator:ISceneNodeAnimator;
@@ -598,55 +592,9 @@
 		}
 		override public function toString () : String
 		{
-			return _name;
-		}
-		
-		
-		public function get visible():Boolean
-		{
-	          return _visible;
-		}
-		public function set visible(vis:Boolean):void
-		{
-	          _visible=vis;
-		}
-		
-		public function get name():String
-		{
-	          return _name;
-		}
-		public function set name(n:String):void
-		{
-	          _name=n;
+			return name;
 		}
 
-		public function get hasShadow():Boolean
-		{
-	           return _hasShadow;
-		}
-		public function set hasShadow(shadow:Boolean):void
-		{
-	           _hasShadow=shadow;
-		}
-		
-		public function get autoCulling():Boolean
-		{
-	           return _autoCulling;
-		}
-		public function set autoCulling(cull:Boolean):void
-		{
-	           _autoCulling=cull;
-		}
-		
-		public function get distance():Number
-		{
-	           return _distance;
-		}
-		public function set distance(distance:Number):void
-		{
-	           _distance=distance;
-		}
-		
 		//read only
 		public function get children():Vector.<SceneNode>
 		{
@@ -656,10 +604,6 @@
 		public function get animators():Vector.<ISceneNodeAnimator>
 		{
 	           return _animators;
-		}
-		public function get id():int
-		{
-			return _id;
 		}
 	}
 }

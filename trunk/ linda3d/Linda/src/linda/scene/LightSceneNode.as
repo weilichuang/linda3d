@@ -10,9 +10,9 @@
 	{
 		private var lightData : Light ;
 		private var box : AABBox3D;
-		public function LightSceneNode (position : Vector3D = null, color : uint = 0xFFFFFF,radius:Number=200, type : int = 0)
+		public function LightSceneNode (mgr:SceneManager, color : uint = 0xFFFFFF,radius:Number=200, type : int = 0)
 		{
-			super (position);
+			super (mgr);
 			lightData = new Light ();
 			lightData.diffuseColor.color = color;
 			lightData.radius=radius;

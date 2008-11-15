@@ -17,9 +17,9 @@
 	{
 		private var materials : Vector.<Material>;
 		private var mesh : IMesh;
-		public function MeshSceneNode (mesh : IMesh = null, pos : Vector3D = null, rotation : Vector3D = null, scale : Vector3D = null)
+		public function MeshSceneNode (mgr:SceneManager,mesh : IMesh = null)
 		{
-			super (pos, rotation, scale);
+			super (mgr);
 			materials = new Vector.<Material> ();
 			setMesh (mesh);
 		}
