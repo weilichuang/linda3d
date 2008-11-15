@@ -1,2 +1,2 @@
 Texture部分需要重新设计
-每个物体包含的属性sceneManager需要重新设计,最好看看Irrlicht是如何设计的.
+Matrix4继承Matrix3D类，来提高速度
