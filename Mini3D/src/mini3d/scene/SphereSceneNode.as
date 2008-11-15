@@ -105,7 +105,9 @@ package mini3d.scene
 					var posy : Number = cosay ;
 					var posz : Number = sinaxz * sinay;
 					
-					normal.setXYZ (posx, posy, posz);
+					normal.x=posx;
+					normal.y=posy;
+					normal.z=posz;
 					normal.normalize ();
 
 					vertices [n ++] = new Vertex (posx, posy, posz,

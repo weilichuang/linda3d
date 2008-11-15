@@ -12,12 +12,6 @@ package mini3d.math
 			this.y=y;
 			this.z=z;
 		}
-		public function setXYZ(x:Number,y:Number,z:Number):void
-		{
-			this.x=x;
-			this.y=y;
-			this.z=z;
-		}
 		public function subtract(other:Vector3D):Vector3D
 		{
 			return new Vector3D(x-other.x,y-other.y,z-other.z);
