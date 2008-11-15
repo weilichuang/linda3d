@@ -33,10 +33,6 @@ package mini3d.texture
 			}
 			
 		}
-		public function set bitmapData(value:BitmapData):void
-		{
-			
-		}
 		public function clear():void
 		{
 			if(_caches!=null)

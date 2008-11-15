@@ -25,10 +25,6 @@ package mini3d.texture
 				_bitmapData.draw(displayObject);
 			}
 		}
-		public function set bitmapData(value:BitmapData):void
-		{
-			
-		}
 		public function getDisplayObject():DisplayObject
 		{
 			return displayObject;

@@ -39,7 +39,7 @@ package mini3d.scene
 				        {
 					        var vertex : Vertex = new Vertex ();
 					        vertex.x = j * perW - wid2;
-					        vertex.y = i * perH - hei2;
+					        vertex.y = -i * perH + hei2;
 					        vertex.z = 0;
 					        vertex.u = j / segsW;
 					        vertex.v = i / segsH;

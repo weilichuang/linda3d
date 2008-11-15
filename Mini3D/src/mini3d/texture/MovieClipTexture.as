@@ -9,33 +9,26 @@ package mini3d.texture
 		private var _bitmapData:BitmapData;
 		public function MovieClipTexture(mc:MovieClip=null)
 		{
-			_mc=mc;
-			_bitmapData=new BitmapData(_mc.width,_mc.height,true,0x0);
+			setMovieClip(mc);
 		}
 		public function setMovieClip(mc:MovieClip):void
 		{
 			_mc=mc;
 		}
-		public function set bitmapData(value:BitmapData):void
-		{
-			
-		}
 		public function getMovieClip():MovieClip
 		{
 			return _mc;
 		}
-		public function play():void
-		{
-			_mc.play();
-		}
-		public function stop():void
-		{
-			_mc.stop();
-		}
 		public function get bitmapData():BitmapData
 		{
 			if(_mc==null) return null;
-			_bitmapData.fillRect(_mc.getRect(_mc),0x0);
+			if(_bitmapData)
+			{
+				_bitmapData.fillRect(_mc.getRect(_mc),0x0);
+			}else
+			{
+				_bitmapData=new BitmapData(_mc.width,_mc.height,true,0x0);
+			}
 			_bitmapData.draw(_mc);
 			return _bitmapData;
 		}

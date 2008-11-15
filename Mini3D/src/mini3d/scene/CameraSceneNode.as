@@ -37,8 +37,8 @@ package mini3d.scene
 			if (target!=null) this.target=target;
 			
 			fovy = 120.;
-			aspect = 4./3.;
-			near = 1.;
+			aspect = 1;
+			near = 1;
 			far = 1000.;
 			//这里
 			recalculateProjectionMatrix ();

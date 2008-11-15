@@ -1,7 +1,7 @@
 package mini3d.texture
 {
 	import flash.display.BitmapData;
-	
+	//Todo Texture部分要重新设计
 	public class Texture implements ITexture
 	{
 		private var _bitmapData:BitmapData;
@@ -13,7 +13,7 @@ package mini3d.texture
 		{
 			return _bitmapData;
 		}
-		public function set bitmapData(value:BitmapData):void
+		public function setBitmapData(value:BitmapData):void
 		{
 			_bitmapData=value;
 		}

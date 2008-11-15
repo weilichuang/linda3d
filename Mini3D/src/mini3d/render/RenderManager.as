@@ -295,17 +295,17 @@ package mini3d.render
 					//tv0
 					var tmp : Number = 1 / tv0.w ;
 					tv0.x = (tv0.x * csm00) * tmp + csm30;
-					tv0.y = -(tv0.y * csm11) * tmp + csm31;
+					tv0.y = (tv0.y * csm11) * tmp + csm31;
 					tv0.z = tmp;
 					//tv1
 					tmp = 1 / tv1.w ;
 					tv1.x = (tv1.x * csm00) * tmp + csm30;
-					tv1.y = -(tv1.y * csm11) * tmp + csm31;
+					tv1.y = (tv1.y * csm11) * tmp + csm31;
 					tv1.z = tmp;
 					//tv2
 					tmp = 1 / tv2.w ;
 					tv2.x = (tv2.x * csm00) * tmp + csm30;
-					tv2.y = -(tv2.y * csm11) * tmp + csm31;
+					tv2.y = (tv2.y * csm11) * tmp + csm31;
 					tv2.z = tmp;
 					
 					vCount+=3;										
@@ -414,7 +414,7 @@ package mini3d.render
 					tv0 = source [g];
 					tmp = 1 / tv0.w ;
 					tv0.x = (tv0.x * csm00) * tmp + csm30;
-					tv0.y = -(tv0.y * csm11) * tmp + csm31;
+					tv0.y = (tv0.y * csm11) * tmp + csm31;
 					tv0.z = tmp;
 
 					_clipped_vertices [int(vCount++)] = tv0;
