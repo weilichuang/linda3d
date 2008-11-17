@@ -48,27 +48,7 @@
 			m32 = 0;
 			m33 = 1;
 		}
-		public function isIdentity () : Boolean
-		{
-			if (m00 != 1) return false;
-			if (m01 != 0) return false;
-			if (m02 != 0) return false;
-			if (m03 != 0) return false;
-			if (m10 != 0) return false;
-			if (m11 != 1) return false;
-			if (m12 != 0) return false;
-			if (m13 != 0) return false;
-			if (m20 != 0) return false;
-			if (m21 != 0) return false;
-			if (m22 != 1) return false;
-			if (m23 != 0) return false;
-			if (m30 != 0) return false;
-			if (m31 != 0) return false;
-			if (m32 != 0) return false;
-			if (m33 != 1) return false;
-			return true;
-		}
-		public function buildCameraLookAtMatrix (position : Vector3D, target : Vector3D, upVector : Vector3D) : void
+		public function pointAt (position : Vector3D, target : Vector3D, upVector : Vector3D) : void
 		{
 			var zaxisX : Number = target.x - position.x;
 			var zaxisY : Number = target.y - position.y;
@@ -192,33 +172,14 @@
 			var dx : Number = - 0.5 + dim.width * 0.5;
 			var dy : Number = - 0.5 + dim.height * 0.5;
 			
-			makeIdentity ();
+			identity ();
 			m00 = scaleX;
 			m11 = scaleY;
 			m22 = scale;
 			m30 = dx;
 			m31 = dy;
 		}
-		/*
-		public function multiplyWith1x4Matrix (m : *) : void
-		{
-			if (m is Vertex4D || m is Quaternion)
-			{
-				var x : Number = m.x, y : Number = m.y, z : Number = m.z, w : Number = m.w;
-				m.x = m00 * x + m10 * y + m20 * z + m30 * w;
-				m.y = m01 * x + m11 * y + m21 * z + m31 * w;
-				m.z = m02 * x + m12 * y + m22 * z + m32 * w;
-				m.w = m03 * x + m13 * y + m23 * z + m33 * w;
-			} else if (m is Array)
-			{
-				x = m [0] , y = m [1] , z = m [2] , w = m [3];
-				m [0] = m00 * x + m10 * y + m20 * z + m30 * w;
-				m [1] = m01 * x + m11 * y + m21 * z + m31 * w;
-				m [2] = m02 * x + m12 * y + m22 * z + m32 * w;
-				m [3] = m03 * x + m13 * y + m23 * z + m33 * w;
-			}
-		}
-		*/
+
 		public function makeInverse () : Boolean
 		{
 			var temp : Matrix4 = new Matrix4 ();
@@ -229,7 +190,7 @@
 			}
 			return false;
 		}
-		public function makeIdentity () : void
+		public function identity () : void
 		{
 			m00 = 1;
 			m01 = 0;

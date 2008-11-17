@@ -95,7 +95,7 @@ package mini3d.scene
 					tmp_up.x += 1.0;
 				}
 				// create the new lookat matrix
-				view.buildCameraLookAtMatrix (_tmp_position, target, tmp_up);
+				view.pointAt (_tmp_position, target, tmp_up);
 				
 				// multiply projection * view
 				view_projection.copy (projection);
