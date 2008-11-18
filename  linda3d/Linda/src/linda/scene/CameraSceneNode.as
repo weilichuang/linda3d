@@ -100,7 +100,7 @@
 					tmp_up.x += 0.5;
 				}
 				// create the new lookat matrix
-				view.buildCameraLookAtMatrix (_tmp_position, target, tmp_up);
+				view.pointAt (_tmp_position, target, tmp_up);
 				
 				/*
 				// multiply projection * view

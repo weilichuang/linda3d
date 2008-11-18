@@ -124,7 +124,7 @@
 			vertex.y = pos.y - horizontal.y + vertical.y;
 			vertex.z = pos.z - horizontal.z + vertical.z;
 			
-			_tmpMatrix.makeIdentity();
+			_tmpMatrix.identity();
 			driver.setMaterial (material);
 			driver.setTransformWorld (_tmpMatrix);
 			driver.drawIndexedTriangleList (vertices, 4, indices, 6);

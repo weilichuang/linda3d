@@ -54,7 +54,6 @@
 		* 返回到point最近的直线上的点
 		*
 		*/
-		//todo 怎么算的？
 		public function getClosestPoint (point : Vector3D) : Vector3D
 		{
 			var c : Vector3D = new Vector3D (point.x - start.x, point.y - start.y, point.z - start.z);
