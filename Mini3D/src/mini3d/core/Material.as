@@ -18,6 +18,7 @@ package mini3d.core
 		public static const BACKFACE : int = 0;
 		public static const FILLWITHCOLOR : int = 1;
 		public static const FILLWITHLINE : int = 2;
+		
 		public function Material()
 		{
 			backfaceCulling = true;
@@ -28,9 +29,9 @@ package mini3d.core
 			alpha = 1;
 		}
 
-		public function setTexture(tex : ITexture) : void
+		public function setTexture(value : ITexture) : void
 		{
-			this.texture = tex;
+			this.texture = value;
 		}
 
 		public function setFlag(i : int , value : Boolean) : void

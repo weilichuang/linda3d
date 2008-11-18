@@ -30,8 +30,8 @@ package mini3d.render
 		private var _clip_scale : Matrix4;
 		
 		
-		private var _invCamPos : Vector3D;
-		private var _camPos : Vector3D;
+		private var _inverse_Camera_Position : Vector3D;
+		private var _camera_Position : Vector3D;
 		
 		private var _camera:CameraSceneNode;
 
@@ -52,8 +52,15 @@ package mini3d.render
 
 		private var _transformedPoints:Array;
 		
-		public function RenderManager(size:Dimension2D)
+		private static var Width:int=400;
+		private static var Height:int=400;
+		
+		public function RenderManager(size:Dimension2D=null)
 		{
+			if(size == null)
+			{
+				size = new Dimension2D(Width,Height);
+			}
             init(size);            
 		}
 		private function init(size:Dimension2D):void
@@ -87,8 +94,8 @@ package mini3d.render
 			_world_inv = new Matrix4 ();
 			_clip_scale=new Matrix4();
 			
-			_invCamPos = new Vector3D ();
-			_camPos = new Vector3D ();
+			_inverse_Camera_Position = new Vector3D ();
+			_camera_Position = new Vector3D ();
 			
 			_ndc_planes = [new Vector4D (  0,  0,  1, -1 ) , // far
 			               new Vector4D (  0,  0, -1, -1 ) , // near
@@ -122,8 +129,8 @@ package mini3d.render
 			_current.copy (_view_project);
 			_current.multiplyE (_world);
 			_world.getInverse (_world_inv);
-			_invCamPos.copy(_camPos);
-			_world_inv.transformVector(_invCamPos);
+			_inverse_Camera_Position.copy(_camera_Position);
+			_world_inv.transformVector(_inverse_Camera_Position);
 		}
 		
 		public function setTransformView (mat : Matrix4) : void
@@ -171,7 +178,6 @@ package mini3d.render
 			iCount = 0;
 			vCount = 0;
 			vCount2 = 0;
-			
 
 			var backfaceCulling : Boolean = _material.backfaceCulling;
 			var hasTexture : Boolean =(_material.texture!=null && _material.texture.bitmapData!=null);
@@ -195,9 +201,9 @@ package mini3d.render
 				v2 = vertices[ii];
 				if (backfaceCulling)
 				{
-					if (((v1.y - v0.y) * (v2.z - v0.z) - (v1.z - v0.z) * (v2.y - v0.y)) * (_invCamPos.x - v0.x) +
-					    ((v1.z - v0.z) * (v2.x - v0.x) - (v1.x - v0.x) * (v2.z - v0.z)) * (_invCamPos.y - v0.y) +
-					    ((v1.x - v0.x) * (v2.y - v0.y) - (v1.y - v0.y) * (v2.x - v0.x)) * (_invCamPos.z - v0.z) <= 0)
+					if (((v1.y - v0.y) * (v2.z - v0.z) - (v1.z - v0.z) * (v2.y - v0.y)) * (_inverse_Camera_Position.x - v0.x) +
+					    ((v1.z - v0.z) * (v2.x - v0.x) - (v1.x - v0.x) * (v2.z - v0.z)) * (_inverse_Camera_Position.y - v0.y) +
+					    ((v1.x - v0.x) * (v2.y - v0.y) - (v1.y - v0.y) * (v2.x - v0.x)) * (_inverse_Camera_Position.z - v0.z) <= 0)
 					{
 						continue;
 					}
@@ -215,9 +221,9 @@ package mini3d.render
 					tri.bitmapData=null;
 				}
 
-				tv0 = tri.point0;
-				tv1 = tri.point1;
-				tv2 = tri.point2;
+				tv0 = tri.p0;
+				tv1 = tri.p1;
+				tv2 = tri.p2;
 				
 				//	- transform Model * World * Camera * Projection matrix ,then after clip and light * NDCSpace matrix
 				tv0.x = m00 * v0.x + m10 * v0.y + m20 * v0.z + m30;
@@ -321,8 +327,8 @@ package mini3d.render
 				var dest : Array;
 				var plane : Vector4D;
 				var source : Array;
-				var aDotPlane : Number;
-				var bDotPlane : Number;
+				var aPlane : Number;
+				var bPlane : Number;
 				var t : Number;
 				
 				//只对近裁剪面进行裁剪
@@ -350,18 +356,18 @@ package mini3d.render
 					dest = _clipped_vertices0;
 					plane = _ndc_planes[1];
 					b = source[0];
-					bDotPlane = b.z * plane.z + b.w * plane.w;
+					bPlane = b.z * plane.z + b.w * plane.w;
 					for (var i:int = 1; i < inCount + 1; i ++)
 					{
 						a = source [int(i % inCount)];
-						aDotPlane = (a.z * plane.z) + (a.w * plane.w);
-						if (aDotPlane <= 0.0 )
+						aPlane = (a.z * plane.z) + (a.w * plane.w);
+						if (aPlane <= 0.0 )
 						{
-							if (bDotPlane > 0.0 )
+							if (bPlane > 0.0 )
 							{
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount++)] = out;
-								t = bDotPlane / ((b.z - a.z) * plane.z + (b.w - a.w) * plane.w);
+								t = bPlane / ((b.z - a.z) * plane.z + (b.w - a.w) * plane.w);
 								out.x = b.x + (a.x - b.x) * t ;
 								out.y = b.y + (a.y - b.y) * t ;
 								out.z = b.z + (a.z - b.z) * t ;
@@ -377,12 +383,12 @@ package mini3d.render
 						} 
 						else
 						{
-							if (bDotPlane <= 0.0 )
+							if (bPlane <= 0.0 )
 							{
 								out = _transformedPoints [int(tCount ++)];
 								dest[int(outCount ++)] = out;
 
-								t = bDotPlane / ((b.z - a.z) * plane.z + (b.w - a.w) * plane.w);
+								t = bPlane / ((b.z - a.z) * plane.z + (b.w - a.w) * plane.w);
 
 								out.x = b.x + (a.x - b.x) * t ;
 								out.y = b.y + (a.y - b.y) * t ;
@@ -397,7 +403,7 @@ package mini3d.render
 							}
 						}
 						b = a;
-						bDotPlane = aDotPlane;
+						bPlane = aPlane;
 					}
 					// check we have 3 or more vertices
 					if (outCount < 3)
@@ -430,9 +436,9 @@ package mini3d.render
 					newTri.material = _material;
 					
 					// add the three points
-					newTri.point0.copy(_clipped_vertices[(vCount2)]);
-					newTri.point1.copy(_clipped_vertices[(vCount2+g+1)]);
-					newTri.point2.copy(_clipped_vertices[(vCount2+g+2)]);
+					newTri.p0.copy(_clipped_vertices[(vCount2)]);
+					newTri.p1.copy(_clipped_vertices[(vCount2+g+1)]);
+					newTri.p2.copy(_clipped_vertices[(vCount2+g+2)]);
 				}
 			}
 			_primitiveCount += tCount;
@@ -460,9 +466,9 @@ package mini3d.render
 		}
 		public function setCameraPosition (pos : Vector3D) : void
 		{
-			   _camPos.x=pos.x;
-			   _camPos.y=pos.y;
-			   _camPos.z=pos.z;
+			   _camera_Position.x=pos.x;
+			   _camera_Position.y=pos.y;
+			   _camera_Position.z=pos.z;
 		}
 	}
 }

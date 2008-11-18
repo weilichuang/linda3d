@@ -28,13 +28,13 @@ package mini3d.render
 			{
 				tri = triangles[i];
 				
-				p0 = tri.point0;
-			    p1 = tri.point1;
-				p2 = tri.point2;
+				p0 = tri.p0;
+			    p1 = tri.p1;
+				p2 = tri.p2;
 				
-				tri.z = (p0.z + p1.z + p2.z)/3;
+				tri.z = (p0.z + p1.z + p2.z)*0.333;
 
-				if(tri.bitmapData)
+				if(tri.material.texture && tri.bitmapData)
 				{
 					var w:Number = tri.bitmapData.width;
 					var h:Number = tri.bitmapData.height;
@@ -87,7 +87,7 @@ package mini3d.render
 			
 			// loop rest
 			var len:int = triangles.length;
-			for(i=triangleCount;i<len;i++)
+			for(i=triangleCount;i<len;i+=1)
 			{
 				tri = triangles[i];
 				tri.z = 10000;
@@ -100,9 +100,9 @@ package mini3d.render
         	{
         		tri=triangles[i];
         		
-        		p0=tri.point0;
-        		p1=tri.point1;
-        		p2=tri.point2;
+        		p0=tri.p0;
+        		p1=tri.p1;
+        		p2=tri.p2;
 
         		graphics=tri.target.graphics;
         		

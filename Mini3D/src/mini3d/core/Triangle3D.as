@@ -6,9 +6,9 @@ package mini3d.core
 	
 	public class Triangle3D
 	{
-		public var point0:Vertex4D;
-		public var point1:Vertex4D;
-		public var point2:Vertex4D;
+		public var p0:Vertex4D;
+		public var p1:Vertex4D;
+		public var p2:Vertex4D;
 		
 		public var material:Material;
 
@@ -23,9 +23,9 @@ package mini3d.core
 		
 		public function Triangle3D()
 		{
-			point0=new Vertex4D();
-			point1=new Vertex4D();
-			point2=new Vertex4D();
+			p0=new Vertex4D();
+			p1=new Vertex4D();
+			p2=new Vertex4D();
 			
 			matrix=new Matrix();
 

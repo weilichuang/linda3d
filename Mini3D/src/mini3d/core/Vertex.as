@@ -33,20 +33,18 @@ package mini3d.core
 			z=v.z;
 		}
 		
-		public function copy(v:Vertex):void
+		public function copy(other:Vertex):void
 		{
-			this.x=v.x;
-			this.y=v.y;
-			this.z=v.z;
-			this.u=v.u;
-			this.v=v.v;
+			x=other.x;
+			y=other.y;
+			z=other.z;
+			u=other.u;
+			v=other.v;
 		}
 		
 		public function clone():Vertex
 		{
 			return new Vertex(x,y,z,u,v);
 		}
-		
-
 	}
 }
