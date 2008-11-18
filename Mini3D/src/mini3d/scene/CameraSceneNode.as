@@ -197,13 +197,13 @@ package mini3d.scene
 		{	
 			if ( ! orthogonal)
 			{
-					projection.buildProjectionMatrixPerspectiveFov (fovy, aspect, near, far);
+					projection.projectionPerspectiveFov (fovy, aspect, near, far);
 			} else
 			{
 				if(sceneManager && sceneManager.getRenderManager ())
 				{
 				    var size :Dimension2D = sceneManager.getRenderManager ().getScreenSize();
-				    projection.buildProjectionMatrixOrtho (size.width, size.height, near, far);
+				    projection.projectionOrtho (size.width, size.height, near, far);
 				}
 			}
 		}

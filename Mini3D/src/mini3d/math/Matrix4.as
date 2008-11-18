@@ -94,7 +94,7 @@
 			m32 = - ((zaxisX * position.x) + (zaxisY * position.y) + (zaxisZ * position.z))
 			m33 = 1.0;
 		}
-		public function buildProjectionMatrixPerspectiveFov (fov : Number, aspect : Number, zNear : Number, zFar : Number) : void
+		public function projectionPerspectiveFov (fov : Number, aspect : Number, zNear : Number, zFar : Number) : void
 		{
 			var halffov : Number = fov * 0.5 * 0.01745329;
 			var h : Number = Math.tan(halffov);
@@ -116,7 +116,7 @@
 			m32 = zNear * zFar / (zNear - zFar);
 			m33 = 0.;
 		}
-		public function buildProjectionMatrixOrtho (width : Number, height : Number, zNear : Number, zFar : Number) : void
+		public function projectionOrtho (width : Number, height : Number, zNear : Number, zFar : Number) : void
 		{
 			m00 = 2. / width;
 			m01 = 0.;
@@ -234,31 +234,6 @@
 			m21 = (crsp * sy - sr * cy );
 			m22 = (cr * cp );
 		}
-		public function setRotationDegreesXYZ (rx:Number,ry:Number,rz:Number) : void
-		{
-			rx *= 0.017453292519943;
-			ry *= 0.017453292519943;
-			rz *= 0.017453292519943;
-
-			var cr : Number = Math.cos (rx );
-			var sr : Number = Math.sin (rx );
-			var cp : Number = Math.cos (ry );
-			var sp : Number = Math.sin (ry );
-			var cy : Number = Math.cos (rz );
-			var sy : Number = Math.sin (rz );
-			
-			m00 = (cp * cy );
-			m01 = (cp * sy );
-			m02 = ( - sp );
-			var srsp : Number = sr * sp;
-			var crsp : Number = cr * sp;
-			m10 = (srsp * cy - cr * sy );
-			m11 = (srsp * sy + cr * cy );
-			m12 = (sr * cp );
-			m20 = (crsp * cy + sr * sy );
-			m21 = (crsp * sy - sr * cy );
-			m22 = (cr * cp );
-		}
 		public function setRotation (rotation : Vector3D) : void
 		{
 			var cr : Number = Math.cos (rotation.x );
@@ -298,12 +273,6 @@
 			m00 = scale.x;
 			m11 = scale.y;
 			m22 = scale.z;
-		}
-		public function setScaleXYZ (sx:Number,sy:Number,sz:Number) : void
-		{
-			m00 = sx;
-			m11 = sy;
-			m22 = sz;
 		}
 		public function getRotation () : Vector3D
 		{
@@ -345,45 +314,11 @@
 		}
 		public function getRotationDegrees () : Vector3D
 		{
-			var y : Number = - Math.asin (m02);
-			var d : Number = y;
-			var c : Number = Math.cos (y);
-			var rotx : Number, roty : Number, x : Number, z : Number;
-			c = c < 0.? - c : c ;
-			//Math.abs(c);
-			if (c > 0.0005)
-			{
-				c = 1 / c;
-				rotx = m22 * c;
-				roty = m12 * c;
-				x = Math.atan2 (roty, rotx );
-				rotx = m00 * c;
-				roty = m01 * c;
-				z = Math.atan2 (roty, rotx );
-			} 
-			else
-			{
-				x = 0.0;
-				rotx = m11;
-				roty = - m10;
-				z = Math.atan2 (roty, rotx );
-			}
-			if (x < 0.00)
-			{
-				x += Math.PI*2;
-			}
-			if (y < 0.00)
-			{
-				y += Math.PI*2;
-			}
-			if (z < 0.00)
-			{
-				z += Math.PI*2;
-			}
-			x = x * 57.2957795;
-			y = y * 57.2957795;
-			z = z * 57.2957795;
-			return new Vector3D (x, y, z);
+			var v:Vector3D=getRotation();
+			v.x = v.x * 57.2957795;
+			v.y = v.y * 57.2957795;
+			v.z = v.z * 57.2957795;
+			return v;
 		}
 		public function getTranslation () : Vector3D
 		{
@@ -400,18 +335,15 @@
 
 		public function getRight():Vector3D
 		{
-			var right:Vector3D=new Vector3D(m00,m01,m02);
-			return right;
+			return new Vector3D(m00,m01,m02);
 		}
 		public function getUp():Vector3D
 		{
-			var up:Vector3D=new Vector3D(m10,m11,m12);
-			return up;
+			return new Vector3D(m10,m11,m12);
 		}
 		public function getForward():Vector3D
 		{
-			var forward:Vector3D=new Vector3D(m20,m21,m22);
-			return forward;
+			return new Vector3D(m20,m21,m22);
 		}
 		
 		public function copy (other : Matrix4) : void
