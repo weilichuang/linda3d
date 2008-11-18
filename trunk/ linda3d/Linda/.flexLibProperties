@@ -21,7 +21,6 @@
     <classEntry path="linda.mesh.export.IEncoder"/>
     <classEntry path="linda.scene.SceneManager"/>
     <classEntry path="linda.video.pixel.TRTextureFlat"/>
-    <classEntry path="linda.math.Quaternion"/>
     <classEntry path="linda.video.pixel.TRFlatAlpha"/>
     <classEntry path="linda.math.Vector2D"/>
     <classEntry path="linda.math.Triangle3D"/>
@@ -98,7 +97,6 @@
     <classEntry path="linda.scene.SceneNode"/>
     <classEntry path="linda.video.pixel32.VideoSoftware"/>
     <classEntry path="linda.animator.ISceneNodeAnimator"/>
-    <classEntry path="linda.math.Matrix4"/>
     <classEntry path="linda.video.pixel32.TRTextureGouraud"/>
     <classEntry path="linda.video.pixel.TRFlat"/>
     <classEntry path="linda.video.VideoNull"/>
