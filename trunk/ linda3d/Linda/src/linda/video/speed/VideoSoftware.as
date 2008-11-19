@@ -92,7 +92,7 @@
 			triangleRenderers [TRType.TEXTURE_FLAT_ALPHA] = new TRTextureFlatAlpha ();
 			triangleRenderers [TRType.TEXTURE_GOURAUD_ALPHA] = new TRTextureGouraudAlpha ();
 			//预存一些点
-			_transformedPoints = new Vector.<Vertex4D> ();
+			_transformedPoints = new Vector.<Vertex4D> (1000,false);
 			for (var i : int = 0; i < 1000; i+=1)
 			{
 				_transformedPoints [i] = new Vertex4D ();
@@ -221,10 +221,12 @@
 		}
 		override public function setCameraPosition (ps : Vector3D) : void
 		{
-			if ( ! ps) return;
-			_old_cam_position.x = ps.x;
-			_old_cam_position.y = ps.y;
-			_old_cam_position.z = ps.z;
+			if (ps)
+			{
+				_old_cam_position.x = ps.x;
+				_old_cam_position.y = ps.y;
+				_old_cam_position.z = ps.z;
+			}	
 		}
 		public override function setTransformWorld (mat : Matrix4) : void
 		{

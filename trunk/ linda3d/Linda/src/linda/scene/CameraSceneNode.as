@@ -248,13 +248,13 @@
 		{	
 			if ( ! orthogonal)
 			{
-					projection.buildProjectionMatrixPerspectiveFov (fovy, aspect, near, far);
+					projection.projectionPerspective (fovy, aspect, near, far);
 			} else
 			{
 				if(sceneManager && sceneManager.getVideoDriver ())
 				{
 				    var size :Dimension2D = sceneManager.getVideoDriver ().getScreenSize();
-				    projection.buildProjectionMatrixOrtho (size.width, size.height, near, far);
+				    projection.projectionOrtho (size.width, size.height, near, far);
 				}
 			}
 		}
