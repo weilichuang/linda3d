@@ -14,12 +14,12 @@
 		{
 			if (min == null || max == null)
 			{
-				minX = 0.;
-				minY = 0.;
-				minZ = 0.;
-				maxX = 0.;
-				maxY = 0.;
-				maxZ = 0.;
+				minX = 0;
+				minY = 0;
+				minZ = 0;
+				maxX = 0;
+				maxY = 0;
+				maxZ = 0;
 			} 
 			else
 			{
@@ -189,15 +189,7 @@
 			point.z > minZ &&
 			point.z < maxZ);
 		}
-		/**
-		* @param begin 射线的起点
-		* @param end 射线方向上的一点
-		* @return 射线是否与包围盒相交，相交则返回true,否则false
-		*/
-		public function intersectsRay (begin : Vector3D, end : Vector3D) : Boolean
-		{
-			return false;
-		}
+
 		public function intersectsWithLine (linemiddle : Vector3D, linevect : Vector3D, halflength : Number) : Boolean
 		{
 			var e : Vector3D = getExtent ().scale (0.5);

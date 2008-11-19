@@ -94,7 +94,7 @@
 			m32 = - ((zaxisX * position.x) + (zaxisY * position.y) + (zaxisZ * position.z))
 			m33 = 1.0;
 		}
-		public function projectionPerspectiveFov (fov : Number, aspect : Number, zNear : Number, zFar : Number) : void
+		public function projectionPerspective (fov : Number, aspect : Number, zNear : Number, zFar : Number) : void
 		{
 			var halffov : Number = fov * 0.5 * 0.01745329;
 			var h : Number = Math.tan(halffov);

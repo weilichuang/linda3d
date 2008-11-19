@@ -9,12 +9,14 @@
 		public static const IS_PLANAR : int = 2;
 		public static const IS_SPANNING : int = 3;
 		public static const IS_CLIPPED : int = 4;
-		public function Plane3D (nor : Vector3D = null, d : Number = 0)
+		public function Plane3D (normal : Vector3D = null, d : Number = 0)
 		{
-			normal= new Vector3D ();
-			if (nor)
+			if (normal)
 			{
-				normal = nor;
+				this.normal = normal;
+			}else
+			{
+				this.normal= new Vector3D ();
 			}
 			this.d = d;
 		}
@@ -22,13 +24,9 @@
 		{
 			if (point == null || nor == null) return;
 			normal = nor;
+			
+			normal.normalize();
 
-			var n : Number = Math.sqrt (normal.x * normal.x + normal.y * normal.y + normal.z * normal.z);
-			if (n == 0) return;
-			n = 1 / n;
-			normal.x *= n;
-			normal.y *= n;
-			normal.z *= n;
 			d = - (normal.x * point.x + normal.y * point.y + normal.z * point.z);
 		}
 		public function setPlane (normal : Vector3D, d : Number) : void
@@ -36,10 +34,10 @@
 			this.normal = normal;
 			this.d = d;
 		}
-		private var sp0:Vector3D=new Vector3D();
-		private var sp1:Vector3D=new Vector3D();
 		public function setPlane3 (p1 : Vector3D, p2 : Vector3D, p3 : Vector3D) : void
 		{
+			var sp0:Vector3D=new Vector3D();
+		    var sp1:Vector3D=new Vector3D();
 			//var sp0 : Vector3D = new Vector3D ();
 			sp0.x = p2.x - p1.x;
 			sp0.y = p2.y - p1.y;
@@ -51,13 +49,7 @@
 			normal.x = sp0.y * sp1.z - sp0.z * sp1.y;
 			normal.y = sp0.z * sp1.x - sp0.x * sp1.z;
 			normal.z = sp0.x * sp1.y - sp0.y * sp1.x
-			//normal.normalize();
-			var n : Number = Math.sqrt (normal.x * normal.x + normal.y * normal.y + normal.z * normal.z);
-			if (n == 0) return;
-			n = 1 / n;
-			normal.x *= n;
-			normal.y *= n;
-			normal.z *= n;
+			normal.normalize();
 			//recalculateD(p1);
 			d = - (normal.x * p1.x + normal.y * p1.y + normal.z * p1.z);
 		}
@@ -78,8 +70,6 @@
 			d = - (normal.x * mPoint.x + normal.y * mPoint.y + normal.z * mPoint.z);
 		}
 
-		// Intersects this plane with another.
-		//fixme 怎么样计算的，不懂？
 		/**
 		* @other
 		* @outLinePoint  相交直线上的一个点
@@ -116,10 +106,10 @@
 		}
 		//计算3个平面的交点
 		// Returns the intersection point with two other planes if there is one.
-		private var _linePoint:Vector3D=new Vector3D();
-		private var _lineVect:Vector3D=new Vector3D();
 		public function getIntersectionWithPlanes (o1 : Plane3D, o2 : Plane3D, outPoint : Vector3D) : Boolean
 		{
+			var _linePoint:Vector3D=new Vector3D();
+		    var _lineVect:Vector3D=new Vector3D();
 			if (getIntersectionWithPlane (o1, _linePoint, _lineVect))
 			{
 				return o2.getIntersectionWithLine (_linePoint, _lineVect, outPoint);

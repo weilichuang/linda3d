@@ -197,7 +197,7 @@ package mini3d.scene
 		{	
 			if ( ! orthogonal)
 			{
-					projection.projectionPerspectiveFov (fovy, aspect, near, far);
+					projection.projectionPerspective (fovy, aspect, near, far);
 			} else
 			{
 				if(sceneManager && sceneManager.getRenderManager ())

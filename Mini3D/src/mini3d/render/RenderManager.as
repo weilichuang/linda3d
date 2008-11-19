@@ -35,7 +35,7 @@ package mini3d.render
 		
 		private var _camera:CameraSceneNode;
 
-		private var screenSize:Dimension2D;
+		private var _screenSize:Dimension2D;
 
 		private var _render:ITriangleRender;
 		
@@ -451,13 +451,13 @@ package mini3d.render
 		
 		public function getScreenSize():Dimension2D
 		{
-			return screenSize;
+			return _screenSize;
 		}
 		
 		public function setScreenSize(size:Dimension2D):void
 		{
-			screenSize=size;
-			_clip_scale.buildNDCToDCMatrix(screenSize,1);
+			_screenSize=size;
+			_clip_scale.buildNDCToDCMatrix(_screenSize,1);
 		}
 		
 		public function getPrimitiveCountDrawn():int
@@ -466,9 +466,12 @@ package mini3d.render
 		}
 		public function setCameraPosition (pos : Vector3D) : void
 		{
+			if(pos)
+			{
 			   _camera_Position.x=pos.x;
 			   _camera_Position.y=pos.y;
 			   _camera_Position.z=pos.z;
+			}
 		}
 	}
 }

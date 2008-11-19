@@ -22,11 +22,14 @@ package mini3d.render
 			var p0:Vertex4D ;
 			var p1:Vertex4D ;
 		    var p2:Vertex4D ; 
+		    var material:Material;
 		    
 		    //修改tri.matrix,并且计算z坐标
 			for(i=0;i<triangleCount;i+=1)
 			{
 				tri = triangles[i];
+				
+				material=tri.material;
 				
 				p0 = tri.p0;
 			    p1 = tri.p1;
@@ -34,7 +37,7 @@ package mini3d.render
 				
 				tri.z = (p0.z + p1.z + p2.z)*0.333;
 
-				if(tri.material.texture && tri.bitmapData)
+				if(material.texture && tri.bitmapData)
 				{
 					var w:Number = tri.bitmapData.width;
 					var h:Number = tri.bitmapData.height;
@@ -100,23 +103,25 @@ package mini3d.render
         	{
         		tri=triangles[i];
         		
+        		material=tri.material;
+        		
         		p0=tri.p0;
         		p1=tri.p1;
         		p2=tri.p2;
 
         		graphics=tri.target.graphics;
         		
-        		if(tri.material.fillWithLine)
+        		if(material.fillWithLine)
         		{
-        			graphics.lineStyle(1,tri.material.lineColor,tri.material.alpha);
+        			graphics.lineStyle(1,material.lineColor,material.alpha);
         		}
         		if(tri.bitmapData)
         		{
-        			graphics.beginBitmapFill(tri.bitmapData,tri.matrix,false,true);
+        			graphics.beginBitmapFill(tri.bitmapData,tri.matrix,false,false);
         		}
-        		else if(tri.material.fillWithColor)
+        		else if(material.fillWithColor)
         		{
-        			graphics.beginFill(tri.material.fillColor,tri.material.alpha)
+        			graphics.beginFill(material.fillColor,material.alpha)
         		}
         		
         		graphics.moveTo(p0.x,p0.y);
