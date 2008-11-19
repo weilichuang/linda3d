@@ -202,7 +202,7 @@
 							
 							side = 1;
 						}
-						for (yi = ystart; yi <= yend; yi ++)
+						for (yi = ystart; yi <= yend; yi +=1)
 						{
 							xstart = xl;
 							xend = xr;
@@ -228,7 +228,7 @@
 								db = (br - bl);
 								dz = (zr - zl);
 							}
-							for (xi = xstart; xi < xend; xi ++)
+							for (xi = xstart; xi < xend; xi +=1)
 							{
 								oldZ=buffer.getPixel (xi, yi);
 								if (zi < oldZ)
@@ -347,7 +347,7 @@
 						ur = u0; vr = v0;
 						rr = r0; gr = g0; br = b0;
 					}
-					for (yi = ystart; yi <= yend; yi ++)
+					for (yi = ystart; yi <= yend; yi +=1)
 					{
 							xstart = xl;
 							xend = xr;
@@ -373,7 +373,7 @@
 								dg = (gr - gl);
 								db = (br - bl);
 							}
-							for (xi = xstart; xi < xend; xi ++)
+							for (xi = xstart; xi < xend; xi +=1)
 							{
 								oldZ=buffer.getPixel (xi, yi);
 								if (zi < oldZ)

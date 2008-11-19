@@ -207,7 +207,7 @@
 					(x1 < minX) || (x1 > maxX) ||
 					(x2 < minX) || (x2 > maxX))
 					{
-						for (yi = ystart; yi <= yend; yi ++)
+						for (yi = ystart; yi <= yend; yi +=1)
 						{
 							xstart = xl;
 							xend = xr;
@@ -236,7 +236,7 @@
 								xstart = minX;
 							}
 							if (xend > maxX) xend = maxX;
-							for (xi = xstart; xi < xend; xi ++)
+							for (xi = xstart; xi < xend; xi +=1)
 							{
 								oldZ = buffer.getPixel (xi, yi);
 								if (zi < oldZ)
@@ -288,7 +288,7 @@
 						}
 					} else
 					{
-						for (yi = ystart; yi <= yend; yi ++)
+						for (yi = ystart; yi <= yend; yi +=1)
 						{
 							xstart = xl;
 							xend = xr;
@@ -309,7 +309,7 @@
 								db = (br - bl);
 								dz = (zr - zl);
 							}
-							for (xi = xstart; xi < xend; xi ++)
+							for (xi = xstart; xi < xend; xi +=1)
 							{
 								oldZ = buffer.getPixel (xi, yi);
 								if (zi < oldZ)
@@ -438,7 +438,7 @@
 					(x1 < minX) || (x1 > maxX) ||
 					(x2 < minX) || (x2 > maxX))
 					{
-						for (yi = ystart; yi <= yend; yi ++)
+						for (yi = ystart; yi <= yend; yi +=1)
 						{
 							xstart = xl;
 							xend = xr;
@@ -467,7 +467,7 @@
 								xstart = minX;
 							}
 							if (xend > maxX) xend = maxX;
-							for (xi = xstart; xi < xend; xi ++)
+							for (xi = xstart; xi < xend; xi +=1)
 							{
 								oldZ = buffer.getPixel (xi, yi);
 								if (zi < oldZ)
@@ -487,7 +487,7 @@
 						}
 					} else
 					{
-						for (yi = ystart; yi <= yend; yi ++)
+						for (yi = ystart; yi <= yend; yi +=1)
 						{
 							xstart = xl;
 							xend = xr;
@@ -508,7 +508,7 @@
 								dg = (gr - gl);
 								db = (br - bl);
 							}
-							for (xi = xstart; xi < xend; xi ++)
+							for (xi = xstart; xi < xend; xi +=1)
 							{
 								oldZ = buffer.getPixel (xi, yi);
 								if (zi < oldZ)

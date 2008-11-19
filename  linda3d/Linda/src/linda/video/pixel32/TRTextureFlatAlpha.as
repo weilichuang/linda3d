@@ -226,7 +226,7 @@
 					(x1 < minX) || (x1 > maxX) ||
 					(x2 < minX) || (x2 > maxX))
 					{
-						for (yi = ystart; yi <= yend; yi ++)
+						for (yi = ystart; yi <= yend; yi +=1)
 						{
 							xstart = xl;
 							xend = xr;
@@ -254,7 +254,7 @@
 								xstart = minX;
 							}
 							if (xend > maxX) xend = maxX;
-							for (xi = xstart; xi < xend; xi ++)
+							for (xi = xstart; xi < xend; xi +=1)
 							{
 								//background Color
 								bgColor = target.getPixel32 (xi, yi);
@@ -316,7 +316,7 @@
 						}
 					} else
 					{
-						for (yi = ystart; yi <= yend; yi ++)
+						for (yi = ystart; yi <= yend; yi +=1)
 						{
 							xstart = xl;
 							xend = xr;
@@ -336,7 +336,7 @@
 								dv = (vr - vl);
 								dz = (zr - zl);
 							}
-							for (xi = xstart; xi < xend; xi ++)
+							for (xi = xstart; xi < xend; xi +=1)
 							{
 								//background Color
 								bgColor = target.getPixel32 (xi, yi);
@@ -469,7 +469,7 @@
 					(x1 < minX) || (x1 > maxX) ||
 					(x2 < minX) || (x2 > maxX))
 					{
-						for (yi = ystart; yi <= yend; yi ++)
+						for (yi = ystart; yi <= yend; yi +=1)
 						{
 							xstart = xl;
 							xend = xr;
@@ -497,7 +497,7 @@
 								xstart = minX;
 							}
 							if (xend > maxX) xend = maxX;
-							for (xi = xstart; xi < xend; xi ++)
+							for (xi = xstart; xi < xend; xi +=1)
 							{
 								//background Color
 								bgColor = target.getPixel32 (xi, yi);
@@ -533,7 +533,7 @@
 						}
 					} else
 					{
-						for (yi = ystart; yi <= yend; yi ++)
+						for (yi = ystart; yi <= yend; yi +=1)
 						{
 							xstart = xl;
 							xend = xr;
@@ -553,7 +553,7 @@
 								dv = (vr - vl);
 								dz = (zr - zl);
 							}
-							for (xi = xstart; xi < xend; xi ++)
+							for (xi = xstart; xi < xend; xi +=1)
 							{
 								//background Color
 								bgColor = target.getPixel32 (xi, yi);

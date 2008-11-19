@@ -102,7 +102,7 @@
 			{
 				error = - (dy >> 1 );
 				dzdy = dz / (y0 - y1);
-				for (; y1 < y0 ; y1 ++)
+				for (; y1 < y0 ; y1 +=1)
 				{
 					oldZ=buffer.getPixel (x1, y1);
 					if (z1 < oldZ)
@@ -123,7 +123,7 @@
 			{
 				error = - (dx >> 1 );
 				dzdy = dz / (x1 - x0);
-				for (; x0 < x1 ; x0 ++)
+				for (; x0 < x1 ; x0 +=1)
 				{
 					oldZ=buffer.getPixel (x0, y0);
 					if (z1 < oldZ)
@@ -179,7 +179,7 @@
 			{
 				error = - (dy >> 1 );
 				dzdy = dz / (y0 - y1);
-				for (; y1 < y0 ; y1 ++)
+				for (; y1 < y0 ; y1 +=1)
 				{
 					oldZ=buffer.getPixel (x1, y1);
 					if (z1 < oldZ)
@@ -200,7 +200,7 @@
 			{
 				error = - (dx >> 1 );
 				dzdy = dz / (x1 - x0);
-				for (; x0 < x1 ; x0 ++)
+				for (; x0 < x1 ; x0 +=1)
 				{
 					oldZ=buffer.getPixel (x0, y0);
 					if (z1 < oldZ)

@@ -155,12 +155,12 @@
 					(x1 < minX) || (x1 > maxX) ||
 					(x2 < minX) || (x2 > maxX))
 					{
-						for (yi = ystart; yi <= yend; yi ++)
+						for (yi = ystart; yi <= yend; yi +=1)
 						{
 							xstart = xl; xend = xr;
 							zi = zl;
-							dx = (xend - xstart)
-							if (dx > 0)
+							dx = (xend - xstart);
+							if (dx != 0)
 							{
 								dz = (zr - zl) / dx;
 							} 
@@ -174,7 +174,7 @@
 								xstart = minX;
 							}
 							if (xend > maxX) xend = maxX;
-							for (xi = xstart; xi < xend; xi ++)
+							for (xi = xstart; xi < xend; xi +=1)
 							{
 								oldZ = buffer.getPixel (xi, yi);
 								if (zi < oldZ)
@@ -203,19 +203,19 @@
 						}
 					} else
 					{
-						for (yi = ystart; yi <= yend; yi ++)
+						for (yi = ystart; yi <= yend; yi +=1)
 						{
 							xstart = xl; xend = xr;
 							zi = zl;
 							dx = (xend - xstart)
-							if (dx > 0)
+							if (dx != 0)
 							{
 								dz = (zr - zl) / dx;
 							} else
 							{
 								dz = (zr - zl);
 							}
-							for (xi = xstart; xi < xend; xi ++)
+							for (xi = xstart; xi < xend; xi +=1)
 							{
 								oldZ = buffer.getPixel (xi, yi);
 								if (zi < oldZ)
@@ -287,13 +287,13 @@
 					    (x1 < minX) || (x1 > maxX) ||
 					    (x2 < minX) || (x2 > maxX))
 					{
-						for (yi = ystart; yi <= yend; yi ++)
+						for (yi = ystart; yi <= yend; yi +=1)
 						{
 							xstart = xl;
 							xend = xr;
 							zi = zl;
 							dx = (xend - xstart)
-							if (dx > 0)
+							if (dx != 0)
 							{
 								dz = (zr - zl) / dx;
 							} else
@@ -306,7 +306,7 @@
 								xstart = minX;
 							}
 							if (xend > maxX) xend = maxX;
-							for (xi = xstart; xi < xend; xi ++)
+							for (xi = xstart; xi < xend; xi +=1)
 							{
 								oldZ = buffer.getPixel (xi, yi);
 								if (zi < oldZ)
@@ -321,7 +321,7 @@
 						}
 					} else
 					{
-						for (yi = ystart; yi <= yend; yi ++)
+						for (yi = ystart; yi <= yend; yi +=1)
 						{
 							xstart = xl; xend = xr;
 							zi = zl;
@@ -333,7 +333,7 @@
 							{
 								dz = (zr - zl);
 							}
-							for (xi = xstart; xi < xend; xi ++)
+							for (xi = xstart; xi < xend; xi+=1)
 							{
 								oldZ = buffer.getPixel (xi, yi);
 								if (zi < oldZ)

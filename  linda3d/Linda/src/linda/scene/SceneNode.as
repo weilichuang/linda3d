@@ -93,7 +93,7 @@
 			
 			var i:int;
 			var len:int=_children.length;
-			for(i=0;i<len;i++)
+			for(i=0;i<len;i+=1)
 			{
 				var node:SceneNode=_children[i];
 				node.destroy();
