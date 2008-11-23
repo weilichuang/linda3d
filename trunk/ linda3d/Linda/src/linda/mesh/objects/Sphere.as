@@ -43,12 +43,12 @@
 					indices [n ++] = level + j;
 					indices [n ++] = level + j + 1;
 				}
-				indices [n ++] = level + polyCount - 1 + polyCount;
-				indices [n ++] = level + polyCount - 1;
-				indices [n ++] = level;
-				indices [n ++] = level + polyCount - 1 + polyCount;
-				indices [n ++] = level;
-				indices [n ++] = level + polyCount;
+				indices [n++] = level + polyCount - 1 + polyCount;
+				indices [n++] = level + polyCount - 1;
+				indices [n++] = level;
+				indices [n++] = level + polyCount - 1 + polyCount;
+				indices [n++] = level;
+				indices [n++] = level + polyCount;
 				for (j = 1; j <= polyCount - 1; j ++)
 				{
 					indices [n ++] = level + j - 1 + polyCount;

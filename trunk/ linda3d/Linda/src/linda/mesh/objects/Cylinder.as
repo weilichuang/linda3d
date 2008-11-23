@@ -31,17 +31,15 @@
 			var segH : int = Math.max (2, segmentsH);
 			var aVertice : Vector.<Vertex> = new Vector.<Vertex> ()
 			var tmpVertices : Vector.<Vector.<Vertex>> = new Vector.<Vector.<Vertex>> ();
-			for (j = 0; j < (segH + 1); j ++)
+			for (j = 0; j < (segH + 1); j+=1)
 			{
 				// vertical
 				var fRad1 : Number = Number (j / segH);
 				var fZ : Number = height * (j / (segH + 0)) - height / 2;
-				//-fRadius*Math.cos(fRad1*Math.PI);
 				var fRds : Number = topRadius + (radius - topRadius) * (1 - j / (segH));
-				//*Math.sin(fRad1*Math.PI);
 				var aRow : Vector.<Vertex> = new Vector.<Vertex> ();
 				var oVtx : Vertex;
-				for (i = 0; i < segW; i ++)
+				for (i = 0; i < segW; i+=1)
 				{
 					// horizontal
 					var fRad2 : Number = Number (2 * i / segW);

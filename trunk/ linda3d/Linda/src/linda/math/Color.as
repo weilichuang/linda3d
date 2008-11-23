@@ -2,50 +2,39 @@
 {
 	public class Color
 	{
-		public var a : int ;
 		public var r : int ;
 		public var g : int ;
 		public var b : int ;
-		public function Color (r : int = 0, g : int = 0, b : int = 0, a : int = 0xFF)
+		public function Color (r : int = 0, g : int = 0, b : int = 0)
 		{
 			this.r = r;
 			this.g = g;
 			this.b = b;
-			this.a = a;
-		}
-		public function setRGBA (r : int, g : int, b : int, a : int = 0xFF) : void
-		{
-			this.r = r;
-			this.g = g;
-			this.b = b;
-			this.a = a;
 		}
 		public function get color () : uint
 		{
-			return uint (a << 24 | r << 16 | g << 8 | b);
+			return uint (r << 16 | g << 8 | b);
 		}
 		public function set color (color : uint) : void
 		{
-			a = color >> 24 & 0xFF ;
 			r = color >> 16 & 0xFF ;
 			g = color >> 8 & 0xFF ;
 			b = color & 0xFF ;
 		}
 		public function toString () : String
 		{
-			return "Color = " + color + " ,r= " + r + " ,g= " + g + " ,b= " + b + " ,a= " + a;
+			return "Color = " + color + " ,r= " + r + " ,g= " + g + " ,b= " + b ;
 		}
 		public function setRGB (r : int, g : int, b : int) : void
 		{
 			color = (r << 16 | g << 8 | b);
-			a = 0xFF;
 			this.r = r;
 			this.g = g;
 			this.b = b;
 		}
 		public function clone () : Color
 		{
-			return new Color (r, g, b, a);
+			return new Color (r, g, b);
 		}
 		public function getLuminance():Number
 		{
@@ -57,7 +46,6 @@
 		}
 		public function copy (other : Color) : void
 		{
-			a = other.a;
 			r = other.r;
 			g = other.g;
 			b = other.b;
@@ -69,7 +57,6 @@
 			
 			var inv:Number= 1-d;
 			var c:Color=new Color();
-			c.a=a*d+inv*other.a;
 			c.r=r*d+inv*other.r;
 			c.g=g*d+inv*other.g;
 			c.b=b*d+inv*other.b;

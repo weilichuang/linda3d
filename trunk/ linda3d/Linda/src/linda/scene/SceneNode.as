@@ -5,7 +5,7 @@
 	import flash.events.EventDispatcher;
 	import flash.geom.Vector3D;
 	
-	import linda.animator.ISceneNodeAnimator;
+	import linda.animator.IAnimator;
 	import linda.material.Material;
 	import linda.material.Texture;
 	import linda.math.*;
@@ -21,7 +21,7 @@
 		
 		protected var _parent : SceneNode;
 		protected var _children : Vector.<SceneNode> ;
-		protected var _animators : Vector.<ISceneNodeAnimator> ;
+		protected var _animators : Vector.<IAnimator> ;
 		
 		protected var sceneManager : SceneManager;
 
@@ -31,8 +31,6 @@
 		protected var _relativeTranslation : Vector3D;
 		protected var _relativeRotation : Vector3D;
 		protected var _relativeScale : Vector3D;
-
-		
 
 		private static var _totalId:int=-1;
 
@@ -64,7 +62,7 @@
 			_relativeMatrix=new Matrix4();
 			
 			_children=new Vector.<SceneNode>();
-			_animators=new Vector.<ISceneNodeAnimator>();
+			_animators=new Vector.<IAnimator>();
 			
 			updateAbsoluteMatrix ();
 			
@@ -190,14 +188,14 @@
 	          return _parent;
 		}
 
-		public function addAnimator (animator : ISceneNodeAnimator) : void
+		public function addAnimator (animator : IAnimator) : void
 		{
 			if(animator)
 			{
 				_animators.push(animator);
 			}
 		}
-		public function removeAnimator (animator : ISceneNodeAnimator) : Boolean
+		public function removeAnimator (animator : IAnimator) : Boolean
 		{
 			var idx:int = _animators.indexOf(animator);
 			if(idx == -1) return false;
@@ -209,7 +207,7 @@
 		
 		public function removeAnimators () : void
 		{
-			_animators=new Vector.<ISceneNodeAnimator>();
+			_animators=new Vector.<IAnimator>();
 		}
 		public function getMaterial (i : int = 0) : Material
 		{
@@ -349,7 +347,7 @@
 			if (visible)
 			{
 				var len:int=_animators.length;
-				var animator:ISceneNodeAnimator;
+				var animator:IAnimator;
 				for (var i : int = 0; i < len; i+=1)
 				{
 					animator=_animators [i];
@@ -360,7 +358,7 @@
 				
 				len=_children.length;
 				var child:SceneNode;
-				for (i = 0; i < len; i ++)
+				for (i = 0; i < len; i+=1)
 				{
 					child=_children[i];
 					child.onAnimate (timeMs);
@@ -376,12 +374,12 @@
 			var ry : Number = _relativeRotation.y * 0.017453292519943;
 			var rz : Number = _relativeRotation.z * 0.017453292519943;
 
-			var cr : Number = Math.cos (rx );
-			var sr : Number = Math.sin (rx );
-			var cp : Number = Math.cos (ry );
-			var sp : Number = Math.sin (ry );
-			var cy : Number = Math.cos (rz );
-			var sy : Number = Math.sin (rz );
+			var cr : Number = Math.cos (rx);
+			var sr : Number = Math.sin (rx);
+			var cp : Number = Math.cos (ry);
+			var sp : Number = Math.sin (ry);
+			var cy : Number = Math.cos (rz);
+			var sy : Number = Math.sin (rz);
             var srsp : Number = sr * sp;
 			var crsp : Number = cr * sp;
 			
@@ -601,7 +599,7 @@
 	           return _children;
 		}
 		
-		public function get animators():Vector.<ISceneNodeAnimator>
+		public function get animators():Vector.<IAnimator>
 		{
 	           return _animators;
 		}

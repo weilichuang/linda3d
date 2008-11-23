@@ -58,10 +58,6 @@
 		{
 			return null;
 		}
-		public function getTriangleCount () : int
-		{
-			return interpolateBuffer.getTriangleCount ();
-		}
 		public function getMaterial () : Material
 		{
 			return interpolateBuffer.getMaterial ();

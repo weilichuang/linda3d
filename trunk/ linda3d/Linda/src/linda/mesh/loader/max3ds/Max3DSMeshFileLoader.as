@@ -260,8 +260,6 @@
 						//KEYF3DS END:
 						default :
 						{
-							//trace(header.toString(16));
-							//trace(_byteArray.readUTFBytes(length-6));
 							data.position += length - 6;
 						}
 					}
@@ -277,7 +275,7 @@
 				return mesh;
 			}catch (e : Error)
 			{
-				throw new Error ("Could not parse this 3ds file!", e.message);
+				throw new Error ("Could not parse the 3ds file!", e.message);
 			}
 			return null;
 		}

@@ -72,7 +72,7 @@ package linda.video.pixel
 			_clip_scale = new Matrix4 ();
 			_clip_scale.buildNDCToDCMatrix(screenSize,1);
 			//render
-			triangleRenderers = new Vector.<ITriangleRenderer> (TRType.COUNT);
+			triangleRenderers = new Vector.<ITriangleRenderer> (TRType.COUNT,true);
 			triangleRenderers [TRType.WIRE] = new TRWire ();
 			triangleRenderers [TRType.FLAT] = new TRFlat ();
 			triangleRenderers [TRType.GOURAUD] = new TRGouraud ();
@@ -84,7 +84,7 @@ package linda.video.pixel
 			triangleRenderers [TRType.TEXTURE_GOURAUD_ALPHA] = new TRTextureGouraudAlpha ();
 			//预存一些点
 			_transformedPoints = new Vector.<Vertex4D>();
-			for (var i : int = 0; i < 2000; i+=1)
+			for (var i : int = 0; i < 1000; i+=1)
 			{
 				_transformedPoints [i] = new Vertex4D ();
 			}
@@ -94,12 +94,13 @@ package linda.video.pixel
 			_projection = new Matrix4 ();
 			_view_project = new Matrix4 ();
 			_world_inv = new Matrix4 ();
-			_lightsDir = new Vector.<Vector3D> ();
-			_lightsPos = new Vector.<Vector3D> ();
-			for (i = 0; i < getMaximalDynamicLightAmount (); i+=1)
+			var count:int=getMaxLightAmount ();
+			_lightsDir = new Vector.<Vector3D> (count,true);
+			_lightsPos = new Vector.<Vector3D> (count,true);
+			for (i = 0; i < count; i+=1)
 			{
-				_lightsDir.push (new Vector3D ());
-				_lightsPos.push (new Vector3D ());
+				_lightsDir[i]=new Vector3D();
+				_lightsPos[i]=new Vector3D();
 			}
 			_invCamPos = new Vector3D ();
 			_camPos = new Vector3D ();
@@ -211,12 +212,14 @@ package linda.video.pixel
 		{
 			_projection = mat;
 		}
-		override public function setCameraPosition (ps : Vector3D) : void
+		override public function setCameraPosition (pos : Vector3D) : void
 		{
-			if (!ps) return;
-			_camPos.x=ps.x;
-			_camPos.y=ps.y;
-			_camPos.z=ps.z;
+			if(pos)
+			{
+				_camPos.x=pos.x;
+				_camPos.y=pos.y;
+				_camPos.z=pos.z;
+			}
 		}
 		public override function setTransformWorld (mat : Matrix4) : void
 		{
@@ -339,8 +342,14 @@ package linda.video.pixel
 			if (size.width >= 1 && size.height >= 1)
 			{
 				screenSize = size;
-				targetBitmap.bitmapData = new BitmapData (screenSize.width, screenSize.height, false, 0);
-				buffer=new BitmapData (screenSize.width, screenSize.height, false, 0xffffff);
+				if(targetBitmap.bitmapData)
+				{
+					targetBitmap.bitmapData.fillRect(screenSize.toRect(),0x0);
+				}else
+				{
+					targetBitmap.bitmapData = new BitmapData (screenSize.width, screenSize.height, true, 0);
+				}
+				buffer.fillRect(screenSize.toRect(),0xffffff);
 				_clip_scale.buildNDCToDCMatrix(screenSize,1);
 			}
 		}
@@ -399,7 +408,7 @@ package linda.video.pixel
 			    var dir : Vector3D;
 			    var pos : Vector3D;
 			    // transfrom lights into object's world space
-			    len = _lights.length;
+			    len = getLightCount();
 			    for (i = 0; i < len; i+=1)
 			    {
 				    dir = _lightsDir [i];
@@ -1309,10 +1318,6 @@ package linda.video.pixel
 		override public function drawStencilShadowVolume (vertices : Vector.<Vertex>, vertexCount : int, useZFailMethod : Boolean) : void
 		{
 		}
-		override public function getName () : String
-		{
-			return VideoType.PIXEL;
-		}
 		override public function getDriverType () : String
 		{
 			return VideoType.PIXEL;
@@ -1332,7 +1337,7 @@ package linda.video.pixel
 				render.setPerspectiveCorrectDistance (distance);
 			}
 		}
-		override public function setMipMapDistance (distance : Number = 800) : void
+		override public function setMipMapDistance (distance : Number = 500) : void
 		{
 			if (distance < 1) distance = 1;
 			mipMapDistance = distance;

@@ -30,7 +30,6 @@
 		function setRenderTarget (target : Sprite) : void;
 		function getRenderTarget () : Sprite;
 		function drawIndexedTriangleList (vertices : Vector.<Vertex>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void;
-		//function drawIndexedTexturedTriangleList(vertices : Array, vertexCount : int, indexList : Array, indexCount : int,uvList:Array,uvCount:int):void;
 		function drawMeshBuffer(mb:IMeshBuffer):void;
 		/**
 		*用来渲染由线段组成的物体,此类物体不需要进行光照，贴图，和贴图坐标计算等
@@ -38,7 +37,6 @@
 		* @vertexCount int vertices的长度
 		* @indexList 点与点之间的顺序
 		* @indexCount int indexList.length
-		* @closeure Boolean 曲线是否闭合
 		*/
 		function drawIndexedLineList (vertices : Vector.<Vertex>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void;
 		function drawStencilShadowVolume (vertices : Vector.<Vertex>, vertexCount : int, useZFailMethod : Boolean) : void;
@@ -51,17 +49,19 @@
 		function setFog(color:Color,start:Number=50,end:Number=100):void;
 
 		//动态灯光相关
-		function deleteAllDynamicLights () : void;
-		function addDynamicLight (light : Light) : void;
-		function setAmbientColor (color : uint) : void;
-		function getDynamicLight (i : int) : Light;
-		function getDynamicLightCount () : int;
-		function getName () : String;
-		function getDriverType () : String;
+		function removeAllLights () : void;
+		function addLight (light : Light) : void;
+		
+		function getLight (i : int) : Light;
+		function getLightCount () : int;
+		
+		function setAmbient (color : uint) : void;
 
-		function setCameraPosition(ps:Vector3D):void;
+		function getDriverType () : String;
 		function createScreenShot():BitmapData;
 
+		function setCameraPosition(ps:Vector3D):void;
+		
 		//draw debug box
 		function draw3DBox(box:AABBox3D,color:uint):void;
 		function draw3DLine(vs:Vector3D,ve:Vector3D,color:uint):void;

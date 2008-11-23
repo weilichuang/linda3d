@@ -62,10 +62,6 @@
 		{
 			return indices.length;
 		}
-		public function getTriangleCount () : int
-		{
-			return int (indices.length / 3);
-		}
 		public function setBoundingBox (box : AABBox3D) : void
 		{
 			boundingBox = box;
@@ -90,7 +86,6 @@
 			     }
 			}
 		}
-		// append the vertices and indices to the current buffer
 		public function append (verts : Vector.<Vertex>, numVertices : int, inds : Vector.<int>, numIndices : int) : void
 		{
 			var vertexCount : int = getVertexCount ();
@@ -113,7 +108,6 @@
             //concat vertices;
 			vertices.concat(other.getVertices());
 			
-			//concat indices ,should add getVertexCount ();
 			var i:int;
 			var vertexCount : int = getVertexCount ();
 			var otherindexC:int=other.getIndexCount();

@@ -39,7 +39,7 @@
 			vertices [10]= new Vertex (1, 0, 1,  1, -1,  1, color, 1, 0);
 			vertices [11]= new Vertex (1, 0, 0,  1, -1, -1, color, 0, 0);
 			var box : AABBox3D = new AABBox3D ();
-			for (var i : int = 0; i < 12; i ++)
+			for (var i : int = 0; i < 12; i+=1)
 			{
 				var vertex : Vertex = vertices [i];
 				vertex.x -= 0.5;
@@ -48,7 +48,7 @@
 				vertex.x *= width;
 				vertex.y *= height;
 				vertex.z *= len;
-				box.addXYZ (vertex.x, vertex.y, vertex.z);
+				box.addVertex(vertex);
 			}
 			meshBuffer.indices = indices;
 			meshBuffer.vertices = vertices;

@@ -11,7 +11,6 @@
 		function getBoundingBox () : AABBox3D;
 		function setBoundingBox (box : AABBox3D) : void;
 		function setMaterialFlag (flag : int, value : Boolean) : void;
-		function getTriangleCount () : int;
 		function appendMesh(m:IMesh):void;
 		function recalculateBoundingBox():void;
 	}

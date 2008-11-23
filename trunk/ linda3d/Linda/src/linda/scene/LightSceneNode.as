@@ -74,7 +74,7 @@
 			var driver : IVideoDriver = sceneManager.getVideoDriver ();
 			if ( ! driver) return;
 			
-			driver.addDynamicLight (lightData);
+			driver.addLight (lightData);
 			
 			if(debug)
 			{

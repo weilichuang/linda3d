@@ -6,14 +6,14 @@ package linda.animator
 	import linda.material.Texture;
 	import linda.scene.SceneNode;
 
-	public class SceneNodeAnimatorTexture implements ISceneNodeAnimator
+	public class AnimatorTexture implements IAnimator
 	{
 		private var textures:Vector.<Texture>;
 		private var timePerFrame:int;
 		private var startTime:int;
 		private var endTime:int;
 		private var loop:Boolean;
-		public function SceneNodeAnimatorTexture(textures:Vector.<Texture>,timePerFrame:int,loop:Boolean,startTime:int)
+		public function AnimatorTexture(textures:Vector.<Texture>,timePerFrame:int,loop:Boolean,startTime:int)
 		{
 			this.timePerFrame=timePerFrame;
 			this.loop=loop;

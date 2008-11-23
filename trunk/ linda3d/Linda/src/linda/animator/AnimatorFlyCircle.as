@@ -4,13 +4,13 @@ package linda.animator
 	
 	import linda.scene.SceneNode;
 
-	public class SceneNodeAnimatorFlyCircle implements ISceneNodeAnimator
+	public class AnimatorFlyCircle implements IAnimator
 	{
 		public var center:Vector3D;
 		public var radius:Number;
 		public var speed:Number;
 		public var time:int;
-		public function SceneNodeAnimatorFlyCircle(time:int,center:Vector3D,radius:Number,speed:Number)
+		public function AnimatorFlyCircle(time:int,center:Vector3D,radius:Number,speed:Number)
 		{
 			this.time=time;
 			this.center=center;

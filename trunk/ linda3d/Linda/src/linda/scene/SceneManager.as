@@ -20,7 +20,7 @@
 		private var _transparentList : Array = [];
 		private var _shadowList : Array = [];
 		
-		private var _ambientColor:uint=0x0;
+		private var _ambient:uint=0x0;
 		public function SceneManager (driver : IVideoDriver = null)
 		{
 			super (null);
@@ -101,7 +101,7 @@
 			_cameraList = [];
 
 			//render lights
-			_driver.deleteAllDynamicLights ();
+			_driver.removeAllLights();
 			
 			var len : int = _lightList.length;
 			for (var i : int = 0; i < len; i+=1)
@@ -235,14 +235,14 @@
 	    	super.removeAll();
 	    	_activeCamera=null;
 	    }
-	    public function setAmbientColor(color:uint):void
+	    public function setAmbient(color:uint):void
 	    {
-	    	_ambientColor=color;
-	    	if(_driver) _driver.setAmbientColor(_ambientColor);
+	    	_ambient=color;
+	    	if(_driver) _driver.setAmbient(_ambient);
 	    }
 	    public function getAmbientColor():uint
 	    {
-	    	return _ambientColor;
+	    	return _ambient;
 	    }
 	}
 }

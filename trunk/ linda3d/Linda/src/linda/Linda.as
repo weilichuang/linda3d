@@ -8,7 +8,7 @@ package linda
 		
 		public function toString():String
 		{
-			return "Linda is my dream.";
+			return "Linda is my luve.";
 		}
 
 	}
