@@ -2,153 +2,92 @@
 {
 	import __AS3__.vec.Vector;
 	
-	import flash.display.BitmapData;
-	
+	import flash.display.*;
 	import flash.geom.Matrix;
-	
-	import linda.math.Dimension2D;
 	public class Texture implements ITexture
 	{	
-		private var _name : String;
+		public var name : String;
 
-		private var source:BitmapData;
+		private var source:BitmapData=new BitmapData(1,1,true,0xffffffff);;
 		private var mipMap : Vector.<BitmapData>;
-		private static var _id:int=0;
-		
+		private var mipMapCount:int;
 		public function Texture (image : BitmapData=null)
 		{
 			mipMap= new Vector.<BitmapData> ();
-			name='texture'+(_id++);
-			source =new BitmapData(128,128,true,0xffffffff);
-	
+			mipMapCount=0;
+			name="";
 			setImage(image);
 		}
-		private function getOptimalSize (size : int) : int
+		/**
+		 * 对source执行缩放
+		 */
+		private function scale (value:Number):BitmapData
 		{
-			var ts : int = 0x01;
-			while (ts < size)
-			{
-				ts <<= 1;
-			}
-			return ts;
+			var data:BitmapData=new BitmapData(source.width*value,source.height*value,source.transparent,0x0);
+			var matrix:Matrix=new Matrix();
+			matrix.a=value;
+			matrix.d=value;
+			data.draw(source,matrix);
+            return data;
 		}
-		private function copyToSize (sou : BitmapData, newWidth : int, newHeight : int) : BitmapData
-		{
-			var out : BitmapData;
-
-			out = new BitmapData (newWidth, newHeight, false, 0x000000);
-			// scale image
-			var matrix : Matrix = new Matrix (newWidth / sou.width, 0, 0, newHeight / sou.height, 0, 0)
-			out.draw (sou, matrix, null, null, null, true);
-			return out;
-		}
-		public function scale (newWidth : int, newHeight : int) : void
-		{
-			if (source == null) return;
-
-			var w : int = getOptimalSize (newWidth);
-			var h : int = getOptimalSize (newHeight);
-			
-			if (w < 1 || h < 1) return;
-
-			var new_img : BitmapData = copyToSize (source, w, h);
-			setImage (new_img);
-		}
-		public function get width () : int
-		{
-			return source.width;
-		}
-		public function get height () : int
-		{
-			return source.height;
-		}
-		public function getSize():Dimension2D
-		{
-			return new Dimension2D(source.width,source.height);
-		}
-		
 		public function setImage (image : BitmapData) : void
 		{
-			if (image == null)
-			{				
-				return;
-			} 
-
-			clearMipMapLevels ();
-
-			var orig_width : int = image.width;
-			var orig_height : int = image.height;
-			var opt_width : int = getOptimalSize (orig_width);
-			var opt_height : int = getOptimalSize (orig_height);
-			
-			if(source) source.dispose();
-			
-			if ((orig_width == opt_width) && (orig_height == opt_height))
+			if (image == null) return;
+			if(source)
 			{
-				source = image;
+				clearMipMaps ();
+				source.dispose();
 			} 
-			else
-			{
-				source = copyToSize (image, opt_width, opt_height);
-			}
+			source=image;
 		}
-		
-		public function getBitmapData (mipLevel : int=-1) : BitmapData
+		public function getBitmapData (level : int=-1) : BitmapData
 		{
-			if (mipLevel <= 0 || mipMap.length == 0)
+			if (level <= 0 || mipMapCount == 0)
 			{
 				return source;
 			}
-			if (mipLevel >= mipMap.length)
+			if (level >= mipMapCount)
 			{
-				return mipMap [mipMap.length-1];
+				return mipMap [mipMapCount-1];
 			}
-			return mipMap [mipLevel-1];
+			return mipMap [level-1];
 		}
 		public function getMipMapCount () : int
 		{
-			return mipMap.length;
+			return mipMapCount;
 		}
 		/**
 		 * mipMapLevel 最小等级图片的大小
 		 */
-		public function regenerateMipMapLevels (mipMapLevel:int=16) : void
+		public function regenerateMipMaps (level:int=16) : void
 		{
-			clearMipMapLevels ();
-			var width : int = source.width;
-			var count:int=0;
-			for (var i : int = (width >> 1); i >= mipMapLevel; (i >>= 1))
+			clearMipMaps ();
+			var min:int=int(Math.min(source.width,source.height));
+			for (var i : int = (min >> 1); i >= level; (i >>= 1))
 			{
-				mipMap [count] = copyToSize (source, i, i);
-				count++;
+				mipMap [mipMapCount] = scale(1/Math.pow(2,(mipMapCount+1)));
+				mipMapCount++;
 			}
 		}
 		public function hasMipMaps():Boolean
 		{
-			return mipMap.length >= 1;
+			return mipMapCount >= 1;
 		}
-		public function clearMipMapLevels () : void
-		{
-			var mip_count:int=mipMap.length;
-			for (var i : int = 0; i < mip_count; i ++)
+		public function clearMipMaps () : void
+		{	
+			for (var i : int = 0; i < mipMapCount; i+=1)
 			{
-				var tx1 : BitmapData = mipMap [i];
-				tx1.dispose ();
+				var tx : BitmapData = mipMap[i];
+				tx.dispose ();
+				tx=null;
 			}
 			mipMap=new Vector.<BitmapData>();
+			mipMapCount=0;
 		}
 		
 		public function toString():String
 		{
-			return _name;
-		}
-		public function set name(n:String):void
-		{
-			_name=n;
-		}
-		public function get name():String
-		{
-			return _name;
+			return name;
 		}
 	}
 }

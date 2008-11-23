@@ -12,7 +12,6 @@
 		public var ny : Number;
 		public var nz : Number;
 		//color
-		public var a : int=255;
 		public var r : int;
 		public var g : int;
 		public var b : int;
@@ -43,7 +42,6 @@
 		}
 		public function get normal () : Vector3D
 		{
-
 			return new Vector3D(nx,ny,nz);
 		}
 		public function set normal (v : Vector3D) : void
@@ -68,7 +66,6 @@
 		}
 		public function set color (c : uint) : void
 		{
-			//a = (c >> 24) & 0xFF;
 			r = (c >> 16) & 0xFF;
 			g = (c >> 8) & 0xFF;
 			b = (c) & 0xFF;
@@ -90,8 +87,7 @@
 		public function normalize () : void
 		{
 			var n : Number = Math.sqrt (nx * nx + ny * ny + nz * nz);
-			if (n == 0) return;
-			n = 1 / n;
+			n = (n < 0.0001) ? 0 : 1/n;
 			nx *= n;
 			ny *= n;
 			nz *= n;
