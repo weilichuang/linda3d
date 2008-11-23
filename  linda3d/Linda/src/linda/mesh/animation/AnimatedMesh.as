@@ -39,7 +39,7 @@
 				var mesh:IMesh=meshes [0];
 				var len:int=meshes.length;
 				boundingBox.resetAABBox(mesh.getBoundingBox());
-				for (var i : int = 1; i < len; i ++)
+				for (var i : int = 1; i < len; i+=1)
 				{
 					mesh=meshes[i];
 					boundingBox.addAABBox(mesh.getBoundingBox ());
@@ -72,18 +72,6 @@
 		public function getMeshBufferCount () : int
 		{
 			return 0;
-		}
-		public function getTriangleCount () : int
-		{
-			var count : int = 0;
-			var len:int=meshes.length;
-			var mesh : IMesh;
-			for (var i : int = 0; i < len; i ++)
-			{
-				mesh = meshes [i];
-				count += mesh.getTriangleCount ();
-			}
-			return count;
 		}
 		public function toString():String
 		{

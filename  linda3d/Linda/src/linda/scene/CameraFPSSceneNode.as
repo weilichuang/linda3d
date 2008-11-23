@@ -7,7 +7,7 @@ package linda.scene
 	import linda.math.Vector2D;
 	import linda.utils.InputControl;
 	import linda.utils.InputMap;
-	public final class CameraFPSSceneNode extends CameraSceneNode 
+	public class CameraFPSSceneNode extends CameraSceneNode 
 	{
 		private var _key_map:InputMap;
 		private var _input_control:InputControl;	

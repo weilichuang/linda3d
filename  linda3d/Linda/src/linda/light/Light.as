@@ -3,7 +3,7 @@
 	import flash.geom.Vector3D;
 	
 	import linda.math.Color;
-	public final class Light
+	public class Light
 	{
 		public static const DIRECTIONAL : int = 0;
 		public static const POINT : int = 1;
@@ -45,23 +45,18 @@
 		}
 		public function copy(l:Light):void
 		{
-			
-			//diffuseColor.a=l.diffuseColor.a;
 			diffuseColor.r=l.diffuseColor.r;
 			diffuseColor.g=l.diffuseColor.g;
 			diffuseColor.b=l.diffuseColor.b;
-			
-			//ambientColor.a=l.ambientColor.a;
+
 			ambientColor.r=l.ambientColor.r;
 			ambientColor.g=l.ambientColor.g;
 			ambientColor.b=l.ambientColor.b;
-			
-			//specularColor.a=l.specularColor.a;
+
 			specularColor.r=l.specularColor.r;
 			specularColor.g=l.specularColor.g;
 			specularColor.b=l.specularColor.b;
-			
-			
+
 			position.x=l.position.x;
 			position.y=l.position.y;
 			position.z=l.position.z;

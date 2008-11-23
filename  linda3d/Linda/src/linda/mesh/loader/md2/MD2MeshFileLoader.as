@@ -170,7 +170,6 @@
 						nml.z = v.z;
 						nml.normalize();
 					}
-					
 					if(j == 0)
 					{
 						box.resetVector(v);
@@ -178,9 +177,8 @@
 					{
 						box.addVector(v);
 					}
-					
 					frame_normals.push(nml);
-				}// end loop all vertices
+				}
 				
 				// store frame data
 				var frame_data:MD2Frame = new MD2Frame();
@@ -193,14 +191,11 @@
 				var sl:int = name.length;
 				if (sl > 0)
 				{
-					// get name of frame - minus frame number 
 					var replace_pattern:RegExp = /([0-9])/g; 
 					frame_data.name = name.replace(replace_pattern,"");
 
-					// check if this frame is the same as last frame's name
 					if (mesh.frameData.length == 0)
 					{
-						// no frames so far - add frame
 						mesh.frameData.push(frame_data);
 					}
 					else
@@ -208,12 +203,10 @@
 						var frame_data_last:MD2Frame = mesh.frameData[mesh.frameData.length-1];
 						if(frame_data_last.name == frame_data.name)
 						{
-							// frames are in the same group - just another keyframe
 							frame_data_last.end++;
 						}
 						else
 						{
-							// new frame group
 							mesh.frameData.push(frame_data);
 						}
 					}
@@ -306,11 +299,12 @@
 			vertices = null;
 			triangles= null;	
             uvList=null;
+            header=null;
 
 			return mesh;
 		}
 	// normal array
-		public static const VERTEX_NORMAL_TABLE_SIZE:int = 162
+		public static const VERTEX_NORMAL_TABLE_SIZE:int = 162;
 		public static const VERTEX_NORMAL_TABLE:Array = [
 			-0.525731, 0.000000, 0.850651, 
 			-0.442863, 0.238856, 0.864188, 

@@ -1,10 +1,10 @@
 ﻿package linda.scene
 {
-	import linda.animator.ISceneNodeAnimator;
+	import linda.animator.IAnimator;
 	import linda.math.AABBox3D;
 	
 	import flash.geom.Vector3D;
-	//Todo maybe need to add debug mode
+
 	public class BoneSceneNode extends SceneNode
 	{
 		public var positionHint : int;
@@ -39,7 +39,7 @@
 			{
 				for (var i : int = 0; i < animators.length; i ++)
 				{
-					var animator : ISceneNodeAnimator = animators [i];
+					var animator : IAnimator = animators [i];
 					animator.animateNode (this, timeMs);
 				}
 				//updateAbsoluteTransformation ();

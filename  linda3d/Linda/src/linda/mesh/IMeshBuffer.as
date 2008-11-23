@@ -16,7 +16,6 @@
 		function setBoundingBox (box : AABBox3D) : void;
 		function getBoundingBox () : AABBox3D;
 		function recalculateBoundingBox () : void;
-		function getTriangleCount () : int;
 		function setVertexColor (color : uint) : void
 		function getVertex(i:int):Vertex;
 	}

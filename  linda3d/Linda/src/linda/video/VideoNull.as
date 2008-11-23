@@ -22,6 +22,9 @@
 		
 		protected var renderTarget : Sprite;
 		protected var _lights : Vector.<Light>;
+		private var _lightCount:int;
+		
+		
 		private var _debugColor : uint = 0x00ff00;
 		
 		protected var perspectiveDistance:Number=400;
@@ -34,13 +37,15 @@
 		{
 			primitivesDrawn = 0;
 			renderTarget = new Sprite ();
-			screenSize = new Dimension2D(400, 400);
-			_lights = new Vector.<Light> ();
+			screenSize = new Dimension2D(300, 300);
+			_lights = new Vector.<Light>(8,true);
+			_lightCount=0;
 			
-			_tmp_lines= new Vector.<Vertex>();
-			_tmp_lines.push(new Vertex () , new Vertex () , new Vertex ());
-			_tmp_lines_indices = new Vector.<int>();
-			_tmp_lines_indices.push(0, 1, 1 , 2 , 2, 0);
+			_tmp_lines= new Vector.<Vertex>(3,true);
+			_tmp_lines[0]=new Vertex ();
+			_tmp_lines[1]=new Vertex ();
+			_tmp_lines[2]=new Vertex ();
+			_tmp_lines_indices = new Vector.<int>([0, 1, 1 , 2 , 2, 0],true);
 		}
 		public function getScreenSize () : Dimension2D
 		{
@@ -86,7 +91,6 @@
 		}
 		public function drawIndexedTriangleList (vertices : Vector.<Vertex>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
 		{
-			//primitivesDrawn += triangleCount;
 		}
 		public function drawMeshBuffer (mesh : IMeshBuffer) : void
 		{
@@ -108,10 +112,6 @@
 		{
 			return VideoType.NULL;
 		}
-		public function getName () : String
-		{
-			return "Null";
-		}
 		public function setFog (color : Color, start : Number = 50, end : Number = 100) : void
 		{
 			fogColor = color;
@@ -122,11 +122,11 @@
 		/**
 		* 环境光，环境光只需要一个，默认颜色为黑色。
 		*/
-		public function setAmbientColor (color : uint) : void
+		public function setAmbient (color : uint) : void
 		{
 			ambientColor.color = color;
 		}
-		public function getAmbientColor () : Color
+		public function getAmbient () : Color
 		{
 			return ambientColor;
 		}
@@ -154,31 +154,38 @@
 			return _debugColor;
 		}
 		//--------------------------------light--------------------------------//
-		public function deleteAllDynamicLights () : void
+		public function removeAllLights () : void
 		{
 			_lights = new Vector.<Light>();
+			_lightCount=0;
 		}
-		public function addDynamicLight (light : Light) : void
+		/**
+		 * 如果灯光数量大于最大数量，则新加入的会替换第一个
+		 */
+		public function addLight (light : Light) : void
 		{
 			if ( ! light) return;
-			if (_lights.length >= getMaximalDynamicLightAmount ())
+			if (_lightCount >= getMaxLightAmount ())
 			{
-				return;
+				_lights[0]=light;
+			}else
+			{
+				_lights[_lightCount]=light;
+				_lightCount++;
 			}
-			_lights.push (light);
 		}
-		public function getMaximalDynamicLightAmount () : int
+		public static function getMaxLightAmount () : int
 		{
 			return 8;
 		}
-		public function getDynamicLightCount () : int
+		public function getLightCount () : int
 		{
-			return _lights.length;
+			return _lightCount;
 		}
-		public function getDynamicLight (index : int) : Light
+		public function getLight (index : int) : Light
 		{
-			if (index < 0 || index >= getDynamicLightCount ()) return null;
-			return _lights [index];
+			if (index < 0 || index >= getLightCount()) return null;
+			return _lights[index];
 		}
 		
 		public function draw3DBox (box : AABBox3D, color : uint) : void
@@ -228,9 +235,6 @@
 			vertex.color = color;
 			drawIndexedLineList (_tmp_lines, 3, _tmp_lines_indices, 6);
 		}
-		public function draw3DCoordinate (xcolor : uint = 0xff0000, ycolor : uint = 0x00ff00, zcolor : uint = 0x0000ff) : void
-		{
-		}
 		public function setPerspectiveCorrectDistance(distance:Number=400):void
 		{
 			perspectiveDistance=distance;
@@ -239,7 +243,7 @@
 		{
 			return perspectiveDistance;
 		}
-		public function setMipMapDistance(distance:Number=800):void
+		public function setMipMapDistance(distance:Number=500):void
 		{
 	        mipMapDistance=distance;
 		}

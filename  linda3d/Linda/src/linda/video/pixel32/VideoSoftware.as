@@ -94,12 +94,13 @@
 			_projection = new Matrix4 ();
 			_view_project = new Matrix4 ();
 			_world_inv = new Matrix4 ();
-			_lightsDir = new Vector.<Vector3D> ();
-			_lightsPos = new Vector.<Vector3D> ();
-			for (i = 0; i < getMaximalDynamicLightAmount (); i+=1)
+			var count:int=getMaxLightAmount();
+			_lightsDir = new Vector.<Vector3D> (count,true);
+			_lightsPos = new Vector.<Vector3D> (count,true);
+			for (i = 0; i < count; i+=1)
 			{
-				_lightsDir.push (new Vector3D ());
-				_lightsPos.push (new Vector3D ());
+				_lightsDir[i]=new Vector3D();
+				_lightsPos[i]=new Vector3D();
 			}
 			_invCamPos = new Vector3D ();
 			_camPos = new Vector3D ();
@@ -295,8 +296,7 @@
 			m31 = _world.m31;
 			m32 = _world.m32;
 			var d : Number = (m00 * m11 - m01 * m10) * m22 - (m00 * m12 - m02 * m10) * m21 + (m01 * m12 - m02 * m11) * m20;
-			if (d == 0.0) return ;
-			d = 1.0 / d;
+			if (d == 0) d=0 else d = 1.0 / d ;
 			_world_inv.m00 = d * (m11 * m22 - m12 * m21);
 			_world_inv.m01 = d * (m21 * m02 - m22 * m01);
 			_world_inv.m02 = d * (m01 * m12 - m02 * m11);
@@ -346,8 +346,14 @@
 			if (size.width >= 1 && size.height >= 1)
 			{
 				screenSize = size;
-				targetBitmap.bitmapData = new BitmapData (screenSize.width, screenSize.height, true, 0);
-				buffer=new BitmapData (screenSize.width, screenSize.height, false, 0xffffff);
+				if(targetBitmap.bitmapData)
+				{
+					targetBitmap.bitmapData.fillRect(screenSize.toRect(),0x0);
+				}else
+				{
+					targetBitmap.bitmapData = new BitmapData (screenSize.width, screenSize.height, true, 0);
+				}
+				buffer.fillRect(screenSize.toRect(),0xffffff);
 				_clip_scale.buildNDCToDCMatrix(screenSize,1);
 			}
 		}
@@ -406,7 +412,7 @@
 			    var dir : Vector3D;
 			    var pos : Vector3D;
 			    // transfrom lights into object's world space
-			    len = _lights.length;
+			    len = getLightCount();
 			    for (i = 0; i < len; i+=1)
 			    {
 				    dir = _lightsDir [i];
@@ -1306,10 +1312,6 @@
 		override public function drawStencilShadowVolume (vertices : Vector.<Vertex>, vertexCount : int, useZFailMethod : Boolean) : void
 		{
 		}
-		override public function getName () : String
-		{
-			return VideoType.PIXEL32;
-		}
 		override public function getDriverType () : String
 		{
 			return VideoType.PIXEL32;
@@ -1329,7 +1331,7 @@
 				render.setPerspectiveCorrectDistance (distance);
 			}
 		}
-		override public function setMipMapDistance (distance : Number = 800) : void
+		override public function setMipMapDistance (distance : Number = 500) : void
 		{
 			if (distance < 1) distance = 1;
 			mipMapDistance = distance;

@@ -14,6 +14,6 @@
 		function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void;
 		function drawIndexedLineList (vertices :Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void;
 		function setPerspectiveCorrectDistance(distance:Number=400):void;
-		function setMipMapDistance(distance:Number=800):void;
+		function setMipMapDistance(distance:Number=500):void;
 	}
 }

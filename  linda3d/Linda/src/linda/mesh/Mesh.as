@@ -68,18 +68,6 @@
 				buffer.getMaterial().setFlag (flag, value);
 			}
 		}
-		public function getTriangleCount () : int
-		{
-			var triangleCount : int;
-			var len:int=meshBuffers.length;
-			var buffer:IMeshBuffer;
-			for (var i:int = 0; i < len; i+=1)
-			{
-				buffer = meshBuffers [i];
-				triangleCount += buffer.getTriangleCount ();
-			}
-			return triangleCount;
-		}
 		public function addMeshBuffer (buf : IMeshBuffer) : void
 		{
 			if (!buf) return;
