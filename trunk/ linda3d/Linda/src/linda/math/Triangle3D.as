@@ -85,21 +85,6 @@
 		{
 			return box.isPointInside (pointA) && box.isPointInside (pointB) && box.isPointInside (pointC);
 		}
-		//! Get the closest point on a triangle to a point on the same plane.
-		//! \param p: Point which must be on the same plane as the triangle.
-		//! \return The closest point of the triangle
-		public function closestPointOnTriangle (p : Vector3D) : Vector3D
-		{
-			var rab : Vector3D = new Line3D (pointA, pointB).getClosestPoint (p);
-			var rbc : Vector3D = new Line3D (pointB, pointC).getClosestPoint (p);
-			var rca : Vector3D = new Line3D (pointC, pointA).getClosestPoint (p);
-			var d1 : Number = Vector3D.distance(rab,p);
-			var d2 : Number = Vector3D.distance(rbc,p);
-			var d3 : Number = Vector3D.distance(rca,p);
-			if (d1 < d2)
-			return d1 < d3 ? rab : rca;
-			return d2 < d3 ? rbc : rca;
-		}
 		public function isPointInside (p : Vector3D) : Boolean
 		{
 			return (isOnSameSide (p, pointA, pointB, pointC) &&

@@ -9,32 +9,45 @@
 		public static const TRANSPARTENT:int=8;
 		public static const GOURAUD_SHADE:int=16;
 
-		public var backfaceCulling : Boolean = true;//背面裁剪
-		public var transparenting : Boolean = false;//透明
-		public var gouraudShading : Boolean = false;//平滑着色
-		public var lighting : Boolean = false;//灯光
-		public var wireframe : Boolean = false;//网格
+		public var backfaceCulling : Boolean ;//背面裁剪
+		public var transparenting : Boolean ;//透明
+		public var gouraudShading : Boolean ;//平滑着色
+		public var lighting : Boolean ;//灯光
+		public var wireframe : Boolean ;//网格
         
-		public var ambientColor:Color=new Color(255,255,255);
-		public var diffuseColor:Color=new Color(255,255,255);
-		public var emissiveColor:Color=new Color(0,0,0);
-		public var specularColor:Color=new Color(0,0,0);
+		public var ambientColor:Color;
+		public var diffuseColor:Color;
+		public var emissiveColor:Color;
+		public var specularColor:Color;
 
 		//纹理图
 		public var texture1 : ITexture;
 		public var texture2 : ITexture;
 		
-		public var shininess:int=0;//指数，用于高光部分
+		public var shininess:int;//指数，用于高光部分
 		
-		private var _alpha:Number=1;
+		public var alpha:Number;
 		
 		public var name:String;
-		
-		private static var _id:int=0;
 
 		public function Material ()
 		{
-			name='material'+(_id++);
+			name="";
+			shininess=0;
+			alpha=1;
+			
+			lighting=false;
+			backfaceCulling = true;
+			transparenting  = false;
+			gouraudShading  = false;
+			lighting  = false;
+			wireframe  = false;
+			
+			ambientColor=new Color(255,255,255);
+			diffuseColor=new Color(255,255,255);
+			emissiveColor=new Color(0,0,0);
+			specularColor=new Color(0,0,0);
+			
 		}
 		public function setTexture(texture:ITexture,layer:int=1):void
 		{
@@ -46,28 +59,13 @@
 				texture2=texture;
 			}
 		}
-		public function getTexture(layer:int=1):ITexture
+		public function getTexture():ITexture
 		{
-			if(layer == 1)
-			{
-				return texture1;
-			}
-			if(layer == 2)
-			{
-				return texture2;
-			}
-			return null;
+			return texture1;
 		}
-		public function set alpha(a:Number):void
+		public function getTexture2():ITexture
 		{
-			if(a >=0 && a<= 1)
-			{
-				_alpha=a;
-			}
-		}
-		public function get alpha():Number
-		{
-			return _alpha;
+			return texture2;
 		}
 		public function setFlag(flag:int,value:Boolean):void
 		{

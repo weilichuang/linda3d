@@ -2,13 +2,16 @@
 {
 	public class Color
 	{
-		public var a : int = 0;
-		public var r : int = 0;
-		public var g : int = 0;
-		public var b : int = 0;
+		public var a : int ;
+		public var r : int ;
+		public var g : int ;
+		public var b : int ;
 		public function Color (r : int = 0, g : int = 0, b : int = 0, a : int = 0xFF)
 		{
-			setRGBA (r, g, b, a );
+			this.r = r;
+			this.g = g;
+			this.b = b;
+			this.a = a;
 		}
 		public function setRGBA (r : int, g : int, b : int, a : int = 0xFF) : void
 		{
@@ -50,7 +53,7 @@
 		}
 		public function  getAverage():Number
 		{
-			return ( r + g + b ) / 3;
+			return ( r + g + b ) * 0.333;
 		}
 		public function copy (other : Color) : void
 		{

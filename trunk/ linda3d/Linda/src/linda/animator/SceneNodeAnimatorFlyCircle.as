@@ -6,10 +6,10 @@ package linda.animator
 
 	public class SceneNodeAnimatorFlyCircle implements ISceneNodeAnimator
 	{
-		private var center:Vector3D;
-		private var radius:Number;
-		private var speed:Number;
-		private var time:int;
+		public var center:Vector3D;
+		public var radius:Number;
+		public var speed:Number;
+		public var time:int;
 		public function SceneNodeAnimatorFlyCircle(time:int,center:Vector3D,radius:Number,speed:Number)
 		{
 			this.time=time;
@@ -25,38 +25,5 @@ package linda.animator
 			node.x=center.x+radius*Math.cos(t);
 			node.z=center.z+radius*Math.sin(t);
 		}
-		public function setCenter(center:Vector3D):void
-		{
-			this.center=center;
-		}
-		public function getCenter():Vector3D
-		{
-			return this.center;
-		}
-		public function setRadius(radius:Number):void
-		{
-			this.radius=radius;
-		}
-		public function getRadius():Number
-		{
-			return this.radius;
-		}
-		public function setSpeed(speed:Number):void
-		{
-			this.speed=speed;
-		}
-		public function getSpeed():Number
-		{
-			return this.speed;
-		}
-		public function setTime(time:Number):void
-		{
-			this.time=time;
-		}
-		public function getTime():Number
-		{
-			return this.time;
-		}
-		
 	}
 }
