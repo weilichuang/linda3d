@@ -1,12 +1,15 @@
-﻿package linda.video.pixel32
+﻿package linda.video.pixel
 {
 	import __AS3__.vec.Vector;
 	
 	import linda.math.Vertex4D;
 	public class TRFlatAlpha extends TriangleRenderer
 	{
+		//背景颜色
+		private var bga : int;
+		private var bgColor : uint;
 		//todo 修改开始处交换方式
-		override public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
+		override public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int): void
 		{
 			var r:int,b:int,g:int;
 			var temp1 : Vertex4D;
@@ -16,6 +19,7 @@
 		 	var type : int;
             var oldZ:int;
 			var ii:int;
+
 			for (var i : int = 0; i < indexCount; i += 3)
 			{
 				ii=indexList [int(i+ 0)];
@@ -24,7 +28,7 @@
 				vt1 = vertices [ii];
 				ii=indexList [int(i+ 2)];
 				vt2 = vertices [ii];
-				
+
 				if (vt1.iy < vt0.iy)
 				{
 					temp1 = vt0; vt0 = vt1; vt1 = temp1;
@@ -55,18 +59,19 @@
 					}
 				}
 				
+				side = 0;
+				
+				r = vt0.r;g = vt0.g;b = vt0.b;
+				
 				x0 = vt0.x ; y0 = vt0.y ; z0 = vt0.w;
 				x1 = vt1.x ; y1 = vt1.y ; z1 = vt1.w;
 				x2 = vt2.x ; y2 = vt2.y ; z2 = vt2.w;
 				if (((x0 == x1) && (x1 == x2)) || ((y0 == y1) && (y1 == y2))) continue;
-				r = vt0.r;g = vt0.g;b = vt0.b;
-				
-				side = 0;
+				yend = y2;
 				ys = y1;
-				
+				ystart = y0;
 				if(type==0)
 				{
-					yend = y2;
 						dyl = 1 / (y1 - y0);
 						dxdyl = (x1 - x0) * dyl;
 						dzdyl = (z1 - z0) * dyl;
@@ -77,7 +82,6 @@
 						zl = z0;
 						xr = x0;
 						zr = z0;
-						ystart = y0;
 						if (dxdyr < dxdyl)
 						{
 							temp = dxdyl; dxdyl = dxdyr; dxdyr = temp;
@@ -93,6 +97,7 @@
 							
 							side = 1;
 						}
+
 						for (yi = ystart; yi <= yend; yi +=1)
 						{
 							xstart = xl; xend = xr;
@@ -107,14 +112,12 @@
 							}
 							for (xi = xstart; xi < xend; xi +=1)
 							{
-								//background Color
-								bgColor = target.getPixel32 (xi, yi);
-								bga = bgColor >> 24 & 0xFF ;
 								oldZ=buffer.getPixel (xi, yi);
-								if (bga < 0xFF || zi < oldZ)
+								if (zi < oldZ)
 								{
-									//color = ((alpha*intAlpha+ invAlpha*bga) << 24 | (alpha*r + invAlpha*(bgColor >> 16 & 0xFF)) << 16 | (alpha*g + invAlpha*(bgColor >> 8 & 0xFF)) << 8  | (alpha*b + invAlpha*(bgColor & 0xFF)) );
-									target.setPixel32 (xi, yi, (int(alpha * intAlpha + invAlpha * bga) << 24 | int(alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | int(alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | int(alpha * b + invAlpha * (bgColor & 0xFF))));
+									//background Color
+								    bgColor = target.getPixel (xi, yi);
+									target.setPixel (xi, yi, (int(alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | int(alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | int(alpha * b + invAlpha * (bgColor & 0xFF))));
 								}
 								zi += dz;
 							}
@@ -146,7 +149,6 @@
 
 						xl = x0; zl = z0;
 						xr = x1; zr = z1;
-						ystart = y0;
 					} 
 					else
 					{
@@ -156,8 +158,6 @@
 
 						xl = x0; zl = z0;
 						xr = x0; zr = z0;
-						ystart = y0;
-						
 					}
 					for (yi = ystart; yi <= yend; yi +=1)
 					{
@@ -173,12 +173,12 @@
 							}
 							for (xi = xstart; xi < xend; xi +=1)
 							{
-								bgColor = target.getPixel32 (xi, yi);
-								bga = bgColor >> 24 & 0xFF ;
 								oldZ=buffer.getPixel (xi, yi);
-								if (bga < 0xFF || zi < oldZ)
+								if (zi < oldZ)
 								{
-									target.setPixel32 (xi, yi, (int(alpha * intAlpha + invAlpha * bga) << 24 | int(alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | int(alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | int(alpha * b + invAlpha * (bgColor & 0xFF))));
+									//background Color
+								    bgColor = target.getPixel (xi, yi);
+									target.setPixel (xi, yi, (int(alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | int(alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | int(alpha * b + invAlpha * (bgColor & 0xFF))));
 								}
 								zi += dz;
 							}

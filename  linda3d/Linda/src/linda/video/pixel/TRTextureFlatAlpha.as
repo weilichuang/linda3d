@@ -1,25 +1,58 @@
-﻿package linda.video.pixel32
+﻿package linda.video.pixel
 {
 	import __AS3__.vec.Vector;
 	
 	import linda.material.ITexture;
 	import linda.math.Vertex4D;
-	import linda.math.Vertex;
 	
-	import flash.display.*;
-	public class TRTextureFlat extends TriangleRenderer
+	import flash.display.BitmapData;
+	public class TRTextureFlatAlpha extends TriangleRenderer
 	{
-		override public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
+		//背景颜色
+		private var bga : int;
+		private var bgColor : uint;
+		//texture
+		private var textel : uint;
+		
+		private var tw:Number;
+		private var th:Number;
+		
+		private var bitmapData:BitmapData;
+		//u,v
+		private var dudyl : Number;
+		private var dudyr : Number;
+		private var dvdyl : Number;
+		private var dvdyr : Number;
+
+		private var u0 : Number;
+		private var v0 : Number;
+		private var u1 : Number;
+		private var v1 : Number; 
+		private var u2 : Number; 
+		private var v2 : Number;
+
+		private var ul : Number;
+		private var vl : Number;
+		private var ur : Number;
+		private var vr : Number;
+
+		private var du : Number;
+		private var dv : Number;
+		
+		private var ui : Number;
+		private var vi : Number;
+		
+		override public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int): void
 		{
 			var temp1 : Vertex4D;
 			var temp : Number;
 			var side : int;
 		 	var ys : int;
 		 	var type : int;
-			var oldZ:int;
+            var oldZ:int;
 			var texture:ITexture=material.getTexture();
+            var ii:int;
 
-			var ii:int;
 			for (var i : int = 0; i < indexCount; i += 3)
 			{
 				ii=indexList [int(i+ 0)];
@@ -58,22 +91,19 @@
 						temp1 = vt1; vt1 = vt2; vt2 = temp1;
 					}
 				}
-				
-				
-				
+				side = 0;
+
 				x0 = vt0.x ; y0 = vt0.y ; z0 = vt0.w;
 				x1 = vt1.x ; y1 = vt1.y ; z1 = vt1.w;
 				x2 = vt2.x ; y2 = vt2.y ; z2 = vt2.w;
 				if (((x0 == x1) && (x1 == x2)) || ((y0 == y1) && (y1 == y2))) continue;
-				
-				side = 0;
 				//mipmap
                 var level:int = int((vt0.w+vt1.w+vt2.w)*0.333/mipMapDistance);
                 bitmapData=texture.getBitmapData(level);
 	            tw=bitmapData.width;
 	            th=bitmapData.height;
-				perspectiveCorrect = (vt0.w < perspectiveDistance && vt1.w < perspectiveDistance && vt2.w < perspectiveDistance); 
-	            if(perspectiveCorrect)
+	            perspectiveCorrect = (vt0.w < perspectiveDistance && vt1.w < perspectiveDistance && vt2.w < perspectiveDistance); 
+				if(perspectiveCorrect)
 	            {
 				     u0 = vt0.u * tw / z0; v0 = vt0.v * th / z0;			
 				     u1 = vt1.u * tw / z1; v1 = vt1.v * th / z1;
@@ -84,10 +114,12 @@
 				     u1 = vt1.u * tw; v1 = vt1.v * th;
 				     u2 = vt2.u * tw; v2 = vt2.v * th;
 	            }
+				
 				ys = y1;
+				yend = y2;
+				ystart = y0;
 				if(type==0)
 				{
-					yend = y2;
 					
 						dyl = 1 / (y1 - y0);
 						dxdyl = (x1 - x0) * dyl;
@@ -103,7 +135,6 @@
 						xr = x0; zr = z0;
 						ul = u0 ; vl = v0 ;
 						ur = u0 ; vr = v0 ;
-						ystart = y0;
 						if (dxdyr < dxdyl)
 						{
 							temp = dxdyl; dxdyl = dxdyr; dxdyr = temp;
@@ -152,15 +183,18 @@
 								oldZ=buffer.getPixel (xi, yi);
 								if (zi < oldZ)
 								{
+									bgColor = target.getPixel (xi, yi);
 									if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel32 (int(ui * zi), int(vi * zi));
+										textel = bitmapData.getPixel (int(ui * zi), int(vi * zi));
 									}else
 									{
-										textel = bitmapData.getPixel32 (int(ui), int(vi));
+										textel = bitmapData.getPixel (int(ui), int(vi));
 									}
-									target.setPixel32 (xi, yi,textel);
-									buffer.setPixel (xi, yi, int(zi));
+									target.setPixel (xi, yi,
+									( int((textel >> 16 & 0xFF) * alpha + invAlpha * (bgColor >> 16 & 0xFF) ) << 16 |
+									  int((textel >> 8 & 0xFF) * alpha + invAlpha * (bgColor >> 8 & 0xFF)) << 8 |
+									  int((textel & 0xFF) * alpha + invAlpha * (bgColor & 0xFF))));
 								}
 								ui += du;
 								vi += dv;
@@ -200,7 +234,7 @@
 									vr = v2+dvdyr;
 								}
 							}
-						}
+					}
 				}
 				else
 				{
@@ -216,11 +250,10 @@
 						dudyr = (u2 - u1) * dy;
 						dvdyr = (v2 - v1) * dy;
 
-							xl = x0; xr = x1;
-							zl = z0; zr = z1;
-							ul = u0; vl = v0;
-							ur = u1; vr = v1;
-							ystart = y0;
+						xl = x0; xr = x1;
+						zl = z0; zr = z1;
+						ul = u0; vl = v0;
+						ur = u1; vr = v1;
 					} 
 					else
 					{
@@ -233,21 +266,22 @@
 						dvdyl = (v1 - v0) * dy;
 						dudyr = (u2 - u0) * dy;
 						dvdyr = (v2 - v0) * dy;
-
-							xl = x0; xr = x0;
-							zl = z0; zr = z0;
-							ul = u0; vl = v0;
-							ur = u0; vr = v0;
-							ystart = y0;
+						
+						xl = x0; xr = x0;
+						zl = z0; zr = z0;
+						ul = u0; vl = v0;
+						ur = u0; vr = v0;
 					}
-					for (yi = ystart; yi <= yend; yi +=1)
-					{
+					
+						for (yi = ystart; yi <= yend; yi +=1)
+						{
 							xstart = xl;
 							xend = xr;
 							ui = ul;
 							vi = vl;
 							zi = zl;
-							if ((dx = (xend - xstart)) > 0)
+							dx = (xend - xstart);
+							if (dx > 0)
 							{
 								dx = 1 / dx;
 								du = (ur - ul) * dx;
@@ -264,15 +298,19 @@
 								oldZ=buffer.getPixel (xi, yi);
 								if (zi < oldZ)
 								{
+									bgColor = target.getPixel (xi, yi);
 									if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel32 (int(ui * zi), int(vi * zi));
+										
+										textel = bitmapData.getPixel (int(ui * zi), int(vi * zi));
 									}else
 									{
-										textel = bitmapData.getPixel32 (int(ui), int(vi));
+										textel = bitmapData.getPixel (int(ui), int(vi));
 									}
-									target.setPixel32 (xi, yi,textel);
-									buffer.setPixel (xi, yi, int(zi));
+									target.setPixel (xi, yi,
+									( int((textel >> 16 & 0xFF) * alpha + invAlpha * (bgColor >> 16 & 0xFF) ) << 16 |
+									  int((textel >> 8 & 0xFF) * alpha + invAlpha * (bgColor >> 8 & 0xFF)) << 8 |
+									  int((textel & 0xFF) * alpha + invAlpha * (bgColor & 0xFF))));
 								}
 								ui += du;
 								vi += dv;
@@ -286,7 +324,7 @@
 							ur += dudyr;
 							vr += dvdyr;
 							zr += dzdyr;
-					}
+						}
 				}
 			}
 		}
