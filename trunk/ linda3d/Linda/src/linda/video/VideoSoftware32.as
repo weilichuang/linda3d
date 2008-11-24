@@ -30,7 +30,7 @@
 		protected var _current : Matrix4 ;
 		protected var _view_project : Matrix4;
 		protected var _world_inv : Matrix4;
-		protected var _invCamPos : Vector3D;
+		protected var _cam_position : Vector3D;
 		protected var _old_cam_position : Vector3D;
 		protected var _ndc_planes : Vector.<Vector3D>;
 
@@ -110,7 +110,7 @@
 				_lightsPos[i]=new Vector3D();
 			}
 			
-			_invCamPos = new Vector3D ();
+			_cam_position = new Vector3D ();
 			_old_cam_position = new Vector3D ();
 			/*
 			generic plane clipping in homogenous coordinates
@@ -241,7 +241,7 @@
 			_current.multiplyE (_world);
 			// transfrom camera into object's world space
 			_world.getInverse (_world_inv);
-			_world_inv.transformVector2(_old_cam_position,_invCamPos);
+			_world_inv.transformVector2(_old_cam_position,_cam_position);
 			*/
 			//_current.copy (_view_project);
 			_current.m00 = _view_project.m00;
@@ -327,13 +327,13 @@
 			_world_inv.m31 = d * (m20 * (m02 * m31 - m01 * m32) + m21 * (m00 * m32 - m02 * m30) + m22 * (m01 * m30 - m00 * m31));
 			_world_inv.m32 = d * (m30 * (m02 * m11 - m01 * m12) + m31 * (m00 * m12 - m02 * m10) + m32 * (m01 * m10 - m00 * m11));
 			_world_inv.m33 = 1;
-			//_world_inv.transformVector2(_old_cam_position,_invCamPos);
+			//_world_inv.transformVector2(_old_cam_position,_cam_position);
 			var x : Number = _old_cam_position.x;
 			var y : Number = _old_cam_position.y;
 			var z : Number = _old_cam_position.z;
-			_invCamPos.x = (_world_inv.m00 * x + _world_inv.m10 * y + _world_inv.m20 * z + _world_inv.m30);
-			_invCamPos.y = (_world_inv.m01 * x + _world_inv.m11 * y + _world_inv.m21 * z + _world_inv.m31);
-			_invCamPos.z = (_world_inv.m02 * x + _world_inv.m12 * y + _world_inv.m22 * z + _world_inv.m32);
+			_cam_position.x = (_world_inv.m00 * x + _world_inv.m10 * y + _world_inv.m20 * z + _world_inv.m30);
+			_cam_position.y = (_world_inv.m01 * x + _world_inv.m11 * y + _world_inv.m21 * z + _world_inv.m31);
+			_cam_position.z = (_world_inv.m02 * x + _world_inv.m12 * y + _world_inv.m22 * z + _world_inv.m32);
 		}
 
 		public override function setTransformView (mat : Matrix4) : void
@@ -412,7 +412,7 @@
 			var bDotPlane : Number;
 			var t : Number;
 
-			var len : int = triangleCount * 6;
+			var len : int = triangleCount * 2;
 			var _transformLen : int = _transformedPoints.length;
 			var i : int;
 			if (_transformLen < len)
@@ -498,15 +498,15 @@
 			var ii:int;
 			for (ii = 0; ii < triangleCount; ii += 3)
 			{
-				v0 = vertices [int (indexList [int (ii + 0)])];
+				v0 = vertices [int (indexList [ii])];
 				v1 = vertices [int (indexList [int (ii + 1)])];
 				v2 = vertices [int (indexList [int (ii + 2)])];
 				
 				if (backfaceCulling)
 				{
-					if (((v1.y - v0.y) * (v2.z - v0.z) - (v1.z - v0.z) * (v2.y - v0.y)) * (_invCamPos.x - v0.x) +
-					    ((v1.z - v0.z) * (v2.x - v0.x) - (v1.x - v0.x) * (v2.z - v0.z)) * (_invCamPos.y - v0.y) +
-					    ((v1.x - v0.x) * (v2.y - v0.y) - (v1.y - v0.y) * (v2.x - v0.x)) * (_invCamPos.z - v0.z) <= 0)
+					if (((v1.y - v0.y) * (v2.z - v0.z) - (v1.z - v0.z) * (v2.y - v0.y)) * (_cam_position.x - v0.x) +
+					    ((v1.z - v0.z) * (v2.x - v0.x) - (v1.x - v0.x) * (v2.z - v0.z)) * (_cam_position.y - v0.y) +
+					    ((v1.x - v0.x) * (v2.y - v0.y) - (v1.y - v0.y) * (v2.x - v0.x)) * (_cam_position.z - v0.z) <= 0)
 					{
 						continue;
 					}
@@ -977,17 +977,14 @@
 					var tmp : Number = 1 / tv0.w ;
 					tv0.x = (tv0.x * csm00) * tmp + csm30;
 					tv0.y = (tv0.y * csm11) * tmp + csm31;
-					tv0.iy=Math.round(tv0.y);
 					//tv1
 					tmp = 1 / tv1.w ;
 					tv1.x = (tv1.x * csm00) * tmp + csm30;
 					tv1.y = (tv1.y * csm11) * tmp + csm31;
-					tv1.iy=Math.round(tv1.y);
 					//tv2
 					tmp = 1 / tv2.w ;
 					tv2.x = (tv2.x * csm00) * tmp + csm30;
 					tv2.y = (tv2.y * csm11) * tmp + csm31;
-					tv2.iy=Math.round(tv2.y);
 					// add to _clipped_indices
 					_clipped_indices [iCount] = vCount;
 					iCount ++;
@@ -1227,9 +1224,6 @@
 									out.v = b.v + ((a.v - b.v ) * t );
 								}
 							}
-							// add a to out
-							//out = dest[outCount++];
-							//out.copy(a);
 							dest [outCount ++] = a;
 						} 
 						else
@@ -1269,10 +1263,7 @@
 					}
 					source = _clipped_vertices2;
 				}
-				// ----------------------------------------------------------------
-				// clip to plane 4
-				// ----------------------------------------------------------------
-				//new Quaternion (0.0, 1.0, 0.0, - 1.0 ) , // bottom
+				//new Vector3D (0.0, 1.0, 0.0, - 1.0 ) , // bottom
 				if ((clipcount & 16) == 16)
 				{
 					inCount = outCount;
@@ -1285,54 +1276,39 @@
 					{
 						a = source [i % inCount];
 						aDotPlane = (a.y * plane.y) + (a.w * plane.w);
-						// current point inside
 						if (aDotPlane <= 0.0 )
 						{
-							// last point outside
 							if (bDotPlane > 0.0 )
 							{
-								// intersect line segment with plane
-								//out = dest[outCount++];
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
-								// get t intersection
 								t = bDotPlane / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w))
-								// interpolate position
 								out.x = b.x + ((a.x - b.x ) * t );
 								out.y = b.y + ((a.y - b.y ) * t );
 								out.z = b.z + ((a.z - b.z ) * t );
 								out.w = b.w + ((a.w - b.w ) * t );
-								// interpolate color
 								out.r = b.r + ((a.r - b.r ) * t );
 								out.g = b.g + ((a.g - b.g ) * t );
 								out.b = b.b + ((a.b - b.b ) * t );
 								if(hasTexture)
 								{
-									// interpolate texture
 									out.u = b.u + ((a.u - b.u ) * t );
 									out.v = b.v + ((a.v - b.v ) * t );
 								}
 							}
-							// add a to out
 							dest [outCount ++] = a;
 						} 
 						else
 						{
-							// current point outside
 							if (bDotPlane <= 0.0 )
 							{
-								// previous was inside
-								// intersect line segment with plane
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
-								// get t intersection
 								t = bDotPlane / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w))
-								// interpolate position
 								out.x = b.x + ((a.x - b.x ) * t );
 								out.y = b.y + ((a.y - b.y ) * t );
 								out.z = b.z + ((a.z - b.z ) * t );
 								out.w = b.w + ((a.w - b.w ) * t );
-								// interpolate color
 								out.r = b.r + ((a.r - b.r ) * t );
 								out.g = b.g + ((a.g - b.g ) * t );
 								out.b = b.b + ((a.b - b.b ) * t );
@@ -1353,10 +1329,7 @@
 					}
 					source = _clipped_vertices1;
 				}
-				// ----------------------------------------------------------------
-				// clip to plane 5
-				// ----------------------------------------------------------------
-				//new Quaternion (0.0, - 1.0, 0.0, - 1.0 ) //top
+				//new Vector3D (0.0, - 1.0, 0.0, - 1.0 ) //top
 				if ((clipcount & 32) == 32)
 				{
 					inCount = outCount;
@@ -1375,10 +1348,8 @@
 							// last point outside
 							if (bDotPlane > 0.0 )
 							{
-								// intersect line segment with plane
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
-								// get t intersection
 								t = bDotPlane / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w))
 								out.x = b.x + ((a.x - b.x ) * t );
 								out.y = b.y + ((a.y - b.y ) * t );
@@ -1393,15 +1364,12 @@
 									out.v = b.v + ((a.v - b.v ) * t );
 								}
 							}
-							// add a to out
 							dest [outCount ++] = a;
 						} 
 						else
 						{
-							// current point outside
 							if (bDotPlane <= 0.0 )
 							{
-								// previous was inside
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 								t = bDotPlane / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
@@ -1422,14 +1390,12 @@
 						b = a;
 						bDotPlane = aDotPlane;
 					}
-					// check we have 3 or more vertices
 					if (outCount < 3)
 					{
 						continue;
 					}
 					source = _clipped_vertices0;
 				}
-				// ----------------------------------------------------------------
 				// put back into screen space.
 				vCount2 = vCount;
 				for (var g : int = 0; g < outCount; g+=1)
@@ -1438,7 +1404,6 @@
 					tmp = 1 / tv0.w ;
 					tv0.x = (tv0.x * csm00) * tmp + csm30;
 					tv0.y = (tv0.y * csm11) * tmp + csm31;
-					tv0.iy=int(tv0.y)+1;
 					_clipped_vertices [int(vCount ++)] = tv0;
 				}
 				// re-tesselate ( triangle-fan, 0-1-2,0-2-3.. )
@@ -1622,11 +1587,9 @@
 				var tmp : Number = 1 / tv0.w ;
 				tv0.x = (tv0.x * csm00) * tmp + csm30;
 				tv0.y = (tv0.y * csm11) * tmp + csm31;
-				tv0.iy=Math.round(tv0.y);
 				tmp = 1 / tv1.w ;
 				tv1.x = (tv1.x * csm00) * tmp + csm30;
 				tv1.y = (tv1.y * csm11) * tmp + csm31;
-				tv1.iy=Math.round(tv1.y);
 				_clipped_line_indices [iCount] = vCount2;
 				iCount ++;
 				_clipped_line_vertices [vCount2] = tv0;

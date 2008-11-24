@@ -60,28 +60,28 @@
 				ii=indexList [int(i+ 2)];
 				vt2 = vertices [ii];
 
-				if (vt1.iy < vt0.iy)
+				if (vt1.y < vt0.y)
 				{
 					temp1 = vt0; vt0 = vt1; vt1 = temp1;
 				}
-				if (vt2.iy < vt0.iy)
+				if (vt2.y < vt0.y)
 				{
 					temp1 = vt0; vt0 = vt2; vt2 = temp1;
 				}
-				if (vt2.iy < vt1.iy)
+				if (vt2.y < vt1.y)
 				{
 					temp1 = vt1; vt1 = vt2; vt2 = temp1;
 				}
 				
 				type = 0;
-				if (vt0.iy == vt1.iy)
+				if (vt0.y == vt1.y)
 				{
 					type = 1;
 					if (vt1.x < vt0.x)
 					{
 						temp1 = vt0; vt0 = vt1; vt1 = temp1;
 					}
-				} else if (vt1.iy == vt2.iy)
+				} else if (vt1.y == vt2.y)
 				{
 					type = 2;
 					if (vt2.x < vt1.x)
@@ -89,7 +89,6 @@
 						temp1 = vt1; vt1 = vt2; vt2 = temp1;
 					}
 				}
-				
 				side = 0;
 
 				x0 = vt0.x ; y0 = vt0.y ; z0 = vt0.w;

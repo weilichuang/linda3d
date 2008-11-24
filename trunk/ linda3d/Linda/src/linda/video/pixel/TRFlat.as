@@ -17,35 +17,35 @@
 		 	var ii:int;
 			for (var i : int = 0; i < indexCount; i += 3)
 			{
-				ii=indexList [int(i+ 0)];
+				ii=indexList [i];
 				vt0 = vertices [ii];
-				ii=indexList [int(i+ 1)];
+				ii=indexList [i+ 1];
 				vt1 = vertices [ii];
-				ii=indexList [int(i+ 2)];
+				ii=indexList [i+ 2];
 				vt2 = vertices [ii];
 
-				if (vt1.iy < vt0.iy)
+				if (vt1.y < vt0.y)
 				{
 					temp1 = vt0; vt0 = vt1; vt1 = temp1;
 				}
-				if (vt2.iy < vt0.iy)
+				if (vt2.y < vt0.y)
 				{
 					temp1 = vt0; vt0 = vt2; vt2 = temp1;
 				}
-				if (vt2.iy < vt1.iy)
+				if (vt2.y < vt1.y)
 				{
 					temp1 = vt1; vt1 = vt2; vt2 = temp1;
 				}
 				
 				type = 0;
-				if (vt0.iy == vt1.iy)
+				if (vt0.y == vt1.y)
 				{
 					type = 1;
 					if (vt1.x < vt0.x)
 					{
 						temp1 = vt0; vt0 = vt1; vt1 = temp1;
 					}
-				} else if (vt1.iy == vt2.iy)
+				} else if (vt1.y == vt2.y)
 				{
 					type = 2;
 					if (vt2.x < vt1.x)
@@ -111,7 +111,7 @@
 								if (zi < oldZ)
 								{
 									target.setPixel (xi, yi, color);
-									buffer.setPixel (xi, yi, int(zi));
+									buffer.setPixel (xi, yi, zi);
 								}
 								zi += dz;
 							}

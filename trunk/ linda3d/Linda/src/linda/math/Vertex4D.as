@@ -14,8 +14,6 @@
 		//uv
 		public var u : Number ;
 		public var v : Number ;
-		
-		public var iy:int;
 		public function Vertex4D ()
 		{
 			x=0;
@@ -29,8 +27,6 @@
 			r=0;
 			g=0;
 			b=0;
-			
-			iy=0;
 		}
 		public function copy (c : Vertex4D) : void
 		{
@@ -42,7 +38,6 @@
 			b = c.b;
 			u = c.u;
 			v = c.v;
-			iy=c.iy;
 		}
 	}
 }
