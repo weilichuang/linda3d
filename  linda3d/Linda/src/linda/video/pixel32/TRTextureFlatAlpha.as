@@ -21,7 +21,7 @@
 			var ii:int;
 			for (var i : int = 0; i < indexCount; i += 3)
 			{
-				ii=indexList [int(i+ 0)];
+				ii=indexList [i];
 				vt0 = vertices [ii];
 				ii=indexList [int(i+ 1)];
 				vt1 = vertices [ii];
@@ -154,16 +154,16 @@
 								{
 									if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel (int(ui * zi), int(vi * zi));
+										textel = bitmapData.getPixel (ui * zi, vi * zi);
 									}else
 									{
-										textel = bitmapData.getPixel (int(ui), int(vi));
+										textel = bitmapData.getPixel (ui, vi);
 									}
-									target.setPixel32 (xi, yi,
-									(int(alpha * intAlpha + invAlpha * bga) << 24 |
-									((textel >> 16 & 0xFF) * alpha  + invAlpha * (bgColor >> 16 & 0xFF)) << 16 |
-									((textel >> 8 & 0xFF) * alpha  + invAlpha * (bgColor >> 8 & 0xFF)) << 8 |
-									((textel & 0xFF) * alpha  + invAlpha * (bgColor & 0xFF))));
+									color=((alpha * intAlpha + invAlpha * bga) << 24 |
+									       ((textel >> 16 & 0xFF) * alpha  + invAlpha * (bgColor >> 16 & 0xFF)) << 16 |
+									       ((textel >> 8 & 0xFF) * alpha  + invAlpha * (bgColor >> 8 & 0xFF)) << 8 |
+									       ((textel & 0xFF) * alpha  + invAlpha * (bgColor & 0xFF)));
+									target.setPixel32 (xi, yi,color);
 								}
 								ui += du;
 								vi += dv;
@@ -274,16 +274,16 @@
 								{
 									if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel (int(ui * zi), int(vi * zi));
+										textel = bitmapData.getPixel (ui * zi, vi * zi);
 									}else
 									{
-										textel = bitmapData.getPixel (int(ui), int(vi));
+										textel = bitmapData.getPixel (ui, vi);
 									}
-									target.setPixel32 (xi, yi,
-									(int(alpha * intAlpha + invAlpha * bga) << 24 |
-									((textel >> 16 & 0xFF) * alpha  + invAlpha * (bgColor >> 16 & 0xFF)) << 16 |
-									((textel >> 8 & 0xFF) * alpha  + invAlpha * (bgColor >> 8 & 0xFF)) << 8 |
-									((textel & 0xFF) * alpha  + invAlpha * (bgColor & 0xFF))));
+									color=((alpha * intAlpha + invAlpha * bga) << 24 |
+									       ((textel >> 16 & 0xFF) * alpha  + invAlpha * (bgColor >> 16 & 0xFF)) << 16 |
+									       ((textel >> 8 & 0xFF) * alpha  + invAlpha * (bgColor >> 8 & 0xFF)) << 8 |
+									       ((textel & 0xFF) * alpha  + invAlpha * (bgColor & 0xFF)));
+									target.setPixel32 (xi, yi,color);
 								}
 								ui += du;
 								vi += dv;

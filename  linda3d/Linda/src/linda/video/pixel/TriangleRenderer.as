@@ -2,15 +2,13 @@
 {
 	import __AS3__.vec.Vector;
 	
+	import flash.display.*;
+	
 	import linda.material.Material;
 	import linda.math.Vertex4D;
 	import linda.video.ITriangleRenderer;
-	
-	import flash.display.*;
 	public class TriangleRenderer implements ITriangleRenderer
 	{
-		public static const Fixed:Number=1000.0;
-		
 		protected var target : BitmapData;
 		protected var buffer : BitmapData;
 		protected var material : Material;
@@ -108,11 +106,11 @@
 			var error: int;
 			for (var i : int = 0; i < indexCount; i +=2)
 			{
-				vt0 = vertices [int(indexList [i + 0])];
-				vt1 = vertices [int(indexList [i + 1])];
+				vt0 = vertices [int(indexList [i])];
+				vt1 = vertices [int(indexList [int(i + 1)])];
 
-				x0 = int (vt0.x + 0.5) , y0 = int (vt0.y + 0.5) , z0 = (Fixed * vt0.w);
-				x1 = int (vt1.x + 0.5) , y1 = int (vt1.y + 0.5) , z1 = (Fixed * vt1.w);
+				x0 = int (vt0.x + 0.5) , y0 = int (vt0.y + 0.5) , z0 = vt0.w;
+				x1 = int (vt1.x + 0.5) , y1 = int (vt1.y + 0.5) , z1 = vt1.w;
 				
 				color = ( 0xFF000000 | vt1.r << 16 | vt1.g << 8 | vt1.b );
 
@@ -146,7 +144,8 @@
 					dzdy = dz/(y0-y1);
 					for( ; y1 < y0 ; y1++ )
 					{
-						if (z1 < buffer.getPixel (x1, y1))
+						var oldz:Number=buffer.getPixel (x1, y1);
+						if (z1 < oldz)
 						{
 					    	target.setPixel( x1, y1, color );
 					   	 	buffer.setPixel(x1,y1,z1);
@@ -166,7 +165,8 @@
 					dzdy = dz/(x1-x0);
 					for( ; x0 < x1 ; x0++ )
 					{
-						if (z1 < buffer.getPixel (x0, y0))
+						oldz=buffer.getPixel (x0, y0);
+						if (z1 < oldz)
 						{
 					   	 	target.setPixel( x0, y0, color );
 					    	buffer.setPixel(x0,y0,z1);

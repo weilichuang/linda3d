@@ -134,7 +134,8 @@
 								oldZ=buffer.getPixel (xi, yi);
 								if (bga < 0xFF || zi < oldZ)
 								{
-									target.setPixel32 (xi, yi,(int(alpha * intAlpha + invAlpha * bga) << 24 | int(alpha * ri + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | int(alpha * gi + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | int(alpha * bi + invAlpha * (bgColor & 0xFF))));
+									color=((alpha * intAlpha + invAlpha * bga) << 24 | (alpha * ri + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | (alpha * gi + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | (alpha * bi + invAlpha * (bgColor & 0xFF)));
+									target.setPixel32 (xi, yi,color);
 								}
 								zi += dz;
 								ri += dr; gi += dg; bi += db;
@@ -247,7 +248,8 @@
 								oldZ=buffer.getPixel (xi, yi);
 								if (bga < 0xFF || zi < oldZ)
 								{
-									target.setPixel32 (xi, yi,(int(alpha * intAlpha + invAlpha * bga) << 24 | int(alpha * ri + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | int(alpha * gi + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | int(alpha * bi + invAlpha * (bgColor & 0xFF))));
+									color=((alpha * intAlpha + invAlpha * bga) << 24 | (alpha * ri + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | (alpha * gi + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | (alpha * bi + invAlpha * (bgColor & 0xFF)));
+									target.setPixel32 (xi, yi,color);
 								}
 								zi += dz;
 								ri += dr; gi += dg; bi += db;

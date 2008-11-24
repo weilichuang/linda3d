@@ -15,7 +15,7 @@
 				 var ii:int;
 			     for (var i : int = 0; i < indexCount; i += 3)
 				 {
-					ii=indexList [int(i+ 0)];
+					ii=indexList [i];
 					vt0 = vertices [ii];
 					ii=indexList [int(i+ 1)];
 				    vt1 = vertices [ii];
@@ -185,7 +185,10 @@
 					if (z1 < oldZ)
 					{
 						bgColor = target.getPixel (x1, y1);
-						target.setPixel (x1, y1, ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 |  (alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 |  (alpha * b + invAlpha * (bgColor & 0xFF))));
+						color=((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 |
+						       (alpha * g + invAlpha * (bgColor >> 8 & 0xFF))  << 8  |  
+						       (alpha * b + invAlpha * (bgColor & 0xFF)));
+						target.setPixel (x1, y1,color);
 					}
 					error += dx;
 					if (error > 0 )
@@ -206,7 +209,10 @@
 					if (z1 < oldZ)
 					{
 						bgColor = target.getPixel (x0, y0);
-						target.setPixel (x0, y0, ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | (alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | (alpha * b + invAlpha * (bgColor & 0xFF))));
+						color=((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 |
+						       (alpha * g + invAlpha * (bgColor >> 8 & 0xFF))  << 8  |  
+						       (alpha * b + invAlpha * (bgColor & 0xFF)));
+						target.setPixel (x0, y0,color);
 					}
 					error += dy;
 					if (error > 0 )

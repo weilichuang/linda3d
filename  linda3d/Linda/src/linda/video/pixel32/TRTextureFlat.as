@@ -22,7 +22,7 @@
 			var ii:int;
 			for (var i : int = 0; i < indexCount; i += 3)
 			{
-				ii=indexList [int(i+ 0)];
+				ii=indexList [i];
 				vt0 = vertices [ii];
 				ii=indexList [int(i+ 1)];
 				vt1 = vertices [ii];
@@ -154,13 +154,13 @@
 								{
 									if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel32 (int(ui * zi), int(vi * zi));
+										textel = bitmapData.getPixel32 (ui * zi, vi * zi);
 									}else
 									{
-										textel = bitmapData.getPixel32 (int(ui), int(vi));
+										textel = bitmapData.getPixel32 (ui, vi);
 									}
 									target.setPixel32 (xi, yi,textel);
-									buffer.setPixel (xi, yi, int(zi));
+									buffer.setPixel (xi, yi, zi);
 								}
 								ui += du;
 								vi += dv;
@@ -266,13 +266,13 @@
 								{
 									if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel32 (int(ui * zi), int(vi * zi));
+										textel = bitmapData.getPixel32 (ui * zi, vi * zi);
 									}else
 									{
-										textel = bitmapData.getPixel32 (int(ui), int(vi));
+										textel = bitmapData.getPixel32 (ui, vi);
 									}
 									target.setPixel32 (xi, yi,textel);
-									buffer.setPixel (xi, yi, int(zi));
+									buffer.setPixel (xi, yi, zi);
 								}
 								ui += du;
 								vi += dv;

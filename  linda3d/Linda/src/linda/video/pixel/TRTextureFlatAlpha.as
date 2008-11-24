@@ -184,17 +184,18 @@
 								if (zi < oldZ)
 								{
 									bgColor = target.getPixel (xi, yi);
+									
 									if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel (int(ui * zi), int(vi * zi));
+										textel = bitmapData.getPixel (ui * zi, vi * zi);
 									}else
 									{
-										textel = bitmapData.getPixel (int(ui), int(vi));
+										textel = bitmapData.getPixel (ui, vi);
 									}
-									target.setPixel (xi, yi,
-									( int((textel >> 16 & 0xFF) * alpha + invAlpha * (bgColor >> 16 & 0xFF) ) << 16 |
-									  int((textel >> 8 & 0xFF) * alpha + invAlpha * (bgColor >> 8 & 0xFF)) << 8 |
-									  int((textel & 0xFF) * alpha + invAlpha * (bgColor & 0xFF))));
+									color=( ((textel >> 16 & 0xFF) * alpha + invAlpha * (bgColor >> 16 & 0xFF) ) << 16 |
+									        ((textel >> 8 & 0xFF) * alpha + invAlpha * (bgColor >> 8 & 0xFF))    << 8  |
+									        ((textel & 0xFF) * alpha + invAlpha * (bgColor & 0xFF)));
+									target.setPixel (xi, yi,color);
 								}
 								ui += du;
 								vi += dv;
@@ -301,16 +302,15 @@
 									bgColor = target.getPixel (xi, yi);
 									if(perspectiveCorrect)
 									{
-										
-										textel = bitmapData.getPixel (int(ui * zi), int(vi * zi));
+										textel = bitmapData.getPixel (ui * zi, vi * zi);
 									}else
 									{
-										textel = bitmapData.getPixel (int(ui), int(vi));
+										textel = bitmapData.getPixel (ui, vi);
 									}
-									target.setPixel (xi, yi,
-									( int((textel >> 16 & 0xFF) * alpha + invAlpha * (bgColor >> 16 & 0xFF) ) << 16 |
-									  int((textel >> 8 & 0xFF) * alpha + invAlpha * (bgColor >> 8 & 0xFF)) << 8 |
-									  int((textel & 0xFF) * alpha + invAlpha * (bgColor & 0xFF))));
+									color=( ((textel >> 16 & 0xFF) * alpha + invAlpha * (bgColor >> 16 & 0xFF) ) << 16 |
+									        ((textel >> 8 & 0xFF) * alpha + invAlpha * (bgColor >> 8 & 0xFF))    << 8  |
+									        ((textel & 0xFF) * alpha + invAlpha * (bgColor & 0xFF)));
+									target.setPixel (xi, yi,color);
 								}
 								ui += du;
 								vi += dv;

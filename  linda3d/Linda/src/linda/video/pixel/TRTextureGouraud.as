@@ -79,7 +79,7 @@
 
 			for (var i : int = 0; i < indexCount; i += 3)
 			{
-				ii=indexList [int(i+ 0)];
+				ii=indexList [i];
 				vt0 = vertices [ii];
 				ii=indexList [int(i+ 1)];
 				vt1 = vertices [ii];
@@ -239,15 +239,15 @@
 								{
 									if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel (int(ui * zi), int(vi * zi));
+										textel = bitmapData.getPixel (ui * zi, vi * zi);
 									}else
 									{
-										textel = bitmapData.getPixel (int(ui), int(vi));
+										textel = bitmapData.getPixel (ui, vi);
 									}
-									target.setPixel (xi, yi,(
-									(((textel >> 16 & 0xFF) * ri) >> 8) << 16 |
-									(((textel >> 8 & 0xFF) * gi) >> 8) << 8 |
-									(((textel & 0xFF) * bi) >> 8)));
+									color=((((textel >> 16 & 0xFF) * ri) >> 8) << 16 |
+									       (((textel >> 8 & 0xFF) * gi) >> 8)  << 8  |
+									       ((textel & 0xFF) * bi) >> 8);
+									target.setPixel (xi, yi,color);
 									buffer.setPixel (xi, yi, zi);
 								}
 								ui += du; vi += dv; zi += dz;
@@ -383,15 +383,15 @@
 								{
 									if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel (int(ui * zi), int(vi * zi));
+										textel = bitmapData.getPixel (ui * zi, vi * zi);
 									}else
 									{
-										textel = bitmapData.getPixel (int(ui), int(vi));
+										textel = bitmapData.getPixel (ui, vi);
 									}
-									target.setPixel (xi, yi,(
-									(((textel >> 16 & 0xFF) * ri) >> 8) << 16 |
-									(((textel >> 8 & 0xFF) * gi) >> 8) << 8 |
-									(((textel & 0xFF) * bi) >> 8)));
+									color=((((textel >> 16 & 0xFF) * ri) >> 8) << 16 |
+									       (((textel >> 8 & 0xFF) * gi) >> 8)  << 8  |
+									       ((textel & 0xFF) * bi) >> 8);
+									target.setPixel (xi, yi,color);
 									buffer.setPixel (xi, yi, zi);
 								}
 								ui += du; vi += dv; zi += dz;

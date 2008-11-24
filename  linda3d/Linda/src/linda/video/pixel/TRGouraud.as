@@ -49,7 +49,7 @@
 
 			for (var i : int = 0; i < indexCount; i += 3)
 			{
-				ii=indexList [int(i+ 0)];
+				ii=indexList [i];
 				vt0 = vertices [ii];
 				ii=indexList [int(i+ 1)];
 				vt1 = vertices [ii];
@@ -164,7 +164,8 @@
 								oldZ=buffer.getPixel (xi, yi);
 								if (zi < oldZ)
 								{
-									target.setPixel (xi, yi,(ri << 16 | gi << 8 | bi ));
+									color=(ri << 16 | gi << 8 | bi );
+									target.setPixel (xi, yi,color);
 									buffer.setPixel (xi, yi,zi);
 								}
 								zi += dz;
@@ -272,7 +273,8 @@
 								oldZ=buffer.getPixel (xi, yi);
 								if (zi < oldZ)
 								{
-									target.setPixel (xi, yi,(ri << 16 | gi << 8 | bi ));
+									color=(ri << 16 | gi << 8 | bi );
+									target.setPixel (xi, yi,color);
 									buffer.setPixel (xi, yi,zi);
 								}
 								zi += dz;
