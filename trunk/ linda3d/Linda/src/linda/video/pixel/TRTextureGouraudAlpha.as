@@ -381,7 +381,6 @@
 									bgColor = target.getPixel (xi,yi);
 									if(perspectiveCorrect)
 									{
-										
 										textel = bitmapData.getPixel (int(ui * zi), int(vi * zi));
 									}else
 									{

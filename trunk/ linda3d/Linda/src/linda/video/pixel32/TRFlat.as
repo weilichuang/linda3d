@@ -109,7 +109,7 @@
 								if (zi < oldZ)
 								{
 									target.setPixel32 (xi, yi, color);
-									buffer.setPixel (xi, yi, int(zi));
+									buffer.setPixel (xi, yi, zi);
 								}
 								zi += dz;
 							}

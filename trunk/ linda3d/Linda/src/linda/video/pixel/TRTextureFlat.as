@@ -118,7 +118,6 @@
 				ystart = y0;
 				if(type==0)
 				{
-					
 						dyl = 1 / (y1 - y0);
 						dxdyl = (x1 - x0) * dyl;
 						dzdyl = (z1 - z0) * dyl;
@@ -188,7 +187,7 @@
 										textel = bitmapData.getPixel (int(ui), int(vi));
 									}
 									target.setPixel (xi, yi,textel);
-									buffer.setPixel (xi, yi, int(zi));
+									buffer.setPixel (xi, yi, zi);
 								}
 								ui += du;
 								vi += dv;
@@ -300,7 +299,7 @@
 										textel = bitmapData.getPixel (int(ui), int(vi));
 									}
 									target.setPixel (xi, yi,textel);
-									buffer.setPixel (xi, yi, int(zi));
+									buffer.setPixel (xi, yi, zi);
 								}
 								ui += du;
 								vi += dv;

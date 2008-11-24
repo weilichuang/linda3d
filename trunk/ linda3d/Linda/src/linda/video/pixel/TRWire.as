@@ -31,11 +31,11 @@
 					x2 = vt2.x;
 					y2 = vt2.y;
 					z2 = vt2.w;
-					color = (0xFF000000 | vt0.r << 16 | vt0.g << 8 | vt0.b );
+					color = (vt0.r << 16 | vt0.g << 8 | vt0.b );
 					bresenham (x0, y0, x1, y1, color);
-					color = (0xFF000000 | vt1.r << 16 | vt1.g << 8 | vt1.b );
+					color = (vt1.r << 16 | vt1.g << 8 | vt1.b );
 					bresenham (x1, y1, x2, y2, color);
-					color = (0xFF000000 | vt2.r << 16 | vt2.g << 8 | vt2.b );
+					color = (vt2.r << 16 | vt2.g << 8 | vt2.b );
 					bresenham (x2, y2, x0, y0, color);
 				}
 			} else
@@ -185,7 +185,7 @@
 					if (z1 < oldZ)
 					{
 						bgColor = target.getPixel (x1, y1);
-						target.setPixel (x1, y1, (0xFF000000 |  (alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 |  (alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 |  (alpha * b + invAlpha * (bgColor & 0xFF))));
+						target.setPixel (x1, y1, ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 |  (alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 |  (alpha * b + invAlpha * (bgColor & 0xFF))));
 					}
 					error += dx;
 					if (error > 0 )
@@ -206,7 +206,7 @@
 					if (z1 < oldZ)
 					{
 						bgColor = target.getPixel (x0, y0);
-						target.setPixel (x0, y0, (0xFF000000 |  (alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | (alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | (alpha * b + invAlpha * (bgColor & 0xFF))));
+						target.setPixel (x0, y0, ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | (alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | (alpha * b + invAlpha * (bgColor & 0xFF))));
 					}
 					error += dy;
 					if (error > 0 )

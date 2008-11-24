@@ -107,7 +107,6 @@
 							}
 							for (xi = xstart; xi < xend; xi +=1)
 							{
-								//background Color
 								bgColor = target.getPixel32 (xi, yi);
 								bga = bgColor >> 24 & 0xFF ;
 								oldZ=buffer.getPixel (xi, yi);

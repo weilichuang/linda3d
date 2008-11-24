@@ -176,7 +176,6 @@
 								oldZ=buffer.getPixel (xi, yi);
 								if (zi < oldZ)
 								{
-									//background Color
 								    bgColor = target.getPixel (xi, yi);
 									target.setPixel (xi, yi, (int(alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | int(alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | int(alpha * b + invAlpha * (bgColor & 0xFF))));
 								}
