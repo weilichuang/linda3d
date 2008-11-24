@@ -63,7 +63,7 @@
 			{
 				vertex = verts [i];
 				vertices.push (vertex);
-				boundingBox.addXYZ (vertex.x, vertex.y, vertex.z);
+				boundingBox.addVertex(vertex);
 			}
 			for (i = 0; i < numIndices; i+=1)
 			{
