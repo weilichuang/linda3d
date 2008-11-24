@@ -108,7 +108,7 @@
 					if (z1 < oldZ)
 					{
 						target.setPixel (x1, y1, value );
-						buffer.setPixel (x1, y1, int (z1));
+						buffer.setPixel (x1, y1, z1);
 					}
 					error += dx;
 					if (error > 0 )
@@ -185,7 +185,7 @@
 					if (z1 < oldZ)
 					{
 						bgColor = target.getPixel (x1, y1);
-						target.setPixel (x1, y1, (0xFF000000 | int (alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | int (alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | int (alpha * b + invAlpha * (bgColor & 0xFF))));
+						target.setPixel (x1, y1, (0xFF000000 |  (alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 |  (alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 |  (alpha * b + invAlpha * (bgColor & 0xFF))));
 					}
 					error += dx;
 					if (error > 0 )
@@ -206,7 +206,7 @@
 					if (z1 < oldZ)
 					{
 						bgColor = target.getPixel (x0, y0);
-						target.setPixel (x0, y0, (0xFF000000 | int (alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | int (alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | int (alpha * b + invAlpha * (bgColor & 0xFF))));
+						target.setPixel (x0, y0, (0xFF000000 |  (alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | (alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | (alpha * b + invAlpha * (bgColor & 0xFF))));
 					}
 					error += dy;
 					if (error > 0 )

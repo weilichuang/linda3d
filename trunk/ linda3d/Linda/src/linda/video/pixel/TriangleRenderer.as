@@ -149,7 +149,7 @@
 						if (z1 < buffer.getPixel (x1, y1))
 						{
 					    	target.setPixel( x1, y1, color );
-					   	 	buffer.setPixel(x1,y1,int(z1));
+					   	 	buffer.setPixel(x1,y1,z1);
 						}
 						error += dx;
 						if( error > 0 )
@@ -169,7 +169,7 @@
 						if (z1 < buffer.getPixel (x0, y0))
 						{
 					   	 	target.setPixel( x0, y0, color );
-					    	buffer.setPixel(x0,y0,int(z1));
+					    	buffer.setPixel(x0,y0,z1);
 						}
 						error += dy;
 						if( error > 0 )

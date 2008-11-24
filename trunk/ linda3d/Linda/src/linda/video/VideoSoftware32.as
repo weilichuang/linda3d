@@ -10,11 +10,6 @@
 	import linda.material.Material;
 	import linda.math.*;
 	import linda.mesh.IMeshBuffer;
-	import linda.video.ITriangleRenderer;
-	import linda.video.IVideoDriver;
-	import linda.video.TRType;
-	import linda.video.VideoNull;
-	import linda.video.VideoType;
 	import linda.video.pixel32.*;
 
 	public class VideoSoftware32 extends VideoNull implements IVideoDriver
@@ -69,11 +64,13 @@
 			screenSize = size;
 			//render target
 			targetBitmap = new Bitmap ();
-			targetBitmap.smoothing = false;
+			targetBitmap.smoothing = true;
 			targetBitmap.cacheAsBitmap = false;
 			targetBitmap.bitmapData = new BitmapData (screenSize.width, screenSize.height, true, 0x0);
 			renderTarget.addChild (targetBitmap);
+			
 			buffer =new BitmapData (screenSize.width, screenSize.height, false, 0xffffff);
+			
 			_clip_scale = new Matrix4 ();
 			_clip_scale.buildNDCToDCMatrix(screenSize,1);
 			//render
@@ -87,6 +84,8 @@
 			triangleRenderers [TRType.GOURAUD_ALPHA] = new TRGouraudAlpha ();
 			triangleRenderers [TRType.TEXTURE_FLAT_ALPHA] = new TRTextureFlatAlpha ();
 			triangleRenderers [TRType.TEXTURE_GOURAUD_ALPHA] = new TRTextureGouraudAlpha ();
+			
+			
 			//预存一些点
 			_transformedPoints = new Vector.<Vertex4D> ();
 			for (var i : int = 0; i < 2000; i+=1)
@@ -99,6 +98,8 @@
 			_projection = new Matrix4 ();
 			_view_project = new Matrix4 ();
 			_world_inv = new Matrix4 ();
+			
+			
 			var count:int=getMaxLightAmount();
 			_lightsDir = new Vector.<Vector3D> (count,true);
 			_lightsPos = new Vector.<Vector3D> (count,true);
@@ -107,6 +108,7 @@
 				_lightsDir[i]=new Vector3D();
 				_lightsPos[i]=new Vector3D();
 			}
+			
 			_invCamPos = new Vector3D ();
 			_old_cam_position = new Vector3D ();
 			/*
@@ -114,15 +116,15 @@
 			special case ndc frustum <-w,w>,<-w,w>,<-w,w>
 			can be rewritten with compares e.q near plane, a.z < -a.w and b.z < -b.w
 			*/
-			_ndc_planes = new Vector.<Vector3D>();
+			_ndc_planes = new Vector.<Vector3D>(6,true);
 			
-			_ndc_planes.push(new Vector3D (0.0, 0.0, - 1.0, - 1.0 ) , // near
-			               new Vector3D (0.0, 0.0, 1.0, - 1.0 ) , // far
-			               new Vector3D (1.0, 0.0, 0.0, - 1.0 ) , // left
-			               new Vector3D ( - 1.0, 0.0, 0.0, - 1.0 ) , // right
-			               new Vector3D (0.0, 1.0, 0.0, - 1.0 ) , // bottom
-			               new Vector3D (0.0, - 1.0, 0.0, - 1.0 ) //top
-			               );
+			_ndc_planes[0]=new Vector3D (0.0, 0.0, -1.0, -1.0 ); // near
+			_ndc_planes[1]=new Vector3D (0.0, 0.0, 1.0, -1.0 ); // far
+			_ndc_planes[2]=new Vector3D (1.0, 0.0, 0.0, -1.0 ); // left
+			_ndc_planes[3]=new Vector3D ( -1.0, 0.0, 0.0, -1.0); // right
+			_ndc_planes[4]=new Vector3D (0.0, 1.0, 0.0, -1.0 ); // bottom
+			_ndc_planes[5]=new Vector3D (0.0, -1.0, 0.0, -1.0); //top
+
 			// arrays for storing clipped vertices & indices
 			_clipped_indices = new Vector.<int> ();
 			_clipped_vertices = new Vector.<Vertex4D> ();
@@ -409,7 +411,7 @@
 			var bDotPlane : Number;
 			var t : Number;
 
-			var len : int = triangleCount * 2;
+			var len : int = triangleCount * 6;
 			var _transformLen : int = _transformedPoints.length;
 			var i : int;
 			if (_transformLen < len)
@@ -494,16 +496,17 @@
 			var globalG : int = ambientColor.g + memi.g;
 			var globalB : int = ambientColor.b + memi.b;
 			
-			for (i = 0; i < triangleCount; i += 3)
+			var ii:int;
+			for (ii = 0; ii < triangleCount; ii += 3)
 			{
-				v0 = vertices [int (indexList [int (i + 0)])];
-				v1 = vertices [int (indexList [int (i + 1)])];
-				v2 = vertices [int (indexList [int (i + 2)])];
+				v0 = vertices [int (indexList [int (ii + 0)])];
+				v1 = vertices [int (indexList [int (ii + 1)])];
+				v2 = vertices [int (indexList [int (ii + 2)])];
 				if (backfaceCulling)
 				{
 					if (((v1.y - v0.y) * (v2.z - v0.z) - (v1.z - v0.z) * (v2.y - v0.y)) * (_invCamPos.x - v0.x) +
-					((v1.z - v0.z) * (v2.x - v0.x) - (v1.x - v0.x) * (v2.z - v0.z)) * (_invCamPos.y - v0.y) +
-					((v1.x - v0.x) * (v2.y - v0.y) - (v1.y - v0.y) * (v2.x - v0.x)) * (_invCamPos.z - v0.z) <= 0)
+					    ((v1.z - v0.z) * (v2.x - v0.x) - (v1.x - v0.x) * (v2.z - v0.z)) * (_invCamPos.y - v0.y) +
+					    ((v1.x - v0.x) * (v2.y - v0.y) - (v1.y - v0.y) * (v2.x - v0.x)) * (_invCamPos.z - v0.z) <= 0)
 					{
 						continue;
 					}
@@ -664,7 +667,6 @@
 										dif_b_sum0 += (diffuse.b * dp);
 									}
 								} else if (light.type == 1) //POINT
-								
 								{
 									l.x = pos.x - v0.x;
 									l.y = pos.y - v0.y;
@@ -684,7 +686,6 @@
 										dif_b_sum0 += (diffuse.b * k);
 									}
 								} //SPOT
-								
 								{
 									l.x = pos.x - v0.x;
 									l.y = pos.y - v0.y;
@@ -693,7 +694,7 @@
 									if (dp > 0)
 									{
 										dist2 = l.x * l.x + l.y * l.y + l.z * l.z;
-										dist = Math.sqrt (dist2);
+										dist = Math.sqrt(dist2);
 										atten = 1 / ((kc + kl * dist + kq * dist2) * nlen);
 										dpsl = (l.x * dir.x + l.y * dir.y + l.z * dir.z) / dist;
 										if (dpsl > 0 )
@@ -968,6 +969,7 @@
 					tv2.u = v2.u ;
 					tv2.v = v2.v ;
 				}
+				
 				if (clipcount == 0) // no clipping required
 				{
 					//tv0
@@ -1009,6 +1011,8 @@
 				_unclipped_vertices [2] = tv2;
 				source = _unclipped_vertices;
 				outCount = 3;
+				
+				
 				// ----------------------------------------------------------------
 				// clip in NDC Space to Frustum
 				// ----------------------------------------------------------------
@@ -1663,7 +1667,7 @@
 		}
 		public function getZBuffer():BitmapData
 		{
-			return this.buffer;
+			return buffer;
 		}
 	}
 }
