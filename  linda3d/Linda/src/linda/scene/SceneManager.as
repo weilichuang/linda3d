@@ -1,11 +1,11 @@
 ﻿package linda.scene
 {
+	import __AS3__.vec.Vector;
+	
 	import flash.utils.getTimer;
-
+	
 	import linda.math.AABBox3D;
 	import linda.math.Matrix4;
-	import linda.mesh.MeshCache;
-	import linda.scene.CameraSceneNode;
 	import linda.video.IVideoDriver;
 
 	public class SceneManager extends SceneNode
@@ -13,8 +13,8 @@
 		private var _driver : IVideoDriver;
 		private var _viewFrustum : ViewFrustum;
 		private var _activeCamera : CameraSceneNode;
-		private var _lightList : Array = [];
-		private var _cameraList : Array = [];
+		private var _lightList :Vector.<LightSceneNode>;
+
 		private var _skyBoxList : Array = [];
 		private var _solidList : Array = [];
 		private var _transparentList : Array = [];
@@ -24,6 +24,8 @@
 		public function SceneManager (driver : IVideoDriver = null)
 		{
 			super (null);
+			
+			_lightList=new Vector.<LightSceneNode>();
 			setVideoDriver(driver);
 		}
 		override public function destroy():void
@@ -33,7 +35,6 @@
 			_viewFrustum=null;
 			_activeCamera=null;
 			_lightList=null;
-			_cameraList=null;
 			_skyBoxList=null;
 			_solidList=null;
 			_transparentList=null;
@@ -60,7 +61,6 @@
 			switch (type)
 			{
 				case CAMERA :
-				_cameraList.push (node);
 				break;
 				case LIGHT :
 				_lightList.push (node);
@@ -98,7 +98,6 @@
 				throw new Error ("需要指定活动的相机");
 			}
 			_activeCamera.render ();
-			_cameraList = [];
 
 			//render lights
 			_driver.removeAllLights();
@@ -106,10 +105,10 @@
 			var len : int = _lightList.length;
 			for (var i : int = 0; i < len; i+=1)
 			{
-				var node : SceneNode = _lightList [i];
+				var node :LightSceneNode = _lightList [i];
 				node.render ();
 			}
-			_lightList = [];
+			_lightList=new Vector.<LightSceneNode>();
 			
 			
 			// render skyboxes
