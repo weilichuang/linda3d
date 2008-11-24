@@ -45,6 +45,7 @@
 		protected var _clipped_vertices4 : Vector.<Vertex4D>;
 		protected var _lightsDir : Vector.<Vector3D>;
 		protected var _lightsPos : Vector.<Vector3D>;
+		
 		//line points
 		protected var _transformedLinePoints : Vector.<Vertex4D>;
 		protected var _clipped_line_vertices : Vector.<Vertex4D>;
@@ -446,7 +447,6 @@
 				    light = _lights [i];
 				    if ((light.type == Light.SPOT) || (light.type == Light.DIRECTIONAL))
 				    {
-				    	//_world_inv.rotateVector2(light.direction,dir);
 				    	var x:Number = light.direction.x;
 				    	var y:Number = light.direction.y;
 				    	var z:Number = light.direction.z;
@@ -457,13 +457,12 @@
 				    }
 				    if ((light.type == Light.SPOT) || (light.type == Light.POINT))
 				    {
-					    //_world_inv.transformVector2(light.position,pos);
 					    x = light.position.x;
 					    y = light.position.y;
 					    z = light.position.z;
-					    pos.x = (_world_inv.m00 * x + _world_inv.m10 * y + _world_inv.m20 * z + _world_inv.m30);
-					    pos.y = (_world_inv.m01 * x + _world_inv.m11 * y + _world_inv.m21 * z + _world_inv.m31);
-					    pos.z = (_world_inv.m02 * x + _world_inv.m12 * y + _world_inv.m22 * z + _world_inv.m32);
+					    pos.x = _world_inv.m00 * x + _world_inv.m10 * y + _world_inv.m20 * z + _world_inv.m30;
+					    pos.y = _world_inv.m01 * x + _world_inv.m11 * y + _world_inv.m21 * z + _world_inv.m31;
+					    pos.z = _world_inv.m02 * x + _world_inv.m12 * y + _world_inv.m22 * z + _world_inv.m32;
 				    }
 			    }
 			}
@@ -502,6 +501,7 @@
 				v0 = vertices [int (indexList [int (ii + 0)])];
 				v1 = vertices [int (indexList [int (ii + 1)])];
 				v2 = vertices [int (indexList [int (ii + 2)])];
+				
 				if (backfaceCulling)
 				{
 					if (((v1.y - v0.y) * (v2.z - v0.z) - (v1.z - v0.z) * (v2.y - v0.y)) * (_invCamPos.x - v0.x) +
@@ -514,6 +514,7 @@
 				tv0 = _transformedPoints [int (tCount ++)];
 				tv1 = _transformedPoints [int (tCount ++)];
 				tv2 = _transformedPoints [int (tCount ++)];
+				
 				//	- transform Model * World * Camera * Projection matrix ,then after clip and light * NDCSpace matrix
 				tv0.x = m00 * v0.x + m10 * v0.y + m20 * v0.z + m30;
 				tv0.y = m01 * v0.x + m11 * v0.y + m21 * v0.z + m31;
@@ -1027,7 +1028,7 @@
 					plane = _ndc_planes [1];
 					b = source [0];
 					bDotPlane = (b.z * plane.z) + (b.w * plane.w);
-					for (var i:int = 1; i < inCount + 1; i+=1)
+					for (i = 1; i < inCount + 1; i+=1)
 					{
 						a = source [int(i % inCount)];
 						aDotPlane = (a.z * plane.z) + (a.w * plane.w);
@@ -1468,6 +1469,7 @@
 			var v0 : Vertex, v1 : Vertex;
 			var tv0 : Vertex4D, tv1 : Vertex4D;
 			var iCount : int, vCount : int;
+			var vCount2:int;
 			var len : int = _transformedLinePoints.length;
 			if (len < indexCount)
 			{
@@ -1498,12 +1500,16 @@
 			var csm31 : Number = _clip_scale.m31;
 			iCount = 0;
 			vCount = 0;
+			vCount2= 0;
+			
 			// used for clipping
 			var plane : Vector3D;
+			
+			
 			for (i = 0; i < indexCount; i += 2)
 			{
-				v0 = vertices [int (indexList [int (i + 0)])];
-				v1 = vertices [int (indexList [int (i + 1)])];
+				v0 = vertices [indexList[i]];
+				v1 = vertices [indexList[int(i + 1)]];
 				tv0 = _transformedLinePoints [int (vCount ++)];
 				tv1 = _transformedLinePoints [int (vCount ++)];
 				tv0.x = m00 * v0.x + m10 * v0.y + m20 * v0.z + m30;
@@ -1616,21 +1622,21 @@
 				var tmp : Number = 1 / tv0.w ;
 				tv0.x = (tv0.x * csm00) * tmp + csm30;
 				tv0.y = (tv0.y * csm11) * tmp + csm31;
-				tv0.iy=int(tv0.y)+1;
+				tv0.iy=Math.round(tv0.y);
 				tmp = 1 / tv1.w ;
 				tv1.x = (tv1.x * csm00) * tmp + csm30;
 				tv1.y = (tv1.y * csm11) * tmp + csm31;
-				tv1.iy=int(tv1.y)+1;
-				_clipped_line_indices [iCount] = vCount;
+				tv1.iy=Math.round(tv1.y);
+				_clipped_line_indices [iCount] = vCount2;
 				iCount ++;
-				_clipped_line_vertices [vCount] = tv0;
-				vCount ++;
-				_clipped_line_indices [iCount] = vCount;
+				_clipped_line_vertices [vCount2] = tv0;
+				vCount2 ++;
+				_clipped_line_indices [iCount] = vCount2;
 				iCount ++;
-				_clipped_line_vertices [vCount] = tv1;
-				vCount ++;
+				_clipped_line_vertices [vCount2] = tv1;
+				vCount2 ++;
 			}
-			currentTriangleRenderer.drawIndexedLineList (_clipped_line_vertices, vCount, _clipped_line_indices, iCount);
+			currentTriangleRenderer.drawIndexedLineList (_clipped_line_vertices, vCount2, _clipped_line_indices, iCount);
 		}
 		override public function drawStencilShadowVolume (vertices : Vector.<Vertex>, vertexCount : int, useZFailMethod : Boolean) : void
 		{

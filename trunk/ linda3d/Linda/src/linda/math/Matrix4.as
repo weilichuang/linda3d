@@ -105,7 +105,7 @@
 		}
 		public function projectionPerspective(fov : Number, aspect : Number, zNear : Number, zFar : Number) : void
 		{
-			var halffov : Number = fov * 0.5 * 0.01745329;
+			var halffov : Number = fov * 0.5 * MathUtil.PI_OVER_ONE_EIGHTY;
 			var h : Number = Math.tan(halffov);
 			var w : Number = h / aspect;
 			m00 = 2. * zNear / w;
@@ -221,9 +221,9 @@
 		}
 		public function setRotation (rotation : Vector3D) : void
 		{
-			var rx : Number = rotation.x * 0.017453292519943;
-			var ry : Number = rotation.y * 0.017453292519943;
-			var rz : Number = rotation.z * 0.017453292519943;
+			var rx : Number = rotation.x * MathUtil.PI_OVER_ONE_EIGHTY;
+			var ry : Number = rotation.y * MathUtil.PI_OVER_ONE_EIGHTY;
+			var rz : Number = rotation.z * MathUtil.PI_OVER_ONE_EIGHTY;
 
 			var cr : Number = Math.cos (rx );
 			var sr : Number = Math.sin (rx );
@@ -300,9 +300,9 @@
 			{
 				z += MathUtil.TWO_PI;
 			}
-			x = x * 57.2957795;
-			y = y * 57.2957795;
-			z = z * 57.2957795;
+			x = x * MathUtil.ONE_EIGHTY_OVER_PI;
+			y = y * MathUtil.ONE_EIGHTY_OVER_PI;
+			z = z * MathUtil.ONE_EIGHTY_OVER_PI;
 			return new Vector3D (x, y, z);
 		}
 		public function getTranslation () : Vector3D
@@ -429,18 +429,12 @@
 		}
 		public function translateVertex(vect:Vertex):void
 		{
-			var x : Number = vect.x;
-			var y : Number = vect.y;
-			var z : Number = vect.z;
 			vect.x += m30;
 			vect.y += m31;
 			vect.z += m32;
 		}
 		public function translateVector(vect:Vector3D):void
 		{
-			var x : Number = vect.x;
-			var y : Number = vect.y;
-			var z : Number = vect.z;
 			vect.x += m30;
 			vect.y += m31;
 			vect.z += m32;

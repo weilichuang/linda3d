@@ -37,7 +37,7 @@
 		public function normalize () : void
 		{
 			var n : Number = Math.sqrt (x * x + y * y);
-			n = (n < 0.0001) ? 0 : 1/n;
+			n = (n < MathUtil.ROUNDING_ERROR) ? 0 : 1/n;
 			x *= n;
 			y *= n;
 		}
