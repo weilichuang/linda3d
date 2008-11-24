@@ -370,9 +370,11 @@
 		}
 		public function updateAbsoluteMatrix () : void
 		{
-			var rx : Number = _relativeRotation.x * 0.017453292519943;
-			var ry : Number = _relativeRotation.y * 0.017453292519943;
-			var rz : Number = _relativeRotation.z * 0.017453292519943;
+			var POE:Number=MathUtil.PI_OVER_ONE_EIGHTY;
+			
+			var rx : Number = _relativeRotation.x * POE;
+			var ry : Number = _relativeRotation.y * POE;
+			var rz : Number = _relativeRotation.z * POE;
 
 			var cr : Number = Math.cos (rx);
 			var sr : Number = Math.sin (rx);
@@ -382,34 +384,33 @@
 			var sy : Number = Math.sin (rz);
             var srsp : Number = sr * sp;
 			var crsp : Number = cr * sp;
-			
-			
+
 			_relativeMatrix.m00 = (cp * cy );
 			_relativeMatrix.m01 = (cp * sy );
 			_relativeMatrix.m02 = ( - sp );
-			_relativeMatrix.m03 = 0;
 			_relativeMatrix.m10 = (srsp * cy - cr * sy );
 			_relativeMatrix.m11 = (srsp * sy + cr * cy );
 			_relativeMatrix.m12 = (sr * cp );
-			_relativeMatrix.m13 = 0;
 			_relativeMatrix.m20 = (crsp * cy + sr * sy );
 			_relativeMatrix.m21 = (crsp * sy - sr * cy );
 			_relativeMatrix.m22 = (cr * cp );
-			_relativeMatrix.m23 = 0;
 			_relativeMatrix.m30 = _relativeTranslation.x;
 			_relativeMatrix.m31 = _relativeTranslation.y;
 			_relativeMatrix.m32 = _relativeTranslation.z;
-			_relativeMatrix.m33 = 1;
+			
+			rx=_relativeScale.x;
+			ry=_relativeScale.y;
+			rz=_relativeScale.z;
 
-			_relativeMatrix.m00 *= _relativeScale.x ;
-			_relativeMatrix.m01 *= _relativeScale.x ;
-			_relativeMatrix.m02 *= _relativeScale.x ;
-			_relativeMatrix.m10 *= _relativeScale.y ;
-			_relativeMatrix.m11 *= _relativeScale.y ;
-			_relativeMatrix.m12 *= _relativeScale.y ;
-			_relativeMatrix.m20 *= _relativeScale.z ;
-			_relativeMatrix.m21 *= _relativeScale.z ;
-			_relativeMatrix.m22 *= _relativeScale.z ;
+			_relativeMatrix.m00 *= rx ;
+			_relativeMatrix.m01 *= rx ;
+			_relativeMatrix.m02 *= rx ;
+			_relativeMatrix.m10 *= ry ;
+			_relativeMatrix.m11 *= ry ;
+			_relativeMatrix.m12 *= ry ;
+			_relativeMatrix.m20 *= rz ;
+			_relativeMatrix.m21 *= rz ;
+			_relativeMatrix.m22 *= rz ;
 
 			if (_parent)
 			{
@@ -418,38 +419,36 @@
 				_absoluteMatrix.m00 = absolute.m00 * _relativeMatrix.m00 + absolute.m10 * _relativeMatrix.m01 + absolute.m20 * _relativeMatrix.m02;
 			    _absoluteMatrix.m01 = absolute.m01 * _relativeMatrix.m00 + absolute.m11 * _relativeMatrix.m01 + absolute.m21 * _relativeMatrix.m02;
 			    _absoluteMatrix.m02 = absolute.m02 * _relativeMatrix.m00 + absolute.m12 * _relativeMatrix.m01 + absolute.m22 * _relativeMatrix.m02;
-			    _absoluteMatrix.m03 = 0.;
+
 			    _absoluteMatrix.m10 = absolute.m00 * _relativeMatrix.m10 + absolute.m10 * _relativeMatrix.m11 + absolute.m20 * _relativeMatrix.m12;
 			    _absoluteMatrix.m11 = absolute.m01 * _relativeMatrix.m10 + absolute.m11 * _relativeMatrix.m11 + absolute.m21 * _relativeMatrix.m12;
 			    _absoluteMatrix.m12 = absolute.m02 * _relativeMatrix.m10 + absolute.m12 * _relativeMatrix.m11 + absolute.m22 * _relativeMatrix.m12;
-			    _absoluteMatrix.m13 = 0.;
+
 			    _absoluteMatrix.m20 = absolute.m00 * _relativeMatrix.m20 + absolute.m10 * _relativeMatrix.m21 + absolute.m20 * _relativeMatrix.m22;
 			    _absoluteMatrix.m21 = absolute.m01 * _relativeMatrix.m20 + absolute.m11 * _relativeMatrix.m21 + absolute.m21 * _relativeMatrix.m22;
 			    _absoluteMatrix.m22 = absolute.m02 * _relativeMatrix.m20 + absolute.m12 * _relativeMatrix.m21 + absolute.m22 * _relativeMatrix.m22;
-			    _absoluteMatrix.m23 = 0.;
+
 			    _absoluteMatrix.m30 = absolute.m00 * _relativeMatrix.m30 + absolute.m10 * _relativeMatrix.m31 + absolute.m20 * _relativeMatrix.m32 + absolute.m30;
 			    _absoluteMatrix.m31 = absolute.m01 * _relativeMatrix.m30 + absolute.m11 * _relativeMatrix.m31 + absolute.m21 * _relativeMatrix.m32 + absolute.m31;
 			    _absoluteMatrix.m32 = absolute.m02 * _relativeMatrix.m30 + absolute.m12 * _relativeMatrix.m31 + absolute.m22 * _relativeMatrix.m32 + absolute.m32;
-			    _absoluteMatrix.m33 = 1.;
 			} 
 			else
 			{
 				_absoluteMatrix.m00 = _relativeMatrix.m00;
 				_absoluteMatrix.m01 = _relativeMatrix.m01;
 				_absoluteMatrix.m02 = _relativeMatrix.m02;
-				_absoluteMatrix.m03 = 0;
+
 				_absoluteMatrix.m10 = _relativeMatrix.m10;
 				_absoluteMatrix.m11 = _relativeMatrix.m11;
 				_absoluteMatrix.m12 = _relativeMatrix.m12;
-				_absoluteMatrix.m13 = 0;
+
 				_absoluteMatrix.m20 = _relativeMatrix.m20;
 				_absoluteMatrix.m21 = _relativeMatrix.m21;
 				_absoluteMatrix.m22 = _relativeMatrix.m22;
-				_absoluteMatrix.m23 = 0;
+
 				_absoluteMatrix.m30 = _relativeMatrix.m30;
 				_absoluteMatrix.m31 = _relativeMatrix.m31;
 				_absoluteMatrix.m32 = _relativeMatrix.m32;
-				_absoluteMatrix.m33 = 1;
 			}
 		}
 

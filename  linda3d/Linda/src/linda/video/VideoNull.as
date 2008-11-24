@@ -45,7 +45,13 @@
 			_tmp_lines[0]=new Vertex ();
 			_tmp_lines[1]=new Vertex ();
 			_tmp_lines[2]=new Vertex ();
-			_tmp_lines_indices = new Vector.<int>([0, 1, 1 , 2 , 2, 0],true);
+			_tmp_lines_indices = new Vector.<int>(6,true);
+			_tmp_lines_indices[0]=0;
+			_tmp_lines_indices[1]=1;
+			_tmp_lines_indices[2]=1;
+			_tmp_lines_indices[3]=2;
+			_tmp_lines_indices[4]=2;
+			_tmp_lines_indices[5]=0;
 		}
 		public function getScreenSize () : Dimension2D
 		{
