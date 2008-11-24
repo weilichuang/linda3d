@@ -21,7 +21,7 @@
 		}
 		private function createCube (len : Number, width : Number, height : Number) : void
 		{
-			var indices : Vector.<int> = new Vector.<int>(36,true);
+			var indices : Vector.<int> = new Vector.<int>();
 			indices.push(0, 2, 1, 0, 3, 2, 1, 5, 4, 1, 2, 5, 4, 6, 7, 4, 5, 6,
 			             7, 3, 0, 7, 6, 3, 9, 5, 2, 9, 8, 5, 0, 11, 10, 0, 10, 7);
 			var color : uint = 0xffffff;
