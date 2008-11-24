@@ -122,7 +122,7 @@
 		
 		protected var perspectiveCorrect:Boolean=false;
 		protected var perspectiveDistance:Number=400;
-		protected var mipMapDistance:Number=800;
+		protected var mipMapDistance:Number=500;
 
 		protected var bitmapData:BitmapData;
 		
@@ -182,8 +182,8 @@
 			var temp:Number;
 			for (var i : int = 0; i < indexCount; i +=2)
 			{
-				vt0 = vertices [int(indexList [i + 0])];
-				vt1 = vertices [int(indexList [i + 1])];
+				vt0 = vertices [int(indexList [i])];
+				vt1 = vertices [int(indexList [int(i + 1)])];
 				
 				x0 = int (vt0.x + 0.5) , y0 = int (vt0.y + 0.5) , z0 = vt0.w;
 				x1 = int (vt1.x + 0.5) , y1 = int (vt1.y + 0.5) , z1 = vt1.w;
@@ -223,7 +223,7 @@
 						if (z1 < oldZ)
 						{
 					    	target.setPixel32( x1, y1, color );
-					   	 	buffer.setPixel(x1,y1,int(z1));
+					   	 	buffer.setPixel(x1,y1,z1);
 						}
 						error += dx;
 						if( error > 0 )
@@ -244,7 +244,7 @@
 						if (z1 < oldZ)
 						{
 					   	 	target.setPixel32( x0, y0, color );
-					    	buffer.setPixel(x0,y0,int(z1));
+					    	buffer.setPixel(x0,y0,z1);
 						}
 						error += dy;
 						if( error > 0 )

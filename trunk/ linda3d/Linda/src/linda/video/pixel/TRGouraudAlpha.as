@@ -55,7 +55,7 @@
 
 			for (var i : int = 0; i < indexCount; i += 3)
 			{
-				ii=indexList [int(i+ 0)];
+				ii=indexList [i];
 				vt0 = vertices [ii];
 				ii=indexList [int(i+ 1)];
 				vt1 = vertices [ii];
@@ -174,7 +174,10 @@
 								if (zi < oldZ)
 								{
 									bgColor = target.getPixel (xi, yi);
-									target.setPixel (xi, yi,(int(alpha * ri + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | int(alpha * gi + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | int(alpha * bi + invAlpha * (bgColor & 0xFF))));
+									color=((alpha * ri + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | 
+									       (alpha * gi + invAlpha * (bgColor >> 8 & 0xFF))  << 8  |
+									       (alpha * bi + invAlpha * (bgColor & 0xFF)));
+									target.setPixel (xi, yi,color);
 								}
 								zi += dz;
 								ri += dr; gi += dg; bi += db;
@@ -283,7 +286,10 @@
 								if (zi < oldZ)
 								{
 									bgColor = target.getPixel (xi, yi);
-									target.setPixel (xi, yi,(int(alpha * ri + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | int(alpha * gi + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | int(alpha * bi + invAlpha * (bgColor & 0xFF))));
+									color=((alpha * ri + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | 
+									       (alpha * gi + invAlpha * (bgColor >> 8 & 0xFF))  << 8  |
+									       (alpha * bi + invAlpha * (bgColor & 0xFF)));
+									target.setPixel (xi, yi,color);
 								}
 								zi += dz;
 								ri += dr; gi += dg; bi += db;

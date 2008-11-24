@@ -5,7 +5,6 @@
 	import linda.math.Vertex4D;
 	public class TRFlatAlpha extends TriangleRenderer
 	{
-		//todo 修改开始处交换方式
 		override public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
 		{
 			var r:int,b:int,g:int;
@@ -112,8 +111,8 @@
 								oldZ=buffer.getPixel (xi, yi);
 								if (bga < 0xFF || zi < oldZ)
 								{
-									//color = ((alpha*intAlpha+ invAlpha*bga) << 24 | (alpha*r + invAlpha*(bgColor >> 16 & 0xFF)) << 16 | (alpha*g + invAlpha*(bgColor >> 8 & 0xFF)) << 8  | (alpha*b + invAlpha*(bgColor & 0xFF)) );
-									target.setPixel32 (xi, yi, (int(alpha * intAlpha + invAlpha * bga) << 24 | int(alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | int(alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | int(alpha * b + invAlpha * (bgColor & 0xFF))));
+									color = ((alpha*intAlpha+ invAlpha*bga) << 24 | (alpha*r + invAlpha*(bgColor >> 16 & 0xFF)) << 16 | (alpha*g + invAlpha*(bgColor >> 8 & 0xFF)) << 8  | (alpha*b + invAlpha*(bgColor & 0xFF)) );
+									target.setPixel32 (xi, yi, color);
 								}
 								zi += dz;
 							}
@@ -177,7 +176,8 @@
 								oldZ=buffer.getPixel (xi, yi);
 								if (bga < 0xFF || zi < oldZ)
 								{
-									target.setPixel32 (xi, yi, (int(alpha * intAlpha + invAlpha * bga) << 24 | int(alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | int(alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | int(alpha * b + invAlpha * (bgColor & 0xFF))));
+									color = ((alpha*intAlpha+ invAlpha*bga) << 24 | (alpha*r + invAlpha*(bgColor >> 16 & 0xFF)) << 16 | (alpha*g + invAlpha*(bgColor >> 8 & 0xFF)) << 8  | (alpha*b + invAlpha*(bgColor & 0xFF)) );
+									target.setPixel32 (xi, yi, color);
 								}
 								zi += dz;
 							}

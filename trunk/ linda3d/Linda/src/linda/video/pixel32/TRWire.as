@@ -12,7 +12,7 @@
 				var ii:int;
 				for (var i : int = 0; i < indexCount; i += 3)
 				{
-					ii=indexList [int(i+ 0)];
+					ii=indexList [i];
 					vt0 = vertices [ii];
 					ii=indexList [int(i+ 1)];
 					vt1 = vertices [ii];
@@ -104,8 +104,8 @@
 					oldZ=buffer.getPixel (x1, y1);
 					if (z1 < oldZ)
 					{
-						target.setPixel32 (x1, y1, value );
-						buffer.setPixel (x1, y1, z1);
+						target.setPixel32(x1, y1, value );
+						buffer.setPixel(x1, y1, z1);
 					}
 					error += dx;
 					if (error > 0 )
@@ -125,8 +125,8 @@
 					oldZ=buffer.getPixel (x0, y0);
 					if (z1 < oldZ)
 					{
-						target.setPixel32 (x0, y0, value );
-						buffer.setPixel (x0, y0, z1);
+						target.setPixel32(x0, y0, value );
+						buffer.setPixel(x0, y0, z1);
 					}
 					error += dy;
 					if (error > 0 )
@@ -178,13 +178,16 @@
 				dzdy = dz / (y0 - y1);
 				for (; y1 < y0 ; y1 +=1)
 				{
-					//background Color
 					bgColor = target.getPixel32 (x1, y1);
 					bga = bgColor >> 24 & 0xFF ;
 					oldZ=buffer.getPixel (x1, y1);
 					if (bga < 0xFF || z1 < oldZ)
 					{
-						target.setPixel32 (x1, y1, (int (alpha * intAlpha + invAlpha * bga) << 24 | int (alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | int (alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | int (alpha * b + invAlpha * (bgColor & 0xFF))));
+						color=((alpha * intAlpha + invAlpha * bga)             << 24 |  
+						       (alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 |  
+						       (alpha * g + invAlpha * (bgColor >> 8 & 0xFF))  << 8  |  
+						       (alpha * b + invAlpha * (bgColor & 0xFF)));
+						target.setPixel32 (x1, y1,color);
 					}
 					error += dx;
 					if (error > 0 )
@@ -206,7 +209,11 @@
 					oldZ=buffer.getPixel (x0, y0);
 					if (bga < 0xFF || z1 < oldZ)
 					{
-						target.setPixel32 (x0, y0, (int (alpha * intAlpha + invAlpha * bga) << 24 | int (alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | int (alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | int (alpha * b + invAlpha * (bgColor & 0xFF))));
+						color=((alpha * intAlpha + invAlpha * bga)             << 24 |  
+						       (alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 |  
+						       (alpha * g + invAlpha * (bgColor >> 8 & 0xFF))  << 8  |  
+						       (alpha * b + invAlpha * (bgColor & 0xFF)));
+						target.setPixel32 (x0, y0,color);
 					}
 					error += dy;
 					if (error > 0 )

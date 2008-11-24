@@ -17,7 +17,7 @@
 			var ii:int;
 			for (var i : int = 0; i < indexCount; i += 3)
 			{
-				ii=indexList [int(i+ 0)];
+				ii=indexList [i];
 				vt0 = vertices [ii];
 				ii=indexList [int(i+ 1)];
 				vt1 = vertices [ii];
@@ -171,7 +171,7 @@
 							if (zi < oldZ)
 							{
 								target.setPixel32 (xi, yi, color);
-								buffer.setPixel (xi, yi, int(zi));
+								buffer.setPixel (xi, yi, zi);
 							}
 							zi += dz;
 						}
