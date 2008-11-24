@@ -1,4 +1,4 @@
-﻿package linda.video.pixel32
+﻿package linda.video
 {
 	import __AS3__.vec.Vector;
 	
@@ -15,8 +15,9 @@
 	import linda.video.TRType;
 	import linda.video.VideoNull;
 	import linda.video.VideoType;
+	import linda.video.pixel32.*;
 
-	public class VideoSoftware extends VideoNull implements IVideoDriver
+	public class VideoSoftware32 extends VideoNull implements IVideoDriver
 	{
 		//render vars
 		protected var currentTriangleRenderer : ITriangleRenderer;
@@ -35,7 +36,7 @@
 		protected var _view_project : Matrix4;
 		protected var _world_inv : Matrix4;
 		protected var _invCamPos : Vector3D;
-		protected var _camPos : Vector3D;
+		protected var _old_cam_position : Vector3D;
 		protected var _ndc_planes : Vector.<Vector3D>;
 
 		protected var _transformedPoints : Vector.<Vertex4D>;
@@ -43,13 +44,17 @@
 		protected var _clipped_vertices : Vector.<Vertex4D>;
 		protected var _clipped_indices : Vector.<int>;
 		protected var _clipped_vertices0 : Vector.<Vertex4D>;
+		protected var _clipped_vertices1 : Vector.<Vertex4D>;
+		protected var _clipped_vertices2 : Vector.<Vertex4D>;
+		protected var _clipped_vertices3 : Vector.<Vertex4D>;
+		protected var _clipped_vertices4 : Vector.<Vertex4D>;
 		protected var _lightsDir : Vector.<Vector3D>;
 		protected var _lightsPos : Vector.<Vector3D>;
 		//line points
 		protected var _transformedLinePoints : Vector.<Vertex4D>;
 		protected var _clipped_line_vertices : Vector.<Vertex4D>;
 		protected var _clipped_line_indices : Vector.<int>;
-		public function VideoSoftware (size : Dimension2D)
+		public function VideoSoftware32 (size : Dimension2D)
 		{
 			super ();
 			
@@ -72,7 +77,7 @@
 			_clip_scale = new Matrix4 ();
 			_clip_scale.buildNDCToDCMatrix(screenSize,1);
 			//render
-			triangleRenderers = new Vector.<ITriangleRenderer> (TRType.COUNT);
+			triangleRenderers = new Vector.<ITriangleRenderer> (TRType.COUNT,true);
 			triangleRenderers [TRType.WIRE] = new TRWire ();
 			triangleRenderers [TRType.FLAT] = new TRFlat ();
 			triangleRenderers [TRType.GOURAUD] = new TRGouraud ();
@@ -103,7 +108,7 @@
 				_lightsPos[i]=new Vector3D();
 			}
 			_invCamPos = new Vector3D ();
-			_camPos = new Vector3D ();
+			_old_cam_position = new Vector3D ();
 			/*
 			generic plane clipping in homogenous coordinates
 			special case ndc frustum <-w,w>,<-w,w>,<-w,w>
@@ -123,6 +128,10 @@
 			_clipped_vertices = new Vector.<Vertex4D> ();
 			_clipped_vertices0 = new Vector.<Vertex4D> ();
 			_unclipped_vertices = new Vector.<Vertex4D> ();
+			_clipped_vertices1 = new Vector.<Vertex4D> ();
+			_clipped_vertices2 = new Vector.<Vertex4D> ();
+			_clipped_vertices3 = new Vector.<Vertex4D> ();
+			_clipped_vertices4 = new Vector.<Vertex4D> ();
 			//for drawIndexedLineList
 			_transformedLinePoints = new Vector.<Vertex4D> ();
 			for (i = 0; i < 100; i ++)
@@ -212,12 +221,14 @@
 		{
 			_projection = mat;
 		}
-		override public function setCameraPosition (ps : Vector3D) : void
+		override public function setCameraPosition (pos : Vector3D) : void
 		{
-			if (!ps) return;
-			_camPos.x=ps.x;
-			_camPos.y=ps.y;
-			_camPos.z=ps.z;
+			if (pos)
+			{
+				_old_cam_position.x = pos.x;
+				_old_cam_position.y = pos.y;
+				_old_cam_position.z = pos.z;
+			}	
 		}
 		public override function setTransformWorld (mat : Matrix4) : void
 		{
@@ -227,7 +238,7 @@
 			_current.multiplyE (_world);
 			// transfrom camera into object's world space
 			_world.getInverse (_world_inv);
-			_world_inv.transformVector2(_camPos,_invCamPos);
+			_world_inv.transformVector2(_old_cam_position,_invCamPos);
 			*/
 			//_current.copy (_view_project);
 			_current.m00 = _view_project.m00;
@@ -313,10 +324,10 @@
 			_world_inv.m31 = d * (m20 * (m02 * m31 - m01 * m32) + m21 * (m00 * m32 - m02 * m30) + m22 * (m01 * m30 - m00 * m31));
 			_world_inv.m32 = d * (m30 * (m02 * m11 - m01 * m12) + m31 * (m00 * m12 - m02 * m10) + m32 * (m01 * m10 - m00 * m11));
 			_world_inv.m33 = 1;
-			//_world_inv.transformVector2(_camPos,_invCamPos);
-			var x : Number = _camPos.x;
-			var y : Number = _camPos.y;
-			var z : Number = _camPos.z;
+			//_world_inv.transformVector2(_old_cam_position,_invCamPos);
+			var x : Number = _old_cam_position.x;
+			var y : Number = _old_cam_position.y;
+			var z : Number = _old_cam_position.z;
 			_invCamPos.x = (_world_inv.m00 * x + _world_inv.m10 * y + _world_inv.m20 * z + _world_inv.m30);
 			_invCamPos.y = (_world_inv.m01 * x + _world_inv.m11 * y + _world_inv.m21 * z + _world_inv.m31);
 			_invCamPos.z = (_world_inv.m02 * x + _world_inv.m12 * y + _world_inv.m22 * z + _world_inv.m32);
@@ -384,6 +395,19 @@
 			var iCount : int; 
 			var vCount : int;
 			var vCount2 : int;
+			
+			//clipping
+			var a : Vertex4D;
+			var b : Vertex4D;
+			var out : Vertex4D;
+			var inCount : int;
+			var outCount : int;
+			var dest : Vector.<Vertex4D>;
+			var plane : Vector3D;
+			var source : Vector.<Vertex4D>;
+			var aDotPlane : Number;
+			var bDotPlane : Number;
+			var t : Number;
 
 			var len : int = triangleCount * 2;
 			var _transformLen : int = _transformedPoints.length;
@@ -492,115 +516,63 @@
 				tv0.y = m01 * v0.x + m11 * v0.y + m21 * v0.z + m31;
 				tv0.z = m02 * v0.x + m12 * v0.y + m22 * v0.z + m32;
 				tv0.w = m03 * v0.x + m13 * v0.y + m23 * v0.z + m33;
+				
 				tv1.x = m00 * v1.x + m10 * v1.y + m20 * v1.z + m30;
 				tv1.y = m01 * v1.x + m11 * v1.y + m21 * v1.z + m31;
 				tv1.z = m02 * v1.x + m12 * v1.y + m22 * v1.z + m32;
 				tv1.w = m03 * v1.x + m13 * v1.y + m23 * v1.z + m33;
+				
 				tv2.x = m00 * v2.x + m10 * v2.y + m20 * v2.z + m30;
 				tv2.y = m01 * v2.x + m11 * v2.y + m21 * v2.z + m31;
 				tv2.z = m02 * v2.x + m12 * v2.y + m22 * v2.z + m32;
 				tv2.w = m03 * v2.x + m13 * v2.y + m23 * v2.z + m33;
-				//先检测除了近裁剪面外与三角形的关系,只判断关系，并不进行裁剪
-				// far(  0.,  0.,  1., -1. ),
-				var plane:Vector3D = _ndc_planes [1];
-				if (tv0.z * plane.z + tv0.w * plane.w > 0.)
+				
+				
+				
+				var inside : Boolean = true;
+				var clipcount : int = 0;
+				for (var p : int = 0; p < 6; p+=1)
 				{
-					if (tv1.z * plane.z + tv1.w * plane.w > 0.)
+					plane = _ndc_planes [p];
+					if (((tv0.x * plane.x) + (tv0.y * plane.y) + (tv0.z * plane.z) + (tv0.w * plane.w)) > 0.0)
 					{
-						if (tv2.z * plane.z + tv2.w * plane.w > 0.)
+						if (((tv1.x * plane.x) + (tv1.y * plane.y) + (tv1.z * plane.z) + (tv1.w * plane.w)) > 0.0)
 						{
-							tCount -= 3;
-							continue;
+							if (((tv2.x * plane.x) + (tv2.y * plane.y) + (tv2.z * plane.z) + (tv2.w * plane.w)) > 0.0)
+							{
+								inside = false;
+								break;
+							}
 						}
-					}
-				}
-				// left(  1.,  0.,  0., -1. ),
-				plane = _ndc_planes [2];
-				if (tv0.x * plane.x + tv0.w * plane.w > 0.)
-				{
-					if (tv1.x * plane.x + tv1.w * plane.w > 0.)
-					{
-						if (tv2.x * plane.x + tv2.w * plane.w > 0.)
-						{
-							tCount -= 3;
-							continue;
-						}
-					}
-				}
-				// right( -1.,  0.,  0., -1. )
-				plane = _ndc_planes [3];
-				if (tv0.x * plane.x + tv0.w * plane.w > 0.)
-				{
-					if (tv1.x * plane.x + tv1.w * plane.w > 0.)
-					{
-						if (tv2.x * plane.x + tv2.w * plane.w > 0.)
-						{
-							tCount -= 3;
-							continue;
-						}
-					}
-				}
-				// bottom(  0.,  1.,  0., -1. )
-				plane = _ndc_planes [4];
-				if (tv0.y * plane.y + tv0.w * plane.w > 0.)
-				{
-					if (tv1.y * plane.y + tv1.w * plane.w > 0.)
-					{
-						if (tv2.y * plane.y + tv2.w * plane.w > 0.)
-						{
-							tCount -= 3;
-							continue;
-						}
-					}
-				}
-				// top(  0.,  -1.,  0., -1. )
-				plane = _ndc_planes [5];
-				if (tv0.y * plane.y + tv0.w * plane.w > 0.)
-				{
-					if (tv1.y * plane.y + tv1.w * plane.w > 0.)
-					{
-						if (tv2.y * plane.y + tv2.w * plane.w > 0.)
-						{
-							tCount -= 3;
-							continue;
-						}
-					}
-				}
-				var requiredClipping : Boolean = false;
-				//检测与近裁剪面是否相交,需要进行裁剪
-				// near(  0.,  0., -1., -1. )
-				plane = _ndc_planes [0];
-				if (tv0.z * plane.z + tv0.w * plane.w > 0.0)
-				{
-					if (tv1.z * plane.z + tv1.w * plane.w > 0.0)
-					{
-						if (tv2.z * plane.z + tv2.w * plane.w > 0.0)
-						{
-							// triangle is  on the back of this plane
-							tCount -= 3;
-							continue;
-						}
-						requiredClipping = true;
-					} else
-					{
-						requiredClipping = true;
-					}
-				} 
-				else
-				{
-					if (tv1.z * plane.z + tv1.w * plane.w < 0.0)
-					{
-						if (tv2.z * plane.z + tv2.w * plane.w >= 0.0)
-						{
-							requiredClipping = true;
-						}
+						clipcount += (1 << p);
 					} 
 					else
 					{
-						// requires clipping
-						requiredClipping = true;
+						if (((tv1.x * plane.x) + (tv1.y * plane.y) + (tv1.z * plane.z) + (tv1.w * plane.w)) < 0.0)
+						{
+							if (((tv2.x * plane.x) + (tv2.y * plane.y) + (tv2.z * plane.z) + (tv2.w * plane.w)) < 0.0)
+							{
+								// triangle is not clipped agianst this plane - check other planes
+								
+							} 
+							else
+							{
+								clipcount += (1 << p);
+							}
+						} 
+						else
+						{
+							clipcount += (1 << p);
+						}
 					}
 				}
+				if ( ! inside)
+				{
+					tCount -= 3;
+					continue;
+				}
+				
+				
 				//lighting
 				if (lighting)
 				{
@@ -996,23 +968,23 @@
 					tv2.u = v2.u ;
 					tv2.v = v2.v ;
 				}
-				if ( ! requiredClipping) // no clipping required
+				if (clipcount == 0) // no clipping required
 				{
 					//tv0
 					var tmp : Number = 1 / tv0.w ;
 					tv0.x = (tv0.x * csm00) * tmp + csm30;
 					tv0.y = (tv0.y * csm11) * tmp + csm31;
-					tv0.iy=int(tv0.y)+1;
+					tv0.iy=Math.round(tv0.y);
 					//tv1
 					tmp = 1 / tv1.w ;
 					tv1.x = (tv1.x * csm00) * tmp + csm30;
 					tv1.y = (tv1.y * csm11) * tmp + csm31;
-					tv1.iy=int(tv1.y)+1;
+					tv1.iy=Math.round(tv1.y);
 					//tv2
 					tmp = 1 / tv2.w ;
 					tv2.x = (tv2.x * csm00) * tmp + csm30;
 					tv2.y = (tv2.y * csm11) * tmp + csm31;
-					tv2.iy=int(tv2.y)+1;
+					tv2.iy=Math.round(tv2.y);
 					// add to _clipped_indices
 					_clipped_indices [iCount] = vCount;
 					iCount ++;
@@ -1028,102 +1000,449 @@
 					vCount ++;
 					continue;
 				}
+				
+				
+				// ----------------------------------------------------------------
+				// put into list for clipping
 				_unclipped_vertices [0] = tv0;
 				_unclipped_vertices [1] = tv1;
 				_unclipped_vertices [2] = tv2;
-				//裁剪
-				// used for clipping
-				var inCount : int;
-				var outCount : int;
-				var out : Vertex4D
-				var a : Vertex4D;
-				var b : Vertex4D;
-				var aDotPlane : Number;
-				var bDotPlane : Number;
-				var t : Number;
-				// clip to near plane
-				inCount = 3;
-				outCount = 0;
-				plane = _ndc_planes [0];
-				b = _unclipped_vertices [0];
-				bDotPlane = (b.z * plane.z) + (b.w * plane.w);
-				for (var ii : int = 1; ii < inCount + 1; ii+=1)
+				source = _unclipped_vertices;
+				outCount = 3;
+				// ----------------------------------------------------------------
+				// clip in NDC Space to Frustum
+				// ----------------------------------------------------------------
+				// clip to plane 1
+				// ----------------------------------------------------------------
+				//new Quaternion (0.0, 0.0, - 1.0, - 1.0 ) , // near
+				if ((clipcount & 2) == 2)
 				{
-					a = _unclipped_vertices [int (ii % inCount)];
-					aDotPlane = (a.z * plane.z) + (a.w * plane.w);
-					if (aDotPlane <= 0.0 )
+					inCount = outCount;
+					outCount = 0;
+					dest = _clipped_vertices4;
+					plane = _ndc_planes [1];
+					b = source [0];
+					bDotPlane = (b.z * plane.z) + (b.w * plane.w);
+					for (var i:int = 1; i < inCount + 1; i+=1)
 					{
-						if (bDotPlane > 0.0 )
+						a = source [int(i % inCount)];
+						aDotPlane = (a.z * plane.z) + (a.w * plane.w);
+						// current point inside
+						if (aDotPlane <= 0.0 )
 						{
-							out = _transformedPoints [int (tCount ++)];
-							_clipped_vertices0 [int (outCount ++)] = out;
-
-							t = bDotPlane / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
-
-							out.x = b.x + (a.x - b.x ) * t ;
-							out.y = b.y + (a.y - b.y ) * t ;
-							out.z = b.z + (a.z - b.z ) * t ;
-							out.w = b.w + (a.w - b.w ) * t ;
-
-							out.r = b.r + (a.r - b.r ) * t ;
-							out.g = b.g + (a.g - b.g ) * t ;
-							out.b = b.b + (a.b - b.b ) * t ;
-							if (hasTexture)
+							// last point outside
+							if (bDotPlane > 0.0 )
 							{
-								out.u = b.u + (a.u - b.u ) * t ;
-								out.v = b.v + (a.v - b.v ) * t ;
+								// intersect line segment with plane
+								out = _transformedPoints [int(tCount ++)];
+								dest [int(outCount ++)] = out;
+								// get t intersection
+								t = bDotPlane / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
+								// interpolate position
+								out.x = b.x + ((a.x - b.x ) * t );
+								out.y = b.y + ((a.y - b.y ) * t );
+								out.z = b.z + ((a.z - b.z ) * t );
+								out.w = b.w + ((a.w - b.w ) * t );
+								// interpolate color
+								out.r = b.r + ((a.r - b.r ) * t );
+								out.g = b.g + ((a.g - b.g ) * t );
+								out.b = b.b + ((a.b - b.b ) * t );
+								if(hasTexture)
+								{
+									// interpolate texture
+									out.u = b.u + ((a.u - b.u ) * t );
+									out.v = b.v + ((a.v - b.v ) * t );
+								}	
+							}
+							// add a to out
+							dest [int(outCount ++)] = a;
+						} 
+						else
+						{
+							// current point outside
+							if (bDotPlane <= 0.0 )
+							{
+								// previous was inside
+								// intersect line segment with plane
+								out = _transformedPoints [int(tCount ++)];
+								dest [int(outCount ++)] = out;
+								// get t intersection
+								t = bDotPlane / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
+								// interpolate position
+								out.x = b.x + ((a.x - b.x ) * t );
+								out.y = b.y + ((a.y - b.y ) * t );
+								out.z = b.z + ((a.z - b.z ) * t );
+								out.w = b.w + ((a.w - b.w ) * t );
+								// interpolate color
+								out.r = b.r + ((a.r - b.r ) * t );
+								out.g = b.g + ((a.g - b.g ) * t );
+								out.b = b.b + ((a.b - b.b ) * t );
+								if(hasTexture)
+								{
+									// interpolate texture
+									out.u = b.u + ((a.u - b.u ) * t );
+									out.v = b.v + ((a.v - b.v ) * t );
+								}
 							}
 						}
-						_clipped_vertices0 [int (outCount ++)] = a;
-					} 
-					else
-					{
-						if (bDotPlane <= 0.0 )
-						{
-							out = _transformedPoints [int (tCount ++)];
-							_clipped_vertices0 [int (outCount ++)] = out;
-							// get t intersection
-							t = bDotPlane / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w))
-							// interpolate position
-							out.x = b.x + ((a.x - b.x ) * t );
-							out.y = b.y + ((a.y - b.y ) * t );
-							out.z = b.z + ((a.z - b.z ) * t );
-							out.w = b.w + ((a.w - b.w ) * t );
-							// interpolate color
-							//out.a = b.a + ( ( a.a - b.a ) * t );
-							out.r = b.r + ((a.r - b.r ) * t );
-							out.g = b.g + ((a.g - b.g ) * t );
-							out.b = b.b + ((a.b - b.b ) * t );
-							if (hasTexture)
-							{
-								// interpolate texture
-								out.u = b.u + ((a.u - b.u ) * t );
-								out.v = b.v + ((a.v - b.v ) * t );
-							}
-						}
+						b = a;
+						bDotPlane = aDotPlane;
 					}
-					b = a;
-					bDotPlane = aDotPlane;
+					// check we have 3 or more vertices
+					if (outCount < 3)
+					{
+						continue;
+					}
+					source = _clipped_vertices4;
 				}
-				// check we have 3 or more vertices
-				if (outCount < 3) continue;
+				// ----------------------------------------------------------------
+				// clip to plane 2
+				// ----------------------------------------------------------------
+				//new Quaternion (1.0, 0.0, 0.0, - 1.0 ) , // left
+				if ((clipcount & 4) == 4)
+				{
+					inCount = outCount;
+					outCount = 0;
+					dest = _clipped_vertices3;
+					plane = _ndc_planes [2];
+					b = source [0];
+					bDotPlane = (b.x * plane.x) + (b.w * plane.w);
+					for (i = 1; i < inCount + 1; i+=1)
+					{
+						a = source [i % inCount];
+						aDotPlane = (a.x * plane.x) + (a.w * plane.w);
+						// current point inside
+						if (aDotPlane <= 0.0 )
+						{
+							// last point outside
+							if (bDotPlane > 0.0 )
+							{
+								// intersect line segment with plane
+								out = _transformedPoints [int(tCount ++)];
+								dest [int(outCount ++)] = out;
+								// get t intersection
+								t = bDotPlane / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w))
+								// interpolate position
+								out.x = b.x + ((a.x - b.x ) * t );
+								out.y = b.y + ((a.y - b.y ) * t );
+								out.z = b.z + ((a.z - b.z ) * t );
+								out.w = b.w + ((a.w - b.w ) * t );
+								// interpolate color
+								out.r = b.r + ((a.r - b.r ) * t );
+								out.g = b.g + ((a.g - b.g ) * t );
+								out.b = b.b + ((a.b - b.b ) * t );
+								if(hasTexture)
+								{
+									// interpolate texture
+									out.u = b.u + ((a.u - b.u ) * t );
+									out.v = b.v + ((a.v - b.v ) * t );
+								}
+							}
+							// add a to out
+							dest [outCount ++] = a;
+						} 
+						else
+						{
+							// current point outside
+							if (bDotPlane <= 0.0 )
+							{
+								// previous was inside
+								// intersect line segment with plane
+								out = _transformedPoints [int(tCount ++)];
+								dest [int(outCount ++)] = out;
+								// get t intersection
+								t = bDotPlane / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w))
+								// interpolate position
+								out.x = b.x + ((a.x - b.x ) * t );
+								out.y = b.y + ((a.y - b.y ) * t );
+								out.z = b.z + ((a.z - b.z ) * t );
+								out.w = b.w + ((a.w - b.w ) * t );
+								// interpolate color
+								out.r = b.r + ((a.r - b.r ) * t );
+								out.g = b.g + ((a.g - b.g ) * t );
+								out.b = b.b + ((a.b - b.b ) * t );
+								if(hasTexture)
+								{
+									// interpolate texture
+									out.u = b.u + ((a.u - b.u ) * t );
+									out.v = b.v + ((a.v - b.v ) * t );
+								}
+							}
+						}
+						b = a;
+						bDotPlane = aDotPlane
+					}
+					// check we have 3 or more vertices
+					if (outCount < 3)
+					{
+						continue;
+					}
+					source = _clipped_vertices3;
+				}
+				// ----------------------------------------------------------------
+				// clip to plane 3
+				// ----------------------------------------------------------------
+				//new Quaternion ( - 1.0, 0.0, 0.0, - 1.0 ) , // right
+				if ((clipcount & 8) == 8)
+				{
+					inCount = outCount;
+					outCount = 0;
+					dest = _clipped_vertices2;
+					plane = _ndc_planes [3];
+					b = source [0];
+					bDotPlane = (b.x * plane.x) + (b.w * plane.w);
+					for (i = 1; i < inCount + 1; i+=1)
+					{
+						a = source [i % inCount];
+						aDotPlane = (a.x * plane.x) + (a.w * plane.w);
+						// current point inside
+						if (aDotPlane <= 0.0 )
+						{
+							// last point outside
+							if (bDotPlane > 0.0 )
+							{
+								// intersect line segment with plane
+								out = _transformedPoints [int(tCount ++)];
+								dest [int(outCount ++)] = out;
+								// get t intersection
+								t = bDotPlane / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w))
+								// interpolate position
+								out.x = b.x + ((a.x - b.x ) * t );
+								out.y = b.y + ((a.y - b.y ) * t );
+								out.z = b.z + ((a.z - b.z ) * t );
+								out.w = b.w + ((a.w - b.w ) * t );
+								// interpolate color
+								out.r = b.r + ((a.r - b.r ) * t );
+								out.g = b.g + ((a.g - b.g ) * t );
+								out.b = b.b + ((a.b - b.b ) * t );
+								if(hasTexture)
+								{
+									// interpolate texture
+									out.u = b.u + ((a.u - b.u ) * t );
+									out.v = b.v + ((a.v - b.v ) * t );
+								}
+							}
+							// add a to out
+							//out = dest[outCount++];
+							//out.copy(a);
+							dest [outCount ++] = a;
+						} 
+						else
+						{
+							// current point outside
+							if (bDotPlane <= 0.0 )
+							{
+								// previous was inside
+								out = _transformedPoints [int(tCount ++)];
+								dest [int(outCount ++)] = out;
+								// get t intersection
+								t = bDotPlane / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w))
+								// interpolate position
+								out.x = b.x + ((a.x - b.x ) * t );
+								out.y = b.y + ((a.y - b.y ) * t );
+								out.z = b.z + ((a.z - b.z ) * t );
+								out.w = b.w + ((a.w - b.w ) * t );
+								// interpolate color
+								out.r = b.r + ((a.r - b.r ) * t );
+								out.g = b.g + ((a.g - b.g ) * t );
+								out.b = b.b + ((a.b - b.b ) * t );
+								if(hasTexture)
+								{
+									// interpolate texture
+									out.u = b.u + ((a.u - b.u ) * t );
+									out.v = b.v + ((a.v - b.v ) * t );
+								}
+							}
+						}
+						b = a;
+						bDotPlane = aDotPlane;
+					}
+					// check we have 3 or more vertices
+					if (outCount < 3)
+					{
+						continue;
+					}
+					source = _clipped_vertices2;
+				}
+				// ----------------------------------------------------------------
+				// clip to plane 4
+				// ----------------------------------------------------------------
+				//new Quaternion (0.0, 1.0, 0.0, - 1.0 ) , // bottom
+				if ((clipcount & 16) == 16)
+				{
+					inCount = outCount;
+					outCount = 0;
+					dest = _clipped_vertices1;
+					plane = _ndc_planes [4];
+					b = source [0];
+					bDotPlane = (b.y * plane.y) + (b.w * plane.w);
+					for (i = 1; i < inCount + 1; i+=1)
+					{
+						a = source [i % inCount];
+						aDotPlane = (a.y * plane.y) + (a.w * plane.w);
+						// current point inside
+						if (aDotPlane <= 0.0 )
+						{
+							// last point outside
+							if (bDotPlane > 0.0 )
+							{
+								// intersect line segment with plane
+								//out = dest[outCount++];
+								out = _transformedPoints [int(tCount ++)];
+								dest [int(outCount ++)] = out;
+								// get t intersection
+								t = bDotPlane / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w))
+								// interpolate position
+								out.x = b.x + ((a.x - b.x ) * t );
+								out.y = b.y + ((a.y - b.y ) * t );
+								out.z = b.z + ((a.z - b.z ) * t );
+								out.w = b.w + ((a.w - b.w ) * t );
+								// interpolate color
+								out.r = b.r + ((a.r - b.r ) * t );
+								out.g = b.g + ((a.g - b.g ) * t );
+								out.b = b.b + ((a.b - b.b ) * t );
+								if(hasTexture)
+								{
+									// interpolate texture
+									out.u = b.u + ((a.u - b.u ) * t );
+									out.v = b.v + ((a.v - b.v ) * t );
+								}
+							}
+							// add a to out
+							dest [outCount ++] = a;
+						} 
+						else
+						{
+							// current point outside
+							if (bDotPlane <= 0.0 )
+							{
+								// previous was inside
+								// intersect line segment with plane
+								out = _transformedPoints [int(tCount ++)];
+								dest [int(outCount ++)] = out;
+								// get t intersection
+								t = bDotPlane / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w))
+								// interpolate position
+								out.x = b.x + ((a.x - b.x ) * t );
+								out.y = b.y + ((a.y - b.y ) * t );
+								out.z = b.z + ((a.z - b.z ) * t );
+								out.w = b.w + ((a.w - b.w ) * t );
+								// interpolate color
+								out.r = b.r + ((a.r - b.r ) * t );
+								out.g = b.g + ((a.g - b.g ) * t );
+								out.b = b.b + ((a.b - b.b ) * t );
+								if(hasTexture)
+								{
+									out.u = b.u + ((a.u - b.u ) * t );
+									out.v = b.v + ((a.v - b.v ) * t );
+								}
+							}
+						}
+						b = a;
+						bDotPlane = aDotPlane;
+					}
+					// check we have 3 or more vertices
+					if (outCount < 3)
+					{
+						continue;
+					}
+					source = _clipped_vertices1;
+				}
+				// ----------------------------------------------------------------
+				// clip to plane 5
+				// ----------------------------------------------------------------
+				//new Quaternion (0.0, - 1.0, 0.0, - 1.0 ) //top
+				if ((clipcount & 32) == 32)
+				{
+					inCount = outCount;
+					outCount = 0;
+					dest = _clipped_vertices0;
+					plane = _ndc_planes [5];
+					b = source [0];
+					bDotPlane = (b.y * plane.y) + (b.w * plane.w);
+					for (i = 1; i < inCount + 1; i+=1)
+					{
+						a = source [i % inCount];
+						aDotPlane = (a.y * plane.y) + (a.w * plane.w);
+						// current point inside
+						if (aDotPlane <= 0.0 )
+						{
+							// last point outside
+							if (bDotPlane > 0.0 )
+							{
+								// intersect line segment with plane
+								out = _transformedPoints [int(tCount ++)];
+								dest [int(outCount ++)] = out;
+								// get t intersection
+								t = bDotPlane / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w))
+								out.x = b.x + ((a.x - b.x ) * t );
+								out.y = b.y + ((a.y - b.y ) * t );
+								out.z = b.z + ((a.z - b.z ) * t );
+								out.w = b.w + ((a.w - b.w ) * t );
+								out.r = b.r + ((a.r - b.r ) * t );
+								out.g = b.g + ((a.g - b.g ) * t );
+								out.b = b.b + ((a.b - b.b ) * t );
+								if(hasTexture)
+								{
+									out.u = b.u + ((a.u - b.u ) * t );
+									out.v = b.v + ((a.v - b.v ) * t );
+								}
+							}
+							// add a to out
+							dest [outCount ++] = a;
+						} 
+						else
+						{
+							// current point outside
+							if (bDotPlane <= 0.0 )
+							{
+								// previous was inside
+								out = _transformedPoints [int(tCount ++)];
+								dest [int(outCount ++)] = out;
+								t = bDotPlane / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
+								out.x = b.x + ((a.x - b.x ) * t );
+								out.y = b.y + ((a.y - b.y ) * t );
+								out.z = b.z + ((a.z - b.z ) * t );
+								out.w = b.w + ((a.w - b.w ) * t );
+								out.r = b.r + ((a.r - b.r ) * t );
+								out.g = b.g + ((a.g - b.g ) * t );
+								out.b = b.b + ((a.b - b.b ) * t );
+								if(hasTexture)
+								{
+									out.u = b.u + ((a.u - b.u ) * t );
+									out.v = b.v + ((a.v - b.v ) * t );
+								}
+							}
+						}
+						b = a;
+						bDotPlane = aDotPlane;
+					}
+					// check we have 3 or more vertices
+					if (outCount < 3)
+					{
+						continue;
+					}
+					source = _clipped_vertices0;
+				}
+				// ----------------------------------------------------------------
 				// put back into screen space.
 				vCount2 = vCount;
 				for (var g : int = 0; g < outCount; g+=1)
 				{
-					tv0 = _clipped_vertices0 [g];
-					tmp = 1 / (tv0.w );
+					tv0 = source [g];
+					tmp = 1 / tv0.w ;
 					tv0.x = (tv0.x * csm00) * tmp + csm30;
 					tv0.y = (tv0.y * csm11) * tmp + csm31;
 					tv0.iy=int(tv0.y)+1;
-					_clipped_vertices [int (vCount ++)] = tv0;
+					_clipped_vertices [int(vCount ++)] = tv0;
 				}
-				//( triangle-fan, 0-1-2,0-2-3.. )
+				// re-tesselate ( triangle-fan, 0-1-2,0-2-3.. )
 				for (g = 0; g <= outCount - 3; g+=1)
 				{
-					_clipped_indices [int (iCount ++)] = (vCount2);
-					_clipped_indices [int (iCount ++)] = (vCount2 + g + 1);
-					_clipped_indices [int (iCount ++)] = (vCount2 + g + 2);
+					// add the three points
+					_clipped_indices [int(iCount ++)] = (vCount2);
+					_clipped_indices [int(iCount ++)] = (vCount2 + g + 1);
+					_clipped_indices [int(iCount ++)] = (vCount2 + g + 2);
 				}
 			}
 			primitivesDrawn += int (iCount / 3);

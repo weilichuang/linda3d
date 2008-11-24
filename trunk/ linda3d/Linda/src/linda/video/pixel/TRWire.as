@@ -1,21 +1,24 @@
-﻿package linda.video.pixel32
+﻿package linda.video.pixel
 {
 	import __AS3__.vec.Vector;
 	
 	import linda.math.Vertex4D;
 	public class TRWire extends TriangleRenderer
 	{
+		//背景颜色
+		private var bga : int;
+		private var bgColor : uint;
 		override public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
 		{
 			if ( ! material.transparenting)
 			{
-				var ii:int;
-				for (var i : int = 0; i < indexCount; i += 3)
-				{
+				 var ii:int;
+			     for (var i : int = 0; i < indexCount; i += 3)
+				 {
 					ii=indexList [int(i+ 0)];
 					vt0 = vertices [ii];
 					ii=indexList [int(i+ 1)];
-					vt1 = vertices [ii];
+				    vt1 = vertices [ii];
 					ii=indexList [int(i+ 2)];
 					vt2 = vertices [ii];
 
@@ -37,8 +40,8 @@
 				}
 			} else
 			{
-				for (i = 0; i < indexCount; i += 3)
-				{
+				 for (i = 0; i < indexCount; i += 3)
+				 {
 					ii=indexList [int(i+ 0)];
 					vt0 = vertices [ii];
 					ii=indexList [int(i+ 1)];
@@ -63,12 +66,12 @@
 		}
 		private function bresenham (x0 : int, y0 : int, x1 : int, y1 : int, value : uint ) : void
 		{
+			var oldZ:int;
 			var error : int;
 			var dx : int = x1 - x0;
 			var dy : int = y1 - y0;
 			var dz : int = z1 - z0;
 			var yi : int = 1;
-			var oldZ:int;
 			var dzdy : Number;
 			if (dx < dy )
 			{
@@ -104,8 +107,8 @@
 					oldZ=buffer.getPixel (x1, y1);
 					if (z1 < oldZ)
 					{
-						target.setPixel32 (x1, y1, value );
-						buffer.setPixel (x1, y1, z1);
+						target.setPixel (x1, y1, value );
+						buffer.setPixel (x1, y1, int (z1));
 					}
 					error += dx;
 					if (error > 0 )
@@ -125,7 +128,7 @@
 					oldZ=buffer.getPixel (x0, y0);
 					if (z1 < oldZ)
 					{
-						target.setPixel32 (x0, y0, value );
+						target.setPixel (x0, y0, value );
 						buffer.setPixel (x0, y0, z1);
 					}
 					error += dy;
@@ -140,12 +143,12 @@
 		}
 		private function bresenhamAlpha (x0 : int, y0 : int, x1 : int, y1 : int, r : int, g : int, b : int ) : void
 		{
+			var oldZ:int;
 			var error : int;
 			var dx : int = x1 - x0;
 			var dy : int = y1 - y0;
 			var dz : int = z1 - z0;
 			var yi : int = 1;
-			var oldZ:int;
 			var dzdy : Number;
 			if (dx < dy )
 			{
@@ -178,13 +181,11 @@
 				dzdy = dz / (y0 - y1);
 				for (; y1 < y0 ; y1 +=1)
 				{
-					//background Color
-					bgColor = target.getPixel32 (x1, y1);
-					bga = bgColor >> 24 & 0xFF ;
 					oldZ=buffer.getPixel (x1, y1);
-					if (bga < 0xFF || z1 < oldZ)
+					if (z1 < oldZ)
 					{
-						target.setPixel32 (x1, y1, (int (alpha * intAlpha + invAlpha * bga) << 24 | int (alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | int (alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | int (alpha * b + invAlpha * (bgColor & 0xFF))));
+						bgColor = target.getPixel (x1, y1);
+						target.setPixel (x1, y1, (0xFF000000 | int (alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | int (alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | int (alpha * b + invAlpha * (bgColor & 0xFF))));
 					}
 					error += dx;
 					if (error > 0 )
@@ -201,12 +202,11 @@
 				dzdy = dz / (x1 - x0);
 				for (; x0 < x1 ; x0 +=1)
 				{
-					bgColor = target.getPixel32 (x0, y0);
-					bga = bgColor >> 24 & 0xFF ;
 					oldZ=buffer.getPixel (x0, y0);
-					if (bga < 0xFF || z1 < oldZ)
+					if (z1 < oldZ)
 					{
-						target.setPixel32 (x0, y0, (int (alpha * intAlpha + invAlpha * bga) << 24 | int (alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | int (alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | int (alpha * b + invAlpha * (bgColor & 0xFF))));
+						bgColor = target.getPixel (x0, y0);
+						target.setPixel (x0, y0, (0xFF000000 | int (alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | int (alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) << 8 | int (alpha * b + invAlpha * (bgColor & 0xFF))));
 					}
 					error += dy;
 					if (error > 0 )
