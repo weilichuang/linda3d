@@ -6,7 +6,6 @@
 	import linda.math.AABBox3D;
 	import linda.math.Vertex;
 	import linda.mesh.IMesh;
-	import linda.mesh.IMeshBuffer;
 	import linda.mesh.MeshBuffer;
 	public class AnimatedMeshMD2 implements IAnimateMesh
 	{
@@ -50,25 +49,25 @@
 			data.fps = frame.fps << FRAME_SHIFT;
 			return data;
 		}
-		public function getMeshBuffer (i : int) : IMeshBuffer
+		public function getMeshBuffer (i : int) : MeshBuffer
 		{
 			return interpolateBuffer;
 		}
-		public function getMeshBuffers():Vector.<IMeshBuffer>
+		public function getMeshBuffers():Vector.<MeshBuffer>
 		{
 			return null;
 		}
 		public function getMaterial () : Material
 		{
-			return interpolateBuffer.getMaterial ();
+			return interpolateBuffer.material;
 		}
 		public function getVertices () : Vector.<Vertex>
 		{
-			return interpolateBuffer.getVertices ();
+			return interpolateBuffer.vertices;
 		}
 		public function getVertexCount () : int
 		{
-			return interpolateBuffer.getVertexCount ();
+			return interpolateBuffer.vertices.length;
 		}
 		public function getMeshBufferCount () : int
 		{
@@ -76,11 +75,11 @@
 		}
 		public function getIndices () : Vector.<int>
 		{
-			return interpolateBuffer.getIndices ();
+			return interpolateBuffer.indices;
 		}
 		public function getIndexCount () : int
 		{
-			return interpolateBuffer.getIndexCount ();
+			return interpolateBuffer.indices.length;
 		}
 		public function getAnimationCount () : int
 		{
@@ -116,7 +115,7 @@
 				frame &= (1 << FRAME_SHIFT) - 1;
 				div = frame * FRAME_SHIFT_RECIPROCAL;
 			}
-			var targetArray :Vector.<Vertex> = interpolateBuffer.getVertices ();
+			var targetArray :Vector.<Vertex> = interpolateBuffer.vertices;
 			var firstArray : Vector.<Vertex> = frameList [firstFrame];
 			var secondArray : Vector.<Vertex> = frameList [secondFrame];
 			var count : int = frameList [firstFrame].length;
@@ -146,7 +145,7 @@
 			_tmpBox.maxY = firstBox.maxY * inv + secondBox.maxY * div;
 			_tmpBox.maxZ = firstBox.maxZ * inv + secondBox.maxZ * div;
 			
-			interpolateBuffer.setBoundingBox (_tmpBox);
+			interpolateBuffer.boundingBox=_tmpBox;
 		}
 		// returns the animated mesh based on a detail level. 0 is the lowest, 255 the highest detail. Note, that some Meshes will ignore the detail level.
 		public function getMesh (frame : int, detailLevel : int = 255, startFrameLoop : int = - 1, endFrameLoop : int = - 1) : IMesh
@@ -162,15 +161,15 @@
 		}
 		public function setBoundingBox (box : AABBox3D) : void
 		{
-			interpolateBuffer.setBoundingBox (box);
+			interpolateBuffer.boundingBox=box;
 		}
 		public function getBoundingBox () : AABBox3D
 		{
-			return interpolateBuffer.getBoundingBox ();
+			return interpolateBuffer.boundingBox;
 		}
 		public function setMaterialFlag (flag : int, value : Boolean) : void
 		{
-			interpolateBuffer.getMaterial ().setFlag (flag, value);
+			interpolateBuffer.material.setFlag (flag, value);
 		}
 		public function setMaterial (mat : Material) : void
 		{

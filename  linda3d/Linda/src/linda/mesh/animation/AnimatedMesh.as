@@ -4,7 +4,7 @@
 	
 	import linda.math.AABBox3D;
 	import linda.mesh.IMesh;
-	import linda.mesh.IMeshBuffer;
+	import linda.mesh.MeshBuffer;
 	public class AnimatedMesh implements IAnimateMesh
 	{
 		public var boundingBox : AABBox3D;
@@ -61,11 +61,11 @@
 		{
 			return type;
 		}
-		public function getMeshBuffer (nr : int) : IMeshBuffer
+		public function getMeshBuffer (nr : int) : MeshBuffer
 		{
 			return null;
 		}
-		public function getMeshBuffers():Vector.<IMeshBuffer>
+		public function getMeshBuffers():Vector.<MeshBuffer>
 		{
 			return null;
 		}

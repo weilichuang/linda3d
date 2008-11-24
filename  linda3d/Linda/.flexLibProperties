@@ -24,7 +24,6 @@
     <classEntry path="linda.math.Vertex"/>
     <classEntry path="linda.math.Vertex4D"/>
     <classEntry path="linda.mesh.IMesh"/>
-    <classEntry path="linda.mesh.IMeshBuffer"/>
     <classEntry path="linda.mesh.Mesh"/>
     <classEntry path="linda.mesh.MeshBuffer"/>
     <classEntry path="linda.mesh.MeshCache"/>

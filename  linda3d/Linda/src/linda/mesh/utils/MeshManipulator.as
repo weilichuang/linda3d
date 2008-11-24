@@ -9,7 +9,6 @@
 	import linda.math.Plane3D;
 	import linda.math.Vertex;
 	import linda.mesh.IMesh;
-	import linda.mesh.IMeshBuffer;
 	import linda.mesh.Mesh;
 	import linda.mesh.MeshBuffer;
 	public class MeshManipulator
@@ -25,9 +24,9 @@
 			var bcount : int = mesh.getMeshBufferCount ();
 			for (var b : int = 0; b < bcount; b ++)
 			{
-				var buffer : IMeshBuffer = mesh.getMeshBuffer (b);
-				var idxcnt : int = buffer.getIndexCount ();
-				var idx : Vector.<int> = buffer.getIndices ();
+				var buffer : MeshBuffer = mesh.getMeshBuffer (b);
+				var idxcnt : int = buffer.indices.length;
+				var idx : Vector.<int> = buffer.indices;
 				var tmp : int;
 				for (var i : int = 0; i < idxcnt; i += 3)
 				{
@@ -46,9 +45,9 @@
 			var bcount : int = mesh.getMeshBufferCount ();
 			for (var i : int = 0; i < bcount; i ++)
 			{
-				var buffer : IMeshBuffer = mesh.getMeshBuffer (i);
-				var v : Vector.<Vertex> = buffer.getVertices ();
-				var vdxcnt : int = buffer.getVertexCount ();
+				var buffer : MeshBuffer = mesh.getMeshBuffer (i);
+				var v : Vector.<Vertex> = buffer.vertices;
+				var vdxcnt : int = v.length;;
 				for (var j : int = 0; j < vdxcnt; j ++)
 				{
 					v [j].r = r;
@@ -60,16 +59,16 @@
 		// Recalculates all normals of the mesh buffer.
 		//@param buffer: Mesh buffer on which the operation is performed.
 		private static var plane : Plane3D = new Plane3D ();
-		public static function recalculateNormals (buffer : IMeshBuffer, smooth : Boolean) : void
+		public static function recalculateNormals (buffer : MeshBuffer, smooth : Boolean) : void
 		{
 			if ( ! buffer) return;
 			var v0 : Vertex;
 			var v1 : Vertex;
 			var v2 : Vertex;
-			var vtx_cnt : int = buffer.getVertexCount ();
-			var idx_cnt : int = buffer.getIndexCount ();
-			var indices : Vector.<int> = buffer.getIndices ();
-			var vertices : Vector.<Vertex> = buffer.getVertices ()
+			var vtx_cnt : int = buffer.vertices.length;
+			var idx_cnt : int = buffer.indices.length;
+			var indices : Vector.<int> = buffer.indices;
+			var vertices : Vector.<Vertex> = buffer.vertices;
 			if ( ! smooth)
 			{
 				// flat normals
@@ -130,7 +129,7 @@
 				}
 			}
 		}
-		//首先确保IMeshBuffer的包围盒已经计算
+		//首先确保MeshBuffer的包围盒已经计算
 		public static function unwrapUV (mesh : IMesh) : void
 		{
 			if ( ! mesh) return;
@@ -142,9 +141,11 @@
 			var bcount : int = mesh.getMeshBufferCount ();
 			for (var i : int = 0; i < bcount; i ++)
 			{
-				var buffer : IMeshBuffer = mesh.getMeshBuffer (i);
-				var vtx_cnt : int = buffer.getVertexCount ();
-				var vertices : Vector.<Vertex> = buffer.getVertices ();
+				var buffer : MeshBuffer = mesh.getMeshBuffer (i);
+				
+				var vertices : Vector.<Vertex> = buffer.vertices;
+				var vtx_cnt : int = vertices.length;
+				
 				for (var j : int = 0; j < vtx_cnt; j ++)
 				{
 					var v : Vertex = vertices [j];
@@ -153,16 +154,16 @@
 				}
 			}
 		}
-		public static function unwrapUVMeshBuffer (buffer : IMeshBuffer) : void
+		public static function unwrapUVMeshBuffer (buffer : MeshBuffer) : void
 		{
 			if ( ! buffer) return;
 			buffer.recalculateBoundingBox ();
-			var box : AABBox3D = buffer.getBoundingBox ();
+			var box : AABBox3D = buffer.boundingBox;
 			box.repair ();
 			if (box.isEmpty ()) return;
 			var rect : Rectangle = new Rectangle (box.minX, box.minY, (box.maxX - box.minX) , (box.maxY - box.minY));
-			var vtx_cnt : int = buffer.getVertexCount ();
-			var vertices : Vector.<Vertex> = buffer.getVertices ();
+			var vtx_cnt : int = buffer.vertices.length;
+			var vertices : Vector.<Vertex> = buffer.vertices;
 			for (var j : int = 0; j < vtx_cnt; j ++)
 			{
 				var v : Vertex = vertices [j];
@@ -182,11 +183,11 @@
 			var bcount : int = mesh.getMeshBufferCount ();
 			for (var i : int = 0; i < bcount; i ++)
 			{
-				var buffer : IMeshBuffer = mesh.getMeshBuffer (i);
-				var vtx_cnt : int = buffer.getVertexCount ();
-				var idx_cnt : int = buffer.getIndexCount ();
-				var indices : Vector.<int> = buffer.getIndices ();
-				var vertices : Vector.<Vertex> = buffer.getVertices ();
+				var buffer : MeshBuffer = mesh.getMeshBuffer (i);
+				var vtx_cnt : int = buffer.vertices.length;
+				var idx_cnt : int = buffer.indices.length;
+				var indices : Vector.<int> = buffer.indices;
+				var vertices : Vector.<Vertex> = buffer.vertices;
 				for (var j : int = 0; j < idx_cnt; j += 3)
 				{
 					var v0 : Vertex = vertices [indices [j]];
@@ -228,12 +229,12 @@
 				}
 			}
 		}
-		public static function makeMeshBufferPlanarTextureMapping (buffer : IMeshBuffer, resolution : Number = 0.01) : void
+		public static function makeMeshBufferPlanarTextureMapping (buffer : MeshBuffer, resolution : Number = 0.01) : void
 		{
-			var vtx_cnt : int = buffer.getVertexCount ();
-			var idx_cnt : int = buffer.getIndexCount ();
-			var indices : Vector.<int> = buffer.getIndices ();
-			var vertices : Vector.<Vertex> = buffer.getVertices ();
+			var vtx_cnt : int = buffer.vertices.length;
+			var idx_cnt : int = buffer.indices.length;
+			var indices : Vector.<int> = buffer.indices;
+			var vertices : Vector.<Vertex> = buffer.vertices;
 			for (var j : int = 0; j < idx_cnt; j += 3)
 			{
 				var v0 : Vertex = vertices [indices [j]];
@@ -286,7 +287,7 @@
 			if ( ! mesh) return null;
 			var clone : Mesh = new Mesh ();
 			var count : int = mesh.getMeshBufferCount ();
-			var _tmpBuffer : IMeshBuffer;
+			var _tmpBuffer : MeshBuffer;
 			var vtxCnt : int;
 			var idxCnt : int;
 			var idx : Vector.<int>;
@@ -297,12 +298,12 @@
 			for (i = 0; i < count; i ++)
 			{
 				_tmpBuffer = mesh.getMeshBuffer (i);
-				vtxCnt = _tmpBuffer.getVertexCount ();
-				idxCnt = _tmpBuffer.getIndexCount ();
-				idx = _tmpBuffer.getIndices ();
+				vtxCnt = _tmpBuffer.vertices.length;
+				idxCnt = _tmpBuffer.indices.length;
+				idx = _tmpBuffer.indices;
 				buffer = new MeshBuffer ();
-				buffer.setMaterial (_tmpBuffer.getMaterial ().clone ());
-				vertices = _tmpBuffer.getVertices ();
+				buffer.material= _tmpBuffer.material.clone ();
+				vertices = _tmpBuffer.vertices;
 				for (j = 0; j < vtxCnt; j ++)
 				{
 					var vertex : Vertex = vertices [j];
@@ -324,7 +325,7 @@
 			if ( ! mesh) return null;
 			var clone : Mesh = new Mesh ();
 			var count : int = mesh.getMeshBufferCount ();
-			var _tmpBuffer : IMeshBuffer;
+			var _tmpBuffer : MeshBuffer;
 			var vtxCnt : int;
 			var idxCnt : int;
 			var idx : Vector.<int>;
@@ -335,11 +336,11 @@
 			for (i = 0; i < count; i ++)
 			{
 				_tmpBuffer = mesh.getMeshBuffer (i);
-				vtxCnt = _tmpBuffer.getVertexCount ();
-				idxCnt = _tmpBuffer.getIndexCount ();
-				idx = _tmpBuffer.getIndices ();
+				vtxCnt = _tmpBuffer.vertices.length;
+				idxCnt = _tmpBuffer.indices.length;
+				idx = _tmpBuffer.indices;
 				buffer = new MeshBuffer ();
-				vertices = _tmpBuffer.getVertices ();
+				vertices = _tmpBuffer.vertices;
 				for (j = 0; j < vtxCnt; j ++)
 				{
 					var vertex : Vertex = vertices [j];

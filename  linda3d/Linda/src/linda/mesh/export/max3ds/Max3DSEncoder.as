@@ -7,7 +7,6 @@
 	
 	import linda.math.Vertex;
 	import linda.mesh.IMesh;
-	import linda.mesh.IMeshBuffer;
 	import linda.mesh.Mesh;
 	import linda.mesh.MeshBuffer;
 	import linda.mesh.export.IEncoder;
@@ -38,7 +37,7 @@
 				var edit3DSPos : uint = _bytes.position;
 				_bytes.writeUnsignedInt (0);
 				
-				var meshbuffers :Vector.<IMeshBuffer> = mesh.meshBuffers;
+				var meshbuffers :Vector.<MeshBuffer> = mesh.getMeshBuffers();
 				var len : int = meshbuffers.length;
 				var defaultNameCount:int = 0;
 				for (var i : int = 0; i < len; i ++)

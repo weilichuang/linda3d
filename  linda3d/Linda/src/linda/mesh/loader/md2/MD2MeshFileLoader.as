@@ -291,7 +291,7 @@
 					
 					vertex.copy(vtx);
 				}
-				interpolateBuffer.setBoundingBox(mesh.boxList[0]);
+				interpolateBuffer.boundingBox=mesh.boxList[0];
 			}
 		
             transformation_matrix=null;

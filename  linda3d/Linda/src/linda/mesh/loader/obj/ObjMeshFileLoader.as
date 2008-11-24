@@ -361,7 +361,7 @@
 			{
 				mat0 = materials [m];
 				mesh_buffer = mat0.getMeshBuffer ();
-				if (mesh_buffer.getIndexCount () > 0 )
+				if (mesh_buffer.indices.length > 0 )
 				{
 					mesh_buffer.recalculateBoundingBox ();
 					MeshManipulator.recalculateNormals (mesh_buffer, true);

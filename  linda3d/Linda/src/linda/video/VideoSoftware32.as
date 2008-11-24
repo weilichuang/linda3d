@@ -40,5 +40,9 @@
 				_clip_scale.buildNDCToDCMatrix(screenSize,1);
 			}
 		}
+		override public function getDriverType () : String
+		{
+			return VideoType.PIXEL32;
+		}
 	}
 }

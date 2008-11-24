@@ -7,7 +7,6 @@
 	
 	import linda.math.Vertex;
 	import linda.mesh.IMesh;
-	import linda.mesh.IMeshBuffer;
 	import linda.mesh.Mesh;
 	import linda.mesh.MeshBuffer;
 	import linda.mesh.export.max3ds.Max3DSChunk;
@@ -267,7 +266,7 @@
 				//recalculate normals
 				for (var j : int = 0; j < mesh.getMeshBufferCount (); j ++)
 				{
-					var buffer : IMeshBuffer = mesh.getMeshBuffer (j);
+					var buffer : MeshBuffer = mesh.getMeshBuffer(j);
 					buffer.recalculateBoundingBox ();
 					MeshManipulator.recalculateNormals (buffer, true);
 				}

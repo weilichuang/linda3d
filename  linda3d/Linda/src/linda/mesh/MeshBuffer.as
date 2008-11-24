@@ -5,7 +5,7 @@
 	import linda.material.Material;
 	import linda.math.AABBox3D;
 	import linda.math.Vertex;
-	public class MeshBuffer implements IMeshBuffer
+	public class MeshBuffer
 	{
 		public var material : Material;
 		public var vertices : Vector.<Vertex>;
@@ -34,41 +34,9 @@
 				vertex.b = b;
 			}
 		}
-		public function getMaterial () : Material
-		{
-			return material;
-		}
-		public function setMaterial (mat : Material) : void
-		{
-			material = mat;
-		}
-		public function getVertices () : Vector.<Vertex>
-		{
-			return vertices;
-		}
 		public function getVertex(i:int):Vertex
 		{
 			return vertices[i];
-		}
-		public function getVertexCount () : int
-		{
-			return vertices.length;
-		}
-		public function getIndices () : Vector.<int>
-		{
-			return indices;
-		}
-		public function getIndexCount () : int
-		{
-			return indices.length;
-		}
-		public function setBoundingBox (box : AABBox3D) : void
-		{
-			boundingBox = box;
-		}
-		public function getBoundingBox () : AABBox3D
-		{
-			return boundingBox;
 		}
 		public function recalculateBoundingBox () : void
 		{
@@ -82,13 +50,13 @@
 			     for (i = 1; i < l; i+=1)
 			     {
 				     vertex = vertices [i];
-				     boundingBox.addXYZ (vertex.x, vertex.y, vertex.z);
+				     boundingBox.addVertex(vertex);
 			     }
 			}
 		}
 		public function append (verts : Vector.<Vertex>, numVertices : int, inds : Vector.<int>, numIndices : int) : void
 		{
-			var vertexCount : int = getVertexCount ();
+			var vertexCount : int = this.vertices.length;
 			var i:int;
 			var vertex:Vertex;
 			for (i = 0; i < numVertices; i+=1)
@@ -102,22 +70,22 @@
 				indices.push (int(inds [i] + vertexCount));
 			}
 		}
-		public function appendMeshBuffer (other : IMeshBuffer) : void
+		public function appendMeshBuffer (other : MeshBuffer) : void
 		{
 			
             //concat vertices;
-			vertices.concat(other.getVertices());
+			vertices.concat(other.vertices);
 			
 			var i:int;
-			var vertexCount : int = getVertexCount ();
-			var otherindexC:int=other.getIndexCount();
-			var otherIndices:Vector.<int>=other.getIndices ();
+			var vertexCount : int = vertices.length;
+			var otherindexC:int=other.indices.length;
+			var otherIndices:Vector.<int>=other.indices;
 			for (i = 0; i < otherindexC; i+=1)
 			{
 				var index:int=otherIndices[i];
 				indices.push (index + vertexCount);
 			}
-			boundingBox.addAABBox (other.getBoundingBox ());
+			boundingBox.addAABBox (other.boundingBox);
 		}
 	}
 }

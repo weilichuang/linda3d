@@ -16,7 +16,7 @@
 		{
 			super ();
 			meshBuffer = new MeshBuffer ();
-			meshBuffer.getMaterial ().backfaceCulling = backface;
+			meshBuffer.material.backfaceCulling = backface;
 			createRegularPolygon (radius, sides, subdivision);
 			MeshManipulator.recalculateNormals (meshBuffer, true);
 			meshBuffers.push (meshBuffer);

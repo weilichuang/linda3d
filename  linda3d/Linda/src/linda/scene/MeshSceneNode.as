@@ -9,7 +9,7 @@
 	import linda.math.Matrix4;
 	import linda.math.Vertex;
 	import linda.mesh.IMesh;
-	import linda.mesh.IMeshBuffer;
+	import linda.mesh.MeshBuffer;
 	import linda.mesh.Mesh;
 	import linda.mesh.utils.MeshManipulator;
 	import linda.video.IVideoDriver;
@@ -36,27 +36,28 @@
 		}
 		public function setMesh (m : IMesh) : void
 		{
-			if ( !m) return;
-			mesh = m;
-			cloneMaterials();
+			if(m)
+			{
+				mesh = m;
+				cloneMaterials();
+			}
 		}
 		public function getMesh () : IMesh
 		{
 			return mesh;
 		}
-		
 		public function cloneMaterials():void
 		{
 			materials=new Vector.<Material>();
 			if (mesh)
 			{
 				var mat : Material;
-				var mb : IMeshBuffer;
+				var mb : MeshBuffer;
 				var count:int=mesh.getMeshBufferCount ();
 				for (var i : int = 0; i < count; i+=1)
 				{
 					mb = mesh.getMeshBuffer (i);
-					if (mb) mat = mb.getMaterial ();
+					if (mb) mat = mb.material;
 					materials.push (mat.clone());
 				}
 			}
@@ -94,7 +95,7 @@
 
 			driver.setTransformWorld (_absoluteMatrix);
 			
-			var mb : IMeshBuffer;
+			var mb : MeshBuffer;
 			var material : Material;
 			var len:int=mesh.getMeshBufferCount ();
 			for (var i : int = 0; i < len; i+=1)
@@ -142,12 +143,12 @@
 			    var absolute:Matrix4=getAbsoluteMatrix();
 			
 			    var len:int=clone.getMeshBufferCount();
-			    var buffer:IMeshBuffer;
+			    var buffer:MeshBuffer;
 			    var vertex:Vertex;
 			    for(var i:int=0;i<len;i+=1)
 			    {
 				    buffer=clone.getMeshBuffer(i);
-				    var blen:int=buffer.getVertexCount();
+				    var blen:int=buffer.vertices.length;
 				    for(var j:int=0;j<blen;j+=1)
 				    {
 					    vertex=buffer.getVertex(j);
