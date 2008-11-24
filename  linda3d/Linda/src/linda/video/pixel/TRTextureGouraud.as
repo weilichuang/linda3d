@@ -239,7 +239,6 @@
 								{
 									if(perspectiveCorrect)
 									{
-										
 										textel = bitmapData.getPixel (int(ui * zi), int(vi * zi));
 									}else
 									{
@@ -249,7 +248,7 @@
 									(((textel >> 16 & 0xFF) * ri) >> 8) << 16 |
 									(((textel >> 8 & 0xFF) * gi) >> 8) << 8 |
 									(((textel & 0xFF) * bi) >> 8)));
-									buffer.setPixel (xi, yi, int(zi));
+									buffer.setPixel (xi, yi, zi);
 								}
 								ui += du; vi += dv; zi += dz;
 								ri += dr; gi += dg; bi += db;
@@ -393,7 +392,7 @@
 									(((textel >> 16 & 0xFF) * ri) >> 8) << 16 |
 									(((textel >> 8 & 0xFF) * gi) >> 8) << 8 |
 									(((textel & 0xFF) * bi) >> 8)));
-									buffer.setPixel (xi, yi, int(zi));
+									buffer.setPixel (xi, yi, zi);
 								}
 								ui += du; vi += dv; zi += dz;
 								ri += dr; gi += dg; bi += db;

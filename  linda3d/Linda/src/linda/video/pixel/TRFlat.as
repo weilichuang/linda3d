@@ -55,7 +55,7 @@
 				}
 				side = 0;
 
-				color = ( 0xFF000000 | vt0.r << 16 | vt0.g << 8 | vt0.b );
+				color = vt0.r << 16 | vt0.g << 8 | vt0.b ;
 				
 				x0 = vt0.x ; y0 = vt0.y ; z0 = vt0.w;
 				x1 = vt1.x ; y1 = vt1.y ; z1 = vt1.w;
@@ -122,13 +122,17 @@
 								if (side == 0)
 								{
 									dyl = 1 / (y2 - y1);
-									dxdyl = (x2 - x1) * dyl; dzdyl = (z2 - z1) * dyl;
-									xl = x1+dxdyl; zl = z1+dzdyl;
+									dxdyl = (x2 - x1) * dyl;
+								    dzdyl = (z2 - z1) * dyl;
+									xl = x1+dxdyl; 
+									zl = z1+dzdyl;
 								} else
 								{
 									dyr = 1 / (y1 - y2);
-									dxdyr = (x1 - x2) * dyr; dzdyr = (z1 - z2) * dyr;
-									xr = x2+dxdyr; zr = z2+dzdyr;
+									dxdyr = (x1 - x2) * dyr; 
+									dzdyr = (z1 - z2) * dyr;
+									xr = x2+dxdyr; 
+									zr = z2+dzdyr;
 								}
 							}
 						}
@@ -171,7 +175,7 @@
 								if (zi < oldZ)
 								{
 									target.setPixel (xi, yi, color);
-									buffer.setPixel (xi, yi, int(zi));
+									buffer.setPixel (xi, yi, zi);
 								}
 								zi += dz;
 							}
