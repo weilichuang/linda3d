@@ -10,7 +10,7 @@
 	import linda.math.Dimension2D;
 	import linda.math.Matrix4;
 	import linda.math.Vertex;
-	import linda.mesh.IMeshBuffer;
+	import linda.mesh.MeshBuffer;
 	public interface IVideoDriver
 	{
 		function beginScene (backBuffer : Boolean = true, zBuffer : Boolean = true, color : uint = 0x0) : Boolean;
@@ -30,7 +30,7 @@
 		function setRenderTarget (target : Sprite) : void;
 		function getRenderTarget () : Sprite;
 		function drawIndexedTriangleList (vertices : Vector.<Vertex>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void;
-		function drawMeshBuffer(mb:IMeshBuffer):void;
+		function drawMeshBuffer(mb:MeshBuffer):void;
 		/**
 		*用来渲染由线段组成的物体,此类物体不需要进行光照，贴图，和贴图坐标计算等
 		* @vertices  Array 点的集合

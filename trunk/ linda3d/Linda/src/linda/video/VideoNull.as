@@ -8,7 +8,7 @@
 	import linda.light.Light;
 	import linda.material.*;
 	import linda.math.*;
-	import linda.mesh.IMeshBuffer;
+	import linda.mesh.MeshBuffer;
 	import linda.scene.*;
 	public class VideoNull implements IVideoDriver
 	{
@@ -98,7 +98,7 @@
 		public function drawIndexedTriangleList (vertices : Vector.<Vertex>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
 		{
 		}
-		public function drawMeshBuffer (mesh : IMeshBuffer) : void
+		public function drawMeshBuffer (mesh : MeshBuffer) : void
 		{
 		}
 		/**

@@ -201,7 +201,7 @@
 			var len:int=m.getMeshBufferCount ();
 			for (var i : int = 0; i < len; i+=1)
 			{
-				mat = m.getMeshBuffer (i).getMaterial ();
+				mat = m.getMeshBuffer (i).material;
 				materials.push (mat.clone());
 			}
 			

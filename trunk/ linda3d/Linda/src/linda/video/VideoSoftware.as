@@ -9,7 +9,7 @@
 	import linda.material.ITexture;
 	import linda.material.Material;
 	import linda.math.*;
-	import linda.mesh.IMeshBuffer;
+	import linda.mesh.MeshBuffer;
 	import linda.video.pixel.*;
 
 	public class VideoSoftware extends VideoNull implements IVideoDriver
@@ -60,13 +60,11 @@
 		{
 			if (size == null)
 			{
-				size = new Dimension2D (400, 400);
+				size = new Dimension2D (300, 300);
 			}
 			screenSize = size;
 			//render target
 			targetBitmap = new Bitmap ();
-			targetBitmap.smoothing = true;
-			targetBitmap.cacheAsBitmap = false;
 			targetBitmap.bitmapData = new BitmapData (screenSize.width, screenSize.height, false, 0x0);
 			renderTarget.addChild (targetBitmap);
 			
@@ -1418,9 +1416,9 @@
 			primitivesDrawn += int (iCount / 3);
 			currentTriangleRenderer.drawIndexedTriangleList (_clipped_vertices, vCount, _clipped_indices, iCount);
 		}
-		override public function drawMeshBuffer(mesh:IMeshBuffer):void
+		override public function drawMeshBuffer(mesh:MeshBuffer):void
 		{
-			drawIndexedTriangleList(mesh.getVertices(),mesh.getVertexCount(),mesh.getIndices(),mesh.getIndexCount());
+			drawIndexedTriangleList(mesh.vertices,mesh.vertices.length,mesh.indices,mesh.indices.length);
 		}
 		/**
 		*用来渲染由线段组成的物体 ,此类物体不需要进行光照，贴图，和贴图坐标计算等
@@ -1606,7 +1604,7 @@
 		}
 		override public function getDriverType () : String
 		{
-			return VideoType.PIXEL32;
+			return VideoType.PIXEL;
 		}
 		override public function createScreenShot () : BitmapData
 		{
