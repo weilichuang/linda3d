@@ -84,11 +84,11 @@
 				     u1 = vt1.u * tw; v1 = vt1.v * th;
 				     u2 = vt2.u * tw; v2 = vt2.v * th;
 	            }
+				yend = y2;
 				ys = y1;
+				ystart = y0;
 				if(type==0)
 				{
-					yend = y2;
-					
 						dyl = 1 / (y1 - y0);
 						dxdyl = (x1 - x0) * dyl;
 						dzdyl = (z1 - z0) * dyl;
@@ -103,7 +103,6 @@
 						xr = x0; zr = z0;
 						ul = u0 ; vl = v0 ;
 						ur = u0 ; vr = v0 ;
-						ystart = y0;
 						if (dxdyr < dxdyl)
 						{
 							temp = dxdyl; dxdyl = dxdyr; dxdyr = temp;
@@ -216,11 +215,10 @@
 						dudyr = (u2 - u1) * dy;
 						dvdyr = (v2 - v1) * dy;
 
-							xl = x0; xr = x1;
-							zl = z0; zr = z1;
-							ul = u0; vl = v0;
-							ur = u1; vr = v1;
-							ystart = y0;
+						xl = x0; xr = x1;
+						zl = z0; zr = z1;
+						ul = u0; vl = v0;
+						ur = u1; vr = v1;
 					} 
 					else
 					{
@@ -234,58 +232,57 @@
 						dudyr = (u2 - u0) * dy;
 						dvdyr = (v2 - v0) * dy;
 
-							xl = x0; xr = x0;
-							zl = z0; zr = z0;
-							ul = u0; vl = v0;
-							ur = u0; vr = v0;
-							ystart = y0;
+						xl = x0; xr = x0;
+						zl = z0; zr = z0;
+						ul = u0; vl = v0;
+						ur = u0; vr = v0;
 					}
 					for (yi = ystart; yi <= yend; yi +=1)
 					{
-							xstart = xl;
-							xend = xr;
-							ui = ul;
-							vi = vl;
-							zi = zl;
-							if ((dx = (xend - xstart)) > 0)
+						xstart = xl;
+						xend = xr;
+						ui = ul;
+						vi = vl;
+						zi = zl;
+						if ((dx = (xend - xstart)) > 0)
+						{
+							dx = 1 / dx;
+							du = (ur - ul) * dx;
+							dv = (vr - vl) * dx;
+							dz = (zr - zl) * dx;
+						} else
+						{
+							du = (ur - ul);
+							dv = (vr - vl);
+							dz = (zr - zl);
+						}
+						for (xi = xstart; xi < xend; xi +=1)
+						{
+							oldZ=buffer.getPixel (xi, yi);
+							if (zi < oldZ)
 							{
-								dx = 1 / dx;
-								du = (ur - ul) * dx;
-								dv = (vr - vl) * dx;
-								dz = (zr - zl) * dx;
-							} else
-							{
-								du = (ur - ul);
-								dv = (vr - vl);
-								dz = (zr - zl);
-							}
-							for (xi = xstart; xi < xend; xi +=1)
-							{
-								oldZ=buffer.getPixel (xi, yi);
-								if (zi < oldZ)
+								if(perspectiveCorrect)
 								{
-									if(perspectiveCorrect)
-									{
-										textel = bitmapData.getPixel32 (ui * zi, vi * zi);
-									}else
-									{
-										textel = bitmapData.getPixel32 (ui, vi);
-									}
-									target.setPixel32 (xi, yi,textel);
-									buffer.setPixel (xi, yi, zi);
+									textel = bitmapData.getPixel32 (ui * zi, vi * zi);
+								}else
+								{
+									textel = bitmapData.getPixel32 (ui, vi);
 								}
-								ui += du;
-								vi += dv;
-								zi += dz;
+								target.setPixel32 (xi, yi,textel);
+								buffer.setPixel (xi, yi, zi);
 							}
-							xl += dxdyl;
-							ul += dudyl;
-							vl += dvdyl;
-							zl += dzdyl;
-							xr += dxdyr;
-							ur += dudyr;
-							vr += dvdyr;
-							zr += dzdyr;
+							ui += du;
+							vi += dv;
+							zi += dz;
+						}
+						xl += dxdyl;
+						ul += dudyl;
+						vl += dvdyl;
+						zl += dzdyl;
+						xr += dxdyr;
+						ur += dudyr;
+						vr += dvdyr;
+						zr += dzdyr;
 					}
 				}
 			}
