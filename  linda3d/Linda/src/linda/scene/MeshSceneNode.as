@@ -11,7 +11,7 @@
 	import linda.mesh.IMesh;
 	import linda.mesh.MeshBuffer;
 	import linda.mesh.Mesh;
-	import linda.mesh.utils.MeshManipulator;
+	import linda.mesh.MeshManipulator;
 	import linda.video.IVideoDriver;
 	public class MeshSceneNode extends SceneNode
 	{

@@ -11,7 +11,7 @@
 	import linda.mesh.MeshBuffer;
 	import linda.mesh.export.max3ds.Max3DSChunk;
 	import linda.mesh.loader.MeshLoader;
-	import linda.mesh.utils.MeshManipulator;
+	import linda.mesh.MeshManipulator;
 	public class Max3DSMeshFileLoader extends MeshLoader
 	{
 		override public function createMesh (data : ByteArray) : IMesh

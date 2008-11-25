@@ -8,7 +8,7 @@
 	import linda.math.Vertex;
 	import linda.mesh.Mesh;
 	import linda.mesh.MeshBuffer;
-	import linda.mesh.utils.MeshManipulator;
+	import linda.mesh.MeshManipulator;
 	public class RegularPolygon extends Mesh
 	{
 		private var meshBuffer : MeshBuffer;
