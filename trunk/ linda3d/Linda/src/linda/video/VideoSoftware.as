@@ -1012,7 +1012,7 @@
 				// ----------------------------------------------------------------
 				// clip to plane 1
 				// ----------------------------------------------------------------
-				//new Quaternion (0.0, 0.0, - 1.0, - 1.0 ) , // near
+				//new Vector3D (0.0, 0.0, - 1.0, - 1.0 ) , // near
 				if ((clipcount & 2) == 2)
 				{
 					inCount = outCount;
@@ -1096,7 +1096,7 @@
 				// ----------------------------------------------------------------
 				// clip to plane 2
 				// ----------------------------------------------------------------
-				//new Quaternion (1.0, 0.0, 0.0, - 1.0 ) , // left
+				//new Vector3D (1.0, 0.0, 0.0, - 1.0 ) , // left
 				if ((clipcount & 4) == 4)
 				{
 					inCount = outCount;
@@ -1177,10 +1177,7 @@
 					}
 					source = _clipped_vertices3;
 				}
-				// ----------------------------------------------------------------
-				// clip to plane 3
-				// ----------------------------------------------------------------
-				//new Quaternion ( - 1.0, 0.0, 0.0, - 1.0 ) , // right
+				//new Vector3D ( - 1.0, 0.0, 0.0, - 1.0 ) , // right
 				if ((clipcount & 8) == 8)
 				{
 					inCount = outCount;
@@ -1193,29 +1190,23 @@
 					{
 						a = source [i % inCount];
 						adot = (a.x * plane.x) + (a.w * plane.w);
-						// current point inside
 						if (adot <= 0.0 )
 						{
-							// last point outside
 							if (bdot > 0.0 )
 							{
-								// intersect line segment with plane
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
-								// get t intersection
+
 								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w))
-								// interpolate position
 								out.x = b.x + ((a.x - b.x ) * t );
 								out.y = b.y + ((a.y - b.y ) * t );
 								out.z = b.z + ((a.z - b.z ) * t );
 								out.w = b.w + ((a.w - b.w ) * t );
-								// interpolate color
 								out.r = b.r + ((a.r - b.r ) * t );
 								out.g = b.g + ((a.g - b.g ) * t );
 								out.b = b.b + ((a.b - b.b ) * t );
 								if(hasTexture)
 								{
-									// interpolate texture
 									out.u = b.u + ((a.u - b.u ) * t );
 									out.v = b.v + ((a.v - b.v ) * t );
 								}
@@ -1224,26 +1215,21 @@
 						} 
 						else
 						{
-							// current point outside
 							if (bdot <= 0.0 )
 							{
-								// previous was inside
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
-								// get t intersection
+
 								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w))
-								// interpolate position
 								out.x = b.x + ((a.x - b.x ) * t );
 								out.y = b.y + ((a.y - b.y ) * t );
 								out.z = b.z + ((a.z - b.z ) * t );
 								out.w = b.w + ((a.w - b.w ) * t );
-								// interpolate color
 								out.r = b.r + ((a.r - b.r ) * t );
 								out.g = b.g + ((a.g - b.g ) * t );
 								out.b = b.b + ((a.b - b.b ) * t );
 								if(hasTexture)
 								{
-									// interpolate texture
 									out.u = b.u + ((a.u - b.u ) * t );
 									out.v = b.v + ((a.v - b.v ) * t );
 								}
@@ -1279,13 +1265,13 @@
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w))
-								out.x = b.x + ((a.x - b.x ) * t );
-								out.y = b.y + ((a.y - b.y ) * t );
-								out.z = b.z + ((a.z - b.z ) * t );
-								out.w = b.w + ((a.w - b.w ) * t );
-								out.r = b.r + ((a.r - b.r ) * t );
-								out.g = b.g + ((a.g - b.g ) * t );
-								out.b = b.b + ((a.b - b.b ) * t );
+								out.x = b.x + (a.x - b.x) * t ;
+								out.y = b.y + (a.y - b.y) * t ;
+								out.z = b.z + (a.z - b.z) * t ;
+								out.w = b.w + (a.w - b.w) * t ;
+								out.r = b.r + (a.r - b.r) * t ;
+								out.g = b.g + (a.g - b.g) * t ;
+								out.b = b.b + (a.b - b.b) * t ;
 								if(hasTexture)
 								{
 									out.u = b.u + ((a.u - b.u ) * t );
@@ -1301,13 +1287,13 @@
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w))
-								out.x = b.x + ((a.x - b.x ) * t );
-								out.y = b.y + ((a.y - b.y ) * t );
-								out.z = b.z + ((a.z - b.z ) * t );
-								out.w = b.w + ((a.w - b.w ) * t );
-								out.r = b.r + ((a.r - b.r ) * t );
-								out.g = b.g + ((a.g - b.g ) * t );
-								out.b = b.b + ((a.b - b.b ) * t );
+								out.x = b.x + (a.x - b.x) * t ;
+								out.y = b.y + (a.y - b.y) * t ;
+								out.z = b.z + (a.z - b.z) * t ;
+								out.w = b.w + (a.w - b.w) * t ;
+								out.r = b.r + (a.r - b.r) * t ;
+								out.g = b.g + (a.g - b.g) * t ;
+								out.b = b.b + (a.b - b.b) * t ;
 								if(hasTexture)
 								{
 									out.u = b.u + ((a.u - b.u ) * t );
@@ -1347,17 +1333,17 @@
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w))
-								out.x = b.x + ((a.x - b.x ) * t );
-								out.y = b.y + ((a.y - b.y ) * t );
-								out.z = b.z + ((a.z - b.z ) * t );
-								out.w = b.w + ((a.w - b.w ) * t );
-								out.r = b.r + ((a.r - b.r ) * t );
-								out.g = b.g + ((a.g - b.g ) * t );
-								out.b = b.b + ((a.b - b.b ) * t );
+								out.x = b.x + (a.x - b.x) * t ;
+								out.y = b.y + (a.y - b.y) * t ;
+								out.z = b.z + (a.z - b.z) * t ;
+								out.w = b.w + (a.w - b.w) * t ;
+								out.r = b.r + (a.r - b.r) * t ;
+								out.g = b.g + (a.g - b.g) * t ;
+								out.b = b.b + (a.b - b.b) * t ;
 								if(hasTexture)
 								{
-									out.u = b.u + ((a.u - b.u ) * t );
-									out.v = b.v + ((a.v - b.v ) * t );
+									out.u = b.u + (a.u - b.u) * t ;
+									out.v = b.v + (a.v - b.v) * t ;
 								}
 							}
 							dest [outCount ++] = a;
@@ -1369,17 +1355,17 @@
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
-								out.x = b.x + ((a.x - b.x ) * t );
-								out.y = b.y + ((a.y - b.y ) * t );
-								out.z = b.z + ((a.z - b.z ) * t );
-								out.w = b.w + ((a.w - b.w ) * t );
-								out.r = b.r + ((a.r - b.r ) * t );
-								out.g = b.g + ((a.g - b.g ) * t );
-								out.b = b.b + ((a.b - b.b ) * t );
+								out.x = b.x + (a.x - b.x) * t ;
+								out.y = b.y + (a.y - b.y) * t ;
+								out.z = b.z + (a.z - b.z) * t ;
+								out.w = b.w + (a.w - b.w) * t ;
+								out.r = b.r + (a.r - b.r) * t ;
+								out.g = b.g + (a.g - b.g) * t ;
+								out.b = b.b + (a.b - b.b) * t ;
 								if(hasTexture)
 								{
-									out.u = b.u + ((a.u - b.u ) * t );
-									out.v = b.v + ((a.v - b.v ) * t );
+									out.u = b.u + (a.u - b.u) * t ;
+									out.v = b.v + (a.v - b.v) * t ;
 								}
 							}
 						}
@@ -1465,8 +1451,7 @@
 			
 			// used for clipping
 			var plane : Vector3D;
-			
-			
+
 			for (i = 0; i < indexCount; i += 2)
 			{
 				v0 = vertices [indexList[i]];

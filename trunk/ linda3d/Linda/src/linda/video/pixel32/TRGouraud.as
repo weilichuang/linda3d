@@ -2,69 +2,122 @@
 {
 	import __AS3__.vec.Vector;
 	
+	import linda.video.ITriangleRenderer;
 	import linda.math.Vertex4D;
-	public class TRGouraud extends TriangleRenderer
+	public class TRGouraud extends TriangleRenderer implements ITriangleRenderer
 	{
-		override public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
+		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
 		{
-			var temp1 : Vertex4D;
+			var color:uint;
+			
+			var xstart : int,xend : int;
+			var ystart : int,yend : int;
+			var dyr : Number,dyl : Number;
+			var dxdyl : Number,dxdyr : Number;
+			var dzdyl : Number,dzdyr : Number;
+			var x0 : int,x1 : int,x2 : int; 
+			var y0 : int,y1 : int,y2 : int;
+			var z0 : Number,z1 : Number,z2 : Number;
+			var xi : int,yi : int; 
+			var zi : Number;
+			var xl : Number,xr : Number;
+			var zl : Number,zr : Number;
+			var dx : Number,dy : Number,dz : Number;
+			
+			var drdyl : Number,drdyr : Number;
+			var dgdyl : Number,dgdyr : Number;
+			var dbdyl : Number,dbdyr : Number;
+
+			var r0 : int,g0 : int,b0 : int;
+			var r1 : int,g1 : int,b1 : int;
+			var r2 : int,g2 : int,b2 : int;
+		
+			var ri : Number,bi : Number,gi : Number;
+
+			var rl : Number,gl : Number,bl : Number;
+			var rr : Number,gr : Number,br : Number;
+
+			var dr : Number,dg : Number,db : Number;
+			
+			var vt0:Vertex4D;
+		    var vt1:Vertex4D;
+		    var vt2:Vertex4D;
 			var temp : Number;
 			var side : int;
 		 	var ys : int;
 		 	var type : int;
-		 	var oldZ:int;
-			var ii:int;
+            var oldZ:int;
+			var n0:int;
+		 	var n1:int;
+		 	var n2:int;
+		 	var tmp:int;
 			for (var i : int = 0; i < indexCount; i += 3)
 			{
-				ii=indexList [i];
-				vt0 = vertices [ii];
-				ii=indexList [int(i+ 1)];
-				vt1 = vertices [ii];
-				ii=indexList [int(i+ 2)];
-				vt2 = vertices [ii];
+				n0  = indexList[i];
+				n1  = indexList[i+1];
+				n2  = indexList[i+2];
 
-				if (vt1.y < vt0.y)
-				{
-					temp1 = vt0; vt0 = vt1; vt1 = temp1;
-				}
-				if (vt2.y < vt0.y)
-				{
-					temp1 = vt0; vt0 = vt2; vt2 = temp1;
-				}
-				if (vt2.y < vt1.y)
-				{
-					temp1 = vt1; vt1 = vt2; vt2 = temp1;
-				}
+				y0 = int(vertices[n0].y+0.5) ;
+				y1 = int(vertices[n1].y+0.5) ;
+				y2 = int(vertices[n2].y+0.5) ;
 				
-				type = 0;
-				if (vt0.y == vt1.y)
+				if (y0 == y1 && y1 == y2) continue;
+				if (y1 < y0)
+				{
+					tmp = y1; y1 = y0; y0 = tmp;
+					tmp = n1; n1 = n0; n0 = tmp;
+				}
+				if (y2 < y0)
+				{
+					tmp = y2; y2 = y0; y0 = tmp;
+					tmp = n2; n2 = n0; n0 = tmp;
+				}
+				if (y2 < y1)
+				{
+					tmp = y1; y1 = y2; y2 = tmp;
+					tmp = n1; n1 = n2; n2 = tmp;
+				}
+				if(y0 == y1)
 				{
 					type = 1;
-					if (vt1.x < vt0.x)
+					if(vertices[n1].x < vertices[n0].x)
 					{
-						temp1 = vt0; vt0 = vt1; vt1 = temp1;
+						tmp = n1; n1 = n0; n0 = tmp;
 					}
-				} else if (vt1.y == vt2.y)
+				}else if( y1 == y2)
 				{
 					type = 2;
-					if (vt2.x < vt1.x)
+					if(vertices[n2].x < vertices[n1].x)
 					{
-						temp1 = vt1; vt1 = vt2; vt2 = temp1;
+						tmp = n1; n1 = n2; n2 = tmp;
 					}
+				}else
+				{
+					type = 0;
 				}
+
+				vt0 = vertices[n0];
+				vt1 = vertices[n1];
+				vt2 = vertices[n2];
 				
+				x0 = int(vt0.x+0.5) ;
+				x1 = int(vt1.x+0.5) ;
+				x2 = int(vt2.x+0.5) ;
 				
-				x0 = vt0.x ; y0 = vt0.y ; z0 = vt0.w;
-				x1 = vt1.x ; y1 = vt1.y ; z1 = vt1.w;
-				x2 = vt2.x ; y2 = vt2.y ; z2 = vt2.w;
-				if (((x0 == x1) && (x1 == x2)) || ((y0 == y1) && (y1 == y2))) continue;
+				if ((x0 == x1) && (x1 == x2)) continue;
+				
+				z0 = vt0.w;
+				z1 = vt1.w;
+				z2 = vt2.w;
+				
 				r0 = vt0.r; g0 = vt0.g; b0 = vt0.b;
 				r1 = vt1.r; g1 = vt1.g; b1 = vt1.b;
 				r2 = vt2.r; g2 = vt2.g; b2 = vt2.b;
 				side = 0;
-				ys = y1;
+
 				ystart = y0;
-				yend = y2;
+				ys     = y1;
+                yend   = y2;
 				if(type==0)
 				{
 						dyl = 1 / (y1 - y0);
