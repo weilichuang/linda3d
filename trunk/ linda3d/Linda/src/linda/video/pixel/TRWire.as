@@ -2,14 +2,25 @@
 {
 	import __AS3__.vec.Vector;
 	
+	import linda.video.ITriangleRenderer;
 	import linda.math.Vertex4D;
-	public class TRWire extends TriangleRenderer
+	public class TRWire extends TriangleRenderer implements ITriangleRenderer
 	{
-		//背景颜色
-		private var bga : int;
-		private var bgColor : uint;
-		override public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
+		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
 		{
+			var color:uint;
+			var x0 : int; 
+			var x1 : int; 
+			var x2 : int; 
+			var y0 : int; 
+			var y1 : int; 
+			var y2 : int;
+			var z0 : Number; 
+			var z1 : Number; 
+			var z2 : Number;
+			var vt0:Vertex4D;
+		    var vt1:Vertex4D;
+		    var vt2:Vertex4D;
 			if ( ! material.transparenting)
 			{
 				 var ii:int;
@@ -66,6 +77,9 @@
 		}
 		private function bresenham (x0 : int, y0 : int, x1 : int, y1 : int, value : uint ) : void
 		{
+			var z0 : Number; 
+			var z1 : Number;
+			var z2 : Number; 
 			var oldZ:int;
 			var error : int;
 			var dx : int = x1 - x0;
@@ -143,6 +157,12 @@
 		}
 		private function bresenhamAlpha (x0 : int, y0 : int, x1 : int, y1 : int, r : int, g : int, b : int ) : void
 		{
+			var color:uint;
+			var z0 : Number; 
+			var z1 : Number;
+			var z2 : Number; 
+			var bga : int;
+		    var bgColor : uint;
 			var oldZ:int;
 			var error : int;
 			var dx : int = x1 - x0;

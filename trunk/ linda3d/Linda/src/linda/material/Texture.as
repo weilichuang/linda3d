@@ -7,7 +7,6 @@
 	public class Texture implements ITexture
 	{	
 		public var name : String;
-
 		private var source:BitmapData=new BitmapData(1,1,true,0xffffffff);;
 		private var mipMap : Vector.<BitmapData>;
 		private var mipMapCount:int;
@@ -57,13 +56,13 @@
 			return mipMapCount;
 		}
 		/**
-		 * mipMapLevel 最小等级图片的大小
+		 * level 最小等级图片的大小
 		 */
-		public function regenerateMipMaps (level:int=16) : void
+		public function generateMipMaps (level:int=16) : void
 		{
 			clearMipMaps ();
 			var min:int=int(Math.min(source.width,source.height));
-			for (var i : int = (min >> 1); i >= level; (i >>= 1))
+			for (var i : int = int(min >> 1); i >= level; (i >>= 1))
 			{
 				mipMap [mipMapCount] = scale(1/Math.pow(2,(mipMapCount+1)));
 				mipMapCount++;

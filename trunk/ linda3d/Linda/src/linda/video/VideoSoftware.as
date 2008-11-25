@@ -4,6 +4,7 @@
 	
 	import flash.display.*;
 	import flash.geom.*;
+	import flash.utils.getTimer;
 	
 	import linda.light.Light;
 	import linda.material.ITexture;
@@ -14,7 +15,6 @@
 
 	public class VideoSoftware extends VideoNull implements IVideoDriver
 	{
-		//render vars
 		protected var currentTriangleRenderer : ITriangleRenderer;
 		protected var triangleRenderers : Vector.<ITriangleRenderer>;
 		protected var targetBitmap : Bitmap;
@@ -406,8 +406,8 @@
 			var dest : Vector.<Vertex4D>;
 			var plane : Vector3D;
 			var source : Vector.<Vertex4D>;
-			var aDotPlane : Number;
-			var bDotPlane : Number;
+			var adot : Number;
+			var bdot : Number;
 			var t : Number;
 
 			var len : int = triangleCount * 2;
@@ -573,8 +573,6 @@
 					tCount -= 3;
 					continue;
 				}
-				
-				
 				//lighting
 				if (lighting)
 				{
@@ -1022,22 +1020,22 @@
 					dest = _clipped_vertices4;
 					plane = _ndc_planes [1];
 					b = source [0];
-					bDotPlane = (b.z * plane.z) + (b.w * plane.w);
+					bdot = (b.z * plane.z) + (b.w * plane.w);
 					for (i = 1; i < inCount + 1; i+=1)
 					{
 						a = source [int(i % inCount)];
-						aDotPlane = (a.z * plane.z) + (a.w * plane.w);
+						adot = (a.z * plane.z) + (a.w * plane.w);
 						// current point inside
-						if (aDotPlane <= 0.0 )
+						if (adot <= 0.0 )
 						{
 							// last point outside
-							if (bDotPlane > 0.0 )
+							if (bdot > 0.0 )
 							{
 								// intersect line segment with plane
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 								// get t intersection
-								t = bDotPlane / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
+								t = bdot / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
 								// interpolate position
 								out.x = b.x + ((a.x - b.x ) * t );
 								out.y = b.y + ((a.y - b.y ) * t );
@@ -1060,14 +1058,14 @@
 						else
 						{
 							// current point outside
-							if (bDotPlane <= 0.0 )
+							if (bdot <= 0.0 )
 							{
 								// previous was inside
 								// intersect line segment with plane
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 								// get t intersection
-								t = bDotPlane / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
+								t = bdot / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
 								// interpolate position
 								out.x = b.x + ((a.x - b.x ) * t );
 								out.y = b.y + ((a.y - b.y ) * t );
@@ -1086,7 +1084,7 @@
 							}
 						}
 						b = a;
-						bDotPlane = aDotPlane;
+						bdot = adot;
 					}
 					// check we have 3 or more vertices
 					if (outCount < 3)
@@ -1106,22 +1104,22 @@
 					dest = _clipped_vertices3;
 					plane = _ndc_planes [2];
 					b = source [0];
-					bDotPlane = (b.x * plane.x) + (b.w * plane.w);
+					bdot = (b.x * plane.x) + (b.w * plane.w);
 					for (i = 1; i < inCount + 1; i+=1)
 					{
 						a = source [i % inCount];
-						aDotPlane = (a.x * plane.x) + (a.w * plane.w);
+						adot = (a.x * plane.x) + (a.w * plane.w);
 						// current point inside
-						if (aDotPlane <= 0.0 )
+						if (adot <= 0.0 )
 						{
 							// last point outside
-							if (bDotPlane > 0.0 )
+							if (bdot > 0.0 )
 							{
 								// intersect line segment with plane
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 								// get t intersection
-								t = bDotPlane / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w))
+								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w))
 								// interpolate position
 								out.x = b.x + ((a.x - b.x ) * t );
 								out.y = b.y + ((a.y - b.y ) * t );
@@ -1144,14 +1142,14 @@
 						else
 						{
 							// current point outside
-							if (bDotPlane <= 0.0 )
+							if (bdot <= 0.0 )
 							{
 								// previous was inside
 								// intersect line segment with plane
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 								// get t intersection
-								t = bDotPlane / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w))
+								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w))
 								// interpolate position
 								out.x = b.x + ((a.x - b.x ) * t );
 								out.y = b.y + ((a.y - b.y ) * t );
@@ -1170,7 +1168,7 @@
 							}
 						}
 						b = a;
-						bDotPlane = aDotPlane
+						bdot = adot
 					}
 					// check we have 3 or more vertices
 					if (outCount < 3)
@@ -1190,22 +1188,22 @@
 					dest = _clipped_vertices2;
 					plane = _ndc_planes [3];
 					b = source [0];
-					bDotPlane = (b.x * plane.x) + (b.w * plane.w);
+					bdot = (b.x * plane.x) + (b.w * plane.w);
 					for (i = 1; i < inCount + 1; i+=1)
 					{
 						a = source [i % inCount];
-						aDotPlane = (a.x * plane.x) + (a.w * plane.w);
+						adot = (a.x * plane.x) + (a.w * plane.w);
 						// current point inside
-						if (aDotPlane <= 0.0 )
+						if (adot <= 0.0 )
 						{
 							// last point outside
-							if (bDotPlane > 0.0 )
+							if (bdot > 0.0 )
 							{
 								// intersect line segment with plane
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 								// get t intersection
-								t = bDotPlane / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w))
+								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w))
 								// interpolate position
 								out.x = b.x + ((a.x - b.x ) * t );
 								out.y = b.y + ((a.y - b.y ) * t );
@@ -1227,13 +1225,13 @@
 						else
 						{
 							// current point outside
-							if (bDotPlane <= 0.0 )
+							if (bdot <= 0.0 )
 							{
 								// previous was inside
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 								// get t intersection
-								t = bDotPlane / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w))
+								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w))
 								// interpolate position
 								out.x = b.x + ((a.x - b.x ) * t );
 								out.y = b.y + ((a.y - b.y ) * t );
@@ -1252,7 +1250,7 @@
 							}
 						}
 						b = a;
-						bDotPlane = aDotPlane;
+						bdot = adot;
 					}
 					// check we have 3 or more vertices
 					if (outCount < 3)
@@ -1269,18 +1267,18 @@
 					dest = _clipped_vertices1;
 					plane = _ndc_planes [4];
 					b = source [0];
-					bDotPlane = (b.y * plane.y) + (b.w * plane.w);
+					bdot = (b.y * plane.y) + (b.w * plane.w);
 					for (i = 1; i < inCount + 1; i+=1)
 					{
 						a = source [i % inCount];
-						aDotPlane = (a.y * plane.y) + (a.w * plane.w);
-						if (aDotPlane <= 0.0 )
+						adot = (a.y * plane.y) + (a.w * plane.w);
+						if (adot <= 0.0 )
 						{
-							if (bDotPlane > 0.0 )
+							if (bdot > 0.0 )
 							{
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
-								t = bDotPlane / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w))
+								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w))
 								out.x = b.x + ((a.x - b.x ) * t );
 								out.y = b.y + ((a.y - b.y ) * t );
 								out.z = b.z + ((a.z - b.z ) * t );
@@ -1298,11 +1296,11 @@
 						} 
 						else
 						{
-							if (bDotPlane <= 0.0 )
+							if (bdot <= 0.0 )
 							{
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
-								t = bDotPlane / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w))
+								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w))
 								out.x = b.x + ((a.x - b.x ) * t );
 								out.y = b.y + ((a.y - b.y ) * t );
 								out.z = b.z + ((a.z - b.z ) * t );
@@ -1318,7 +1316,7 @@
 							}
 						}
 						b = a;
-						bDotPlane = aDotPlane;
+						bdot = adot;
 					}
 					// check we have 3 or more vertices
 					if (outCount < 3)
@@ -1335,20 +1333,20 @@
 					dest = _clipped_vertices0;
 					plane = _ndc_planes [5];
 					b = source [0];
-					bDotPlane = (b.y * plane.y) + (b.w * plane.w);
+					bdot = (b.y * plane.y) + (b.w * plane.w);
 					for (i = 1; i < inCount + 1; i+=1)
 					{
 						a = source [i % inCount];
-						aDotPlane = (a.y * plane.y) + (a.w * plane.w);
+						adot = (a.y * plane.y) + (a.w * plane.w);
 						// current point inside
-						if (aDotPlane <= 0.0 )
+						if (adot <= 0.0 )
 						{
 							// last point outside
-							if (bDotPlane > 0.0 )
+							if (bdot > 0.0 )
 							{
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
-								t = bDotPlane / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w))
+								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w))
 								out.x = b.x + ((a.x - b.x ) * t );
 								out.y = b.y + ((a.y - b.y ) * t );
 								out.z = b.z + ((a.z - b.z ) * t );
@@ -1366,11 +1364,11 @@
 						} 
 						else
 						{
-							if (bDotPlane <= 0.0 )
+							if (bdot <= 0.0 )
 							{
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
-								t = bDotPlane / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
+								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
 								out.x = b.x + ((a.x - b.x ) * t );
 								out.y = b.y + ((a.y - b.y ) * t );
 								out.z = b.z + ((a.z - b.z ) * t );
@@ -1386,7 +1384,7 @@
 							}
 						}
 						b = a;
-						bDotPlane = aDotPlane;
+						bdot = adot;
 					}
 					if (outCount < 3)
 					{
@@ -1408,9 +1406,9 @@
 				for (g = 0; g <= outCount - 3; g+=1)
 				{
 					// add the three points
-					_clipped_indices [int(iCount ++)] = (vCount2);
-					_clipped_indices [int(iCount ++)] = (vCount2 + g + 1);
-					_clipped_indices [int(iCount ++)] = (vCount2 + g + 2);
+					_clipped_indices [int(iCount++)] = (vCount2);
+					_clipped_indices [int(iCount++)] = (vCount2 + g + 1);
+					_clipped_indices [int(iCount++)] = (vCount2 + g + 2);
 				}
 			}
 			primitivesDrawn += int (iCount / 3);
@@ -1563,19 +1561,19 @@
 				// clipping required
 				if (requiredClipping)
 				{
-					var aDotPlane : Number = (tv0.z * plane.z) + (tv0.w * plane.w);
-					var bDotPlane : Number = (tv1.z * plane.z) + (tv1.w * plane.w);
-					if (aDotPlane <= 0.0 )
+					var adot : Number = (tv0.z * plane.z) + (tv0.w * plane.w);
+					var bdot : Number = (tv1.z * plane.z) + (tv1.w * plane.w);
+					if (adot <= 0.0 )
 					{
 						// last point outside
-						var t : Number = bDotPlane / (((tv1.z - tv0.z) * plane.z) + ((tv1.w - tv0.w) * plane.w));
+						var t : Number = bdot / (((tv1.z - tv0.z) * plane.z) + ((tv1.w - tv0.w) * plane.w));
 						tv1.x = tv1.x + (tv0.x - tv1.x ) * t ;
 						tv1.y = tv1.y + (tv0.y - tv1.y ) * t ;
 						tv1.z = tv1.z + (tv0.z - tv1.z ) * t ;
 						tv1.w = tv1.w + (tv0.w - tv1.w ) * t ;
 					} else
 					{
-						t = aDotPlane / (((tv0.z - tv1.z) * plane.z) + ((tv0.w - tv1.w) * plane.w));
+						t = adot / (((tv0.z - tv1.z) * plane.z) + ((tv0.w - tv1.w) * plane.w));
 						tv0.x = tv0.x + (tv1.x - tv0.x ) * t ;
 						tv0.y = tv0.y + (tv1.y - tv0.y ) * t ;
 						tv0.z = tv0.z + (tv1.z - tv0.z ) * t ;

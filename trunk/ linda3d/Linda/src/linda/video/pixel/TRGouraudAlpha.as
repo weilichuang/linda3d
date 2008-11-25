@@ -3,49 +3,49 @@
 	import __AS3__.vec.Vector;
 	
 	import linda.math.Vertex4D;
+	import linda.video.ITriangleRenderer;
 	
-	public class TRGouraudAlpha extends TriangleRenderer
+	public class TRGouraudAlpha extends TriangleRenderer implements ITriangleRenderer
 	{
-		//背景颜色
-		private var bga : int;
-		private var bgColor : uint;
-		
-		//r,g,b
-		private var drdyl : Number;
-		private var drdyr : Number;
-		private var dgdyl : Number;
-		private var dgdyr : Number;
-		private var dbdyl : Number;
-		private var dbdyr : Number;
-
-		private var r0 : int;
-		private var g0 : int;
-		private var b0 : int;
-		private var r1 : int;
-		private var g1 : int;
-		private var b1 : int;
-		private var r2 : int;
-		private var g2 : int;
-		private var b2 : int;
-		
-		private var ri : Number;
-		private var bi : Number;
-		private var gi : Number;
-
-		private var rl : Number;
-		private var gl : Number;
-		private var bl : Number;
-		private var rr : Number;
-		private var gr : Number;
-		private var br : Number;
-
-		private var dr : Number;
-		private var dg : Number;
-		private var db : Number;
-		
-		override public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
+		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
 		{
+			var color:uint;
+			var bga : int;
+			var bgColor : uint;
+
+			var xstart : int,xend : int;
+			var ystart : int,yend : int;
+			var dyr : Number,dyl : Number;
+			var dxdyl : Number,dxdyr : Number;
+			var dzdyl : Number,dzdyr : Number;
+			var x0 : int,x1 : int,x2 : int; 
+			var y0 : int,y1 : int,y2 : int;
+			var z0 : Number,z1 : Number,z2 : Number;
+			var xi : int,yi : int; 
+			var zi : Number;
+			var xl : Number,xr : Number;
+			var zl : Number,zr : Number;
+			var dx : Number,dy : Number,dz : Number;
+			
+			var drdyl : Number,drdyr : Number;
+			var dgdyl : Number,dgdyr : Number;
+			var dbdyl : Number,dbdyr : Number;
+
+			var r0 : int,g0 : int,b0 : int;
+			var r1 : int,g1 : int,b1 : int;
+			var r2 : int,g2 : int,b2 : int;
+		
+			var ri : Number,bi : Number,gi : Number;
+
+			var rl : Number,gl : Number,bl : Number;
+			var rr : Number,gr : Number,br : Number;
+
+			var dr : Number,dg : Number,db : Number;
+			
 			var temp1 : Vertex4D;
+			var vt0:Vertex4D;
+		    var vt1:Vertex4D;
+		    var vt2:Vertex4D;
 			var temp : Number;
 			var side : int;
 		 	var ys : int;

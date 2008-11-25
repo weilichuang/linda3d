@@ -2,73 +2,67 @@
 {
 	import __AS3__.vec.Vector;
 	
+	import flash.utils.getTimer;
+	import flash.display.*;
+	
 	import linda.material.ITexture;
 	import linda.math.Vertex4D;
-	
-	import flash.display.BitmapData;
-	public class TRTextureGouraud extends TriangleRenderer
+	import linda.video.ITriangleRenderer;
+	public class TRTextureGouraud extends TriangleRenderer implements ITriangleRenderer
 	{
-		//texture
-		private var textel : uint;
-		
-		private var tw:Number;
-		private var th:Number;
-
-		private var bitmapData:BitmapData;
-		//r,g,b
-		private var drdyl : Number;
-		private var drdyr : Number;
-		private var dgdyl : Number;
-		private var dgdyr : Number;
-		private var dbdyl : Number;
-		private var dbdyr : Number;
-		//u,v
-		private var dudyl : Number;
-		private var dudyr : Number;
-		private var dvdyl : Number;
-		private var dvdyr : Number;
-
-		private var r0 : int;
-		private var g0 : int;
-		private var b0 : int;
-		private var r1 : int;
-		private var g1 : int;
-		private var b1 : int;
-		private var r2 : int;
-		private var g2 : int;
-		private var b2 : int;
-		private var u0 : Number;
-		private var v0 : Number;
-		private var u1 : Number;
-		private var v1 : Number; 
-		private var u2 : Number; 
-		private var v2 : Number;
-
-		private var ri : Number;
-		private var bi : Number;
-		private var gi : Number;
-		private var ui : Number;
-		private var vi : Number;
-
-		private var rl : Number;
-		private var gl : Number;
-		private var bl : Number;
-		private var rr : Number;
-		private var gr : Number;
-		private var br : Number;
-		private var ul : Number;
-		private var vl : Number;
-		private var ur : Number;
-		private var vr : Number;
-		
-		private var dr : Number;
-		private var dg : Number;
-		private var db : Number;
-		private var du : Number;
-		private var dv : Number;
-		override public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int): void
+		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int): void
 		{
+			var color:uint;
+			
+			var textel : uint;
+		
+		    var tw:Number;
+		    var th:Number;
+
+		    var bitmapData:BitmapData;
+		
+			var xstart : int,xend : int;
+			var ystart : int,yend : int;
+			var dyr : Number,dyl : Number;
+			var dxdyl : Number,dxdyr : Number;
+			var dzdyl : Number,dzdyr : Number;
+			var x0 : int,x1 : int,x2 : int; 
+			var y0 : int,y1 : int,y2 : int;
+			var z0 : Number,z1 : Number,z2 : Number;
+			var xi : int,yi : int; 
+			var zi : Number;
+			var xl : Number,xr : Number;
+			var zl : Number,zr : Number;
+			var dx : Number,dy : Number,dz : Number;
+			
+			var drdyl : Number,drdyr : Number,dgdyl : Number;
+			var dgdyr : Number,dbdyl : Number,dbdyr : Number;
+
+			var dudyl : Number,dudyr : Number;
+			var dvdyl : Number,dvdyr : Number;
+
+			var r0 : int,g0 : int,b0 : int;
+			var r1 : int,g1 : int,b1 : int;
+			var r2 : int,g2 : int,b2 : int;
+			var u0 : Number,v0 : Number;
+			var u1 : Number,v1 : Number; 
+			var u2 : Number,v2 : Number;
+
+			var ri : Number,bi : Number,gi : Number;
+			var ui : Number,vi : Number;
+
+			var rl : Number,gl : Number,bl : Number;
+			var rr : Number,gr : Number,br : Number;
+			var ul : Number,vl : Number;
+			var ur : Number,vr : Number;
+		
+			var dr : Number,dg : Number,db : Number;
+			var du : Number,dv : Number;
+		    
 			var temp1 : Vertex4D;
+			var vt0:Vertex4D;
+		    var vt1:Vertex4D;
+		    var vt2:Vertex4D;
 			var temp : Number;
 			var side : int;
 		 	var ys : int;
@@ -76,7 +70,7 @@
             var oldZ:int;
             var texture:ITexture=material.getTexture();
 			var ii:int;
-
+			
 			for (var i : int = 0; i < indexCount; i += 3)
 			{
 				ii=indexList [i];
@@ -150,8 +144,6 @@
 				ystart = y0;
 				if(type==0)
 				{
-					
-					
 						dyl = 1 / (y1 - y0);
 						dxdyl = (x1 - x0) * dyl;
 						dzdyl = (z1 - z0) * dyl;
@@ -203,9 +195,8 @@
 							b1 ^= b2; b2 ^= b1; b1 ^= b2;
 							
 							side = 1;
+							
 						}
-
-				
 						for (yi = ystart; yi <= yend; yi +=1)
 						{
 							xstart = xl;
@@ -253,6 +244,7 @@
 								ui += du; vi += dv; zi += dz;
 								ri += dr; gi += dg; bi += db;
 							}
+
 							xl += dxdyl; ul += dudyl; vl += dvdyl;
 							rl += drdyl; gl += dgdyl; bl += dbdyl;
 							zl += dzdyl;
@@ -319,11 +311,11 @@
 						dgdyr = (g2 - g1) * dy;
 						dbdyr = (b2 - b1) * dy;
 						
-							xl = x0; xr = x1; zl = z0; zr = z1;
-							ul = u0; vl = v0;
-							ur = u1; vr = v1;
-							rl = r0; gl = g0; bl = b0;
-							rr = r1; gr = g1; br = b1;
+						xl = x0; xr = x1; zl = z0; zr = z1;
+						ul = u0; vl = v0;
+						ur = u1; vr = v1;
+						rl = r0; gl = g0; bl = b0;
+						rr = r1; gr = g1; br = b1;
 					} 
 					else
 					{
@@ -349,9 +341,8 @@
 						ur = u0; vr = v0;
 						rr = r0; gr = g0; br = b0;
 					}
-					
-						for (yi = ystart; yi <= yend; yi +=1)
-						{
+					for (yi = ystart; yi <= yend; yi +=1)
+					{
 							xstart = xl;
 							xend = xr;
 							ui = ul; vi = vl;
@@ -376,34 +367,34 @@
 								dg = (gr - gl);
 								db = (br - bl);
 							}
-							for (xi = xstart; xi < xend; xi +=1)
+						for (xi = xstart; xi < xend; xi +=1)
+						{
+							oldZ=buffer.getPixel (xi, yi);
+							if (zi < oldZ)
 							{
-								oldZ=buffer.getPixel (xi, yi);
-								if (zi < oldZ)
+								if(perspectiveCorrect)
 								{
-									if(perspectiveCorrect)
-									{
-										textel = bitmapData.getPixel (ui * zi, vi * zi);
-									}else
-									{
-										textel = bitmapData.getPixel (ui, vi);
-									}
-									color=((((textel >> 16 & 0xFF) * ri) >> 8) << 16 |
-									       (((textel >> 8 & 0xFF) * gi) >> 8)  << 8  |
-									       ((textel & 0xFF) * bi) >> 8);
-									target.setPixel (xi, yi,color);
-									buffer.setPixel (xi, yi, zi);
+									textel = bitmapData.getPixel (ui * zi, vi * zi);
+								}else
+								{
+									textel = bitmapData.getPixel (ui, vi);
 								}
-								ui += du; vi += dv; zi += dz;
-								ri += dr; gi += dg; bi += db;
+								color=((((textel >> 16 & 0xFF) * ri) >> 8) << 16 |
+									   (((textel >> 8 & 0xFF) * gi) >> 8)  << 8  |
+									   ((textel & 0xFF) * bi) >> 8);
+								target.setPixel (xi, yi,color);
+								buffer.setPixel (xi, yi, zi);
 							}
-							xl += dxdyl; ul += dudyl; vl += dvdyl;
-							rl += drdyl; gl += dgdyl; bl += dbdyl;
-							zl += dzdyl;
-							xr += dxdyr; ur += dudyr; vr += dvdyr;
-							rr += drdyr; gr += dgdyr; br += dbdyr;
-							zr += dzdyr;
+							ui += du; vi += dv; zi += dz;
+							ri += dr; gi += dg; bi += db;
 						}
+						xl += dxdyl; ul += dudyl; vl += dvdyl;
+						rl += drdyl; gl += dgdyl; bl += dbdyl;
+						zl += dzdyl;
+						xr += dxdyr; ur += dudyr; vr += dvdyr;
+						rr += drdyr; gr += dgdyr; br += dbdyr;
+						zr += dzdyr;
+					}
 				}
 			}
 		}

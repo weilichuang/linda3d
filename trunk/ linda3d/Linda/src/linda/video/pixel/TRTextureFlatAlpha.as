@@ -4,47 +4,56 @@
 	
 	import linda.material.ITexture;
 	import linda.math.Vertex4D;
-	
+	import linda.video.ITriangleRenderer;
 	import flash.display.BitmapData;
-	public class TRTextureFlatAlpha extends TriangleRenderer
+	public class TRTextureFlatAlpha extends TriangleRenderer implements ITriangleRenderer
 	{
-		//背景颜色
-		private var bga : int;
-		private var bgColor : uint;
-		//texture
-		private var textel : uint;
-		
-		private var tw:Number;
-		private var th:Number;
-		
-		private var bitmapData:BitmapData;
-		//u,v
-		private var dudyl : Number;
-		private var dudyr : Number;
-		private var dvdyl : Number;
-		private var dvdyr : Number;
-
-		private var u0 : Number;
-		private var v0 : Number;
-		private var u1 : Number;
-		private var v1 : Number; 
-		private var u2 : Number; 
-		private var v2 : Number;
-
-		private var ul : Number;
-		private var vl : Number;
-		private var ur : Number;
-		private var vr : Number;
-
-		private var du : Number;
-		private var dv : Number;
-		
-		private var ui : Number;
-		private var vi : Number;
-		
-		override public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int): void
+		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int): void
 		{
+			var color:uint;
+			
+			var bga : int;
+			var bgColor : uint;
+
+			var textel : uint;
+		
+			var tw:Number;
+			var th:Number;
+		
+			var bitmapData:BitmapData;
+
+			var dudyl : Number,dudyr : Number;
+			var dvdyl : Number,dvdyr : Number;
+
+			var u0 : Number,v0 : Number;
+			var u1 : Number,v1 : Number; 
+			var u2 : Number,v2 : Number;
+
+			var ul : Number,vl : Number;
+			var ur : Number,vr : Number;
+
+			var du : Number,dv : Number;
+		
+			var ui : Number,vi : Number;
+		
+			var xstart : int,xend : int;
+			var ystart : int,yend : int;
+			var dyr : Number,dyl : Number;
+			var dxdyl : Number,dxdyr : Number;
+			var dzdyl : Number,dzdyr : Number;
+			var x0 : int,x1 : int,x2 : int; 
+			var y0 : int,y1 : int,y2 : int;
+			var z0 : Number,z1 : Number,z2 : Number;
+			var xi : int,yi : int; 
+			var zi : Number;
+			var xl : Number,xr : Number;
+			var zl : Number,zr : Number;
+			var dx : Number,dy : Number,dz : Number;
+			
 			var temp1 : Vertex4D;
+			var vt0:Vertex4D;
+		    var vt1:Vertex4D;
+		    var vt2:Vertex4D;
 			var temp : Number;
 			var side : int;
 		 	var ys : int;
