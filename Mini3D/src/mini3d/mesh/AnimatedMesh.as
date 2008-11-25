@@ -2,7 +2,6 @@
 {
 	import mini3d.math.AABBox3D;
 	import mini3d.mesh.IMesh;
-	import mini3d.mesh.IMeshBuffer;
 	public class AnimatedMesh implements IAnimateMesh
 	{
 		public var boundingBox : AABBox3D;
@@ -58,7 +57,7 @@
 		{
 			return type;
 		}
-		public function getMeshBuffer (nr : int) : IMeshBuffer
+		public function getMeshBuffer (nr : int) : MeshBuffer
 		{
 			return null;
 		}

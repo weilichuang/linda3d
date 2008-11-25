@@ -238,7 +238,7 @@
 			
 			
 		    var interpolateBuffer:MeshBuffer=mesh.interpolateBuffer;
-		    var indices:Array=interpolateBuffer.getIndices();
+		    var indices:Array=interpolateBuffer.indices;
 			for (var n:int=0; n<triangleCount*3; n+=3)
 			{
 				indices.push(n);
@@ -247,7 +247,7 @@
 			}
 
 			// reallocate interpolate buffer
-			var bufferVertices:Array=interpolateBuffer.getVertices();
+			var bufferVertices:Array=interpolateBuffer.vertices;
 			if (frameCount!=0)
 			{
 				var first_frame:Array = mesh.frameList[0];
@@ -262,7 +262,7 @@
 					
 					vertex.copy(vtx);
 				}
-				interpolateBuffer.setBoundingBox(mesh.boxList[0]);
+				interpolateBuffer.boundingBox = mesh.boxList[0];
 			}
 		
             transformation_matrix=null;

@@ -2,9 +2,8 @@ package mini3d.scene
 {
 	import mini3d.core.Material;
 	import mini3d.math.AABBox3D;
-	import mini3d.math.Vector3D;
-	import mini3d.mesh.IMeshBuffer;
 	import mini3d.mesh.Mesh;
+	import mini3d.mesh.MeshBuffer;
 	import mini3d.render.RenderManager;
 	public class MeshSceneNode extends SceneNode
 	{
@@ -40,12 +39,12 @@ package mini3d.scene
 			materials = [];
 			if (mesh)
 			{
-				var mb : IMeshBuffer;
+				var mb : MeshBuffer;
 				var count:int=mesh.getMeshBufferCount ();
 				for (var i : int = 0; i < count; i+=1)
 				{
 					mb = mesh.getMeshBuffer (i);
-					if (mb) materials.push (mb.getMaterial().clone());
+					if (mb) materials.push (mb.material.clone());
 				}
 			}
 		}
@@ -65,7 +64,7 @@ package mini3d.scene
             
 			driver.setTransformWorld (_absoluteMatrix);
 			
-			var mb : IMeshBuffer;
+			var mb : MeshBuffer;
 			var len:int=mesh.getMeshBufferCount ();
 			for (var i : int = 0; i < len; i+=1)
 			{

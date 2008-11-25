@@ -4,7 +4,7 @@
 	public interface IMesh
 	{
 		function getMeshBufferCount () : int;
-		function getMeshBuffer (nr : int) : IMeshBuffer;
+		function getMeshBuffer (nr : int) : MeshBuffer;
 		function getMeshBuffers():Array;
 		function getBoundingBox () : AABBox3D;
 		function setBoundingBox (box : AABBox3D) : void;

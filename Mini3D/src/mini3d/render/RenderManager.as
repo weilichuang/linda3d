@@ -10,7 +10,7 @@ package mini3d.render
 	import mini3d.math.Matrix4;
 	import mini3d.math.Vector3D;
 	import mini3d.math.Vector4D;
-	import mini3d.mesh.IMeshBuffer;
+	import mini3d.mesh.MeshBuffer;
 	import mini3d.scene.CameraSceneNode;
 
 	public class RenderManager
@@ -444,9 +444,9 @@ package mini3d.render
 			_primitiveCount += tCount;
 		}
 		
-		public function drawMeshBuffer(target:Sprite,buffer:IMeshBuffer):void
+		public function drawMeshBuffer(target:Sprite,buffer:MeshBuffer):void
 		{
-			drawTriangleList(target,buffer.getVertices(),buffer.getVertexCount(),buffer.getIndices(),buffer.getIndexCount());
+			drawTriangleList(target,buffer.vertices,buffer.vertices.length,buffer.indices,buffer.indices.length);
 		}
 		
 		public function getScreenSize():Dimension2D

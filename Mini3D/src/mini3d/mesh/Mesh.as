@@ -16,7 +16,7 @@
 		{
 			return meshBuffers.length;
 		}
-		public function getMeshBuffer (nr : int) : IMeshBuffer
+		public function getMeshBuffer (nr : int) : MeshBuffer
 		{
 			return meshBuffers [nr];
 		}
@@ -24,7 +24,7 @@
 		{
 			return meshBuffers;
 		}
-		public function removeMeshBuffer (buffer : IMeshBuffer) : Boolean
+		public function removeMeshBuffer (buffer : MeshBuffer) : Boolean
 		{
 			var len : int = meshBuffers.length;
 			for (var i:int = 0; i < len; i ++)
@@ -37,10 +37,10 @@
 			}
 			return false;
 		}
-		public function removeMeshBufferByIndex (i : int) : IMeshBuffer
+		public function removeMeshBufferByIndex (i : int) : MeshBuffer
 		{
 			if (i < 0 || i >= meshBuffers.length) return null;
-			var buffer : IMeshBuffer = meshBuffers.splice (i, 1)[0];
+			var buffer : MeshBuffer = meshBuffers.splice (i, 1)[0];
 			return buffer;
 		}
 		public function setBoundingBox (box : AABBox3D) : void
@@ -54,39 +54,41 @@
 		public function recalculateBoundingBox () : void
 		{
 			var len:int=meshBuffers.length;
-			var buffer:IMeshBuffer;
+			var buffer:MeshBuffer;
 			if (len > 0)
 			{
 				buffer=meshBuffers [0];
-				boundingBox.resetBox (buffer.getBoundingBox ());
+				boundingBox.resetBox (buffer.boundingBox);
 				for (var i:int = 1; i < len; i ++)
 				{
 					buffer=meshBuffers [i];
-					boundingBox.addBox (buffer.getBoundingBox ());
+					boundingBox.addBox (buffer.boundingBox);
 				}
 			}
 		}
 		public function setMaterialFlag (flag : int, value : Boolean) : void
 		{
 			var len:int=meshBuffers.length;
-			var buffer:IMeshBuffer;
+			var buffer:MeshBuffer;
 			for (var i:int = 0; i < len; i ++)
 			{
 				buffer = meshBuffers [i];
-				buffer.getMaterial().setFlag (flag, value);
+				buffer.material.setFlag (flag, value);
 			}
 		}
 		
-		public function addMeshBuffer (buf : IMeshBuffer) : void
+		public function addMeshBuffer (buf : MeshBuffer) : void
 		{
-			if (!buf) return;
-			meshBuffers.push (buf);
+			if(buf)
+			{
+				meshBuffers.push (buf);
+			}
 		}
 		
 		public function appendMesh(m:IMesh):void
 		{
 			var len:int=m.getMeshBufferCount();
-			var buffer:IMeshBuffer;
+			var buffer:MeshBuffer;
 			for(var i:int =0; i < len; i++)
 			{
 				buffer=m.getMeshBuffer(i);

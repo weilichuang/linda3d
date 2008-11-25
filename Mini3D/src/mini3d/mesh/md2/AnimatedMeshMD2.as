@@ -6,7 +6,6 @@
 	import mini3d.mesh.AnimatedMeshType;
 	import mini3d.mesh.IAnimateMesh;
 	import mini3d.mesh.IMesh;
-	import mini3d.mesh.IMeshBuffer;
 	import mini3d.mesh.MeshBuffer;
 	public class AnimatedMeshMD2 implements IAnimateMesh
 	{
@@ -50,7 +49,7 @@
 			data.fps = frame.fps << FRAME_SHIFT;
 			return data;
 		}
-		public function getMeshBuffer (i : int) : IMeshBuffer
+		public function getMeshBuffer (i : int) : MeshBuffer
 		{
 			return interpolateBuffer;
 		}
@@ -60,11 +59,11 @@
 		}
 		public function getMaterial () : Material
 		{
-			return interpolateBuffer.getMaterial ();
+			return interpolateBuffer.material;
 		}
 		public function getVertices () : Array
 		{
-			return interpolateBuffer.getVertices ();
+			return interpolateBuffer.vertices;
 		}
 		public function getVertexCount () : int
 		{
@@ -76,7 +75,7 @@
 		}
 		public function getIndices () : Array
 		{
-			return interpolateBuffer.getIndices ();
+			return interpolateBuffer.indices;
 		}
 		public function getIndexCount () : int
 		{
@@ -116,7 +115,7 @@
 				frame &= (1 << FRAME_SHIFT) - 1;
 				div = frame * FRAME_SHIFT_RECIPROCAL;
 			}
-			var targetArray : Array = interpolateBuffer.getVertices ();
+			var targetArray : Array = interpolateBuffer.vertices;
 			var firstArray : Array = frameList [firstFrame];
 			var secondArray : Array = frameList [secondFrame];
 			var count : int = frameList [firstFrame].length;
@@ -142,7 +141,7 @@
 			_tmpBox.maxY = firstBox.maxY * inv + secondBox.maxY * div;
 			_tmpBox.maxZ = firstBox.maxZ * inv + secondBox.maxZ * div;
 			
-			interpolateBuffer.setBoundingBox (_tmpBox);
+			interpolateBuffer.boundingBox = _tmpBox;
 		}
 		// returns the animated mesh based on a detail level. 0 is the lowest, 255 the highest detail. Note, that some Meshes will ignore the detail level.
 		public function getMesh (frame : int, detailLevel : int = 255, startFrameLoop : int = - 1, endFrameLoop : int = - 1) : IMesh
@@ -158,19 +157,19 @@
 		}
 		public function setBoundingBox (box : AABBox3D) : void
 		{
-			interpolateBuffer.setBoundingBox (box);
+			interpolateBuffer.boundingBox = box;
 		}
 		public function getBoundingBox () : AABBox3D
 		{
-			return interpolateBuffer.getBoundingBox ();
+			return interpolateBuffer.boundingBox;
 		}
 		public function setMaterialFlag (flag : int, value : Boolean) : void
 		{
-			interpolateBuffer.getMaterial ().setFlag (flag, value);
+			interpolateBuffer.material.setFlag (flag, value);
 		}
 		public function setMaterial (mat : Material) : void
 		{
-			interpolateBuffer.setMaterial(mat);
+			interpolateBuffer.material=mat;
 		}
 		public function getMeshType () : int
 		{

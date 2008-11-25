@@ -19,9 +19,9 @@
 			var bcount : int = mesh.getMeshBufferCount ();
 			for (var b : int = 0; b < bcount; b ++)
 			{
-				var buffer : IMeshBuffer = mesh.getMeshBuffer (b);
+				var buffer : MeshBuffer = mesh.getMeshBuffer (b);
 				var idxcnt : int = buffer.getIndexCount ();
-				var idx : Array = buffer.getIndices ();
+				var idx : Array = buffer.indices;
 				var tmp : int;
 				for (var i : int = 0; i < idxcnt; i += 3)
 				{
@@ -45,9 +45,9 @@
 			var bcount : int = mesh.getMeshBufferCount ();
 			for (var i : int = 0; i < bcount; i ++)
 			{
-				var buffer : IMeshBuffer = mesh.getMeshBuffer (i);
+				var buffer : MeshBuffer = mesh.getMeshBuffer (i);
 				var vtx_cnt : int = buffer.getVertexCount ();
-				var vertices : Array = buffer.getVertices ();
+				var vertices : Array = buffer.vertices;
 				for (var j : int = 0; j < vtx_cnt; j ++)
 				{
 					var v : Vertex = vertices [j];
@@ -56,16 +56,16 @@
 				}
 			}
 		}
-		public static function unwrapUVMeshBuffer (buffer : IMeshBuffer) : void
+		public static function unwrapUVMeshBuffer (buffer : MeshBuffer) : void
 		{
 			if ( ! buffer) return;
 			buffer.recalculateBoundingBox ();
-			var box : AABBox3D = buffer.getBoundingBox ();
+			var box : AABBox3D = buffer.boundingBox;
 			box.repair ();
 			if (box.isEmpty ()) return;
 			var rect : Rectangle = new Rectangle (box.minX, box.minY, (box.maxX - box.minX) , (box.maxY - box.minY));
 			var vtx_cnt : int = buffer.getVertexCount ();
-			var vertices : Array = buffer.getVertices ();
+			var vertices : Array = buffer.vertices;
 			for (var j : int = 0; j < vtx_cnt; j ++)
 			{
 				var v : Vertex = vertices [j];
@@ -80,11 +80,11 @@
 			var bcount : int = mesh.getMeshBufferCount ();
 			for (var i : int = 0; i < bcount; i ++)
 			{
-				var buffer : IMeshBuffer = mesh.getMeshBuffer (i);
+				var buffer : MeshBuffer = mesh.getMeshBuffer (i);
 				var vtx_cnt : int = buffer.getVertexCount ();
 				var idx_cnt : int = buffer.getIndexCount ();
-				var indices : Array = buffer.getIndices ();
-				var vertices : Array = buffer.getVertices ();
+				var indices : Array = buffer.indices;
+				var vertices : Array = buffer.vertices;
 				for (var j : int = 0; j < idx_cnt; j += 3)
 				{
 					var v0 : Vertex = vertices [indices [j]];
@@ -126,12 +126,12 @@
 				}
 			}
 		}
-		public static function makeMeshBufferPlanarTextureMapping (buffer : IMeshBuffer, resolution : Number = 0.01) : void
+		public static function makeMeshBufferPlanarTextureMapping (buffer : MeshBuffer, resolution : Number = 0.01) : void
 		{
 			var vtx_cnt : int = buffer.getVertexCount ();
 			var idx_cnt : int = buffer.getIndexCount ();
-			var indices : Array = buffer.getIndices ();
-			var vertices : Array = buffer.getVertices ();
+			var indices : Array = buffer.indices;
+			var vertices : Array = buffer.vertices;
 			for (var j : int = 0; j < idx_cnt; j += 3)
 			{
 				var v0 : Vertex = vertices [indices [j]];

@@ -5,7 +5,6 @@
 	
 	import mini3d.core.Vertex;
 	import mini3d.mesh.IMesh;
-	import mini3d.mesh.IMeshBuffer;
 	import mini3d.mesh.Mesh;
 	import mini3d.mesh.MeshBuffer;
 	import mini3d.mesh.MeshLoader;
@@ -103,7 +102,7 @@
 						case Max3DSChunk.TRI_VERTEX :
 						{
 							count = data.readShort ();
-							var vertices : Array = meshBuffer.getVertices();
+							var vertices : Array = meshBuffer.vertices;
 							for (var i : int = 0; i < count; i ++)
 							{
 								var vertex : Vertex = new Vertex ();
@@ -117,7 +116,7 @@
 						case Max3DSChunk.TRI_FACEVERT :
 						{
 							count = data.readShort ();
-							var indices : Array = meshBuffer.getIndices();
+							var indices : Array = meshBuffer.indices;
 							for (i = 0; i < count; i ++)
 							{
 								var t0 : int = data.readShort ();
@@ -265,7 +264,7 @@
 				//recalculate normals
 				for (var j : int = 0; j < mesh.getMeshBufferCount (); j ++)
 				{
-					var buffer : IMeshBuffer = mesh.getMeshBuffer (j);
+					var buffer : MeshBuffer = mesh.getMeshBuffer (j);
 					buffer.recalculateBoundingBox ();
 				}
 				mesh.recalculateBoundingBox ();
