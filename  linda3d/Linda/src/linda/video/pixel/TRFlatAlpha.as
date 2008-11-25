@@ -8,7 +8,6 @@
 		//背景颜色
 		private var bga : int;
 		private var bgColor : uint;
-		//todo 修改开始处交换方式
 		override public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int): void
 		{
 			var r:int,b:int,g:int;

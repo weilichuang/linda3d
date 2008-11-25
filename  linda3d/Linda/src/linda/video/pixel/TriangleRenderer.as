@@ -12,7 +12,6 @@
 		protected var target : BitmapData;
 		protected var buffer : BitmapData;
 		protected var material : Material;
-
 		//x y z
 		protected var xstart : int; 
 		protected var xend : int;
@@ -70,7 +69,6 @@
 		{
 			this.target = target;
 			this.buffer = buffer;
-
 		}
 		public function setPerspectiveCorrectDistance(distance:Number=400):void
 		{
@@ -83,7 +81,6 @@
 		public function setMaterial (mat : Material) : void
 		{
 			material = mat;
-
 			if(material.transparenting)
 			{
 				alpha = material.alpha;
@@ -144,7 +141,7 @@
 					dzdy = dz/(y0-y1);
 					for( ; y1 < y0 ; y1++ )
 					{
-						var oldz:Number=buffer.getPixel (x1, y1);
+						var oldz:int=buffer.getPixel (x1, y1);
 						if (z1 < oldz)
 						{
 					    	target.setPixel( x1, y1, color );
@@ -168,7 +165,7 @@
 						oldz=buffer.getPixel (x0, y0);
 						if (z1 < oldz)
 						{
-					   	 	target.setPixel( x0, y0, color );
+					   	 	target.setPixel(x0, y0,color);
 					    	buffer.setPixel(x0,y0,z1);
 						}
 						error += dy;
