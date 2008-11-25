@@ -13,7 +13,6 @@
 	import linda.mesh.animation.AnimatedMeshMD2;
 	import linda.mesh.animation.IAnimateMesh;
 	import linda.mesh.animation.MD2Frame;
-	import linda.mesh.loader.MeshLoader;
 	
 
 	public class MD2MeshFileLoader extends MeshLoader
@@ -73,13 +72,14 @@
 			data.position=header.offsetTexcoords;
 
 			// uv 
-			var uvList:Array = new Array();
+			var invWidth:Number=1/header.skinWidth;
+			var invHeight:Number=1/header.skinHeight;
+			var uvList:Vector.<Vector.<Number>> = new Vector.<Vector.<Number>>(header.numTexcoords,true);
 			for(i=0;i<header.numTexcoords;i++)
 			{
-				var uv:Array = new Array();
-				uv[0] = data.readShort()/header.skinWidth;
-				uv[1] = data.readShort()/header.skinHeight;
-				
+				var uv:Vector.<Number> = new Vector.<Number>(2,true);
+				uv[0] = data.readShort()*invWidth;
+				uv[1] = data.readShort()*invHeight;
 				uvList[i] = uv;
 			}
 		
@@ -87,10 +87,10 @@
 			data.position=header.offsetTriangles;
 		
 			//Triangle
-			var triangles:Array = new Array();
+			var triangles:Vector.<Vector.<int>> = new Vector.<Vector.<int>>(triangleCount,true);
 			for(i=0;i<triangleCount;i++)
 			{
-				var tri:Array = new Array();
+				var tri:Vector.<int> = new Vector.<int>(6,true);
 
 				tri[0] = data.readShort();
 				tri[1] = data.readShort();
@@ -228,7 +228,7 @@
 				for (j=0; j<triangleCount; j++)
 				{
 					
-					var triangle:Array= triangles[j];
+					var triangle:Vector.<int>= triangles[j];
 
 					// 3 verts to a tri
 					var vertex0:Vertex = new Vertex();
@@ -284,12 +284,10 @@
 				for (i=0; i<len; i++)
 				{
 					var vtx:Vertex = first_frame[i];
-
 					// create the vertex buffer
 					var vertex:Vertex = new Vertex();
-					bufferVertices[i] = vertex;
-					
 					vertex.copy(vtx);
+					bufferVertices[i] = vertex;
 				}
 				interpolateBuffer.boundingBox=mesh.boxList[0];
 			}
