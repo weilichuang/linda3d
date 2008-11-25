@@ -3,12 +3,29 @@
 	import __AS3__.vec.Vector;
 	
 	import linda.math.Vertex4D;
-	public class TRFlat extends TriangleRenderer
+	import linda.video.ITriangleRenderer;
+	public class TRFlat extends TriangleRenderer implements ITriangleRenderer
 	{
-		
-		override public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int): void
+		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int): void
 		{
+			var color:uint;
+			
+			var xstart : int,xend : int;
+			var ystart : int,yend : int;
+			var dyr : Number,dyl : Number;
+			var dxdyl : Number,dxdyr : Number;
+			var dzdyl : Number,dzdyr : Number;
+			var x0 : int,x1 : int,x2 : int; 
+			var y0 : int,y1 : int,y2 : int;
+			var z0 : Number,z1 : Number,z2 : Number;
+			var xi : int,yi : int; 
+			var zi : Number;
+			var xl : Number,xr : Number;
+			var zl : Number,zr : Number;
+			var dx : Number,dy : Number,dz : Number;
+			
 			var temp1 : Vertex4D;
+			var vt0:Vertex4D,vt1:Vertex4D,vt2:Vertex4D;
 			var temp : Number;
 			var side : int;
 		 	var ys : int;
@@ -55,7 +72,7 @@
 				}
 				side = 0;
 
-				color = vt0.r << 16 | vt0.g << 8 | vt0.b ;
+			    color = vt0.r << 16 | vt0.g << 8 | vt0.b ;
 				
 				x0 = vt0.x ; y0 = vt0.y ; z0 = vt0.w;
 				x1 = vt1.x ; y1 = vt1.y ; z1 = vt1.w;
@@ -65,7 +82,7 @@
 				yend = y2;
 				ys = y1;
 				ystart = y0;
-				//更多的可能是普通三角形，所以调到前面来
+
 				if(type == 0)
 				{
 						dyl = 1 / (y1 - y0);

@@ -8,7 +8,7 @@ package linda.material
 	{
 		function hasMipMaps():Boolean;
 		function getMipMapCount():int;//没有则返回0
-		function regenerateMipMaps(level:int=16):void;
+		function generateMipMaps(level:int=16):void;
 		function getBitmapData(i:int=-1):BitmapData;
 	}
 }

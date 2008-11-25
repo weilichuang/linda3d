@@ -6,49 +6,11 @@
 	
 	import linda.material.Material;
 	import linda.math.Vertex4D;
-	import linda.video.ITriangleRenderer;
-	public class TriangleRenderer implements ITriangleRenderer
+	public class TriangleRenderer
 	{
 		protected var target : BitmapData;
 		protected var buffer : BitmapData;
 		protected var material : Material;
-		//x y z
-		protected var xstart : int; 
-		protected var xend : int;
-		protected var ystart : int; 
-		protected var yend : int;
-
-		protected var dyr : Number; 
-		protected var dyl : Number;
-
-		//x,z
-		protected var dxdyl : Number; 
-		protected var dxdyr : Number;
-		protected var dzdyl : Number; 
-		protected var dzdyr : Number;
-
-		protected var x0 : int; 
-		protected var x1 : int; 
-		protected var x2 : int;
-		protected var y0 : int; 
-		protected var y1 : int; 
-		protected var y2 : int;
-		protected var z0 : Number; 
-		protected var z1 : Number; 
-		protected var z2 : Number;
-
-		protected var xi : int; 
-		protected var yi : int; 
-		protected var zi : Number;
-		
-		protected var xl : Number; 
-		protected var xr : Number;
-		protected var zl : Number; 
-		protected var zr : Number;
-		
-		protected var dx : Number; 
-		protected var dy : Number; 
-		protected var dz : Number;
 
 		protected var perspectiveCorrect:Boolean=false;
 		protected var perspectiveDistance:Number=400;
@@ -58,12 +20,6 @@
 		protected var alpha:Number;
 		protected var invAlpha:Number;
 		protected var intAlpha:int;
-
-		protected var color : uint;
-		
-		protected var vt0:Vertex4D;
-		protected var vt1:Vertex4D;
-		protected var vt2:Vertex4D;
 		
 		public function setRenderTarget (target : BitmapData, buffer : BitmapData) : void
 		{
@@ -88,9 +44,6 @@
 				intAlpha = int (alpha * 0xFF);
 			}	
 		}
-		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
-		{
-		}
 		/**
 		*用来渲染由线段组成的物体,此类物体不需要进行光照，贴图，和贴图坐标计算等
 		* @vertices  Array 点的集合
@@ -100,16 +53,20 @@
 		*/
 		public function drawIndexedLineList (vertices :Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int): void
 		{
+			var x0 : int,x1 : int,x2 : int; 
+			var y0 : int,y1 : int,y2 : int;
+			var z0 : Number,z1 : Number,z2 : Number;
 			var error: int;
+			var vt0:Vertex4D,vt1:Vertex4D,vt2:Vertex4D;
 			for (var i : int = 0; i < indexCount; i +=2)
 			{
-				vt0 = vertices [int(indexList [i])];
-				vt1 = vertices [int(indexList [int(i + 1)])];
+				vt0 = vertices [int(indexList[i])];
+				vt1 = vertices [int(indexList[int(i + 1)])];
 
 				x0 = int (vt0.x + 0.5) , y0 = int (vt0.y + 0.5) , z0 = vt0.w;
 				x1 = int (vt1.x + 0.5) , y1 = int (vt1.y + 0.5) , z1 = vt1.w;
 				
-				color = ( 0xFF000000 | vt1.r << 16 | vt1.g << 8 | vt1.b );
+				var color:uint = ( 0xFF000000 | vt1.r << 16 | vt1.g << 8 | vt1.b );
 
 				var dx: int = x1 - x0;
 				var dy: int = y1 - y0;
@@ -177,7 +134,6 @@
 						}
 					}
 				}
-				
 			}
 		}
 	}

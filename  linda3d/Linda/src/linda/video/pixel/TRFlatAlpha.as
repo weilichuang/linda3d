@@ -3,15 +3,35 @@
 	import __AS3__.vec.Vector;
 	
 	import linda.math.Vertex4D;
-	public class TRFlatAlpha extends TriangleRenderer
+	import linda.video.ITriangleRenderer;
+	public class TRFlatAlpha extends TriangleRenderer implements ITriangleRenderer
 	{
-		//背景颜色
-		private var bga : int;
-		private var bgColor : uint;
-		override public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int): void
+		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int): void
 		{
+			var color:uint;
+			
+			var xstart : int,xend : int;
+			var ystart : int,yend : int;
+			var dyr : Number,dyl : Number;
+			var dxdyl : Number,dxdyr : Number;
+			var dzdyl : Number,dzdyr : Number;
+			var x0 : int,x1 : int,x2 : int; 
+			var y0 : int,y1 : int,y2 : int;
+			var z0 : Number,z1 : Number,z2 : Number;
+			var xi : int,yi : int; 
+			var zi : Number;
+			var xl : Number,xr : Number;
+			var zl : Number,zr : Number;
+			var dx : Number,dy : Number,dz : Number;
+			
+			var bga : int;
+		    var bgColor : uint;
 			var r:int,b:int,g:int;
+			
 			var temp1 : Vertex4D;
+			var vt0:Vertex4D;
+		    var vt1:Vertex4D;
+		    var vt2:Vertex4D;
 			var temp : Number;
 			var side : int;
 		 	var ys : int;
