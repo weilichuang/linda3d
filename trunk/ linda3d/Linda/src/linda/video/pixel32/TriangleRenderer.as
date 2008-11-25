@@ -20,12 +20,6 @@
 
 		protected var dyr : Number; 
 		protected var dyl : Number;
-
-		protected var minX:int;
-		protected var minY:int;
-		protected var maxX:int;
-		protected var maxY:int;
-
 		//x,z
 		protected var dxdyl : Number; 
 		protected var dxdyr : Number;
@@ -133,13 +127,6 @@
 		{
 			this.target = target;
 			this.buffer = buffer;
-			
-			var rect:Rectangle=target.rect;
-			minX=int(rect.x);
-			minY=int(rect.y);
-			maxX=int(rect.width);
-			maxY=int(rect.height);
-			
 		}
 		public function setPerspectiveCorrectDistance(distance:Number=400):void
 		{
