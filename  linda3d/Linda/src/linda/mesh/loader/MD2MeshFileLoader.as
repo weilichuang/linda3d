@@ -109,7 +109,7 @@
 			mesh.boxList = new Vector.<AABBox3D>(frameCount);
 			
 			var transformation_matrix:Matrix4 = new Matrix4();
-			transformation_matrix.setRotation(new Vector3D(0,-Math.PI/2,0));
+			transformation_matrix.setRotation(new Vector3D(0,-90.0,0));
 		
 			// seek to start of frames
 			data.position=header.offsetFrames;

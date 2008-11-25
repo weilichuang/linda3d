@@ -62,6 +62,8 @@
 				if (((x0 == x1) && (x1 == x2)) || ((y0 == y1) && (y1 == y2))) continue;
 				
 				ys = y1;
+				yend = y2;
+				ystart = y0;
 				side = 0;
 				if(type == 0)
 				{
@@ -75,7 +77,6 @@
 						zl = z0;
 						xr = x0;
 						zr = z0;
-						ystart = y0;
 						if (dxdyr < dxdyl)
 						{
 							temp = dxdyl; dxdyl = dxdyr; dxdyr = temp;
@@ -141,7 +142,6 @@
 
 						xl = x0; zl = z0;
 						xr = x1; zr = z1;
-						ystart = y0;
 					} 
 					else
 					{
@@ -151,7 +151,6 @@
 
 						xl = x0; zl = z0;
 						xr = x0; zr = z0;
-						ystart = y0;
 					}
 					for (yi = ystart; yi <= yend; yi +=1)
 					{

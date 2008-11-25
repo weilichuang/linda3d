@@ -61,11 +61,11 @@
 				r = vt0.r;g = vt0.g;b = vt0.b;
 				
 				side = 0;
+				yend = y2;
 				ys = y1;
-				
+				ystart = y0;
 				if(type==0)
 				{
-					yend = y2;
 						dyl = 1 / (y1 - y0);
 						dxdyl = (x1 - x0) * dyl;
 						dzdyl = (z1 - z0) * dyl;
@@ -76,7 +76,6 @@
 						zl = z0;
 						xr = x0;
 						zr = z0;
-						ystart = y0;
 						if (dxdyr < dxdyl)
 						{
 							temp = dxdyl; dxdyl = dxdyr; dxdyr = temp;
@@ -144,7 +143,6 @@
 
 						xl = x0; zl = z0;
 						xr = x1; zr = z1;
-						ystart = y0;
 					} 
 					else
 					{
@@ -154,8 +152,6 @@
 
 						xl = x0; zl = z0;
 						xr = x0; zr = z0;
-						ystart = y0;
-						
 					}
 					for (yi = ystart; yi <= yend; yi +=1)
 					{
