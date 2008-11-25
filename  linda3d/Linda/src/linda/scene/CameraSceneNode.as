@@ -48,7 +48,6 @@
 		}
 		override public function destroy():void
 		{
-			super.destroy();
 			upVector=null;
 			target=null;
 			view=null;
@@ -59,6 +58,7 @@
 			tgtv=null;
 			tmp_up=null;
 			_tmp_position=null;
+			super.destroy();
 		}
 		public function getViewFrustum () : ViewFrustum
 		{

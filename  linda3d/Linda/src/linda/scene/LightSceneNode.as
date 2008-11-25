@@ -16,9 +16,6 @@
 			lightData = new Light ();
 			lightData.diffuseColor.color = color;
 			lightData.radius=radius;
-			//lightData.specularColor.r=int(255*0.7);
-			//lightData.specularColor.g=int(255*0.7);
-			//lightData.specularColor.b=int(255*0.7);
 			lightData.type = type;
 			
 			box = new AABBox3D ();
@@ -28,9 +25,9 @@
 		}
 		override public function destroy():void
 		{
-			super.destroy();
 			lightData=null;
 			box=null;
+			super.destroy();
 		}
 		public function get light () : Light
 		{
@@ -38,8 +35,10 @@
 		}
 		public function set light (l : Light) : void
 		{
-			if (!l) return;
-			lightData = l;
+			if(l)
+			{
+				lightData = l;
+			}
 		}
 		public function setDiffuseColor (color : uint) : void
 		{
@@ -79,7 +78,7 @@
 			if(debug)
 			{
 				driver.setTransformWorld(_absoluteMatrix);
-				driver.draw3DBox(this.getBoundingBox(),lightData.diffuseColor.color);
+				driver.draw3DBox(box,lightData.diffuseColor.color);
 			}
 		}
 		override public function getBoundingBox () : AABBox3D
