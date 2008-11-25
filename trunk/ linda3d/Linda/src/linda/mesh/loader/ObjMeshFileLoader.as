@@ -11,7 +11,7 @@
 	import linda.mesh.Mesh;
 	import linda.mesh.MeshBuffer;
 	import linda.mesh.loader.MeshLoader;
-	import linda.mesh.utils.MeshManipulator;
+	import linda.mesh.MeshManipulator;
 	public class ObjMeshFileLoader extends MeshLoader
 	{
 		private var materials : Array = new Array ();

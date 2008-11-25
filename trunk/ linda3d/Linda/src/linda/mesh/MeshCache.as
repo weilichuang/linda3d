@@ -5,29 +5,25 @@
 	public class MeshCache
 	{
 		private var meshes : Vector.<IMesh>;
+		private var meshCount:int;
 		public function MeshCache ()
 		{
 			meshes=new Vector.<IMesh>();
+			meshCount=0;
 		}
 		public function addMesh (mesh : IMesh) : void
 		{
-			meshes.push (mesh);
+			meshes.push(mesh);
+			meshCount++;
 		}
 		public function removeMesh (mesh : IMesh) :Boolean
 		{
 			if ( ! mesh) return false;
-			var len:int=meshes.length;
-			var _tmp:IMesh;
-			for (var i:int = 0; i < len; i ++)
-			{
-				_tmp=meshes [i];
-				if (_tmp == mesh)
-				{
-					meshes.splice (i, 1);
-				 	return true;
-				} 
-			}
-			return false;
+			var i:int=meshes.indexOf(mesh);			
+			if(i == -1) return false;
+			meshes.splice (i, 1);
+			meshCount--;
+			return true;
 		}
 		public function removeAll () : void
 		{
@@ -35,21 +31,9 @@
 		}
 		public function getMeshCount () : int
 		{
-			return meshes.length;
+			return meshCount;
 		}
-		public function getMeshIndex (mesh : IMesh) : int
-		{
-			if ( ! mesh) return - 1;
-			var len:int=meshes.length;
-			var _tmp:IMesh;
-			for (var i:int = 0; i < len; i ++)
-			{
-				_tmp=meshes [i];
-				if (_tmp == mesh) return i;
-			}
-			return - 1;
-		}
-		public function getMeshAt (num : int) : IMesh
+		public function getMesh(num : int) : IMesh
 		{
 			if (num < 0 || num >= meshes.length) return null;
 			return meshes [num];
