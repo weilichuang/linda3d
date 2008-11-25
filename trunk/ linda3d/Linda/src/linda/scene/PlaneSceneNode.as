@@ -26,7 +26,7 @@ package linda.scene
                         createPlane (width,height,segsW,segsH);
                 }
                 private function createPlane (width : Number,height : Number,segsW : int, segsH : int) : void
-		    {
+		        {
 			        if (segsW < 1) segsW = 1;
 			        if (segsH < 1) segsH = 1;
 			        var perH : Number = height / segsH;
@@ -66,22 +66,22 @@ package linda.scene
 					        indices.push (i * segsW1 + j, (i + 1)* segsW1 + j + 1, (i + 1) * segsW1 + j);
 				        }
 			        }
-		    }
+		        }
                 override public function destroy():void
 		        {
-			        super.destroy();
-			        vertices=null;
+		        	vertices=null;
 			        indices=null;
 			        material=null;
 			        box=null;
+			        super.destroy();
 		        }
                 override public function render () : void
                 {
-                        var driver : IVideoDriver = sceneManager.getVideoDriver ();
-                        if(!driver) return;
-                        driver.setMaterial (material);
-                        driver.setTransformWorld(_absoluteMatrix);
-                        driver.drawIndexedTriangleList (vertices, 4, indices, 6);
+                    var driver : IVideoDriver = sceneManager.getVideoDriver ();
+                    if(!driver) return;
+                    driver.setMaterial (material);
+                    driver.setTransformWorld(_absoluteMatrix);
+                    driver.drawIndexedTriangleList (vertices, 4, indices, 6);
                 }
                 override public function getBoundingBox () : AABBox3D
                 {
@@ -89,26 +89,26 @@ package linda.scene
                 }
                 override public function onPreRender () : void
                 { 
-                        if (visible)
-                        {
-                                if(material.transparenting)
-                                {
-                                         sceneManager.registerNodeForRendering (this, SOLID);
-                                }else
-                                {
-                                        sceneManager.registerNodeForRendering(this,TRANSPARENT);
-                                }
-                                super.onPreRender ();
-                        }
+                   if (visible)
+                   {
+                       if(material.transparenting)
+                       {
+                          sceneManager.registerNodeForRendering (this, SOLID);
+                       }else
+                       {
+                          sceneManager.registerNodeForRendering(this,TRANSPARENT);
+                       }
+                       super.onPreRender ();
+                   }
                         
                 }
                 override public function getMaterial (i : int=0) : Material
                 {
-                        return material;
+                   return material;
                 }
                 override public function getMaterialCount () : int
                 {
-                        return 1;
+                   return 1;
                 }
         }
 }

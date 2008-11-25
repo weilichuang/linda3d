@@ -13,7 +13,7 @@
 		private var _driver : IVideoDriver;
 		private var _viewFrustum : ViewFrustum;
 		private var _activeCamera : CameraSceneNode;
-		private var _lightList :Vector.<LightSceneNode>;
+		private var _lightList :Vector.<SceneNode>;
 
 		private var _skyBoxList : Array = [];
 		private var _solidList : Array = [];
@@ -25,7 +25,7 @@
 		{
 			super (null);
 			
-			_lightList=new Vector.<LightSceneNode>();
+			_lightList=new Vector.<SceneNode>();
 			setVideoDriver(driver);
 		}
 		override public function destroy():void
@@ -105,10 +105,10 @@
 			var len : int = _lightList.length;
 			for (var i : int = 0; i < len; i+=1)
 			{
-				var node :LightSceneNode = _lightList [i];
+				var node :SceneNode = _lightList [i];
 				node.render ();
 			}
-			_lightList=new Vector.<LightSceneNode>();
+			_lightList=new Vector.<SceneNode>();
 			
 			
 			// render skyboxes

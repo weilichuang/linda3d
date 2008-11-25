@@ -37,22 +37,20 @@
 			framesPerSecond = 25 / 1000;
 			looping = true;
 			materials = new Vector.<Material> ();
-			if (mesh)
-			{
-				setMesh (mesh);
-			}
+
+			setMesh (mesh);
 		}
 		override public function destroy():void
 		{
-			super.destroy();
 			materials=null;
 			mesh=null;
+			super.destroy();	
 		}
 		public function setCurrentFrame (frame : Number) : void
 		{
 			if (frame < startFrame || frame > endFrame) return;
 			currentFrameNr = frame;
-			beginFrameTime = getTimer () - (currentFrameNr - startFrame) / framesPerSecond;
+			beginFrameTime = getTimer() - (currentFrameNr - startFrame) / framesPerSecond;
 		}
 		public function buildFrameNumber (timeMs : int) : int
 		{
@@ -64,7 +62,6 @@
 					return startFrame + ((timeMs - beginFrameTime) % lenInTime) * framesPerSecond;
 			} else
 			{
-				// play animation no looped
 				var deltaFrame : Number = (timeMs - beginFrameTime ) * framesPerSecond;
 				var frame : int = startFrame + deltaFrame;
 				if (frame > endFrame)
@@ -91,7 +88,6 @@
                 {
                 	sceneManager.registerNodeForRendering (this, SOLID);
                 }
-				
 				super.onPreRender ();
 			}
 		}
@@ -146,7 +142,7 @@
 		}
 		public function setAnimationSpeed (per : int) : void
 		{
-			per = per > 0 ? per : -per;
+			if(per < 0 ) per = -per;
 			framesPerSecond = per * 0.001;
 		}
 		public function getAnimationSpeed () : int
@@ -201,7 +197,7 @@
 			var len:int=m.getMeshBufferCount ();
 			for (var i : int = 0; i < len; i+=1)
 			{
-				mat = m.getMeshBuffer (i).material;
+				mat = m.getMeshBuffer(i).material;
 				materials.push (mat.clone());
 			}
 			

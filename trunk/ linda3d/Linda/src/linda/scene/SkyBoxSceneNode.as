@@ -42,15 +42,17 @@ package linda.scene
 			                            back:Texture)
 		{
 			super(mgr);
+			
 			debug=false;
 			autoCulling=false;
 			
             box=new AABBox3D();
             
-            materials=new Vector.<Material>();
+            materials=new Vector.<Material>(6,true);
 
 	        // create indices
-            indices=new Vector.<int>(0,1,2,0,2,3);
+            indices=new Vector.<int>([0,1,2,0,2,3]);
+            indices.fixed=true;
 
 	        // create front side
 	        
@@ -61,14 +63,16 @@ package linda.scene
 	        frontMaterial.gouraudShading=false;
 	        frontMaterial.lighting=false;
 	        frontMaterial.texture1=front;
-	         materials.push(frontMaterial);
+	        materials[0]=frontMaterial;
+	         
+	        var color:uint=0xFFFFFF;
 	         
 	         
-	        frontVertices=new Vector.<Vertex>(4);
-	        frontVertices[0] = new Vertex(-l,-l,-l, 0,0,1, 0xFFFFFFFF, 1, 1);
-	        frontVertices[1] = new Vertex( l,-l,-l, 0,0,1, 0xFFFFFFFF, 0, 1);
-	        frontVertices[2] = new Vertex( l, l,-l, 0,0,1, 0xFFFFFFFF, 0, 0);
-	        frontVertices[3] = new Vertex(-l, l,-l, 0,0,1, 0xFFFFFFFF, 1, 0);
+	        frontVertices=new Vector.<Vertex>(4,true);
+	        frontVertices[0] = new Vertex(-l,-l,-l, 0,0,1, color, 1, 1);
+	        frontVertices[1] = new Vertex( l,-l,-l, 0,0,1, color, 0, 1);
+	        frontVertices[2] = new Vertex( l, l,-l, 0,0,1, color, 0, 0);
+	        frontVertices[3] = new Vertex(-l, l,-l, 0,0,1, color, 1, 0);
 
 	        // create left side
 
@@ -77,12 +81,13 @@ package linda.scene
 	        leftMaterial.gouraudShading=false;
 	        leftMaterial.lighting=false;
 	        leftMaterial.texture1=left;
-	        materials.push(leftMaterial);
-	        leftVertices=new Vector.<Vertex>(4);
-	        leftVertices[0] = new Vertex( l,-l,-l, -1,0,0, 0xFFFFFFFF, 1, 1);
-	        leftVertices[1] = new Vertex( l,-l, l, -1,0,0, 0xFFFFFFFF, 0, 1);
-	        leftVertices[2] = new Vertex( l, l, l, -1,0,0, 0xFFFFFFFF, 0, 0);
-	        leftVertices[3] = new Vertex( l, l,-l, -1,0,0, 0xFFFFFFFF, 1, 0);
+	        materials[1]=leftMaterial;
+	        
+	        leftVertices=new Vector.<Vertex>(4,true);
+	        leftVertices[0] = new Vertex( l,-l,-l, -1,0,0, color, 1, 1);
+	        leftVertices[1] = new Vertex( l,-l, l, -1,0,0, color, 0, 1);
+	        leftVertices[2] = new Vertex( l, l, l, -1,0,0, color, 0, 0);
+	        leftVertices[3] = new Vertex( l, l,-l, -1,0,0, color, 1, 0);
 
 	        // create back side
 
@@ -91,12 +96,12 @@ package linda.scene
 	        backMaterial.gouraudShading=false;
 	        backMaterial.lighting=false;
 	        backMaterial.texture1=back;
-	        materials.push(backMaterial);
-	        backVertices=new Vector.<Vertex>(4);
-	        backVertices[0]  = new Vertex( l,-l, l, 0,0,-1, 0xFFFFFFFF, 1, 1);
-	        backVertices[1]  = new Vertex(-l,-l, l, 0,0,-1, 0xFFFFFFFF, 0, 1);
-	        backVertices[2]  = new Vertex(-l, l, l, 0,0,-1, 0xFFFFFFFF, 0, 0);
-	        backVertices[3]  = new Vertex( l, l, l, 0,0,-1, 0xFFFFFFFF, 1, 0);
+	        materials[2]=backMaterial;
+	        backVertices=new Vector.<Vertex>(4,true);
+	        backVertices[0]  = new Vertex( l,-l, l, 0,0,-1, color, 1, 1);
+	        backVertices[1]  = new Vertex(-l,-l, l, 0,0,-1, color, 0, 1);
+	        backVertices[2]  = new Vertex(-l, l, l, 0,0,-1, color, 0, 0);
+	        backVertices[3]  = new Vertex( l, l, l, 0,0,-1, color, 1, 0);
 
 	        // create right side
 
@@ -105,12 +110,12 @@ package linda.scene
 	        rightMaterial.gouraudShading=false;
 	        rightMaterial.lighting=false;
 	        rightMaterial.texture1=right;
-	        materials.push(rightMaterial);
-	        rightVertices=new Vector.<Vertex>(4);
-	        rightVertices[0] = new Vertex(-l,-l, l, 1,0,0, 0xFFFFFFFF, 1, 1);
-	        rightVertices[1] = new Vertex(-l,-l,-l, 1,0,0, 0xFFFFFFFF, 0, 1);
-	        rightVertices[2] = new Vertex(-l, l,-l, 1,0,0, 0xFFFFFFFF, 0, 0);
-	        rightVertices[3] = new Vertex(-l, l, l, 1,0,0, 0xFFFFFFFF, 1, 0);
+	        materials[3]=rightMaterial;
+	        rightVertices=new Vector.<Vertex>(4,true);
+	        rightVertices[0] = new Vertex(-l,-l, l, 1,0,0, color, 1, 1);
+	        rightVertices[1] = new Vertex(-l,-l,-l, 1,0,0, color, 0, 1);
+	        rightVertices[2] = new Vertex(-l, l,-l, 1,0,0, color, 0, 0);
+	        rightVertices[3] = new Vertex(-l, l, l, 1,0,0, color, 1, 0);
 
 	        // create top side
 
@@ -119,12 +124,12 @@ package linda.scene
 	        topMaterial.gouraudShading=false;
 	        topMaterial.lighting=false;
 	        topMaterial.texture1=top;
-	        materials.push(topMaterial);
-	        topVertices=new Vector.<Vertex>(4);
-	        topVertices[0] = new Vertex( l, l,-l, 0,-1,0, 0xFFFFFFFF, 1, 1);
-	        topVertices[1] = new Vertex( l, l, l, 0,-1,0, 0xFFFFFFFF, 0, 1);
-	        topVertices[2] = new Vertex(-l, l, l, 0,-1,0, 0xFFFFFFFF, 0, 0);
-	        topVertices[3] = new Vertex(-l, l,-l, 0,-1,0, 0xFFFFFFFF, 1, 0);
+	        materials[4]=topMaterial;
+	        topVertices=new Vector.<Vertex>(4,true);
+	        topVertices[0] = new Vertex( l, l,-l, 0,-1,0, color, 1, 1);
+	        topVertices[1] = new Vertex( l, l, l, 0,-1,0, color, 0, 1);
+	        topVertices[2] = new Vertex(-l, l, l, 0,-1,0, color, 0, 0);
+	        topVertices[3] = new Vertex(-l, l,-l, 0,-1,0, color, 1, 0);
 
 	        // create bottom side
 
@@ -133,16 +138,15 @@ package linda.scene
 	        bottomMaterial.gouraudShading=false;
 	        bottomMaterial.lighting=false;
 	        bottomMaterial.texture1=bottom;
-	        materials.push(bottomMaterial);
-	        bottomVertices=new Vector.<Vertex>(4);
-	        bottomVertices[0] = new Vertex( l,-l, l, 0,1,0, 0xFFFFFFFF, 0, 0);
-	        bottomVertices[1] = new Vertex( l,-l,-l, 0,1,0, 0xFFFFFFFF, 1, 0);
-	        bottomVertices[2] = new Vertex(-l,-l,-l, 0,1,0, 0xFFFFFFFF, 1, 1);
-	        bottomVertices[3] = new Vertex(-l,-l, l, 0,1,0, 0xFFFFFFFF, 0, 1);
+	        materials[5]=bottomMaterial;
+	        bottomVertices=new Vector.<Vertex>(4,true);
+	        bottomVertices[0] = new Vertex( l,-l, l, 0,1,0, color, 0, 0);
+	        bottomVertices[1] = new Vertex( l,-l,-l, 0,1,0, color, 1, 0);
+	        bottomVertices[2] = new Vertex(-l,-l,-l, 0,1,0, color, 1, 1);
+	        bottomVertices[3] = new Vertex(-l,-l, l, 0,1,0, color, 0, 1);
 		}
 		override public function destroy():void
 		{
-			super.destroy();
 			topVertices=null;
 			bottomVertices=null;
 			leftVertices=null;
@@ -163,6 +167,10 @@ package linda.scene
 			box=null;
 			
 			_tmpMatrix=null;
+			
+			
+			super.destroy();
+			
 		}
 		private var _tmpMatrix:Matrix4=new Matrix4();
 	    override public function render():void
