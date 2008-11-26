@@ -2,7 +2,8 @@
 {
 	import __AS3__.vec.Vector;
 	
-	import linda.math.Vector2D;
+	import flash.geom.Point;
+	
 	import linda.math.Vertex;
 	import linda.mesh.Mesh;
 	import linda.mesh.MeshBuffer;
@@ -53,9 +54,9 @@
 			}
 			var segHNum : int = tmpVertices.length;
 			var v1 : Vertex, v2 : Vertex, v3 : Vertex, v4 : Vertex;
-			var uv1 : Vector2D = new Vector2D ();
-			var uv2 : Vector2D = new Vector2D ();
-			var uv3 : Vector2D = new Vector2D ();
+			var uv1 : Point = new Point ();
+			var uv2 : Point = new Point ();
+			var uv3 : Point = new Point ();
 			for (j = 0; j < segHNum; j ++)
 			{
 				var segWNum : int = tmpVertices [j].length;

@@ -20,7 +20,6 @@
     <classEntry path="linda.math.Matrix4"/>
     <classEntry path="linda.math.Plane3D"/>
     <classEntry path="linda.math.Triangle3D"/>
-    <classEntry path="linda.math.Vector2D"/>
     <classEntry path="linda.math.Vertex"/>
     <classEntry path="linda.math.Vertex4D"/>
     <classEntry path="linda.mesh.IMesh"/>

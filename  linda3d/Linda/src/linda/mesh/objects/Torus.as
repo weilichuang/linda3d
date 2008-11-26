@@ -2,7 +2,8 @@
 {
 	import __AS3__.vec.Vector;
 	
-	import linda.math.Vector2D;
+	import flash.geom.Point;
+	
 	import linda.math.Vertex;
 	import linda.mesh.Mesh;
 	import linda.mesh.MeshBuffer;
@@ -48,10 +49,10 @@
 					var b : Vertex = gridVertices [ip][j];
 					var c : Vertex = gridVertices [i ][jp];
 					var d : Vertex = gridVertices [ip][jp];
-					var uva : Vector2D = new Vector2D (i / segsR, j / segsT);
-					var uvb : Vector2D = new Vector2D ((i + 1) / segsR, j / segsT);
-					var uvc : Vector2D = new Vector2D (i / segsR, (j + 1) / segsT);
-					var uvd : Vector2D = new Vector2D ((i + 1) / segsR, (j + 1) / segsT);
+					var uva : Point = new Point (i / segsR, j / segsT);
+					var uvb : Point = new Point ((i + 1) / segsR, j / segsT);
+					var uvc : Point = new Point (i / segsR, (j + 1) / segsT);
+					var uvd : Point = new Point ((i + 1) / segsR, (j + 1) / segsT);
 					a.u = uva.x, a.v = uva.y;
 					b.u = uvb.x, b.v = uvb.y;
 					c.u = uvc.x, c.v = uvc.y;

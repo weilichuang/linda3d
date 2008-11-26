@@ -2,15 +2,14 @@
 {
 	import __AS3__.vec.Vector;
 	
+	import flash.geom.Point;
 	import flash.geom.Vector3D;
 	import flash.utils.ByteArray;
 	
-	import linda.math.Vector2D;
 	import linda.math.Vertex;
 	import linda.mesh.IMesh;
 	import linda.mesh.Mesh;
 	import linda.mesh.MeshBuffer;
-	import linda.mesh.loader.MeshLoader;
 	import linda.mesh.MeshManipulator;
 	public class ObjMeshFileLoader extends MeshLoader
 	{
@@ -131,7 +130,7 @@
 							{
 								n0 = Number (line [1]);
 								n1 = - Number (line [2]);
-								textureCoordBuffer.push (new Vector2D (n0, n1));
+								textureCoordBuffer.push (new Point (n0, n1));
 							} 
 							else
 							{
@@ -301,7 +300,7 @@
 							}
 							// get pointers
 							var p_vec : Vector3D = null;
-							var p_tx : Vector2D = null;
+							var p_tx  : Point = null;
 							var p_nm : Vector3D = null;
 							if (idx_vx > - 1)
 							{
