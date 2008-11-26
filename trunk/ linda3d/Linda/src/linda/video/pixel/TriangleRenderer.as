@@ -8,8 +8,8 @@
 	import linda.math.Vertex4D;
 	public class TriangleRenderer
 	{
-		protected var target : BitmapData;
-		protected var buffer : BitmapData;
+		protected var target : Vector.<uint>;
+		protected var buffer : Vector.<Number>;
 		protected var material : Material;
 
 		protected var perspectiveCorrect:Boolean=false;
@@ -21,10 +21,14 @@
 		protected var invAlpha:Number;
 		protected var intAlpha:int;
 		
-		public function setRenderTarget (target : BitmapData, buffer : BitmapData) : void
+		public var height:int;
+		
+		public function setRenderTarget (target : Vector.<uint>, buffer : Vector.<Number>,height:int) : void
 		{
 			this.target = target;
 			this.buffer = buffer;
+			
+			this.height=height;
 		}
 		public function setPerspectiveCorrectDistance(distance:Number=400):void
 		{
@@ -53,6 +57,7 @@
 		*/
 		public function drawIndexedLineList (vertices :Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int): void
 		{
+			var pos:int;
 			var x0 : int,x1 : int,x2 : int; 
 			var y0 : int,y1 : int,y2 : int;
 			var z0 : Number,z1 : Number,z2 : Number;
@@ -63,8 +68,8 @@
 				vt0 = vertices [int(indexList[i])];
 				vt1 = vertices [int(indexList[int(i + 1)])];
 
-				x0 = int (vt0.x + 0.5) , y0 = int (vt0.y + 0.5) , z0 = vt0.w;
-				x1 = int (vt1.x + 0.5) , y1 = int (vt1.y + 0.5) , z1 = vt1.w;
+				x0 = int (vt0.x + 0.5) , y0 = int (vt0.y + 0.5) , z0 = vt0.z;
+				x1 = int (vt1.x + 0.5) , y1 = int (vt1.y + 0.5) , z1 = vt1.z;
 				
 				var color:uint = ( 0xFF000000 | vt1.r << 16 | vt1.g << 8 | vt1.b );
 
@@ -98,11 +103,12 @@
 					dzdy = dz/(y0-y1);
 					for( ; y1 < y0 ; y1++ )
 					{
-						var oldz:int=buffer.getPixel (x1, y1);
-						if (z1 < oldz)
+						pos=x1+y1*height;
+						var oldz:Number=buffer[pos];
+						if (z1 > oldz)
 						{
-					    	target.setPixel( x1, y1, color );
-					   	 	buffer.setPixel(x1,y1,z1);
+					    	target[pos]=color;
+					   	 	buffer[pos]=z1;
 						}
 						error += dx;
 						if( error > 0 )
@@ -119,11 +125,12 @@
 					dzdy = dz/(x1-x0);
 					for( ; x0 < x1 ; x0++ )
 					{
-						oldz=buffer.getPixel (x0, y0);
-						if (z1 < oldz)
+						pos=x0+y0*height;
+						oldz=buffer[pos];
+						if (z1 > oldz)
 						{
-					   	 	target.setPixel(x0, y0,color);
-					    	buffer.setPixel(x0,y0,z1);
+							target[pos]=color;
+					   	 	buffer[pos]=z1;
 						}
 						error += dy;
 						if( error > 0 )

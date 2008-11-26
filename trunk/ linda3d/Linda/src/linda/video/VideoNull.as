@@ -8,9 +8,8 @@
 	import linda.light.Light;
 	import linda.material.*;
 	import linda.math.*;
-	import linda.mesh.MeshBuffer;
 	import linda.scene.*;
-	public class VideoNull implements IVideoDriver
+	public class VideoNull
 	{
 		protected var primitivesDrawn : int;
 		protected var screenSize :Dimension2D;
@@ -57,35 +56,6 @@
 		{
 			return screenSize;
 		}
-		public function setScreenSize (size : Dimension2D) : void
-		{
-		}
-		public function beginScene (backbuffer : Boolean = true, zbuffer : Boolean = true , color : uint = 0x0) : Boolean
-		{
-			primitivesDrawn = 0;
-			return true;
-		}
-		public function endScene () : Boolean
-		{
-			return true;
-		}
-		public function setTransformWorld (mat : Matrix4) : void
-		{
-		}
-		public function setTransformView (mat : Matrix4) : void
-		{
-		}
-		public function setTransformViewProjection (mat : Matrix4) : void
-		{
-		}
-
-		public function setTransformProjection (mat : Matrix4) : void
-		{
-		}
-		
-		public function setMaterial (material : Material) : void
-		{
-		}
 
 		public function setRenderTarget (target : Sprite) : void
 		{
@@ -94,29 +64,6 @@
 		public function getRenderTarget () : Sprite
 		{
 			return renderTarget;
-		}
-		public function drawIndexedTriangleList (vertices : Vector.<Vertex>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
-		{
-		}
-		public function drawMeshBuffer (mesh : MeshBuffer) : void
-		{
-		}
-		/**
-		*用来渲染由线段组成的物体,此类物体不需要进行光照，贴图，和贴图坐标计算等
-		* @vertices  Array 点的集合
-		* @vertexCount int vertices的长度
-		* @indexList 点与点之间的顺序
-		* @indexCount int indexList.length
-		*/
-		public function drawIndexedLineList (vertices : Vector.<Vertex>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
-		{
-		}
-		public function drawStencilShadowVolume (vertices : Vector.<Vertex>, vertexCount : int, useZFailMethod : Boolean) : void
-		{
-		}
-		public function getDriverType () : String
-		{
-			return VideoType.NULL;
 		}
 		public function setFog (color : Color, start : Number = 50, end : Number = 100) : void
 		{
@@ -143,14 +90,9 @@
 		{
 			return primitivesDrawn;
 		}
-		public function setCameraPosition (ps : Vector3D) : void
+		public function setMaterial (mat:Material) : void
 		{
 		}
-		public function createScreenShot () : BitmapData
-		{
-			return null;
-		}
-
 		public function setDebugColor (color : uint) : void
 		{
 			_debugColor = color;
@@ -241,21 +183,17 @@
 			vertex.color = color;
 			drawIndexedLineList (_tmp_lines, 3, _tmp_lines_indices, 6);
 		}
-		public function setPerspectiveCorrectDistance(distance:Number=400):void
+		public function drawIndexedLineList (vertices : Vector.<Vertex>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
 		{
-			perspectiveDistance=distance;
+		}
+		
+		public function getMipMapDistance():Number
+		{
+			return mipMapDistance;
 		}
 		public function getPerspectiveCorrectDistance():Number
 		{
 			return perspectiveDistance;
-		}
-		public function setMipMapDistance(distance:Number=500):void
-		{
-	        mipMapDistance=distance;
-		}
-		public function getMipMapDistance():Number
-		{
-	        return mipMapDistance;
 		}
 	}
 }

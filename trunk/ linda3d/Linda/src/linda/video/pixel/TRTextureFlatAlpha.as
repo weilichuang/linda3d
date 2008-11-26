@@ -57,7 +57,7 @@
 			var side : int;
 		 	var ys : int;
 		 	var type : int;
-            var oldZ:int;
+            var pos:int;
 			var texture:ITexture=material.getTexture();
             var n0:int;
 		 	var n1:int;
@@ -118,9 +118,9 @@
 				
 				if ((x0 == x1) && (x1 == x2)) continue;
 				
-				z0 = vt0.w;
-				z1 = vt1.w;
-				z2 = vt2.w;
+				z0 = vt0.z;
+				z1 = vt1.z;
+				z2 = vt2.z;
 				
 				side=0;
 				//mipmap
@@ -131,9 +131,9 @@
 	            perspectiveCorrect = (vt0.w < perspectiveDistance && vt1.w < perspectiveDistance && vt2.w < perspectiveDistance); 
 				if(perspectiveCorrect)
 	            {
-				     u0 = vt0.u * tw / z0; v0 = vt0.v * th / z0;			
-				     u1 = vt1.u * tw / z1; v1 = vt1.v * th / z1;
-				     u2 = vt2.u * tw / z2; v2 = vt2.v * th / z2;
+				     u0 = vt0.u * tw * z0; v0 = vt0.v * th * z0;			
+				     u1 = vt1.u * tw * z1; v1 = vt1.v * th * z1;
+				     u2 = vt2.u * tw * z2; v2 = vt2.v * th * z2;
 	            }else
 	            {
 	            	 u0 = vt0.u * tw; v0 = vt0.v * th;			
@@ -206,22 +206,21 @@
 							}
 							for (xi = xstart; xi < xend; xi +=1)
 							{
-								oldZ=buffer.getPixel (xi, yi);
-								if (zi < oldZ)
+								pos=xi+yi*height;
+								if (zi > buffer[pos])
 								{
-									bgColor = target.getPixel (xi, yi);
+									bgColor = target[pos];
 									
 									if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel (ui * zi, vi * zi);
+										textel = bitmapData.getPixel (ui / zi, vi / zi);
 									}else
 									{
 										textel = bitmapData.getPixel (ui, vi);
 									}
-									color=( ((textel >> 16 & 0xFF) * alpha + invAlpha * (bgColor >> 16 & 0xFF) ) << 16 |
-									        ((textel >> 8 & 0xFF) * alpha + invAlpha * (bgColor >> 8 & 0xFF))    << 8  |
-									        ((textel & 0xFF) * alpha + invAlpha * (bgColor & 0xFF)));
-									target.setPixel (xi, yi,color);
+									target[pos] = ( ((textel >> 16 & 0xFF) * alpha + invAlpha * (bgColor >> 16 & 0xFF) ) << 16 |
+									                ((textel >> 8 & 0xFF) * alpha + invAlpha * (bgColor >> 8 & 0xFF))    << 8  |
+									                ((textel & 0xFF) * alpha + invAlpha * (bgColor & 0xFF)));
 								}
 								ui += du;
 								vi += dv;
@@ -322,21 +321,21 @@
 							}
 							for (xi = xstart; xi < xend; xi +=1)
 							{
-								oldZ=buffer.getPixel (xi, yi);
-								if (zi < oldZ)
+								pos=xi+yi*height;
+								if (zi > buffer[pos])
 								{
-									bgColor = target.getPixel (xi, yi);
+									bgColor = target[pos];
+									
 									if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel (ui * zi, vi * zi);
+										textel = bitmapData.getPixel (ui / zi, vi / zi);
 									}else
 									{
 										textel = bitmapData.getPixel (ui, vi);
 									}
-									color=( ((textel >> 16 & 0xFF) * alpha + invAlpha * (bgColor >> 16 & 0xFF) ) << 16 |
-									        ((textel >> 8 & 0xFF) * alpha + invAlpha * (bgColor >> 8 & 0xFF))    << 8  |
-									        ((textel & 0xFF) * alpha + invAlpha * (bgColor & 0xFF)));
-									target.setPixel (xi, yi,color);
+									target[pos] = ( ((textel >> 16 & 0xFF) * alpha + invAlpha * (bgColor >> 16 & 0xFF) ) << 16 |
+									                ((textel >> 8 & 0xFF) * alpha + invAlpha * (bgColor >> 8 & 0xFF))    << 8  |
+									                ((textel & 0xFF) * alpha + invAlpha * (bgColor & 0xFF)));
 								}
 								ui += du;
 								vi += dv;
