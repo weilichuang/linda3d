@@ -1,5 +1,6 @@
 ﻿package linda.math
 {
+	import flash.geom.Point;
 	import flash.geom.Vector3D;
 	public class Vertex
 	{
@@ -50,15 +51,14 @@
 			ny = v.y;
 			nz = v.z;
 		}
-		public function get uv () : Vector2D
+		public function get uv () : Point
 		{
-
-			return new Vector2D(u,v);
+			return new Point(u,v);
 		}
-		public function set uv (textCoord : Vector2D) : void
+		public function set uv (tx : Point) : void
 		{
-			u = textCoord.x;
-			v = textCoord.y;
+			u = tx.x;
+			v = tx.y;
 		}
 		public function get color () : uint
 		{

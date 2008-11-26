@@ -2,9 +2,9 @@
 {
 	import __AS3__.vec.Vector;
 	
+	import flash.geom.Point;
 	import flash.geom.Vector3D;
 	
-	import linda.math.Vector2D;
 	import linda.math.Vertex;
 	import linda.mesh.Mesh;
 	import linda.mesh.MeshBuffer;
@@ -36,10 +36,10 @@
 			var radstep : Number = 360 / sides;
 			var ang : Number = 0;
 			var ang_inc : Number = radstep;
-			var uva : Vector2D = new Vector2D ();
-			var uvb : Vector2D = new Vector2D ();
-			var uvc : Vector2D = new Vector2D ();
-			var uvd : Vector2D = new Vector2D ();
+			var uva : Point = new Point ();
+			var uvb : Point = new Point ();
+			var uvc : Point = new Point ();
+			var uvd : Point = new Point ();
 			var va : Vertex;
 			var vb : Vertex;
 			var vc : Vertex;
@@ -49,7 +49,7 @@
 				tmpPoints.push (new Vector3D (i * innerstep, 0, 0));
 			}
 			var base : Vector3D = new Vector3D (0, 0, 0);
-			var zerouv : Vector2D = new Vector2D (0.5, 0.5);
+			var zerouv : Point = new Point (0.5, 0.5);
 			var indexCount : int = 0;
 			for (i = 0; i < sides; i ++)
 			{

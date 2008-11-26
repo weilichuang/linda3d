@@ -8,7 +8,6 @@
 	import linda.math.AABBox3D;
 	import linda.math.Dimension2D;
 	import linda.math.Matrix4;
-	import linda.math.Vector2D;
 	import linda.math.Vertex;
 	import linda.video.IVideoDriver;
 	//广告牌

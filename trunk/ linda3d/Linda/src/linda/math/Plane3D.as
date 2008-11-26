@@ -11,12 +11,14 @@
 		public static const IS_PLANAR : int = 2;
 		public static const IS_SPANNING : int = 3;
 		public static const IS_CLIPPED : int = 4;
-		public function Plane3D (nor : Vector3D = null, d : Number = 0)
+		public function Plane3D (n : Vector3D = null, d : Number = 0)
 		{
-			normal= new Vector3D ();
-			if (nor)
+			if (n)
 			{
-				normal = nor;
+				normal = n;
+			}else
+			{
+				normal= new Vector3D ();
 			}
 			this.d = d;
 		}
@@ -28,9 +30,7 @@
 		{
 			if (point == null || nor == null) return;
 			normal = nor;
-			//normal.normalize ();
-			//recalculateD (point);
-			
+
 			var n : Number = Math.sqrt (normal.x * normal.x + normal.y * normal.y + normal.z * normal.z);
 			if (n == 0) return;
 			n = 1 / n;
@@ -44,15 +44,13 @@
 			this.normal = normal;
 			this.d = d;
 		}
-		private var sp0:Vector3D=new Vector3D();
-		private var sp1:Vector3D=new Vector3D();
 		public function setPlane3 (p1 : Vector3D, p2 : Vector3D, p3 : Vector3D) : void
 		{
-			//var sp0 : Vector3D = new Vector3D ();
+			var sp0 : Vector3D = new Vector3D ();
 			sp0.x = p2.x - p1.x;
 			sp0.y = p2.y - p1.y;
 			sp0.z = p2.z - p1.z;
-			//var sp1 : Vector3D = new Vector3D ();
+			var sp1 : Vector3D = new Vector3D ();
 			sp1.x = p3.x - p1.x;
 			sp1.y = p3.y - p1.y;
 			sp1.z = p3.z - p1.z;
@@ -126,16 +124,6 @@
 			var t2 : Number = (point2.x - point1.x) * normal.x + (point2.y - point1.y) * normal.y + (point2.z - point1.z) * normal.z;
 			return - (normal.x * point1.x + normal.y * point1.y + normal.z * point1.z + d) / t2;
 		}
-		// Returns an intersection with a 3d line, limited between two 3d points.
-		// @param linePoint1: Point 1 of the line.
-		// @param linePoint2: Point 2 of the line.
-		// @param outIntersection: Place to store the intersection point, if there is one.
-		// @return Returns true if there was an intersection, false if there was not.
-		//public function getIntersectionWithLimitedLine (linePoint1 : Vector3D, linePoint2 : Vector3D, outIntersection : Vector3D) : Boolean 
-		//{
-		//	//先计算交点，再判断是否在线段上
-		//	return (getIntersectionWithLine (linePoint1, linePoint2.subtract (linePoint1) , outIntersection) && outIntersection.isBetweenPoints (linePoint1, linePoint2));
-		//}
 		// Classifies the relation of a point to this plane.
 		// @param point: Point to classify its relation.
 		// @return Returns ISREL3D_FRONT if the point is in front of the plane,
@@ -159,9 +147,9 @@
 			d = - (normal.x * mPoint.x + normal.y * mPoint.y + normal.z * mPoint.z);
 		}
 		// Returns a member point of the plane.
-		private var _memberPoint:Vector3D=new Vector3D();
 		public function getMemberPoint () : Vector3D
 		{
+			var _memberPoint:Vector3D=new Vector3D();
 			_memberPoint.x=- normal.x * d;
 			_memberPoint.y=- normal.y * d;
 			_memberPoint.z=- normal.z * d;
@@ -169,9 +157,9 @@
 		}
 		// Tests if there is a intersection between this plane and another 是否与其它平面相交
 		// @return Returns true if there is a intersection.
-		private var _cross:Vector3D=new Vector3D();
 		public function existsInterSection (other : Plane3D) : Boolean
 		{
+			var _cross:Vector3D=new Vector3D();
 			//var cross:Vector3D = other.normal.cross(normal);
 			//return cross.getLength()>0.00000001;
 			_cross.x=other.normal.y * normal.z - other.normal.z * normal.y;
@@ -217,12 +205,10 @@
 		}
 		//计算3个平面的交点
 		// Returns the intersection point with two other planes if there is one.
-		private var _linePoint:Vector3D=new Vector3D();
-		private var _lineVect:Vector3D=new Vector3D();
 		public function getIntersectionWithPlanes (o1 : Plane3D, o2 : Plane3D, outPoint : Vector3D) : Boolean
 		{
-			//var linePoint : Vector3D = new Vector3D ();
-			//var lineVect : Vector3D = new Vector3D ();
+			var _linePoint : Vector3D = new Vector3D ();
+			var _lineVect : Vector3D = new Vector3D ();
 			if (getIntersectionWithPlane (o1, _linePoint, _lineVect))
 			{
 				return o2.getIntersectionWithLine (_linePoint, _lineVect, outPoint);
