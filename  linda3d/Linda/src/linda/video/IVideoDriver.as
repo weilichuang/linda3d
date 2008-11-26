@@ -13,8 +13,8 @@
 	import linda.mesh.MeshBuffer;
 	public interface IVideoDriver
 	{
-		function beginScene (backBuffer : Boolean = true, zBuffer : Boolean = true, color : uint = 0x0) : Boolean;
-		function endScene () : Boolean;
+		function beginScene () : void;
+		function endScene () : void;
 
 		function setTransformViewProjection (mat : Matrix4) : void;
 		function setTransformWorld (mat : Matrix4) : void;

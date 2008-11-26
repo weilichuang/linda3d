@@ -2,11 +2,11 @@
 {
 	import __AS3__.vec.Vector;
 	
-	import linda.math.Vertex4D;
 	import linda.video.ITriangleRenderer;
-	public class TRFlatAlpha extends TriangleRenderer implements ITriangleRenderer
+	import linda.math.Vertex4D;
+	public class TRFlatAlpha32 extends TriangleRenderer implements ITriangleRenderer
 	{
-		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int): void
+		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
 		{
 			var color:uint;
 			
@@ -35,6 +35,7 @@
 			var side : int;
 		 	var ys : int;
 		 	var type : int;
+            var oldZ:Number;
             var pos:int;
 			var n0:int;
 		 	var n1:int;
@@ -99,16 +100,12 @@
 				z1 = vt1.z;
 				z2 = vt2.z;
 				
-				r = vt0.r;
-				g = vt0.g;
-				b = vt0.b;
+				r = vt0.r;g = vt0.g;b = vt0.b;
 				
 				side = 0;
-
+				yend = y2;
+				ys = y1;
 				ystart = y0;
-				ys     = y1;
-                yend   = y2;
-                
 				if(type==0)
 				{
 						dyl = 1 / (y1 - y0);
@@ -136,7 +133,6 @@
 							
 							side = 1;
 						}
-
 						for (yi = ystart; yi <= yend; yi +=1)
 						{
 							xstart = xl; xend = xr;
@@ -152,12 +148,16 @@
 							for (xi = xstart; xi < xend; xi +=1)
 							{
 								pos=xi+yi*height;
-								if (zi > buffer[pos])
+								oldZ=buffer[pos];
+								bgColor = target[pos];
+								bga = bgColor >> 24 & 0xFF ;
+								if (bga < 0xFF || zi > oldZ)
 								{
-								    bgColor = target[pos];
-								    target[pos]=((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | 
-								                 (alpha * g + invAlpha * (bgColor >> 8 & 0xFF))  << 8  | 
-								                 (alpha * b + invAlpha * (bgColor & 0xFF)));
+									color = ((alpha*intAlpha+ invAlpha*bga)              << 24 | 
+									         (alpha*r + invAlpha*(bgColor >> 16 & 0xFF)) << 16 | 
+									         (alpha*g + invAlpha*(bgColor >> 8 & 0xFF))  << 8  | 
+									         (alpha*b + invAlpha*(bgColor & 0xFF)) );
+									target[pos] = color;
 								}
 								zi += dz;
 							}
@@ -214,12 +214,16 @@
 							for (xi = xstart; xi < xend; xi +=1)
 							{
 								pos=xi+yi*height;
-								if (zi > buffer[pos])
+								oldZ=buffer[pos];
+								bgColor = target[pos];
+								bga = bgColor >> 24 & 0xFF ;
+								if (bga < 0xFF || zi > oldZ)
 								{
-								    bgColor = target[pos];
-								    target[pos]=((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | 
-								                 (alpha * g + invAlpha * (bgColor >> 8 & 0xFF))  << 8  | 
-								                 (alpha * b + invAlpha * (bgColor & 0xFF)));
+									color = ((alpha*intAlpha+ invAlpha*bga)              << 24 | 
+									         (alpha*r + invAlpha*(bgColor >> 16 & 0xFF)) << 16 | 
+									         (alpha*g + invAlpha*(bgColor >> 8 & 0xFF))  << 8  | 
+									         (alpha*b + invAlpha*(bgColor & 0xFF)) );
+									target[pos] = color;
 								}
 								zi += dz;
 							}

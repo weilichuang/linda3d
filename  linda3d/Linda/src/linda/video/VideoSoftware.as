@@ -4,7 +4,6 @@
 	
 	import flash.display.*;
 	import flash.geom.*;
-	import flash.utils.getTimer;
 	
 	import linda.light.Light;
 	import linda.material.ITexture;
@@ -17,8 +16,13 @@
 	{
 		protected var currentTriangleRenderer : ITriangleRenderer;
 		protected var triangleRenderers : Vector.<ITriangleRenderer>;
+		
 		protected var targetBitmap : Bitmap;
-		protected var buffer : BitmapData;
+		protected var rect:Rectangle;
+
+		protected var targetVector:Vector.<uint>;
+		protected var bufferVector:Vector.<Number>;
+
 		protected var texture : ITexture;
 		protected var material : Material;
 		//matrix vars
@@ -52,26 +56,16 @@
 		protected var _clipped_line_indices : Vector.<int>;
 		public function VideoSoftware (size : Dimension2D)
 		{
-			super ();
-			
-			init (size);
+			super();
+			init(size);
 		}
 		private function init (size:Dimension2D) : void
 		{
-			if (size == null)
-			{
-				size = new Dimension2D (300, 300);
-			}
-			screenSize = size;
-			//render target
 			targetBitmap = new Bitmap ();
-			targetBitmap.bitmapData = new BitmapData (screenSize.width, screenSize.height, false, 0x0);
-			renderTarget.addChild (targetBitmap);
-			
-			buffer =new BitmapData (screenSize.width, screenSize.height, false, 0xffffff);
+			renderTarget.addChild(targetBitmap);
 			
 			_clip_scale = new Matrix4 ();
-			_clip_scale.buildNDCToDCMatrix(screenSize,1);
+
 			//render
 			triangleRenderers = new Vector.<ITriangleRenderer> (TRType.COUNT,true);
 			triangleRenderers [TRType.WIRE] = new TRWire ();
@@ -83,8 +77,6 @@
 			triangleRenderers [TRType.GOURAUD_ALPHA] = new TRGouraudAlpha ();
 			triangleRenderers [TRType.TEXTURE_FLAT_ALPHA] = new TRTextureFlatAlpha ();
 			triangleRenderers [TRType.TEXTURE_GOURAUD_ALPHA] = new TRTextureGouraudAlpha ();
-			
-			
 			//预存一些点
 			_transformedPoints = new Vector.<Vertex4D> ();
 			for (var i : int = 0; i < 2000; i+=1)
@@ -133,6 +125,7 @@
 			_clipped_vertices2 = new Vector.<Vertex4D> ();
 			_clipped_vertices3 = new Vector.<Vertex4D> ();
 			_clipped_vertices4 = new Vector.<Vertex4D> ();
+			
 			//for drawIndexedLineList
 			_transformedLinePoints = new Vector.<Vertex4D> ();
 			for (i = 0; i < 100; i ++)
@@ -141,7 +134,19 @@
 			}
 			_clipped_line_vertices = new Vector.<Vertex4D> ();
 			_clipped_line_indices = new Vector.<int> ();
-			material = new Material ();
+
+			targetVector=new Vector.<uint>();
+			bufferVector=new Vector.<Number>();
+
+			setScreenSize(size);
+		}
+		protected function reset():void
+		{
+			//Todo 不知道有没有更好的方法了:)
+			targetVector.length=0;
+			bufferVector.length=0;
+			targetVector.length=int(screenSize.width)*int(screenSize.height);
+			bufferVector.length=targetVector.length;
 		}
 		private function getTRIndex () : int
 		{
@@ -149,6 +154,7 @@
 
 			var gouraudShading : Boolean = material.gouraudShading;
 			var lighting:Boolean = material.lighting;
+			
 			if (material.transparenting)
 			{
 					if (texture)
@@ -197,32 +203,28 @@
 		{
 			currentTriangleRenderer = triangleRenderers [renderer];
 			currentTriangleRenderer.setMaterial (material);
-			currentTriangleRenderer.setRenderTarget (targetBitmap.bitmapData, buffer);
+			currentTriangleRenderer.setRenderTarget(targetVector,bufferVector,int(screenSize.height));
 		}
-		override public function beginScene (backBuffer : Boolean = true, zbuffer : Boolean = true , color : uint = 0x0) : Boolean
+		public function beginScene ():void
 		{
 			primitivesDrawn = 0;
-			if (backBuffer) targetBitmap.bitmapData.fillRect (screenSize.toRect(), color);
-			if (zbuffer) buffer.fillRect (screenSize.toRect(), 0xFFFFFF);
-			targetBitmap.bitmapData.lock();
-			buffer.lock();
-			return true;
+			reset();
 		}
-		override public function endScene():Boolean
+		public function endScene():void
 		{
+			targetBitmap.bitmapData.lock();
+			targetBitmap.bitmapData.setVector(rect,targetVector);
 			targetBitmap.bitmapData.unlock();
-			buffer.unlock();
-			return true;
 		}
-		override public function setTransformViewProjection (mat : Matrix4) : void
+		public function setTransformViewProjection (mat : Matrix4) : void
 		{
 			_view_project = mat;
 		}
-		public override function setTransformProjection (mat : Matrix4) : void
+		public function setTransformProjection (mat : Matrix4) : void
 		{
 			_projection = mat;
 		}
-		override public function setCameraPosition (pos : Vector3D) : void
+		public function setCameraPosition (pos : Vector3D) : void
 		{
 			if (pos)
 			{
@@ -231,17 +233,10 @@
 				_old_cam_position.z = pos.z;
 			}	
 		}
-		public override function setTransformWorld (mat : Matrix4) : void
+		public function setTransformWorld (mat : Matrix4) : void
 		{
 			_world = mat;
-			/*
-			_current.copy (_view_project);
-			_current.multiplyE (_world);
-			// transfrom camera into object's world space
-			_world.getInverse (_world_inv);
-			_world_inv.transformVector2(_old_cam_position,_cam_position);
-			*/
-			//_current.copy (_view_project);
+
 			_current.m00 = _view_project.m00;
 			_current.m01 = _view_project.m01;
 			_current.m02 = _view_project.m02;
@@ -258,7 +253,7 @@
 			_current.m31 = _view_project.m31;
 			_current.m32 = _view_project.m32;
 			_current.m33 = _view_project.m33;
-			//_current.multiplyE (_world);
+
 			var m00 : Number = _current.m00;
 			var m01 : Number = _current.m01;
 			var m02 : Number = _current.m02;
@@ -275,6 +270,7 @@
 			var m31 : Number = _current.m31;
 			var m32 : Number = _current.m32;
 			var m33 : Number = _current.m33;
+			
 			_current.m00 = m00 * _world.m00 + m10 * _world.m01 + m20 * _world.m02 ;
 			_current.m01 = m01 * _world.m00 + m11 * _world.m01 + m21 * _world.m02 ;
 			_current.m02 = m02 * _world.m00 + m12 * _world.m01 + m22 * _world.m02 ;
@@ -291,6 +287,7 @@
 			_current.m31 = m01 * _world.m30 + m11 * _world.m31 + m21 * _world.m32 + m31 ;
 			_current.m32 = m02 * _world.m30 + m12 * _world.m31 + m22 * _world.m32 + m32 ;
 			_current.m33 = m03 * _world.m30 + m13 * _world.m31 + m23 * _world.m32 + m33 ;
+			
 			//_world.getInverse (_world_inv);
 			m00 = _world.m00;
 			m01 = _world.m01;
@@ -307,6 +304,7 @@
 			m30 = _world.m30;
 			m31 = _world.m31;
 			m32 = _world.m32;
+			
 			var d : Number = (m00 * m11 - m01 * m10) * m22 - (m00 * m12 - m02 * m10) * m21 + (m01 * m12 - m02 * m11) * m20;
 			if (d == 0) d=0 else d = 1.0 / d ;
 			_world_inv.m00 = d * (m11 * m22 - m12 * m21);
@@ -325,49 +323,56 @@
 			_world_inv.m31 = d * (m20 * (m02 * m31 - m01 * m32) + m21 * (m00 * m32 - m02 * m30) + m22 * (m01 * m30 - m00 * m31));
 			_world_inv.m32 = d * (m30 * (m02 * m11 - m01 * m12) + m31 * (m00 * m12 - m02 * m10) + m32 * (m01 * m10 - m00 * m11));
 			_world_inv.m33 = 1;
+			
 			//_world_inv.transformVector2(_old_cam_position,_cam_position);
 			var x : Number = _old_cam_position.x;
 			var y : Number = _old_cam_position.y;
 			var z : Number = _old_cam_position.z;
+			
 			_cam_position.x = (_world_inv.m00 * x + _world_inv.m10 * y + _world_inv.m20 * z + _world_inv.m30);
 			_cam_position.y = (_world_inv.m01 * x + _world_inv.m11 * y + _world_inv.m21 * z + _world_inv.m31);
 			_cam_position.z = (_world_inv.m02 * x + _world_inv.m12 * y + _world_inv.m22 * z + _world_inv.m32);
 		}
 
-		public override function setTransformView (mat : Matrix4) : void
+		public function setTransformView (mat : Matrix4) : void
 		{
 			_view = mat;
 			_view_project.copy (_projection);
 			_view_project.multiplyE (_view);
 		}
 
-		public override function setMaterial (mat : Material) : void
+		override public function setMaterial (mat : Material) : void
 		{
 			material = mat;
 			texture = material.texture1;
 			switchToTriangleRenderer(getTRIndex());
 		}
-		override public function getScreenSize () : Dimension2D
-		{
-			return screenSize;
-		}
 		//使用该方法将删除之前图像上的数据
-		override public function setScreenSize (size : Dimension2D) : void
+		public function setScreenSize (size : Dimension2D) : void
 		{
-			if(!size) return;
-			if (size.width >= 1 && size.height >= 1)
+			if(!size)
+            {
+            	throw new Error("需要设置显示范围");
+	            return;
+            }
+            
+			screenSize = size;
+			
+			rect=screenSize.toRect();
+			
+			if(targetBitmap.bitmapData)
 			{
-				screenSize = size;
-				if(targetBitmap.bitmapData)
-				{
-					targetBitmap.bitmapData.fillRect(screenSize.toRect(),0x0);
-				}else
-				{
-					targetBitmap.bitmapData = new BitmapData (screenSize.width, screenSize.height, false, 0);
-				}
-				buffer.fillRect(screenSize.toRect(),0xffffff);
-				_clip_scale.buildNDCToDCMatrix(screenSize,1);
+				targetBitmap.bitmapData.fillRect(rect,0x0);
+			}else
+			{
+				targetBitmap.bitmapData = new BitmapData (screenSize.width, screenSize.height, false, 0);
 			}
+			
+			_clip_scale.buildNDCToDCMatrix(screenSize,1);
+			
+			var len:int=int(screenSize.width)*int(screenSize.height);
+			targetVector.length=len;
+			bufferVector.length=len;
 		}
 		public override function setRenderTarget (target : Sprite) : void
 		{
@@ -376,15 +381,11 @@
 			renderTarget = target;
 			renderTarget.addChild (targetBitmap);
 		}
-		public function clearZBuffer () : void
-		{
-			buffer.fillRect (screenSize.toRect(), 0x0);
-		}
 		//for light
 		private var l : Vector3D = new Vector3D ();
 		private var n : Vector3D = new Vector3D ();
 		private var v : Vector3D = new Vector3D ();
-		override public function drawIndexedTriangleList (vertices : Vector.<Vertex>, vertexCount : int, indexList : Vector.<int>, triangleCount : int) : void
+		public function drawIndexedTriangleList (vertices : Vector.<Vertex>, vertexCount : int, indexList : Vector.<int>, triangleCount : int) : void
 		{
 			var v0 : Vertex;
 			var v1 : Vertex;
@@ -973,14 +974,17 @@
 					var tmp : Number = 1 / tv0.w ;
 					tv0.x = (tv0.x * csm00) * tmp + csm30;
 					tv0.y = (tv0.y * csm11) * tmp + csm31;
+					tv0.z = tmp;
 					//tv1
 					tmp = 1 / tv1.w ;
 					tv1.x = (tv1.x * csm00) * tmp + csm30;
 					tv1.y = (tv1.y * csm11) * tmp + csm31;
+					tv1.z = tmp;
 					//tv2
 					tmp = 1 / tv2.w ;
 					tv2.x = (tv2.x * csm00) * tmp + csm30;
 					tv2.y = (tv2.y * csm11) * tmp + csm31;
+					tv2.z = tmp;
 					// add to _clipped_indices
 					_clipped_indices [iCount] = vCount;
 					iCount ++;
@@ -996,22 +1000,15 @@
 					vCount ++;
 					continue;
 				}
-				
-				
-				// ----------------------------------------------------------------
+
 				// put into list for clipping
 				_unclipped_vertices [0] = tv0;
 				_unclipped_vertices [1] = tv1;
 				_unclipped_vertices [2] = tv2;
 				source = _unclipped_vertices;
 				outCount = 3;
-				
-				
-				// ----------------------------------------------------------------
+
 				// clip in NDC Space to Frustum
-				// ----------------------------------------------------------------
-				// clip to plane 1
-				// ----------------------------------------------------------------
 				//new Vector3D (0.0, 0.0, - 1.0, - 1.0 ) , // near
 				if ((clipcount & 2) == 2)
 				{
@@ -1057,16 +1054,11 @@
 						} 
 						else
 						{
-							// current point outside
 							if (bdot <= 0.0 )
 							{
-								// previous was inside
-								// intersect line segment with plane
 								out = _transformedPoints [int(tCount ++)];
 								dest [int(outCount ++)] = out;
-								// get t intersection
 								t = bdot / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
-								// interpolate position
 								out.x = b.x + ((a.x - b.x ) * t );
 								out.y = b.y + ((a.y - b.y ) * t );
 								out.z = b.z + ((a.z - b.z ) * t );
@@ -1077,7 +1069,6 @@
 								out.b = b.b + ((a.b - b.b ) * t );
 								if(hasTexture)
 								{
-									// interpolate texture
 									out.u = b.u + ((a.u - b.u ) * t );
 									out.v = b.v + ((a.v - b.v ) * t );
 								}
@@ -1378,6 +1369,7 @@
 					}
 					source = _clipped_vertices0;
 				}
+				
 				// put back into screen space.
 				vCount2 = vCount;
 				for (var g : int = 0; g < outCount; g+=1)
@@ -1386,12 +1378,12 @@
 					tmp = 1 / tv0.w ;
 					tv0.x = (tv0.x * csm00) * tmp + csm30;
 					tv0.y = (tv0.y * csm11) * tmp + csm31;
+					tv0.z = tmp;
 					_clipped_vertices [int(vCount ++)] = tv0;
 				}
 				// re-tesselate ( triangle-fan, 0-1-2,0-2-3.. )
 				for (g = 0; g <= outCount - 3; g+=1)
 				{
-					// add the three points
 					_clipped_indices [int(iCount++)] = (vCount2);
 					_clipped_indices [int(iCount++)] = (vCount2 + g + 1);
 					_clipped_indices [int(iCount++)] = (vCount2 + g + 2);
@@ -1400,7 +1392,7 @@
 			primitivesDrawn += int (iCount / 3);
 			currentTriangleRenderer.drawIndexedTriangleList (_clipped_vertices, vCount, _clipped_indices, iCount);
 		}
-		override public function drawMeshBuffer(mesh:MeshBuffer):void
+		public function drawMeshBuffer(mesh:MeshBuffer):void
 		{
 			drawIndexedTriangleList(mesh.vertices,mesh.vertices.length,mesh.indices,mesh.indices.length);
 		}
@@ -1411,6 +1403,7 @@
 		* @indexList 点与点之间的顺序(2点组成一条直线)
 		* @indexCount int indexList.length
 		*/
+		//Todo 确保所有点都在显示范围内
 		override public function drawIndexedLineList (vertices : Vector.<Vertex>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
 		{
 			var v0 : Vertex, v1 : Vertex;
@@ -1568,9 +1561,11 @@
 				var tmp : Number = 1 / tv0.w ;
 				tv0.x = (tv0.x * csm00) * tmp + csm30;
 				tv0.y = (tv0.y * csm11) * tmp + csm31;
+				tv0.z = tmp;
 				tmp = 1 / tv1.w ;
 				tv1.x = (tv1.x * csm00) * tmp + csm30;
 				tv1.y = (tv1.y * csm11) * tmp + csm31;
+				tv1.z = tmp;
 				_clipped_line_indices [iCount] = vCount2;
 				iCount ++;
 				_clipped_line_vertices [vCount2] = tv0;
@@ -1582,21 +1577,20 @@
 			}
 			currentTriangleRenderer.drawIndexedLineList (_clipped_line_vertices, vCount2, _clipped_line_indices, iCount);
 		}
-		override public function drawStencilShadowVolume (vertices : Vector.<Vertex>, vertexCount : int, useZFailMethod : Boolean) : void
+		public function drawStencilShadowVolume (vertices : Vector.<Vertex>, vertexCount : int, useZFailMethod : Boolean) : void
 		{
 		}
-		override public function getDriverType () : String
+		public function getDriverType () : String
 		{
 			return VideoType.PIXEL;
 		}
-		override public function createScreenShot () : BitmapData
+		public function createScreenShot () : BitmapData
 		{
 			return targetBitmap.bitmapData.clone ();
 		}
-		override public function setPerspectiveCorrectDistance (distance : Number = 400) : void
+		public function setPerspectiveCorrectDistance (distance : Number = 400) : void
 		{
-			if (distance <= 0) distance = 1;
-			perspectiveDistance = distance;
+			perspectiveDistance = (distance < 10) ? 10 : distance;
 			var len : int = triangleRenderers.length;
 			for (var i : int = 0; i < len; i+=1)
 			{
@@ -1604,20 +1598,15 @@
 				render.setPerspectiveCorrectDistance (distance);
 			}
 		}
-		override public function setMipMapDistance (distance : Number = 500) : void
+		public function setMipMapDistance (distance : Number = 500) : void
 		{
-			if (distance < 1) distance = 1;
-			mipMapDistance = distance;
+			mipMapDistance = (distance < 10) ? 10 : distance;
 			var len : int = triangleRenderers.length;
 			for (var i : int = 0; i < len; i+=1)
 			{
 				var render : ITriangleRenderer = triangleRenderers [i];
 				render.setMipMapDistance (distance);
 			}
-		}
-		public function getZBuffer():BitmapData
-		{
-			return buffer;
 		}
 	}
 }

@@ -49,7 +49,7 @@
 			var side : int;
 		 	var ys : int;
 		 	var type : int;
-            var oldZ:int;
+            var pos:int;
 			var n0:int;
 		 	var n1:int;
 		 	var n2:int;
@@ -109,9 +109,9 @@
 				
 				if ((x0 == x1) && (x1 == x2)) continue;
 				
-				z0 = vt0.w;
-				z1 = vt1.w;
-				z2 = vt2.w;
+				z0 = vt0.z;
+				z1 = vt1.z;
+				z2 = vt2.z;
 
 				side = 0;
 
@@ -186,14 +186,13 @@
 							}
 							for (xi = xstart; xi < xend; xi +=1)
 							{
-								oldZ=buffer.getPixel (xi, yi);
-								if (zi < oldZ)
+								pos=xi+yi*height;
+								if (zi > buffer[pos])
 								{
-									bgColor = target.getPixel (xi, yi);
-									color=((alpha * ri + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | 
+									bgColor = target[pos];
+									target[pos]=((alpha * ri + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | 
 									       (alpha * gi + invAlpha * (bgColor >> 8 & 0xFF))  << 8  |
 									       (alpha * bi + invAlpha * (bgColor & 0xFF)));
-									target.setPixel (xi, yi,color);
 								}
 								zi += dz;
 								ri += dr; gi += dg; bi += db;
@@ -298,14 +297,13 @@
 							}
 							for (xi = xstart; xi < xend; xi +=1)
 							{
-								oldZ=buffer.getPixel (xi, yi);
-								if (zi < oldZ)
+								pos=xi+yi*height;
+								if (zi > buffer[pos])
 								{
-									bgColor = target.getPixel (xi, yi);
-									color=((alpha * ri + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | 
+									bgColor = target[pos];
+									target[pos]=((alpha * ri + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | 
 									       (alpha * gi + invAlpha * (bgColor >> 8 & 0xFF))  << 8  |
 									       (alpha * bi + invAlpha * (bgColor & 0xFF)));
-									target.setPixel (xi, yi,color);
 								}
 								zi += dz;
 								ri += dr; gi += dg; bi += db;

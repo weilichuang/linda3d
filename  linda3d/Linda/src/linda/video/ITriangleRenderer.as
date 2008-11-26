@@ -9,7 +9,7 @@
 	import linda.material.Material;
 	public interface ITriangleRenderer
 	{
-		function setRenderTarget (target : BitmapData, buffer : BitmapData) : void;
+		function setRenderTarget (target : Vector.<uint>, buffer : Vector.<Number>,height:int) : void;
 		function setMaterial (material : Material) : void;
 		function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void;
 		function drawIndexedLineList (vertices :Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void;

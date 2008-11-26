@@ -46,7 +46,7 @@
 			var side : int;
 		 	var ys : int;
 		 	var type : int;
-            var oldZ:int;
+            var pos:int;
 			var n0:int;
 		 	var n1:int;
 		 	var n2:int;
@@ -106,9 +106,9 @@
 				
 				if ((x0 == x1) && (x1 == x2)) continue;
 				
-				z0 = vt0.w;
-				z1 = vt1.w;
-				z2 = vt2.w;
+				z0 = vt0.z;
+				z1 = vt1.z;
+				z2 = vt2.z;
 				
 				r0 = vt0.r; g0 = vt0.g; b0 = vt0.b;
 				r1 = vt1.r; g1 = vt1.g; b1 = vt1.b;
@@ -181,12 +181,11 @@
 							}
 							for (xi = xstart; xi < xend; xi +=1)
 							{
-								oldZ=buffer.getPixel (xi, yi);
-								if (zi < oldZ)
+								pos=xi+yi*height;
+								if (zi > buffer[pos])
 								{
-									color=(ri << 16 | gi << 8 | bi );
-									target.setPixel (xi, yi,color);
-									buffer.setPixel (xi, yi,zi);
+									target[pos]=(0xFF000000 | ri << 16 | gi << 8 | bi );
+									buffer[pos]=zi;
 								}
 								zi += dz;
 								ri += dr; gi += dg; bi += db;
@@ -290,12 +289,11 @@
 							}
 							for (xi = xstart; xi < xend; xi +=1)
 							{
-								oldZ=buffer.getPixel (xi, yi);
-								if (zi < oldZ)
+								pos=xi+yi*height;
+								if (zi > buffer[pos])
 								{
-									color=(ri << 16 | gi << 8 | bi );
-									target.setPixel (xi, yi,color);
-									buffer.setPixel (xi, yi,zi);
+									target[pos]=(0xFF000000 | ri << 16 | gi << 8 | bi );
+									buffer[pos]=zi;
 								}
 								zi += dz;
 								ri += dr; gi += dg; bi += db;
