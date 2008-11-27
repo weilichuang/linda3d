@@ -110,43 +110,46 @@
 			outIntersection.z = linePoint.z + (lineVect.z * t);
 			return true;
 		}
-		// Returns where on a line between two points an intersection with this plane happened.
-		// Only useful if known that there is an intersection.//事先已经知道有交点了
-		// @param linePoint1: Point1 of the line to intersect with.
-		// @param linePoint2: Point2 of the line to intersect with.
-		// @return Returns where on a line between two points an intersection with this plane happened.
-		// For example, 0.5 is returned if the intersection happened exectly in the middle of the two points.
+		/**
+		 * Returns where on a line between two points an intersection with this plane happened.
+		 * Only useful if known that there is an intersection.//事先已经知道有交点了
+		 * @param linePoint1: Point1 of the line to intersect with.
+		 * @param linePoint2: Point2 of the line to intersect with.
+		 * @return Returns where on a line between two points an intersection with this plane happened.
+		 * For example, 0.5 is returned if the intersection happened exectly in the middle of the two points.
+		 */
 		public function getKnownIntersectionWithLine (point1 : Vector3D, point2 : Vector3D) : Number 
 		{
 			//var vect:Vector3D = point2.subtract(point1);
-			//var t2:Number = normal.dot(vect);
+			//var t2:Number = normal.dotProduct(vect);
 			//return -((normal.dot (point1)+d)/t2);
 			var t2 : Number = (point2.x - point1.x) * normal.x + (point2.y - point1.y) * normal.y + (point2.z - point1.z) * normal.z;
 			return - (normal.x * point1.x + normal.y * point1.y + normal.z * point1.z + d) / t2;
 		}
-		// Classifies the relation of a point to this plane.
-		// @param point: Point to classify its relation.
-		// @return Returns ISREL3D_FRONT if the point is in front of the plane,
-		// ISREL3D_BACK if the point is behind of the plane, and
-		// ISREL3D_PLANAR if the point is within the plane.
+		/**
+		 * Classifies the relation of a point to this plane.
+		 * @param point: Point to classify its relation.
+		 * @return Returns ISREL3D_FRONT if the point is in front of the plane,
+		 * ISREL3D_BACK if the point is behind of the plane, and
+		 * ISREL3D_PLANAR if the point is within the plane.
+		 */
 		public function classifyPointRelation (point : Vector3D) : int
 		{
 			//var  t:Number= normal.dot(point) + d;
 			var t : Number = normal.x * point.x + normal.y * point.y + normal.z * point.z + d;
 			//当点无限接近平面时，我们就认为它在平面上了，这个系数可以调整的
-			if (t < - 0.0001)
-			return IS_BACK;
-			if (t > 0.0001)
-			return IS_FRONT;
+			if (t < - 0.0001) return IS_BACK;
+			if (t > 0.0001) return IS_FRONT;
 			return IS_PLANAR;
 		}
-		// Recalculates the distance from origin by applying
-		// a new member point to the plane.
+		/**
+		 * Recalculates the distance from origin by applying
+		 * a new member point to the plane.
+		 */
 		public function recalculateD (mPoint : Vector3D) : void
 		{
 			d = - (normal.x * mPoint.x + normal.y * mPoint.y + normal.z * mPoint.z);
 		}
-		// Returns a member point of the plane.
 		public function getMemberPoint () : Vector3D
 		{
 			var _memberPoint:Vector3D=new Vector3D();
@@ -155,8 +158,10 @@
 			_memberPoint.z=- normal.z * d;
 			return _memberPoint;
 		}
-		// Tests if there is a intersection between this plane and another 是否与其它平面相交
-		// @return Returns true if there is a intersection.
+		/**
+		 * Tests if there is a intersection between this plane and another 是否与其它平面相交
+		 * @return Returns true if there is a intersection.
+		 */
 		public function existsInterSection (other : Plane3D) : Boolean
 		{
 			var _cross:Vector3D=new Vector3D();
@@ -167,8 +172,6 @@
 			_cross.z=other.normal.x * normal.y - other.normal.y * normal.x;
 			return (_cross.x * _cross.x + _cross.y * _cross.y + _cross.z * _cross.z) > 0.00000001 ;
 		}
-		// Intersects this plane with another.
-		//fixme 怎么样计算的，不懂？
 		/**
 		* @other
 		* @outLinePoint  相交直线上的一个点
@@ -203,8 +206,10 @@
 			// return that we found an intersection
 			return true;
 		}
-		//计算3个平面的交点
-		// Returns the intersection point with two other planes if there is one.
+		/**
+		 *计算3个平面的交点
+		 * Returns the intersection point with two other planes if there is one.
+		 */
 		public function getIntersectionWithPlanes (o1 : Plane3D, o2 : Plane3D, outPoint : Vector3D) : Boolean
 		{
 			var _linePoint : Vector3D = new Vector3D ();
@@ -215,18 +220,22 @@
 			}
 			return false;
 		}
-		// Returns if the plane is front of backfacing. Note that this only
-		// works if the normal is Normalized.
-		// @param lookDirection: Look direction.
-		// @return Returns true if the plane is front facing, which mean it would
-		// be visible, and false if it is backfacing.
+		/**
+		 * Returns if the plane is front of backfacing. Note that this only
+		 * works if the normal is Normalized.
+		 * @param lookDirection: Look direction.
+		 * @return Returns true if the plane is front facing, which mean it would
+		 * be visible, and false if it is backfacing.
+		 */
 		public function isFrontFacing (lookDirection : Vector3D) : Boolean
 		{
-			//return normal.dot(lookDirection) <= 0.0;
+			//return normal.dotProduct(lookDirection) <= 0.0;
 			return (normal.x * lookDirection.x + normal.x * lookDirection.x + normal.x * lookDirection.x) <= 0;
 		}
-		// Returns the distance to a point.  Note that this only
-		// works if the normal is Normalized.
+		/**
+		 * Returns the distance to a point.  Note that this only
+		 * works if the normal is Normalized.
+		 */
 		public function getDistanceTo (point : Vector3D) : Number
 		{
 			return normal.x * point.x + normal.y * point.y + normal.z * point.z + d;

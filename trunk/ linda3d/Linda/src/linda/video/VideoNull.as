@@ -104,7 +104,7 @@
 		//--------------------------------light--------------------------------//
 		public function removeAllLights () : void
 		{
-			_lights = new Vector.<Light>();
+			_lights.length=0;
 			_lightCount=0;
 		}
 		/**

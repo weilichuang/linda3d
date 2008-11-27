@@ -78,11 +78,26 @@
 		public function clone():Light
 		{
 			var l:Light=new Light();
-			l.ambientColor=ambientColor.clone();
-			l.diffuseColor=diffuseColor.clone();
-			l.specularColor=specularColor.clone();
-			l.position=position.clone();
-			l.direction=direction.clone();
+			l.diffuseColor.r = diffuseColor.r;
+			l.diffuseColor.g = diffuseColor.g;
+			l.diffuseColor.b = diffuseColor.b;
+
+			l.ambientColor.r = ambientColor.r;
+			l.ambientColor.g = ambientColor.g;
+			l.ambientColor.b = ambientColor.b;
+
+			l.specularColor.r = specularColor.r;
+			l.specularColor.g = specularColor.g;
+			l.specularColor.b = specularColor.b;
+			
+			l.position.x= position.x;
+			l.position.y= position.y;
+			l.position.z= position.z;
+			
+			l.direction.x= direction.x;
+			l.direction.y= direction.y;
+			l.direction.z= direction.z;
+
 			l.kc=kc;
 			l.kl=kl;
 			l.kq=kq;

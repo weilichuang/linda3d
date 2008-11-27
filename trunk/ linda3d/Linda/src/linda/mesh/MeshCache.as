@@ -27,7 +27,7 @@
 		}
 		public function removeAll () : void
 		{
-			meshes = new Vector.<IMesh>();
+			meshes.length=0;
 		}
 		public function getMeshCount () : int
 		{

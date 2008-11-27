@@ -115,19 +115,20 @@
 			_ndc_planes[0]=new Vector3D (0.0, 0.0, -1.0, -1.0 ); // near
 			_ndc_planes[1]=new Vector3D (0.0, 0.0, 1.0, -1.0 ); // far
 			_ndc_planes[2]=new Vector3D (1.0, 0.0, 0.0, -1.0 ); // left
-			_ndc_planes[3]=new Vector3D ( -1.0, 0.0, 0.0, -1.0); // right
+			_ndc_planes[3]=new Vector3D (-1.0, 0.0, 0.0, -1.0); // right
 			_ndc_planes[4]=new Vector3D (0.0, 1.0, 0.0, -1.0 ); // bottom
 			_ndc_planes[5]=new Vector3D (0.0, -1.0, 0.0, -1.0); //top
 
 			// arrays for storing clipped vertices & indices
-			_clipped_indices = new Vector.<int> ();
-			_clipped_vertices = new Vector.<Vertex4D> ();
-			_clipped_vertices0 = new Vector.<Vertex4D> ();
+			_clipped_indices = new Vector.<int>();
+			
+			_clipped_vertices   = new Vector.<Vertex4D> ();
+			_clipped_vertices0  = new Vector.<Vertex4D> ();
 			_unclipped_vertices = new Vector.<Vertex4D> ();
-			_clipped_vertices1 = new Vector.<Vertex4D> ();
-			_clipped_vertices2 = new Vector.<Vertex4D> ();
-			_clipped_vertices3 = new Vector.<Vertex4D> ();
-			_clipped_vertices4 = new Vector.<Vertex4D> ();
+			_clipped_vertices1  = new Vector.<Vertex4D> ();
+			_clipped_vertices2  = new Vector.<Vertex4D> ();
+			_clipped_vertices3  = new Vector.<Vertex4D> ();
+			_clipped_vertices4  = new Vector.<Vertex4D> ();
 
 			targetVector=new Vector.<uint>();
 			bufferVector=new Vector.<Number>();
