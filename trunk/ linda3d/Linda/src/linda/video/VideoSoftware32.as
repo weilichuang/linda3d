@@ -18,13 +18,16 @@
 			renderers [TRType.GOURAUD_ALPHA] = new TRGouraudAlpha32 ();
 			renderers [TRType.TEXTURE_FLAT_ALPHA] = new TRTextureFlatAlpha32 ();
 			renderers [TRType.TEXTURE_GOURAUD_ALPHA] = new TRTextureGouraudAlpha32 ();
+			
+			setVector(targetVector,bufferVector);
+
+			setScreenSize(size);
 		}
 		override public function setScreenSize (size : Dimension2D) : void
 		{
 			if(!size)
             {
-            	throw new Error("需要设置显示范围");
-	            return;
+            	size=new Dimension2D(300,300);
             }
             
 			screenSize = size;
@@ -44,6 +47,8 @@
 			var len:int=screenSize.width*screenSize.height;
 			targetVector.length=len;
 			bufferVector.length=len;
+			
+			setHeight(screenSize.height);
 		}
 		override public function getDriverType () : String
 		{

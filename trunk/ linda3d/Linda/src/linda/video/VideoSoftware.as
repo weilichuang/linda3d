@@ -77,6 +77,7 @@
 			renderers [TRType.GOURAUD_ALPHA] = new TRGouraudAlpha ();
 			renderers [TRType.TEXTURE_FLAT_ALPHA] = new TRTextureFlatAlpha ();
 			renderers [TRType.TEXTURE_GOURAUD_ALPHA] = new TRTextureGouraudAlpha ();
+
 			//预存一些点
 			_transformedVertexs = new Vector.<Vertex4D> ();
 			for (var i : int = 0; i < 2000; i+=1)
@@ -132,6 +133,8 @@
 
 			targetVector=new Vector.<uint>();
 			bufferVector=new Vector.<Number>();
+			
+			setVector(targetVector,bufferVector);
 
 			setScreenSize(size);
 		}
@@ -194,12 +197,7 @@
 					}
 			}
 		}
-		private function switchToTriangleRenderer (renderer : int) : void
-		{
-			curRender = renderers [renderer];
-			curRender.setMaterial (material);
-			curRender.setRenderTarget(targetVector,bufferVector,int(screenSize.height));
-		}
+
 		public function beginScene ():void
 		{
 			primitivesDrawn = 0;
@@ -340,15 +338,17 @@
 		{
 			material = mat;
 			texture = material.texture1;
-			switchToTriangleRenderer(getTRIndex());
+			
+			var index:int=getTRIndex();
+			curRender = renderers[index];
+			curRender.setMaterial(material);
 		}
-		//使用该方法将删除之前图像上的数据
+
 		public function setScreenSize (size : Dimension2D) : void
 		{
 			if(!size)
             {
-            	throw new Error("需要设置显示范围");
-	            return;
+            	size=new Dimension2D(300,300);
             }
             
 			screenSize = size;
@@ -368,6 +368,8 @@
 			var len:int=int(screenSize.width)*int(screenSize.height);
 			targetVector.length=len;
 			bufferVector.length=len;
+			
+			setHeight(screenSize.height);
 		}
 		public override function setRenderTarget (target : Sprite) : void
 		{
@@ -1400,8 +1402,8 @@
 		public function setPerspectiveCorrectDistance (distance : Number = 400) : void
 		{
 			persDistance = (distance < 10) ? 10 : distance;
-			var len : int = renderers.length;
-			for (var i : int = 0; i < len; i+=1)
+
+			for (var i : int = 0; i < TRType.COUNT; i+=1)
 			{
 				var render : ITriangleRenderer = renderers [i];
 				render.setPerspectiveCorrectDistance (distance);
@@ -1410,11 +1412,27 @@
 		public function setMipMapDistance (distance : Number = 500) : void
 		{
 			mipMapDistance = (distance < 10) ? 10 : distance;
-			var len : int = renderers.length;
-			for (var i : int = 0; i < len; i+=1)
+			
+			for (var i : int = 0; i < TRType.COUNT; i+=1)
 			{
 				var render : ITriangleRenderer = renderers [i];
 				render.setMipMapDistance (distance);
+			}
+		}
+		public function setHeight(height:int) : void
+		{
+			for (var i : int = 0; i < TRType.COUNT; i+=1)
+			{
+				var render : ITriangleRenderer = renderers [i];
+				render.setHeight(height);
+			}
+		}
+		public function setVector(tv : Vector.<uint>, bv : Vector.<Number>) : void
+		{
+			for (var i : int = 0; i < TRType.COUNT; i+=1)
+			{
+				var render : ITriangleRenderer = renderers[i];
+				render.setVector(tv,bv);
 			}
 		}
 	}
