@@ -36,8 +36,7 @@
 			var du : Number,dv : Number;
 		
 			var ui : Number,vi : Number;
-		
-			var xstart : int,xend : int;
+
 			var ystart : int,yend : int;
 			var dyr : Number,dyl : Number;
 			var dxdyl : Number,dxdyr : Number;
@@ -185,12 +184,10 @@
 						}
 						for (yi = ystart; yi <= yend; yi +=1)
 						{
-							xstart = xl;
-							xend = xr;
 							ui = ul;
 							vi = vl;
 							zi = zl;
-							dx = (xend - xstart);
+							dx = (xr - xl);
 							if (dx > 0)
 							{
 								dx = 1 / dx;
@@ -203,7 +200,7 @@
 								dv = (vr - vl);
 								dz = (zr - zl);
 							}
-							for (xi = xstart; xi < xend; xi +=1)
+							for (xi = xl; xi < xr; xi +=1)
 							{
 								pos=xi+yi*height;
 								bgColor = target[pos];
@@ -300,12 +297,10 @@
 					}
 					for (yi = ystart; yi <= yend; yi +=1)
 					{
-							xstart = xl;
-							xend = xr;
 							ui = ul;
 							vi = vl;
 							zi = zl;
-							dx = (xend - xstart);
+							dx = (xr - xl);
 							if (dx > 0)
 							{
 								dx = 1 / dx;
@@ -318,7 +313,7 @@
 								dv = (vr - vl);
 								dz = (zr - zl);
 							}
-							for (xi = xstart; xi < xend; xi +=1)
+							for (xi = xl; xi < xr; xi +=1)
 							{
 								pos=xi+yi*height;
 								bgColor = target[pos];

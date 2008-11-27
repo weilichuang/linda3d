@@ -10,7 +10,7 @@
 		{
 			var color:uint;
 			
-			var xstart : int,xend : int;
+			//var xstart : int,xend : int;
 			var ystart : int,yend : int;
 			var dyr : Number,dyl : Number;
 			var dxdyl : Number,dxdyr : Number;
