@@ -91,7 +91,7 @@
 		override public function render () : void
 		{
 			var driver : IVideoDriver = sceneManager.getVideoDriver ();
-			if ( ! mesh || ! driver) return;
+			if ( ! mesh) return;
 
 			driver.setTransformWorld (_absoluteMatrix);
 			
@@ -128,49 +128,6 @@
 		override public function getMaterialCount () : int
 		{
 			return materials.length;
-		}
-		
-		public function localToGlobal():IMesh
-		{
-			var clone:IMesh;
-			//首先更新一下坐标
-			updateAbsoluteMatrix();
-			
-			if(mesh)
-			{
-			    clone=MeshManipulator.cloneMesh(mesh);
-			
-			    var absolute:Matrix4=getAbsoluteMatrix();
-			
-			    var len:int=clone.getMeshBufferCount();
-			    var buffer:MeshBuffer;
-			    var vertex:Vertex;
-			    for(var i:int=0;i<len;i+=1)
-			    {
-				    buffer=clone.getMeshBuffer(i);
-				    var blen:int=buffer.vertices.length;
-				    for(var j:int=0;j<blen;j+=1)
-				    {
-					    vertex=buffer.getVertex(j);
-					    absolute.transformVertex(vertex);
-				    }
-			    }
-			}
-			if(clone==null) clone=new Mesh();
-			
-			var child:MeshSceneNode;
-			var childClone:IMesh;
-			len=children.length;
-			for(i=0;i<len;i+=1)
-			{
-				child=children[i] as MeshSceneNode;
-				if(child)
-				{
-					childClone=child.localToGlobal();
-					clone.appendMesh(childClone);
-				}
-			}
-			return clone;
 		}
 	}
 }

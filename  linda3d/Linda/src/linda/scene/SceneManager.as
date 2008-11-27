@@ -21,7 +21,9 @@
 		private var _shadowList : Array = [];
 		
 		private var _ambient:uint=0x0;
-		public function SceneManager (driver : IVideoDriver = null)
+		
+		//Todo 测试Vector.sort速度与Array.sortOn相比怎么样？
+		public function SceneManager (driver : IVideoDriver)
 		{
 			super (null);
 			
@@ -91,12 +93,12 @@
 		}
 		public function drawAll () : void
 		{
-			if ( ! _driver) return ;
 			onPreRender ();
-			if ( ! _activeCamera)
+			if ( !_activeCamera)
 			{
 				throw new Error ("需要指定活动的相机");
 			}
+			
 			_activeCamera.render ();
 
 			//render lights
@@ -157,10 +159,7 @@
 				node.render ();
 			}
 			_transparentList = [];
-			
-			//shadow
-			
-			
+
 			onAnimate (getTimer ());
 		}
 		public function getActiveCamera () : CameraSceneNode
@@ -212,9 +211,6 @@
 			if (tmpBox.minY > tmpBox.maxY) t = tmpBox.minY, tmpBox.minY = tmpBox.maxY, tmpBox.maxY = t;
 			if (tmpBox.minZ > tmpBox.maxZ) t = tmpBox.minZ, tmpBox.minZ = tmpBox.maxZ, tmpBox.maxZ = t;
 			
-			
-			
-			
 			var fBox:AABBox3D=frust.getBoundingBox();
 			//if(!(tmpBox.intersectsWithBox(fBox))) return true;
 			if( !(tmpBox.minX <= fBox.maxX && tmpBox.minY <= fBox.maxY && tmpBox.minZ <= fBox.maxZ &&
@@ -226,7 +222,7 @@
 			vx  = node_matrix.m30 - camera_matrix.m30;
 			vy  = node_matrix.m31 - camera_matrix.m31;
 			vz  = node_matrix.m32 - camera_matrix.m32;
-			node.distance = (vx * vx + vy * vy + vz * vz);
+			node.distance = Math.sqrt(vx * vx + vy * vy + vz * vz);
 			return false;
 		}
 	    override public function removeAll():void

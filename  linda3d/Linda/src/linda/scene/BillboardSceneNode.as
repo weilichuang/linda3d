@@ -13,34 +13,39 @@
 	//广告牌
 	public class BillboardSceneNode extends SceneNode
 	{
-		public function BillboardSceneNode (mgr:SceneManager,size :Dimension2D = null, shade_top : uint = 0xFFFFFF, shade_down : uint = 0xFFFFFF)
+		public function BillboardSceneNode (mgr:SceneManager,size :Dimension2D = null)
 		{
 			super (mgr);
 			//indices and vertices
-			indices = new Vector.<int>([0, 2, 1, 0, 3, 2]);
-			indices.fixed=true;
+			indices = new Vector.<int>(6,true);
+			indices[0] = 0;
+			indices[1] = 2;
+			indices[2] = 1;
+			indices[3] = 0;
+			indices[4] = 3;
+			indices[5] = 2;
 			
 			vertices = new Vector.<Vertex>(4,true);
 			var vertex : Vertex = new Vertex ();
 			vertex.u = 1.0;
 			vertex.v = 1.0;
-			vertex.color = shade_down;
 			vertices[0]=vertex;
+			
 			vertex = new Vertex ();
 			vertex.u = 1.0;
 			vertex.v = 0.0;
-			vertex.color = shade_top;
 			vertices[1]=vertex;
+			
 			vertex = new Vertex ();
 			vertex.u = 0.0;
 			vertex.v = 0.0;
-			vertex.color = shade_top;
 			vertices[2]=vertex;
+			
 			vertex = new Vertex ();
 			vertex.u = 0.0;
 			vertex.v = 1.0;
-			vertex.color = shade_down;
 			vertices[3]=vertex;
+			
 			
 			//material
 			material = new Material ();
@@ -68,8 +73,7 @@
 		{
 			var driver : IVideoDriver = sceneManager.getVideoDriver ();
 			var camera : CameraSceneNode = sceneManager.getActiveCamera ();
-			if ( ! camera || ! driver ) return;
-			
+
 			// make billboard look to camera
 			var pos : Vector3D = this.getAbsolutePosition ();
 			var campos : Vector3D = camera.getAbsolutePosition ();
@@ -146,21 +150,6 @@
 		public function getSize () : Dimension2D
 		{
 			return size;
-		}
-		public function setColor (top : uint, bottom : uint) : void
-		{
-			vertices[0].color = bottom;
-			vertices[1].color = top;
-			vertices[2].color = top;
-			vertices[3].color = bottom;
-		}
-		public function getTopColor () : uint
-		{
-			return vertices[1].color ;
-		}
-		public function getBottomColor () : uint
-		{
-			return vertices[0].color ;
 		}
 		override public function getMaterial (i : int = 0) : Material
 		{

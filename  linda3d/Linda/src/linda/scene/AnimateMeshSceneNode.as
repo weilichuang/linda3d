@@ -99,7 +99,7 @@
 		override public function render () : void
 		{
 			var driver : IVideoDriver = sceneManager.getVideoDriver ();
-			if ( ! mesh || ! driver) return;
+			if ( ! mesh) return;
 
 			var m : IMesh= mesh.getMesh (currentFrameNr , 255, startFrame, endFrame);
 			

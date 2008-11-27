@@ -78,7 +78,6 @@ package linda.scene
                 override public function render () : void
                 {
                     var driver : IVideoDriver = sceneManager.getVideoDriver ();
-                    if(!driver) return;
                     driver.setMaterial (material);
                     driver.setTransformWorld(_absoluteMatrix);
                     driver.drawIndexedTriangleList (vertices, 4, indices, 6);

@@ -178,8 +178,6 @@ package linda.scene
 	    	var driver:IVideoDriver = sceneManager.getVideoDriver();
 	        var camera:CameraSceneNode = sceneManager.getActiveCamera();
 
-	        if (!camera || !driver) return;
-
             _tmpMatrix.setTranslation(camera.getAbsolutePosition());
             
             var temp_pc_dist:Number = driver.getPerspectiveCorrectDistance();
