@@ -15,10 +15,10 @@
 		private var _activeCamera : CameraSceneNode;
 		private var _lightList :Vector.<SceneNode>;
 
-		private var _skyBoxList : Array = [];
-		private var _solidList : Array = [];
-		private var _transparentList : Array = [];
-		private var _shadowList : Array = [];
+		private var _skyBoxList : Vector.<SceneNode>;
+		private var _solidList : Vector.<SceneNode> ;
+		private var _transparentList : Vector.<SceneNode> ;
+		private var _shadowList : Vector.<SceneNode>;
 		
 		private var _ambient:uint=0x0;
 		
@@ -28,6 +28,10 @@
 			super (null);
 			
 			_lightList=new Vector.<SceneNode>();
+			_skyBoxList=new Vector.<SceneNode>();
+			_solidList=new Vector.<SceneNode>();
+			_transparentList=new Vector.<SceneNode>();
+			_shadowList=new Vector.<SceneNode>();
 			setVideoDriver(driver);
 		}
 		override public function destroy():void
@@ -110,7 +114,7 @@
 				var node :SceneNode = _lightList [i];
 				node.render ();
 			}
-			_lightList=new Vector.<SceneNode>();
+			_lightList.length=0;
 			
 			
 			// render skyboxes
@@ -120,22 +124,19 @@
 				node = _skyBoxList [i];
 				node.render ();
 			}
-			_skyBoxList = [];
+			_skyBoxList.length=0;
 			
 			
-			// render solids
-			//Todo 升序排列，从前面向后绘制，当物体较多时，离相机较远的物体如果有被遮挡的部分
-			//就不需要绘制了，应该可以部分提高速度,有待验证 ～～～～～～～～～～～～
-			_solidList.sortOn ('distance', Array.NUMERIC );//| Array.DESCENDING);
+			_solidList.sort(sortSceneNode);
 			len = _solidList.length;
 			for (i = 0; i < len; i+=1)
 			{
 				node = _solidList [i];
 				node.render ();
 			}
-			_solidList = [];
+			_solidList.length=0;
 			
-			
+			/*
 			//render shadow
 			len = _shadowList.length;
 			for (i = 0; i < len; i+=1)
@@ -143,25 +144,27 @@
 				node = _shadowList [i];
 				node.render ();
 			}
-			_shadowList = [];
-			
-			
-			//render transparents
-			//这里排序是为了让多个透明物体之间的透明度正确，否则可能出现透明度错乱
-			//降序排列,这里无论降序还是升序都不会提高速度，但是升序的话，绘制时的透明度混合可能会出现错误
-			//有待验证～～～～～～～～～～～～～
-			_transparentList.sortOn ('distance', Array.NUMERIC); //| Array.DESCENDING);
-			
+			_shadowList.length=0;
+			*/
+
+			_transparentList.sort(sortSceneNode);
 			len = _transparentList.length;
 			for (i = 0; i < len; i+=1)
 			{
 				node = _transparentList [i];
 				node.render ();
 			}
-			_transparentList = [];
+			_transparentList.length=0;
 
 			onAnimate (getTimer ());
 		}
+		public function sortSceneNode(a:SceneNode, b:SceneNode):int 
+		{
+			if (a.distance == b.distance) return 0;
+			if (a.distance > b.distance) return 1;
+			return -1;
+		}
+		
 		public function getActiveCamera () : CameraSceneNode
 		{
 			return _activeCamera;
