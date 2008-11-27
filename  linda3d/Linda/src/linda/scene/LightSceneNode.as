@@ -63,7 +63,6 @@
 		{
 			var driver : IVideoDriver = sceneManager.getVideoDriver ();
 			driver.addLight (light);
-			
 			if(debug)
 			{
 				driver.setTransformWorld(_absoluteMatrix);

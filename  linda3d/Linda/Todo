@@ -6,5 +6,6 @@ loader里面使用的数组全部替换为Vector
 添加Phong Shading.
 
 渲染有问题
+灯光部分需要优化
 需要处理灯光的有效范围
 
