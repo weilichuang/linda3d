@@ -70,7 +70,7 @@
 		override public function onPreRender () : void
 		{
 			var driver : IVideoDriver = sceneManager.getVideoDriver ();
-			if (visible && driver != null && sceneManager.getActiveCamera () == this)
+			if (visible && sceneManager.getActiveCamera () == this)
 			{
 				_tmp_position.x = _absoluteMatrix.m30;
 				_tmp_position.y = _absoluteMatrix.m31;
@@ -165,12 +165,9 @@
 		override public function render () : void
 		{
 			var driver : IVideoDriver = sceneManager.getVideoDriver ();
-			if (driver)
-			{
-				//driver.setTransformProjection(projection);
-				//driver.setTransformView (view);
-				driver.setTransformViewProjection (view_projection);
-			}
+			//driver.setTransformProjection(projection);
+			//driver.setTransformView (view);
+			driver.setTransformViewProjection (view_projection);
 		}
 		public function setTarget (t : Vector3D) : void
 		{
