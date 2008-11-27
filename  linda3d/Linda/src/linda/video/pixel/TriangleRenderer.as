@@ -6,6 +6,7 @@
 	
 	import linda.material.Material;
 	import linda.math.Vertex4D;
+	//Todo 设置MipMap方式需要修改
 	public class TriangleRenderer
 	{
 		protected var target : Vector.<uint>;
