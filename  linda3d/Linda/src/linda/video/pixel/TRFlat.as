@@ -131,7 +131,6 @@
 						}
 						for (yi = ystart; yi <= yend; yi +=1)
 						{
-							//xstart = xl; xend = xr;
 							zi = zl;
 							dx = (xr - xl);
 							if (dx > 0)

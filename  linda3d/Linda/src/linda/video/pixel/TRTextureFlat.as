@@ -52,11 +52,11 @@
 		 	var ys : int;
 		 	var type : int;
             var pos:int;
-			var texture:ITexture=material.getTexture();
             var n0:int;
 		 	var n1:int;
 		 	var n2:int;
 		 	var tmp:int;
+		 	var texture:ITexture=material.getTexture();
 			for (var i : int = 0; i < indexCount; i += 3)
 			{
 				n0  = indexList[i];

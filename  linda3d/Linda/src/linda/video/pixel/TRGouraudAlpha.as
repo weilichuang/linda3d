@@ -187,8 +187,8 @@
 								{
 									bgColor = target[pos];
 									target[pos]=((alpha * ri + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | 
-									       (alpha * gi + invAlpha * (bgColor >> 8 & 0xFF))  << 8  |
-									       (alpha * bi + invAlpha * (bgColor & 0xFF)));
+									             (alpha * gi + invAlpha * (bgColor >> 8 & 0xFF))  << 8  |
+									             (alpha * bi + invAlpha * (bgColor & 0xFF)));
 								}
 								zi += dz;
 								ri += dr; gi += dg; bi += db;
@@ -296,8 +296,8 @@
 								{
 									bgColor = target[pos];
 									target[pos]=((alpha * ri + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | 
-									       (alpha * gi + invAlpha * (bgColor >> 8 & 0xFF))  << 8  |
-									       (alpha * bi + invAlpha * (bgColor & 0xFF)));
+									             (alpha * gi + invAlpha * (bgColor >> 8 & 0xFF))  << 8  |
+									             (alpha * bi + invAlpha * (bgColor & 0xFF)));
 								}
 								zi += dz;
 								ri += dr; gi += dg; bi += db;

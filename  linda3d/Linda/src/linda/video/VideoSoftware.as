@@ -1398,7 +1398,7 @@
 		}
 		public function setPerspectiveCorrectDistance (distance : Number = 400) : void
 		{
-			perspectiveDistance = (distance < 10) ? 10 : distance;
+			persDistance = (distance < 10) ? 10 : distance;
 			var len : int = renderers.length;
 			for (var i : int = 0; i < len; i+=1)
 			{
