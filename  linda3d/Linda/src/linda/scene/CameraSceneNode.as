@@ -28,12 +28,17 @@
 			view = new Matrix4 ();
 			projection = new Matrix4 ();
 			view_projection = new Matrix4 ();
-			target = new Vector3D (0, 0, 0);
 			viewFrustum = new ViewFrustum ();
 			upVector = new Vector3D (0., 1., 0.);
 			orthogonal = false;
 			
-			if (target!=null) this.target=target;
+			if (target != null)
+			{
+				this.target=target;
+			}else
+			{
+				target = new Vector3D (0, 0, 0);
+			}
 			
 			fovy = 120.;
 			aspect = 4./3.;

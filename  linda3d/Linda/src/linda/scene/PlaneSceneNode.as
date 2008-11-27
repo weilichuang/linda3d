@@ -80,7 +80,7 @@ package linda.scene
                     var driver : IVideoDriver = sceneManager.getVideoDriver ();
                     driver.setMaterial (material);
                     driver.setTransformWorld(_absoluteMatrix);
-                    driver.drawIndexedTriangleList (vertices, 4, indices, 6);
+                    driver.drawIndexedTriangleList (vertices, vertices.length, indices, indices.length);
                 }
                 override public function getBoundingBox () : AABBox3D
                 {
