@@ -14,10 +14,10 @@
 
 	public class VideoSoftware extends VideoNull implements IVideoDriver
 	{
-		protected var currentTriangleRenderer : ITriangleRenderer;
-		protected var triangleRenderers : Vector.<ITriangleRenderer>;
+		protected var curRender : ITriangleRenderer;
+		protected var renderers : Vector.<ITriangleRenderer>;
 		
-		protected var targetBitmap : Bitmap;
+		protected var target : Bitmap;
 		protected var rect:Rectangle;
 
 		protected var targetVector:Vector.<uint>;
@@ -28,7 +28,7 @@
 		private var texture : ITexture;
 		private var material : Material;
 		
-		private var _lightsDir : Vector.<Vector3D>;
+		private var _lightDirs : Vector.<Vector3D>;
 		private var _lightsPos : Vector.<Vector3D>;
 		
 		
@@ -40,11 +40,11 @@
 		private var _current : Matrix4 ;
 		private var _view_project : Matrix4;
 		private var _world_inv : Matrix4;
-		private var _cam_position : Vector3D;
-		private var _old_cam_position : Vector3D;
+		private var _oppcam_pos : Vector3D;
+		private var _cam_pos : Vector3D;
 		private var _ndc_planes : Vector.<Vector3D>;
 
-		private var _transformedPoints : Vector.<Vertex4D>;
+		private var _transformedVertexs : Vector.<Vertex4D>;
 		private var _unclipped_vertices : Vector.<Vertex4D>;
 		private var _clipped_vertices : Vector.<Vertex4D>;
 		private var _clipped_indices : Vector.<int>;
@@ -53,18 +53,7 @@
 		private var _clipped_vertices2 : Vector.<Vertex4D>;
 		private var _clipped_vertices3 : Vector.<Vertex4D>;
 		private var _clipped_vertices4 : Vector.<Vertex4D>;
-		
-		
-		//line points
-		private var _transformedLinePoints : Vector.<Vertex4D>;
-		private var _clipped_line_vertices : Vector.<Vertex4D>;
-		private var _unclipped_line_vertices : Vector.<Vertex4D>;
-		private var _clipped_line_indices : Vector.<int>;
-		private var _clipped_line_vertices0 : Vector.<Vertex4D>;
-		private var _clipped_line_vertices1 : Vector.<Vertex4D>;
-		private var _clipped_line_vertices2 : Vector.<Vertex4D>;
-		private var _clipped_line_vertices3 : Vector.<Vertex4D>;
-		private var _clipped_line_vertices4 : Vector.<Vertex4D>;
+
 		public function VideoSoftware (size : Dimension2D)
 		{
 			super();
@@ -72,27 +61,27 @@
 		}
 		private function init (size:Dimension2D) : void
 		{
-			targetBitmap = new Bitmap ();
-			renderTarget.addChild(targetBitmap);
+			target = new Bitmap ();
+			renderTarget.addChild(target);
 			
 			_clip_scale = new Matrix4 ();
 
 			//render
-			triangleRenderers = new Vector.<ITriangleRenderer> (TRType.COUNT,true);
-			triangleRenderers [TRType.WIRE] = new TRWire ();
-			triangleRenderers [TRType.FLAT] = new TRFlat ();
-			triangleRenderers [TRType.GOURAUD] = new TRGouraud ();
-			triangleRenderers [TRType.TEXTURE_FLAT] = new TRTextureFlat ();
-			triangleRenderers [TRType.TEXTURE_GOURAUD] = new TRTextureGouraud ();
-			triangleRenderers [TRType.FLAT_ALPHA] = new TRFlatAlpha ();
-			triangleRenderers [TRType.GOURAUD_ALPHA] = new TRGouraudAlpha ();
-			triangleRenderers [TRType.TEXTURE_FLAT_ALPHA] = new TRTextureFlatAlpha ();
-			triangleRenderers [TRType.TEXTURE_GOURAUD_ALPHA] = new TRTextureGouraudAlpha ();
+			renderers = new Vector.<ITriangleRenderer> (TRType.COUNT,true);
+			renderers [TRType.WIRE] = new TRWire ();
+			renderers [TRType.FLAT] = new TRFlat ();
+			renderers [TRType.GOURAUD] = new TRGouraud ();
+			renderers [TRType.TEXTURE_FLAT] = new TRTextureFlat ();
+			renderers [TRType.TEXTURE_GOURAUD] = new TRTextureGouraud ();
+			renderers [TRType.FLAT_ALPHA] = new TRFlatAlpha ();
+			renderers [TRType.GOURAUD_ALPHA] = new TRGouraudAlpha ();
+			renderers [TRType.TEXTURE_FLAT_ALPHA] = new TRTextureFlatAlpha ();
+			renderers [TRType.TEXTURE_GOURAUD_ALPHA] = new TRTextureGouraudAlpha ();
 			//预存一些点
-			_transformedPoints = new Vector.<Vertex4D> ();
+			_transformedVertexs = new Vector.<Vertex4D> ();
 			for (var i : int = 0; i < 2000; i+=1)
 			{
-				_transformedPoints [i] = new Vertex4D ();
+				_transformedVertexs [i] = new Vertex4D ();
 			}
 			//matrix4
 			_current = new Matrix4 ();
@@ -104,16 +93,16 @@
 			
 			//lighting
 			var count:int=getMaxLightAmount();
-			_lightsDir = new Vector.<Vector3D> (count,true);
+			_lightDirs = new Vector.<Vector3D> (count,true);
 			_lightsPos = new Vector.<Vector3D> (count,true);
 			for (i = 0; i < count; i+=1)
 			{
-				_lightsDir[i]=new Vector3D();
+				_lightDirs[i]=new Vector3D();
 				_lightsPos[i]=new Vector3D();
 			}
 			
-			_cam_position = new Vector3D ();
-			_old_cam_position = new Vector3D ();
+			_oppcam_pos = new Vector3D ();
+			_cam_pos = new Vector3D ();
 			
 			
 			/*
@@ -139,15 +128,6 @@
 			_clipped_vertices2 = new Vector.<Vertex4D> ();
 			_clipped_vertices3 = new Vector.<Vertex4D> ();
 			_clipped_vertices4 = new Vector.<Vertex4D> ();
-			
-			//for drawIndexedLineList
-			_transformedLinePoints = new Vector.<Vertex4D> ();
-			for (i = 0; i < 100; i ++)
-			{
-				_transformedLinePoints [i] = new Vertex4D ();
-			}
-			_clipped_line_vertices = new Vector.<Vertex4D> ();
-			_clipped_line_indices = new Vector.<int> ();
 
 			targetVector=new Vector.<uint>();
 			bufferVector=new Vector.<Number>();
@@ -215,9 +195,9 @@
 		}
 		private function switchToTriangleRenderer (renderer : int) : void
 		{
-			currentTriangleRenderer = triangleRenderers [renderer];
-			currentTriangleRenderer.setMaterial (material);
-			currentTriangleRenderer.setRenderTarget(targetVector,bufferVector,int(screenSize.height));
+			curRender = renderers [renderer];
+			curRender.setMaterial (material);
+			curRender.setRenderTarget(targetVector,bufferVector,int(screenSize.height));
 		}
 		public function beginScene ():void
 		{
@@ -226,9 +206,9 @@
 		}
 		public function endScene():void
 		{
-			targetBitmap.bitmapData.lock();
-			targetBitmap.bitmapData.setVector(rect,targetVector);
-			targetBitmap.bitmapData.unlock();
+			target.bitmapData.lock();
+			target.bitmapData.setVector(rect,targetVector);
+			target.bitmapData.unlock();
 		}
 		public function setTransformViewProjection (mat : Matrix4) : void
 		{
@@ -242,9 +222,9 @@
 		{
 			if (pos)
 			{
-				_old_cam_position.x = pos.x;
-				_old_cam_position.y = pos.y;
-				_old_cam_position.z = pos.z;
+				_cam_pos.x = pos.x;
+				_cam_pos.y = pos.y;
+				_cam_pos.z = pos.z;
 			}	
 		}
 		public function setTransformWorld (mat : Matrix4) : void
@@ -338,14 +318,14 @@
 			_world_inv.m32 = d * (m30 * (m02 * m11 - m01 * m12) + m31 * (m00 * m12 - m02 * m10) + m32 * (m01 * m10 - m00 * m11));
 			_world_inv.m33 = 1;
 			
-			//_world_inv.transformVector2(_old_cam_position,_cam_position);
-			var x : Number = _old_cam_position.x;
-			var y : Number = _old_cam_position.y;
-			var z : Number = _old_cam_position.z;
+			//_world_inv.transformVector2(_cam_pos,_oppcam_pos);
+			var x : Number = _cam_pos.x;
+			var y : Number = _cam_pos.y;
+			var z : Number = _cam_pos.z;
 			
-			_cam_position.x = (_world_inv.m00 * x + _world_inv.m10 * y + _world_inv.m20 * z + _world_inv.m30);
-			_cam_position.y = (_world_inv.m01 * x + _world_inv.m11 * y + _world_inv.m21 * z + _world_inv.m31);
-			_cam_position.z = (_world_inv.m02 * x + _world_inv.m12 * y + _world_inv.m22 * z + _world_inv.m32);
+			_oppcam_pos.x = (_world_inv.m00 * x + _world_inv.m10 * y + _world_inv.m20 * z + _world_inv.m30);
+			_oppcam_pos.y = (_world_inv.m01 * x + _world_inv.m11 * y + _world_inv.m21 * z + _world_inv.m31);
+			_oppcam_pos.z = (_world_inv.m02 * x + _world_inv.m12 * y + _world_inv.m22 * z + _world_inv.m32);
 		}
 
 		public function setTransformView (mat : Matrix4) : void
@@ -374,26 +354,26 @@
 			
 			rect=screenSize.toRect();
 			
-			if(targetBitmap.bitmapData)
+			if(target.bitmapData)
 			{
-				targetBitmap.bitmapData.fillRect(rect,0x0);
+				target.bitmapData.fillRect(rect,0x0);
 			}else
 			{
-				targetBitmap.bitmapData = new BitmapData (screenSize.width, screenSize.height, false, 0);
+				target.bitmapData = new BitmapData (screenSize.width, screenSize.height, false, 0);
 			}
 			
 			_clip_scale.buildNDCToDCMatrix(screenSize,1);
 			
-			var len:int=screenSize.width*screenSize.height;
+			var len:int=int(screenSize.width)*int(screenSize.height);
 			targetVector.length=len;
 			bufferVector.length=len;
 		}
 		public override function setRenderTarget (target : Sprite) : void
 		{
 			if ( ! target) return;
-			if (renderTarget) renderTarget.removeChild (targetBitmap);
+			if (renderTarget) renderTarget.removeChild (target);
 			renderTarget = target;
-			renderTarget.addChild (targetBitmap);
+			renderTarget.addChild (target);
 		}
 		//for light
 		private var l : Vector3D = new Vector3D ();
@@ -426,13 +406,13 @@
 			var t : Number;
 
 			var len : int = triangleCount * 2;
-			var _transformLen : int = _transformedPoints.length;
+			var _transformLen : int = _transformedVertexs.length;
 			var i : int;
 			if (_transformLen < len)
 			{
 				for (i = _transformLen; i < len; i+=1)
 				{
-					_transformedPoints [i] = new Vertex4D ();
+					_transformedVertexs [i] = new Vertex4D ();
 				}
 			}
 
@@ -455,7 +435,7 @@
 			    len = getLightCount();
 			    for (i = 0; i < len; i+=1)
 			    {
-				    dir = _lightsDir [i];
+				    dir = _lightDirs [i];
 				    pos = _lightsPos [i];
 				    light = _lights [i];
 				    if ((light.type == Light.SPOT) || (light.type == Light.DIRECTIONAL))
@@ -517,16 +497,16 @@
 				
 				if (backfaceCulling)
 				{
-					if (((v1.y - v0.y) * (v2.z - v0.z) - (v1.z - v0.z) * (v2.y - v0.y)) * (_cam_position.x - v0.x) +
-					    ((v1.z - v0.z) * (v2.x - v0.x) - (v1.x - v0.x) * (v2.z - v0.z)) * (_cam_position.y - v0.y) +
-					    ((v1.x - v0.x) * (v2.y - v0.y) - (v1.y - v0.y) * (v2.x - v0.x)) * (_cam_position.z - v0.z) <= 0)
+					if (((v1.y - v0.y) * (v2.z - v0.z) - (v1.z - v0.z) * (v2.y - v0.y)) * (_oppcam_pos.x - v0.x) +
+					    ((v1.z - v0.z) * (v2.x - v0.x) - (v1.x - v0.x) * (v2.z - v0.z)) * (_oppcam_pos.y - v0.y) +
+					    ((v1.x - v0.x) * (v2.y - v0.y) - (v1.y - v0.y) * (v2.x - v0.x)) * (_oppcam_pos.z - v0.z) <= 0)
 					{
 						continue;
 					}
 				}
-				tv0 = _transformedPoints [int (tCount ++)];
-				tv1 = _transformedPoints [int (tCount ++)];
-				tv2 = _transformedPoints [int (tCount ++)];
+				tv0 = _transformedVertexs [int (tCount ++)];
+				tv1 = _transformedVertexs [int (tCount ++)];
+				tv2 = _transformedVertexs [int (tCount ++)];
 				
 				//	- transform Model * World * Camera * Projection matrix ,then after clip and light * NDCSpace matrix
 				tv0.x = m00 * v0.x + m10 * v0.y + m20 * v0.z + m30;
@@ -640,7 +620,7 @@
 							{
 								light = _lights [j];
 								pos = _lightsPos [j];
-								dir = _lightsDir [j];
+								dir = _lightDirs [j];
 								diffuse = light.diffuseColor;
 								ambient = light.ambientColor;
 								//specular = light.specularColor;
@@ -738,7 +718,7 @@
 							{
 								light = _lights [j];
 								pos = _lightsPos [j];
-								dir = _lightsDir [j];
+								dir = _lightDirs [j];
 								diffuse = light.diffuseColor;
 								ambient = light.ambientColor;
 								//specular = light.specularColor;
@@ -1043,7 +1023,7 @@
 							if (bdot > 0.0 )
 							{
 								// intersect line segment with plane
-								out = _transformedPoints [int(tCount ++)];
+								out = _transformedVertexs [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 								// get t intersection
 								t = bdot / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
@@ -1067,7 +1047,7 @@
 						{
 							if (bdot <= 0.0 )
 							{
-								out = _transformedPoints [int(tCount ++)];
+								out = _transformedVertexs [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 								t = bdot / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
 								out.x = b.x + (a.x - b.x) * t ;
@@ -1115,7 +1095,7 @@
 							if (bdot > 0.0 )
 							{
 								// intersect line segment with plane
-								out = _transformedPoints [int(tCount ++)];
+								out = _transformedVertexs [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w))
 								out.x = b.x + (a.x - b.x) * t ;
@@ -1139,7 +1119,7 @@
 							// current point outside
 							if (bdot <= 0.0 )
 							{
-								out = _transformedPoints [int(tCount ++)];
+								out = _transformedVertexs [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 								// get t intersection
 								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w))
@@ -1184,7 +1164,7 @@
 						{
 							if (bdot > 0.0 )
 							{
-								out = _transformedPoints [int(tCount ++)];
+								out = _transformedVertexs [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 
 								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w))
@@ -1207,7 +1187,7 @@
 						{
 							if (bdot <= 0.0 )
 							{
-								out = _transformedPoints [int(tCount ++)];
+								out = _transformedVertexs [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 
 								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w))
@@ -1252,7 +1232,7 @@
 						{
 							if (bdot > 0.0 )
 							{
-								out = _transformedPoints [int(tCount ++)];
+								out = _transformedVertexs [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w))
 								out.x = b.x + (a.x - b.x) * t ;
@@ -1274,7 +1254,7 @@
 						{
 							if (bdot <= 0.0 )
 							{
-								out = _transformedPoints [int(tCount ++)];
+								out = _transformedVertexs [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w))
 								out.x = b.x + (a.x - b.x) * t ;
@@ -1319,7 +1299,7 @@
 							// last point outside
 							if (bdot > 0.0 )
 							{
-								out = _transformedPoints [int(tCount ++)];
+								out = _transformedVertexs [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w))
 								out.x = b.x + (a.x - b.x) * t ;
@@ -1341,7 +1321,7 @@
 						{
 							if (bdot <= 0.0 )
 							{
-								out = _transformedPoints [int(tCount ++)];
+								out = _transformedVertexs [int(tCount ++)];
 								dest [int(outCount ++)] = out;
 								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
 								out.x = b.x + (a.x - b.x) * t ;
@@ -1388,7 +1368,7 @@
 				}
 			}
 			primitivesDrawn += int (iCount / 3);
-			currentTriangleRenderer.drawIndexedTriangleList (_clipped_vertices, vCount, _clipped_indices, iCount);
+			curRender.drawIndexedTriangleList (_clipped_vertices, vCount, _clipped_indices, iCount);
 		}
 		public function drawMeshBuffer(mesh:MeshBuffer):void
 		{
@@ -1414,25 +1394,25 @@
 		}
 		public function createScreenShot () : BitmapData
 		{
-			return targetBitmap.bitmapData.clone ();
+			return target.bitmapData.clone ();
 		}
 		public function setPerspectiveCorrectDistance (distance : Number = 400) : void
 		{
 			perspectiveDistance = (distance < 10) ? 10 : distance;
-			var len : int = triangleRenderers.length;
+			var len : int = renderers.length;
 			for (var i : int = 0; i < len; i+=1)
 			{
-				var render : ITriangleRenderer = triangleRenderers [i];
+				var render : ITriangleRenderer = renderers [i];
 				render.setPerspectiveCorrectDistance (distance);
 			}
 		}
 		public function setMipMapDistance (distance : Number = 500) : void
 		{
 			mipMapDistance = (distance < 10) ? 10 : distance;
-			var len : int = triangleRenderers.length;
+			var len : int = renderers.length;
 			for (var i : int = 0; i < len; i+=1)
 			{
-				var render : ITriangleRenderer = triangleRenderers [i];
+				var render : ITriangleRenderer = renderers [i];
 				render.setMipMapDistance (distance);
 			}
 		}

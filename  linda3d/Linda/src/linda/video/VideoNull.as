@@ -108,14 +108,14 @@
 			_lightCount=0;
 		}
 		/**
-		 * 如果灯光数量大于最大数量，则新加入的会替换第一个
+		 * 如果灯光数量大于最大数量，则新加入的会替换最后一个
 		 */
 		public function addLight (light : Light) : void
 		{
 			if ( ! light) return;
 			if (_lightCount >= getMaxLightAmount ())
 			{
-				_lights[0]=light;
+				_lights[getMaxLightAmount()-1]=light;
 			}else
 			{
 				_lights[_lightCount]=light;
@@ -153,10 +153,10 @@
 			draw3DLine (edges [5] , edges [4] , color);
 		}
 		
-		private var _tmp_material : Material = new Material ();
+		private var _debugMat : Material = new Material ();
 		public function draw3DLine (start : Vector3D, end : Vector3D, color : uint) : void
 		{
-			setMaterial (_tmp_material);
+			setMaterial (_debugMat);
 			var vertex : Vertex = _tmp_lines [0];
 			vertex.x = start.x;
 			vertex.y = start.y;
@@ -171,7 +171,7 @@
 		}
 		public function draw3DTriangle (v0 : Vertex, v1 : Vertex, v2 : Vertex, color : uint) : void
 		{
-			setMaterial (_tmp_material);
+			setMaterial (_debugMat);
 			var vertex : Vertex = _tmp_lines [0];
 			vertex.copy (v0);
 			vertex.color = color;
@@ -186,7 +186,6 @@
 		public function drawIndexedLineList (vertices : Vector.<Vertex>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
 		{
 		}
-		
 		public function getMipMapDistance():Number
 		{
 			return mipMapDistance;

@@ -11,13 +11,13 @@
 		{
 			super(size);
 			
-			targetBitmap.bitmapData = new BitmapData (screenSize.width, screenSize.height, true, 0x0);
+			target.bitmapData = new BitmapData (screenSize.width, screenSize.height, true, 0x0);
 			
-			triangleRenderers [TRType.WIRE] = new TRWire32 ();
-			triangleRenderers [TRType.FLAT_ALPHA] = new TRFlatAlpha32 ();
-			triangleRenderers [TRType.GOURAUD_ALPHA] = new TRGouraudAlpha32 ();
-			triangleRenderers [TRType.TEXTURE_FLAT_ALPHA] = new TRTextureFlatAlpha32 ();
-			triangleRenderers [TRType.TEXTURE_GOURAUD_ALPHA] = new TRTextureGouraudAlpha32 ();
+			renderers [TRType.WIRE] = new TRWire32 ();
+			renderers [TRType.FLAT_ALPHA] = new TRFlatAlpha32 ();
+			renderers [TRType.GOURAUD_ALPHA] = new TRGouraudAlpha32 ();
+			renderers [TRType.TEXTURE_FLAT_ALPHA] = new TRTextureFlatAlpha32 ();
+			renderers [TRType.TEXTURE_GOURAUD_ALPHA] = new TRTextureGouraudAlpha32 ();
 		}
 		override public function setScreenSize (size : Dimension2D) : void
 		{
@@ -31,12 +31,12 @@
 			
 			rect=screenSize.toRect();
 			
-			if(targetBitmap.bitmapData)
+			if(target.bitmapData)
 			{
-				targetBitmap.bitmapData.fillRect(rect,0x0);
+				target.bitmapData.fillRect(rect,0x0);
 			}else
 			{
-				targetBitmap.bitmapData = new BitmapData (screenSize.width, screenSize.height, true, 0);
+				target.bitmapData = new BitmapData (screenSize.width, screenSize.height, true, 0);
 			}
 			
 			_clip_scale.buildNDCToDCMatrix(screenSize,1);
