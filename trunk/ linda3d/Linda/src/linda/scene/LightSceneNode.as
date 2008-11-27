@@ -48,7 +48,7 @@
 					_absoluteMatrix.rotateVector(light.direction);
 					light.direction.normalize();
 				}
-				if (lightData.type == Light.POINT || lightData.type == Light.SPOT)
+				if (light.type == Light.POINT || light.type == Light.SPOT)
 				{
 					var matrix:Matrix4=_absoluteMatrix;
 					light.position.x=matrix.m30;
