@@ -171,7 +171,6 @@
 		private var tmpBox : AABBox3D=new AABBox3D();
 		public function isCulled (node : SceneNode) : Boolean
 		{
-			if ( ! _activeCamera) return false;
 			var frust : ViewFrustum = _activeCamera.getViewFrustum();
 			//transform the frustum to the node's current absolute transformation
 			var node_matrix : Matrix4 = node.getAbsoluteMatrix();

@@ -611,7 +611,7 @@
 					var radius : Number;
 					var pf : int;
 					var k : Number;
-					var lightLen : int = _lights.length;
+					var lightLen : int = this.getLightCount();
 					if (lightLen > 0)
 					{
 						if ( ! gouraudShading) //flat Light

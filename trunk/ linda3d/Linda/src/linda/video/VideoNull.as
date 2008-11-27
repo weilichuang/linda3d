@@ -104,7 +104,6 @@
 		//--------------------------------light--------------------------------//
 		public function removeAllLights () : void
 		{
-			_lights.length=0;
 			_lightCount=0;
 		}
 		/**
