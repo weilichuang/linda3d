@@ -26,7 +26,7 @@
 		
 		private var _debugColor : uint = 0x00ff00;
 		
-		protected var perspectiveDistance:Number=400;
+		protected var persDistance:Number=400;
 		protected var mipMapDistance:Number=800;
 		
 		private var _tmp_lines : Vector.<Vertex> ;
@@ -192,7 +192,7 @@
 		}
 		public function getPerspectiveCorrectDistance():Number
 		{
-			return perspectiveDistance;
+			return persDistance;
 		}
 	}
 }

@@ -7,4 +7,5 @@ loader里面使用的数组全部替换为Vector
 添加Phong Shading.
 
 渲染类进行了大量修改
+渲染时三角形边缘处理有问题
 

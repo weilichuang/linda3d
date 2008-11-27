@@ -200,7 +200,7 @@
 					for (yi = ystart; yi <= yend; yi +=1)
 					{
 							zi = zl;
-							dx = (xl - xr);
+							dx = (xr - xl);
 							if (dx > 0)
 							{
 								dz = (zr - zl) / dx;
