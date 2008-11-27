@@ -24,11 +24,13 @@
 		
 		public var height:int;
 		
-		public function setRenderTarget (target : Vector.<uint>, buffer : Vector.<Number>,height:int) : void
+		public function setVector (target : Vector.<uint>, buffer : Vector.<Number>) : void
 		{
 			this.target = target;
 			this.buffer = buffer;
-			
+		}
+		public function setHeight(height:int):void
+		{
 			this.height=height;
 		}
 		public function setPerspectiveCorrectDistance(distance:Number=400):void
