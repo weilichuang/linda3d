@@ -21,8 +21,7 @@
 		private var _shadowList : Vector.<SceneNode>;
 		
 		private var _ambient:uint=0x0;
-		
-		//Todo 测试Vector.sort速度与Array.sortOn相比怎么样？
+
 		public function SceneManager (driver : IVideoDriver)
 		{
 			super (null);
@@ -46,12 +45,12 @@
 			_transparentList=null;
 			_shadowList=null;
 		}
-		public function getRootSceneNode () : SceneNode
+		public function getRootSceneNode() : SceneNode
 		{
 			return this;
 		}
 
-		public function getVideoDriver () : IVideoDriver
+		public function getVideoDriver() : IVideoDriver
 		{
 			return _driver;
 		}
@@ -69,16 +68,16 @@
 				case CAMERA :
 				break;
 				case LIGHT :
-				_lightList.push (node);
+				_lightList.push(node);
 				break;
 				case SKYBOX :
-				_skyBoxList.push (node);
+				_skyBoxList.push(node);
 				break;
 				case SOLID :
 				{
-					if ( ! isCulled (node))
+					if ( ! isCulled(node))
 					{
-						_solidList.push (node);
+						_solidList.push(node);
 					}
 				}
 				break;
@@ -86,23 +85,19 @@
 				{
 					if ( ! isCulled (node))
 					{
-						_transparentList.push (node);
+						_transparentList.push(node);
 					}
 				}
 				break;
 				case SHADOW :
-				_shadowList.push (node);
+				_shadowList.push(node);
 				break;
 			}
 		}
 		public function drawAll () : void
 		{
 			onPreRender ();
-			if ( !_activeCamera)
-			{
-				throw new Error ("需要指定活动的相机");
-			}
-			
+
 			_activeCamera.render ();
 
 			//render lights
@@ -111,8 +106,7 @@
 			var len : int = _lightList.length;
 			for (var i : int = 0; i < len; i+=1)
 			{
-				var node :SceneNode = _lightList [i];
-				node.render ();
+				_lightList[i].render();
 			}
 			_lightList.length=0;
 			
@@ -121,8 +115,7 @@
 			len = _skyBoxList.length;
 			for (i = 0; i < len; i+=1)
 			{
-				node = _skyBoxList [i];
-				node.render ();
+				_skyBoxList[i].render();
 			}
 			_skyBoxList.length=0;
 			
@@ -131,8 +124,7 @@
 			len = _solidList.length;
 			for (i = 0; i < len; i+=1)
 			{
-				node = _solidList [i];
-				node.render ();
+				_solidList[i].render();
 			}
 			_solidList.length=0;
 			
@@ -151,12 +143,11 @@
 			len = _transparentList.length;
 			for (i = 0; i < len; i+=1)
 			{
-				node = _transparentList [i];
-				node.render ();
+				_transparentList[i].render();
 			}
 			_transparentList.length=0;
 
-			onAnimate (getTimer ());
+			onAnimate(getTimer());
 		}
 		public function sortSceneNode(a:SceneNode, b:SceneNode):int 
 		{
@@ -174,16 +165,16 @@
 			if (camera)
 			{
 				_activeCamera = camera;
-				_viewFrustum = _activeCamera.getViewFrustum ();
+				_viewFrustum = _activeCamera.getViewFrustum();
 			}
 		}
 		private var tmpBox : AABBox3D=new AABBox3D();
 		public function isCulled (node : SceneNode) : Boolean
 		{
 			if ( ! _activeCamera) return false;
-			var frust : ViewFrustum = _activeCamera.getViewFrustum ();
+			var frust : ViewFrustum = _activeCamera.getViewFrustum();
 			//transform the frustum to the node's current absolute transformation
-			var node_matrix : Matrix4 = node.getAbsoluteMatrix ();
+			var node_matrix : Matrix4 = node.getAbsoluteMatrix();
 
 			//tmpBox.copy(node.getBoundingBox());
 			//node_matrix.transformBox(tmpBox);
