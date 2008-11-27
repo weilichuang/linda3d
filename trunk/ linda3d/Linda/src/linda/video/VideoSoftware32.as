@@ -14,10 +14,6 @@
 			targetBitmap.bitmapData = new BitmapData (screenSize.width, screenSize.height, true, 0x0);
 			
 			triangleRenderers [TRType.WIRE] = new TRWire32 ();
-			triangleRenderers [TRType.FLAT] = new TRFlat ();
-			triangleRenderers [TRType.GOURAUD] = new TRGouraud ();
-			triangleRenderers [TRType.TEXTURE_FLAT] = new TRTextureFlat ();
-			triangleRenderers [TRType.TEXTURE_GOURAUD] = new TRTextureGouraud ();
 			triangleRenderers [TRType.FLAT_ALPHA] = new TRFlatAlpha32 ();
 			triangleRenderers [TRType.GOURAUD_ALPHA] = new TRGouraudAlpha32 ();
 			triangleRenderers [TRType.TEXTURE_FLAT_ALPHA] = new TRTextureFlatAlpha32 ();
@@ -37,7 +33,7 @@
 			
 			if(targetBitmap.bitmapData)
 			{
-				targetBitmap.bitmapData.fillRect(screenSize.toRect(),0x0);
+				targetBitmap.bitmapData.fillRect(rect,0x0);
 			}else
 			{
 				targetBitmap.bitmapData = new BitmapData (screenSize.width, screenSize.height, true, 0);
@@ -45,7 +41,7 @@
 			
 			_clip_scale.buildNDCToDCMatrix(screenSize,1);
 			
-			var len:int=int(screenSize.width)*int(screenSize.height);
+			var len:int=screenSize.width*screenSize.height;
 			targetVector.length=len;
 			bufferVector.length=len;
 		}
