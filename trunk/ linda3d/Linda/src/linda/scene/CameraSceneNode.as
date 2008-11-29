@@ -19,7 +19,6 @@
 		private var projection : Matrix4;
 		private var view_projection : Matrix4;
 		private var viewFrustum : ViewFrustum;
-		private var orthogonal : Boolean;
 		private var box:AABBox3D;
 		public function CameraSceneNode (mgr:SceneManager,target:Vector3D=null)
 		{
@@ -30,8 +29,7 @@
 			view_projection = new Matrix4 ();
 			viewFrustum = new ViewFrustum ();
 			upVector = new Vector3D (0., 1., 0.);
-			orthogonal = false;
-			
+
 			if (target != null)
 			{
 				this.target=target;
@@ -234,31 +232,10 @@
 		{
 			return view_projection;
 		}
-		public function isOrthogonal () : Boolean
-		{
-			return orthogonal;
-		}
-		public function setOrthogonal (ort : Boolean) : void
-		{
-			if(orthogonal!=ort)
-			{
-			  orthogonal = ort;
-			  recalculateProjectionMatrix ();
-			}
-		}
+
 		public function recalculateProjectionMatrix () : void
 		{	
-			if ( ! orthogonal)
-			{
-					projection.projectionPerspective (fovy, aspect, near, far);
-			} else
-			{
-				if(sceneManager && sceneManager.getVideoDriver ())
-				{
-				    var size :Dimension2D = sceneManager.getVideoDriver ().getScreenSize();
-				    projection.projectionOrtho (size.width, size.height, near, far);
-				}
-			}
+			projection.projectionPerspective (fovy, aspect, near, far);
 		}
 		public function recalculateViewArea():void
 		{
