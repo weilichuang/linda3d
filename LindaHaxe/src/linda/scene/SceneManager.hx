@@ -60,7 +60,7 @@
 				_driver = driver;
 			}
 		}
-		public function registerNodeForRendering (node : SceneNode, type : Int) : Void
+		public inline function registerNodeForRendering (node : SceneNode, type : Int) : Void
 		{
 			switch (type)
 			{
@@ -92,29 +92,30 @@
 			{
 				_lightList[i].render ();
 			}
-			_lightList.length = 0;
-
+			
+            //render solidList
 			_solidList.sort(sortSceneNode);
 			len = _solidList.length;
 			for (i in 0...len)
 			{
 				_solidList[i].render();
 			}
-			_solidList.length = 0;
-			
-            
-			//render transparents
+
+			//render transparentList
 			_transparentList.sort(sortSceneNode);
 			len = _transparentList.length;
 			for (i in 0...len)
 			{
 				_transparentList[i].render();
 			}
-			_transparentList.length = 0;
-
+			
 			onAnimate (Lib.getTimer());
+			
+			_lightList.length = 0;
+			_solidList.length = 0;
+			_transparentList.length = 0;
 		}
-		public function sortSceneNode(a:SceneNode, b:SceneNode):Int 
+		private inline function sortSceneNode(a:SceneNode, b:SceneNode):Int 
 		{
 			if (a.distance == b.distance) return 0;
 			if (a.distance > b.distance) return 1;
@@ -133,25 +134,31 @@
 			}
 		}
 		
-		public function isCulled (node : SceneNode) : Bool
+		public inline function isCulled (node : SceneNode) : Bool
 		{
-			var frust : ViewFrustum = _activeCamera.getViewFrustum ();
-			//transform the frustum to the node's current absolute transformation
-			var node_matrix : Matrix4 = node.getAbsoluteMatrix ();
+			var node_matrix : Matrix4 = node.getAbsoluteMatrix();
 
 			tmpBox.copy(node.getBoundingBox());
+			
 			node_matrix.transformBox(tmpBox);
 
-			var fBox:AABBox3D=frust.getBoundingBox();
-			if(!(tmpBox.intersectsWithBox(fBox))) return true;
-
-			// set distance for render order purposes
-			var camera_matrix : Matrix4 = _activeCamera.getAbsoluteMatrix ();
-			var vx :Float = node_matrix.m30 - camera_matrix.m30;
-			var vy :Float = node_matrix.m31 - camera_matrix.m31;
-			var vz :Float = node_matrix.m32 - camera_matrix.m32;
-			node.distance = Math.sqrt(vx * vx + vy * vy + vz * vz);
-			return false;
+			var fBox:AABBox3D=_viewFrustum.getBoundingBox();
+			if (tmpBox.intersectsWithBox(fBox) == false)
+			{
+				return true;
+			}else
+			{
+				// set distance for render order purposes
+				var camera_matrix : Matrix4 = _activeCamera.getAbsoluteMatrix ();
+			
+				var vx :Float = node_matrix.m30 - camera_matrix.m30;
+				var vy :Float = node_matrix.m31 - camera_matrix.m31;
+				var vz :Float = node_matrix.m32 - camera_matrix.m32;
+			
+				node.distance = MathUtil.sqrt(vx * vx + vy * vy + vz * vz);
+			
+				return false;
+			}
 		}
 	    override public function removeAll():Void
 	    {

@@ -18,7 +18,6 @@
 		public var frameData         : Vector<MD2Frame>;
 		public var frameCount        : Int;
 		public var name              : String;
-		private var _tmpBox          : AABBox3D;
 		
 		public function new ()
 		{
@@ -27,7 +26,6 @@
 			boxList = new Vector<AABBox3D> ();
 			frameData = new Vector<MD2Frame> ();
 			name = '';
-			_tmpBox = new AABBox3D();
 		}
 		public function getFrameList () : Vector<Vector<Vertex>>
 		{
@@ -122,7 +120,7 @@
 			var targetArray :Vector<Vertex> = interpolateBuffer.vertices;
 			var firstArray : Vector<Vertex> = frameList [firstFrame];
 			var secondArray : Vector<Vertex> = frameList [secondFrame];
-			var count : Int = frameList [firstFrame].length;
+			var count : Int = frameList[firstFrame].length;
 			for ( i in 0...count)
 			{
 				var target : Vertex = targetArray [i];
@@ -139,20 +137,10 @@
 				
 			}
 			//update bounding box
-			var secondBox:AABBox3D= boxList[secondFrame];
-			var firstBox:AABBox3D = boxList[firstFrame];
-			var inv : Float = 1.0 - div;
-			_tmpBox.minX = firstBox.minX * inv + secondBox.minX * div;
-			_tmpBox.minY = firstBox.minY * inv + secondBox.minY * div;
-			_tmpBox.minZ = firstBox.minZ * inv + secondBox.minZ * div;
-			_tmpBox.maxX = firstBox.maxX * inv + secondBox.maxX * div;
-			_tmpBox.maxY = firstBox.maxY * inv + secondBox.maxY * div;
-			_tmpBox.maxZ = firstBox.maxZ * inv + secondBox.maxZ * div;
-
-			interpolateBuffer.boundingBox=_tmpBox;
+			interpolateBuffer.boundingBox.interpolate(boxList[secondFrame], boxList[firstFrame], div);
 		}
 		// returns the animated mesh based on a detail level. 0 is the lowest, 255 the highest detail. Note, that some Meshes will ignore the detail level.
-		public function getMesh (frame : Int, ?detailLevel : Int = 255, ?startFrameLoop : Int = - 1, ?endFrameLoop : Int = - 1) : IMesh
+		public inline function getMesh (frame : Int, ?detailLevel : Int = 255, ?startFrameLoop : Int = - 1, ?endFrameLoop : Int = - 1) : IMesh
 		{
 			if (frame >= getFrameCount () - 1) frame = (frame % getFrameCount ());
 			if (startFrameLoop == - 1 && endFrameLoop == - 1)

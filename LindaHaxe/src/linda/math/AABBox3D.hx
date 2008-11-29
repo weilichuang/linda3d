@@ -1,6 +1,7 @@
 ﻿package linda.math;
 
 	import flash.Vector;
+	import linda.video.ITriangleRenderer;
 	
 	class AABBox3D
 	{
@@ -10,7 +11,6 @@
 		public var maxX : Float;
 		public var maxY : Float;
 		public var maxZ : Float;
-		public var center:Vector3;
 		public function new (?min : Vector3 = null, ?max : Vector3 = null)
 		{
 			if (min == null || max == null)
@@ -31,7 +31,6 @@
 				maxY = max.y;
 				maxZ = max.z;
 			}
-			center=new Vector3();
 		}
 		public inline function reset (x : Float, y : Float, z : Float) : Void
 		{
@@ -85,57 +84,11 @@
 		}
 		public inline function addVector (point : Vector3) : Void
 		{
-			if (point.x > maxX)
-			{
-				maxX = point.x;
-			}
-			if (point.y > maxY)
-			{
-				maxY = point.y;
-			}
-			if (point.z > maxZ)
-			{
-				maxZ = point.z;
-			}
-			if (point.x < minX)
-			{
-				minX = point.x;
-			}
-			if (point.y < minY)
-			{
-				minY = point.y;
-			}
-			if (point.z < minZ)
-			{
-				minZ = point.z;
-			}
+			addXYZ(point.x, point.y, point.z);
 		}
 		public inline function addVertex (point : Vertex) : Void
 		{
-			if (point.x > maxX)
-			{
-				maxX = point.x;
-			}
-			if (point.y > maxY)
-			{
-				maxY = point.y;
-			}
-			if (point.z > maxZ)
-			{
-				maxZ = point.z;
-			}
-			if (point.x < minX)
-			{
-				minX = point.x;
-			}
-			if (point.y < minY)
-			{
-				minY = point.y;
-			}
-			if (point.z < minZ)
-			{
-				minZ = point.z;
-			}
+			addXYZ(point.x, point.y, point.z);
 		}
 		public inline function addXYZ (x : Float, y : Float, z : Float) : Void
 		{
@@ -166,45 +119,39 @@
 		}
 		public inline function addAABBox (box : AABBox3D) : Void
 		{
-			addXYZ (box.maxX, box.maxY, box.maxZ);
-			addXYZ (box.minX, box.minY, box.minZ);
+			addXYZ(box.maxX, box.maxY, box.maxZ);
+			addXYZ(box.minX, box.minY, box.minZ);
 		}
 		public inline function isPointInside (point : Vector3) : Bool
 		{
-			return (point.x >= minX &&
-			point.x <= maxX &&
-			point.y >= minY &&
-			point.y <= maxY &&
-			point.z >= minZ &&
-			point.z <= maxZ);
+			return (point.x >= minX && point.x <= maxX && point.y >= minY &&
+			        point.y <= maxY && point.z >= minZ && point.z <= maxZ);
 		}
 		public inline function isPointTotalInside (point : Vector3) : Bool
 		{
-			return (point.x > minX &&
-			point.x < maxX &&
-			point.y > minY &&
-			point.y < maxY &&
-			point.z > minZ &&
-			point.z < maxZ);
+			return (point.x > minX && point.x < maxX && point.y > minY &&
+			        point.y < maxY && point.z > minZ && point.z < maxZ);
 		} 
 		public inline function intersectsWithLine (linemiddle : Vector3, linevect : Vector3, halflength : Float) : Bool
 		{
 			var e : Vector3 = getExtent ();
 			e.scaleBy (0.5);
-			var t : Vector3 = getCenter ().subtract (linemiddle);
-			if ((MathUtil.abs (t.x) > e.x + halflength * MathUtil.abs (linevect.x)) ||
-			    (MathUtil.abs (t.y) > e.y + halflength * MathUtil.abs (linevect.y)) ||
-			    (MathUtil.abs (t.z) > e.z + halflength * MathUtil.abs (linevect.z)))
-			e=null;
-			return false;
-			var r : Float = e.y * Math.abs (linevect.z) + e.z * Math.abs (linevect.y);
-			if (MathUtil.abs (t.y * linevect.z - t.z * linevect.y) > r) return false;
-			r = e.x * MathUtil.abs (linevect.z) + e.z * MathUtil.abs (linevect.x);
-			if (MathUtil.abs (t.z * linevect.x - t.x * linevect.z) > r) return false;
-			r = e.x * MathUtil.abs (linevect.y) + e.y * MathUtil.abs (linevect.x);
-			if (MathUtil.abs (t.x * linevect.y - t.y * linevect.x) > r) return false;
-			e=null;
-			return true;
+			var t : Vector3 = getCenter().subtract (linemiddle);
+			if ((MathUtil.abs(t.x) > e.x + halflength * MathUtil.abs(linevect.x)) ||
+			    (MathUtil.abs(t.y) > e.y + halflength * MathUtil.abs(linevect.y)) ||
+			    (MathUtil.abs(t.z) > e.z + halflength * MathUtil.abs(linevect.z)))
+			{
+				return false;
+			}else
+			{
+				var r : Float = e.y * Math.abs(linevect.z) + e.z * Math.abs(linevect.y);
+				if (MathUtil.abs (t.y * linevect.z - t.z * linevect.y) > r) return false;
+				r = e.x * MathUtil.abs(linevect.z) + e.z * MathUtil.abs(linevect.x);
+				if (MathUtil.abs (t.z * linevect.x - t.x * linevect.z) > r) return false;
+				r = e.x * MathUtil.abs(linevect.y) + e.y * MathUtil.abs(linevect.x);
+				if (MathUtil.abs (t.x * linevect.y - t.y * linevect.x) > r) return false;
+				return true;
+			}
 		}
 		public inline function intersectsWithBox (box : AABBox3D) : Bool
 		{
@@ -218,6 +165,7 @@
 		}
 		public inline function getCenter () : Vector3
 		{
+			var center:Vector3 = new Vector3();
 			center.x=(maxX + minX) * 0.5;
 			center.y=(maxY + minY) * 0.5;
 			center.z=(maxZ + minZ) * 0.5;
@@ -225,11 +173,11 @@
 		}
 		public inline function getExtent () : Vector3
 		{
-			var _extent:Vector3=new Vector3();
-			_extent.x=(maxX - minX) * 0.5;
-			_extent.y=(maxY - minY) * 0.5;
-			_extent.z=(maxZ - minZ) * 0.5;
-			return _extent;
+			var extent:Vector3=new Vector3();
+			extent.x=(maxX - minX) * 0.5;
+			extent.y=(maxY - minY) * 0.5;
+			extent.z=(maxZ - minZ) * 0.5;
+			return extent;
 		}
 		
 		public inline function getEdges () : Vector<Vector3>
@@ -239,23 +187,13 @@
 			{
 				_edges.push(new Vector3());
 			}
-			var centerX : Float = (maxX + minX) / 2;
-			var centerY : Float = (maxY + minY) / 2;
-			var centerZ : Float = (maxZ + minZ) / 2;
+			var centerX : Float = (maxX + minX) * 0.5;
+			var centerY : Float = (maxY + minY) * 0.5;
+			var centerZ : Float = (maxZ + minZ) * 0.5;
 			var diagX : Float = centerX - maxX;
 			var diagY : Float = centerY - maxY;
 			var diagZ : Float = centerZ - maxZ;
-			//			/*
-			//			Edges are stored in this way:
-			//                  /1--------/3
-			//                 /  |      / |
-			//                /   |     /  |
-			//                5---------7  |
-			//                |   0- - -| -2
-			//                |  /      |  /
-			//                |/        | /
-			//                4---------6/
-			//			*/
+
 			var v : Vector3 = _edges[0];
 			v.x=centerX + diagX;
 			v.y=centerY + diagY;
@@ -341,16 +279,28 @@
 				maxZ = t;
 			}
 		}
-		public inline function getInterpolated (other : AABBox3D, d : Float) : AABBox3D
+		public inline function interpolate(a:AABBox3D, b:AABBox3D, div:Float):Void 
+		{
+			var inv : Float = 1.0 - div;
+			minX = a.minX * div + b.minX * inv;
+			minY = a.minY * div + b.minY * inv;
+			minZ = a.minZ * div + b.minZ * inv;
+			maxX = a.maxX * div + b.maxX * inv;
+			maxY = a.maxY * div + b.maxY * inv;
+			maxZ = a.maxZ * div + b.maxZ * inv;
+			repair();
+		}
+		public inline function getInterpolated (other : AABBox3D, div : Float) : AABBox3D
 		{
 			var box : AABBox3D = new AABBox3D ();
-			var inv : Float = 1.0 - d;
-			box.minX = other.minX * inv + minX * d;
-			box.minY = other.minY * inv + minY * d;
-			box.minZ = other.minZ * inv + minZ * d;
-			box.maxX = other.maxX * inv + maxX * d;
-			box.maxY = other.maxY * inv + maxY * d;
-			box.maxZ = other.maxZ * inv + maxZ * d;
+			var inv : Float = 1.0 - div;
+			box.minX = other.minX * inv + minX * div;
+			box.minY = other.minY * inv + minY * div;
+			box.minZ = other.minZ * inv + minZ * div;
+			box.maxX = other.maxX * inv + maxX * div;
+			box.maxY = other.maxY * inv + maxY * div;
+			box.maxZ = other.maxZ * inv + maxZ * div;
+			box.repair();
 			return box;
 		}
 		public inline function clone () : AABBox3D

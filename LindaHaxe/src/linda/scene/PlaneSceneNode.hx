@@ -83,7 +83,7 @@ package linda.scene;
 			        box=null;
 			        super.destroy();
 		        }
-                override  public function render () : Void
+                override public function render () : Void
                 {
                     var driver : IVideoDriver = sceneManager.getVideoDriver ();
                     driver.setMaterial (material);

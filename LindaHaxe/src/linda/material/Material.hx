@@ -26,7 +26,9 @@
 		
 		public var shininess:Int;//指数，用于高光部分
 		
-		public var alpha:Float;
+		private var _alpha:Float;
+		
+		public inline var alpha(getAlpha, setAlpha):Float;
 		
 		public var name:String;
 
@@ -34,7 +36,7 @@
 		{
 			name="";
 			shininess=0;
-			alpha=1.;
+			_alpha=1.;
 			
 			lighting=false;
 			backfaceCulling = true;
@@ -48,6 +50,17 @@
 			emissiveColor=new Color(0,0,0);
 			specularColor=new Color(0,0,0);
 			
+		}
+		public inline function setAlpha(value:Float):Float
+		{
+			if (value > 1.0) value = 1.0;
+			if (value < 0.0) value = 0.0;
+			_alpha = value;
+			return _alpha;
+		}
+		public inline function getAlpha():Float
+		{
+			return _alpha;
 		}
 		public inline function setTexture(texture:ITexture,layer:Int=1):Void
 		{
@@ -97,7 +110,7 @@
 			mat.diffuseColor.copy(diffuseColor);
 			mat.emissiveColor.copy(emissiveColor);
 			
-			mat.alpha=alpha;
+			mat._alpha=_alpha;
 			mat.shininess=shininess;
 			
 			mat.texture1=texture1;
@@ -117,7 +130,7 @@
 		    diffuseColor.copy(mat.diffuseColor);
 			emissiveColor.copy(mat.emissiveColor);
 			
-			alpha=mat.alpha;
+			_alpha=mat._alpha;
 			shininess=mat.shininess;
 			
 			texture1=mat.texture1;

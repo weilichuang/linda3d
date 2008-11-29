@@ -166,7 +166,7 @@
 
 			setScreenSize(size);
 		}
-		private function reset():Void
+		private inline function reset():Void
 		{
 			//Todo 不知道有没有更好的方法了:)
 			targetVector.length = 0;
@@ -175,15 +175,18 @@
 			targetVector.length = len;
 			bufferVector.length = len;
 		}
-		private function getTRIndex () : Int
+		private inline function getTRIndex () : Int
 		{
-			if(material.wireframe) return TRType.WIRE;
-
-			var gouraudShading : Bool = material.gouraudShading;
-			var lighting:Bool = material.lighting;
-			
-			if (material.transparenting)
+			if (material.wireframe)
 			{
+				return TRType.WIRE;
+			}else
+			{
+				var gouraudShading : Bool = material.gouraudShading;
+				var lighting:Bool = material.lighting;
+			
+				if (material.transparenting)
+				{
 					if (texture!=null)
 					{
 						if(lighting)
@@ -203,8 +206,8 @@
 							return TRType.FLAT_ALPHA;
 						}
 					}
-			} else
-			{
+				} else
+				{
 					if (texture!=null)
 					{
 						if(lighting)
@@ -224,15 +227,16 @@
 							return TRType.FLAT;
 						}
 					}
+				}
 			}
 		}
 
-		public  function beginScene ():Void
+		public function beginScene ():Void
 		{
 			primitivesDrawn = 0;
 			reset();
 		}
-		public  function endScene():Void
+		public function endScene():Void
 		{
 			target.bitmapData.lock();
 			target.bitmapData.setVector(rect,targetVector);
@@ -256,9 +260,7 @@
 			
 			_current.copy(_view_project);
 			_current.multiplyE(_world);
-			//Log.trace(_view_project);
-			//Log.trace(_current);
-			
+
 			_world_inv.copy(_world);
 			_world_inv.inverse();
 
@@ -317,8 +319,7 @@
 			renderTarget = target;
 			renderTarget.addChild (target);
 		}
-		//for light
-		public  function drawIndexedTriangleList (vertices : Vector<Vertex>, vertexCount : Int, indexList : Vector<Int>, triangleCount : Int) : Void
+		public function drawIndexedTriangleList (vertices : Vector<Vertex>, vertexCount : Int, indexList : Vector<Int>, triangleCount : Int) : Void
 		{
 			var v0      : Vertex;
 			var v1      : Vertex;
@@ -723,7 +724,7 @@
 									if (dp > 0)
 									{
 										dist2 = l.getLengthSquared();
-										dist = MathUtil.sqrt (dist2);
+										dist = MathUtil.sqrt(dist2);
 										atten = 1 / (kc + kl * dist + kq * dist2);
 										k = dp * atten / dist;
 										amb_r_sum0 += (ambient.r * atten);
@@ -866,7 +867,7 @@
 						tv2.g = tv2.g > 0xFF ? 0xFF : tv2.g;
 						tv2.b = tv2.b > 0xFF ? 0xFF : tv2.b;
 						
-					} else //没有灯光，但是接受灯光时，使用自发光
+					} else //没有灯光，但是接受光照时，使用自发光
 					{
 						tv0.r = memi.r ;
 						tv0.g = memi.g ;
@@ -936,6 +937,8 @@
 					vCount++;
 					continue;
 				}
+				
+				
 				// put into list for clipping
 				_unclipped_vertices[0] = tv0;
 				_unclipped_vertices[1] = tv1;
@@ -954,9 +957,11 @@
 					plane = _ndc_planes[1];
 					b = source[0];
 					bdot = (b.z * plane.z) + (b.w * plane.w);
-					for (i in 1...(inCount + 1))
+					var i:Int = 1;
+					while (i <= inCount)
 					{
 						a = source [i % inCount];
+						i++;
 						adot = (a.z * plane.z) + (a.w * plane.w);
 						// current point inside
 						if (adot <= 0.0 )
@@ -1002,9 +1007,11 @@
 					plane = _ndc_planes [2];
 					b = source [0];
 					bdot = (b.x * plane.x) + (b.w * plane.w);
-					for (i in 1...(inCount + 1))
+					var i:Int = 1;
+					while (i <= inCount)
 					{
 						a = source [i % inCount];
+						i++;
 						adot = (a.x * plane.x) + (a.w * plane.w);
 						if (adot <= 0.0 )
 						{
@@ -1046,9 +1053,11 @@
 					plane = _ndc_planes[3];
 					b = source[0];
 					bdot = (b.x * plane.x) + (b.w * plane.w);
-					for (i in 1...(inCount + 1))
+					var i:Int = 1;
+					while (i <= inCount)
 					{
 						a = source [i % inCount];
+						i++;
 						adot = (a.x * plane.x) + (a.w * plane.w);
 						if (adot <= 0.0 )
 						{
@@ -1089,9 +1098,11 @@
 					plane = _ndc_planes [4];
 					b = source [0];
 					bdot = (b.y * plane.y) + (b.w * plane.w);
-					for (i in 1...(inCount + 1))
+					var i:Int = 1;
+					while (i <= inCount)
 					{
 						a = source [i % inCount];
+						i++;
 						adot = (a.y * plane.y) + (a.w * plane.w);
 						if (adot <= 0.0 )
 						{
@@ -1132,9 +1143,11 @@
 					plane = _ndc_planes[5];
 					b = source[0];
 					bdot = (b.y * plane.y) + (b.w * plane.w);
-					for (i in 1...(inCount + 1))
+					var i:Int = 1;
+					while (i <= inCount)
 					{
 						a = source [i % inCount];
+						i++;
 						adot = (a.y * plane.y) + (a.w * plane.w);
 						if (adot <= 0.0 )
 						{
