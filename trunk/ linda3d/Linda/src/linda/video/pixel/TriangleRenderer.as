@@ -18,9 +18,8 @@
 		protected var mipMapDistance:Number=800;
 
 		//alpha
-		protected var alpha:Number;
-		protected var invAlpha:Number;
-		protected var intAlpha:int;
+		protected var alpha:int;
+		protected var invAlpha:int;
 		
 		public var height:int;
 		
@@ -46,9 +45,8 @@
 			material = mat;
 			if(material.transparenting)
 			{
-				alpha = material.alpha;
-				invAlpha = 1 - alpha;
-				intAlpha = int (alpha * 0xFF);
+				alpha = int(material.alpha*0xFF);
+				invAlpha = 0xFF - alpha;
 			}	
 		}
 		/**

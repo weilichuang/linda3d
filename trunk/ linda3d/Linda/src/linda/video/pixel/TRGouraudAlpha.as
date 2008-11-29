@@ -186,9 +186,11 @@
 								if (zi > buffer[pos])
 								{
 									bgColor = target[pos];
-									target[pos]=((alpha * ri + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | 
-									             (alpha * gi + invAlpha * (bgColor >> 8 & 0xFF))  << 8  |
-									             (alpha * bi + invAlpha * (bgColor & 0xFF)));
+									target[pos] = (
+		                  					       ((int(alpha * ri) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+						  					       ((int(alpha * gi) + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
+						  					       ((int(alpha * bi) + invAlpha * (bgColor & 0xFF)) >> 8)
+						                          );
 								}
 								zi += dz;
 								ri += dr; gi += dg; bi += db;
@@ -295,9 +297,11 @@
 								if (zi > buffer[pos])
 								{
 									bgColor = target[pos];
-									target[pos]=((alpha * ri + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | 
-									             (alpha * gi + invAlpha * (bgColor >> 8 & 0xFF))  << 8  |
-									             (alpha * bi + invAlpha * (bgColor & 0xFF)));
+									target[pos] = (
+		                  					       ((int(alpha * ri) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+						  					       ((int(alpha * gi) + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
+						  					       ((int(alpha * bi) + invAlpha * (bgColor & 0xFF)) >> 8)
+						                          );
 								}
 								zi += dz;
 								ri += dr; gi += dg; bi += db;
