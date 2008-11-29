@@ -9,7 +9,6 @@
 	{
 		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
 		{
-			var color:uint;
 			var bga : int;
 			var bgColor : uint;
 
