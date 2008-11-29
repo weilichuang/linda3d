@@ -8,8 +8,6 @@
 	{
 		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int): void
 		{
-			var color:uint;
-
 			var ystart : int,yend : int;
 			var dyr : Number,dyl : Number;
 			var dxdyl : Number,dxdyr : Number;
@@ -153,9 +151,11 @@
 								if (zi > buffer[pos])
 								{
 								    bgColor = target[pos];
-								    target[pos]=((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | 
-								                 (alpha * g + invAlpha * (bgColor >> 8 & 0xFF))  << 8  | 
-								                 (alpha * b + invAlpha * (bgColor & 0xFF)));
+								    target[pos]=(
+		                  					       ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+						  					       ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
+						  					       ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
+						                        );
 								}
 								zi += dz;
 							}
@@ -214,9 +214,11 @@
 								if (zi > buffer[pos])
 								{
 								    bgColor = target[pos];
-								    target[pos]=((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) << 16 | 
-								                 (alpha * g + invAlpha * (bgColor >> 8 & 0xFF))  << 8  | 
-								                 (alpha * b + invAlpha * (bgColor & 0xFF)));
+								    target[pos]=(
+		                  					       ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+						  					       ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
+						  					       ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
+						                        );
 								}
 								zi += dz;
 							}

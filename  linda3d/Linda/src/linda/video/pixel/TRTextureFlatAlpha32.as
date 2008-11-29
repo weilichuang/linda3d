@@ -11,8 +11,6 @@
 	{
 		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
 		{
-			var color:uint;
-			
 			var bga : int;
 			var bgColor : uint;
 
@@ -214,10 +212,11 @@
 									{
 										textel = bitmapData.getPixel (ui, vi);
 									}
-									target[pos]=((alpha * intAlpha + invAlpha * bga) << 24 |
-									       ((textel >> 16 & 0xFF) * alpha  + invAlpha * (bgColor >> 16 & 0xFF)) << 16 |
-									       ((textel >> 8 & 0xFF) * alpha  + invAlpha * (bgColor >> 8 & 0xFF)) << 8 |
-									       ((textel & 0xFF) * alpha  + invAlpha * (bgColor & 0xFF)));
+									target[pos] = (((alpha * bga) >> 8)                                                        << 24 |
+		                  					       ((alpha * (textel >> 16 & 0xFF) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8)  << 16 | 
+						  					       ((alpha * (textel >> 8 & 0xFF)  + invAlpha * (bgColor >> 8 & 0xFF))  >> 8)  << 8  | 
+						  					       ((alpha * (textel & 0xFF)       + invAlpha * (bgColor & 0xFF))       >> 8)
+						                          );
 								  }
 								  ui += du;
 								  vi += dv;
@@ -327,10 +326,11 @@
 									{
 										textel = bitmapData.getPixel (ui, vi);
 									}
-									target[pos]=((alpha * intAlpha + invAlpha * bga) << 24 |
-									       ((textel >> 16 & 0xFF) * alpha  + invAlpha * (bgColor >> 16 & 0xFF)) << 16 |
-									       ((textel >> 8 & 0xFF) * alpha  + invAlpha * (bgColor >> 8 & 0xFF)) << 8 |
-									       ((textel & 0xFF) * alpha  + invAlpha * (bgColor & 0xFF)));
+									target[pos] = (((alpha * bga) >> 8)                                                        << 24 |
+		                  					       ((alpha * (textel >> 16 & 0xFF) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8)  << 16 | 
+						  					       ((alpha * (textel >> 8 & 0xFF)  + invAlpha * (bgColor >> 8 & 0xFF))  >> 8)  << 8  | 
+						  					       ((alpha * (textel & 0xFF)       + invAlpha * (bgColor & 0xFF))       >> 8)
+						                          );
 								  }
 								ui += du;
 								vi += dv;

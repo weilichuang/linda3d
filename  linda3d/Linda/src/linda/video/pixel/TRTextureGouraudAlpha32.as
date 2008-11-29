@@ -10,8 +10,6 @@
 	{
 		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
 		{
-			var color:uint;
-
 			var bga : int;
 			var bgColor : uint;
 
@@ -250,10 +248,11 @@
 									{
 										textel = bitmapData.getPixel (ui, vi);
 									}
-									target[pos]=((alpha * intAlpha + invAlpha * bga) << 24 |
-									       ((textel >> 16 & 0xFF) * (alpha * ri + invAlpha * (bgColor >> 16 & 0xFF)) >> 8 ) << 16 |
-									       ((textel >> 8 & 0xFF) * (alpha * gi + invAlpha * (bgColor >> 8 & 0xFF)) >> 8 ) << 8 |
-									       ((textel & 0xFF) * (alpha * bi + invAlpha * (bgColor & 0xFF)) >> 8));
+									target[pos] = (((alpha * bga) >> 8)                                                                       << 24 |
+		                  					       ((int(alpha * ri) + invAlpha * (bgColor >> 16 & 0xFF)) * (textel >> 16 & 0xFF) >> 16)  << 16 | 
+						  					       ((int(alpha * gi) + invAlpha * (bgColor >> 8 & 0xFF))  * (textel >> 8 & 0xFF)  >> 16)  << 8  | 
+						  					       ((int(alpha * bi) + invAlpha * (bgColor & 0xFF))       * (textel & 0xFF)       >> 16)
+						                          );
 								}
 								ui += du; vi += dv; zi += dz;
 								ri += dr; gi += dg; bi += db;
@@ -393,10 +392,11 @@
 									{
 										textel = bitmapData.getPixel (ui, vi);
 									}
-									target[pos]=((alpha * intAlpha + invAlpha * bga) << 24 |
-									       ((textel >> 16 & 0xFF) * (alpha * ri + invAlpha * (bgColor >> 16 & 0xFF)) >> 8 ) << 16 |
-									       ((textel >> 8 & 0xFF) * (alpha * gi + invAlpha * (bgColor >> 8 & 0xFF)) >> 8 ) << 8 |
-									       ((textel & 0xFF) * (alpha * bi + invAlpha * (bgColor & 0xFF)) >> 8));
+									target[pos] = (((alpha * bga) >> 8)                                                                       << 24 |
+		                  					       ((int(alpha * ri) + invAlpha * (bgColor >> 16 & 0xFF)) * (textel >> 16 & 0xFF) >> 16)  << 16 | 
+						  					       ((int(alpha * gi) + invAlpha * (bgColor >> 8 & 0xFF))  * (textel >> 8 & 0xFF)  >> 16)  << 8  | 
+						  					       ((int(alpha * bi) + invAlpha * (bgColor & 0xFF))       * (textel & 0xFF)       >> 16)
+						                          );
 								}
 								ui += du; vi += dv; zi += dz;
 								ri += dr; gi += dg; bi += db;

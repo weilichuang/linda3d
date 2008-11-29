@@ -8,7 +8,6 @@
 	{
 		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
 		{
-			var color:uint;
 			var bga : int;
 			var bgColor : uint;
 
@@ -182,16 +181,15 @@
 							for (xi = xl; xi < xr; xi +=1)
 							{
 								pos=xi+yi*height;
-								oldZ=buffer[pos];
 								bgColor = target[pos];
 								bga = bgColor >> 24 & 0xFF ;
-								if (bga < 0xFF || zi > oldZ)
+								if (bga < 0xFF || zi > buffer[pos])
 								{
-									color = ((alpha*intAlpha+ invAlpha*bga)              << 24 | 
-									         (alpha*ri + invAlpha*(bgColor >> 16 & 0xFF)) << 16 | 
-									         (alpha*gi + invAlpha*(bgColor >> 8 & 0xFF))  << 8  | 
-									         (alpha*bi + invAlpha*(bgColor & 0xFF)) );
-									target[pos] = color;
+									target[pos] = (((alpha * bga) >> 8)                                         << 24 |
+		                  					       ((int(alpha * ri) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+						  					       ((int(alpha * gi) + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
+						  					       ((int(alpha * bi) + invAlpha * (bgColor & 0xFF)) >> 8)
+						                          );
 								}
 								zi += dz;
 								ri += dr; gi += dg; bi += db;
@@ -294,16 +292,15 @@
 							for (xi = xl; xi < xr; xi +=1)
 							{
 								pos=xi+yi*height;
-								oldZ=buffer[pos];
 								bgColor = target[pos];
 								bga = bgColor >> 24 & 0xFF ;
-								if (bga < 0xFF || zi > oldZ)
+								if (bga < 0xFF || zi > buffer[pos])
 								{
-									color = ((alpha*intAlpha+ invAlpha*bga)              << 24 | 
-									         (alpha*ri + invAlpha*(bgColor >> 16 & 0xFF)) << 16 | 
-									         (alpha*gi + invAlpha*(bgColor >> 8 & 0xFF))  << 8  | 
-									         (alpha*bi + invAlpha*(bgColor & 0xFF)) );
-									target[pos] = color;
+									target[pos] = (((alpha * bga) >> 8)                                         << 24 |
+		                  					       ((int(alpha * ri) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+						  					       ((int(alpha * gi) + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
+						  					       ((int(alpha * bi) + invAlpha * (bgColor & 0xFF)) >> 8)
+						                          );
 								}
 								zi += dz;
 								ri += dr; gi += dg; bi += db;
