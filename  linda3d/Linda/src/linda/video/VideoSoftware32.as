@@ -4,7 +4,7 @@
 	import flash.geom.*;
 	
 	import linda.math.*;
-	import linda.video.pixel.*;
+	import linda.video.pixel32.*;
 	public class VideoSoftware32 extends VideoSoftware
 	{
 		public function VideoSoftware32(size:Dimension2D)
@@ -14,6 +14,10 @@
 			target.bitmapData = new BitmapData (screenSize.width, screenSize.height, true, 0x0);
 			
 			renderers [TRType.WIRE] = new TRWire32 ();
+			renderers [TRType.FLAT] = new TRFlat32 ();
+			renderers [TRType.GOURAUD] = new TRGouraud32 ();
+			renderers [TRType.TEXTURE_FLAT] = new TRTextureFlat32 ();
+			renderers [TRType.TEXTURE_GOURAUD] = new TRTextureGouraud32 ();
 			renderers [TRType.FLAT_ALPHA] = new TRFlatAlpha32 ();
 			renderers [TRType.GOURAUD_ALPHA] = new TRGouraudAlpha32 ();
 			renderers [TRType.TEXTURE_FLAT_ALPHA] = new TRTextureFlatAlpha32 ();

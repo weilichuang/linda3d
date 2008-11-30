@@ -6,6 +6,7 @@
 	import linda.math.Vertex4D;
 	import linda.video.ITriangleRenderer;
 	import flash.display.BitmapData;
+	import linda.video.TriangleRenderer;
 	public class TRTextureFlatAlpha extends TriangleRenderer implements ITriangleRenderer
 	{
 		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int): void

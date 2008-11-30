@@ -61,25 +61,29 @@
     <classEntry path="linda.video.ITriangleRenderer"/>
     <classEntry path="linda.video.IVideoDriver"/>
     <classEntry path="linda.video.TRType"/>
+    <classEntry path="linda.video.TriangleRenderer"/>
     <classEntry path="linda.video.VideoNull"/>
     <classEntry path="linda.video.VideoSoftware"/>
     <classEntry path="linda.video.VideoSoftware32"/>
     <classEntry path="linda.video.VideoType"/>
     <classEntry path="linda.video.pixel.TRFlat"/>
     <classEntry path="linda.video.pixel.TRFlatAlpha"/>
-    <classEntry path="linda.video.pixel.TRFlatAlpha32"/>
     <classEntry path="linda.video.pixel.TRGouraud"/>
     <classEntry path="linda.video.pixel.TRGouraudAlpha"/>
-    <classEntry path="linda.video.pixel.TRGouraudAlpha32"/>
     <classEntry path="linda.video.pixel.TRTextureFlat"/>
     <classEntry path="linda.video.pixel.TRTextureFlatAlpha"/>
-    <classEntry path="linda.video.pixel.TRTextureFlatAlpha32"/>
     <classEntry path="linda.video.pixel.TRTextureGouraud"/>
     <classEntry path="linda.video.pixel.TRTextureGouraudAlpha"/>
-    <classEntry path="linda.video.pixel.TRTextureGouraudAlpha32"/>
     <classEntry path="linda.video.pixel.TRWire"/>
-    <classEntry path="linda.video.pixel.TRWire32"/>
-    <classEntry path="linda.video.pixel.TriangleRenderer"/>
+    <classEntry path="linda.video.pixel32.TRFlat32"/>
+    <classEntry path="linda.video.pixel32.TRFlatAlpha32"/>
+    <classEntry path="linda.video.pixel32.TRGouraud32"/>
+    <classEntry path="linda.video.pixel32.TRGouraudAlpha32"/>
+    <classEntry path="linda.video.pixel32.TRTextureFlat32"/>
+    <classEntry path="linda.video.pixel32.TRTextureFlatAlpha32"/>
+    <classEntry path="linda.video.pixel32.TRTextureGouraud32"/>
+    <classEntry path="linda.video.pixel32.TRTextureGouraudAlpha32"/>
+    <classEntry path="linda.video.pixel32.TRWire32"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

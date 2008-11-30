@@ -1,11 +1,11 @@
-﻿package linda.video.pixel
+﻿package linda.video.pixel32
 {
 	import __AS3__.vec.Vector;
 	
-	import linda.math.Vertex4D;
 	import linda.video.ITriangleRenderer;
 	import linda.video.TriangleRenderer;
-	public class TRWire extends TriangleRenderer implements ITriangleRenderer
+	import linda.math.Vertex4D;
+	public class TRWire32 extends TriangleRenderer implements ITriangleRenderer
 	{
 		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int) : void
 		{
@@ -31,11 +31,11 @@
 					ii  = indexList [int(i+ 2)];
 					vt2 = vertices [ii];
 
-					color = (vt0.r << 16 | vt0.g << 8 | vt0.b );
+					color = (0xFF000000 | vt0.r << 16 | vt0.g << 8 | vt0.b );
 					bresenham (vt0.x, vt0.y, vt0.z, vt1.x, vt1.y, vt1.z, color);
-					color = (vt1.r << 16 | vt1.g << 8 | vt1.b );
+					color = (0xFF000000 | vt1.r << 16 | vt1.g << 8 | vt1.b );
 					bresenham (vt1.x, vt1.y, vt1.z, vt2.x, vt2.y, vt2.z, color);
-					color = (vt2.r << 16 | vt2.g << 8 | vt2.b );
+					color = (0xFF000000 | vt2.r << 16 | vt2.g << 8 | vt2.b );
 					bresenham (vt2.x, vt2.y, vt2.z, vt0.x, vt0.y, vt0.z, color);
 				}
 			} else
@@ -57,6 +57,7 @@
 		}
 		private function bresenham (x0 : int, y0 : int, z0:Number, x1 : int, y1 : int, z1:Number, value : uint ) : void
 		{
+			var oldZ:Number;
             var pos:int;
 			var error : int;
 			var dx : int = x1 - x0;
@@ -136,12 +137,13 @@
 		{
 			var bga : int;
 		    var bgColor : uint;
-            var pos:int;
 			var error : int;
 			var dx : int = x1 - x0;
 			var dy : int = y1 - y0;
 			var dz : int = z1 - z0;
 			var yi : int = 1;
+			var oldZ:Number;
+            var pos:int;
 			var dzdy : Number;
 			if (dx < dy )
 			{
@@ -175,14 +177,22 @@
 				for (; y1 < y0 ; y1 +=1)
 				{
 					pos=x1+y1*height;
-					if (z1 > buffer[pos])
+					bgColor = target[pos];
+					bga = bgColor >> 24 & 0xFF ;
+					if (bga < 0xFF)
 					{
-						bgColor = target[pos];
-						target[pos] = (
+						target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                   << 24 |
 						               ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
 						  			   ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
 						  			   ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
 						              );
+					}else if (z1 > buffer[pos])
+					{ 
+						target[pos] = ( 0xFF000000                                                   |
+		                  				((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+						  				((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
+						  				((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
+								       );
 					}
 					error += dx;
 					if (error > 0 )
@@ -200,14 +210,22 @@
 				for (; x0 < x1 ; x0 +=1)
 				{
 					pos=x0+y0*height;
-					if (z0 > buffer[pos])
+					bgColor = target[pos];
+					bga = bgColor >> 24 & 0xFF ;
+					if (bga < 0xFF)
 					{
-						bgColor = target[pos];
-						target[pos] = (
+						target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                   << 24 |
 						               ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
 						  			   ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
 						  			   ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
 						              );
+					}else if (z0 > buffer[pos])
+					{ 
+						target[pos] = ( 0xFF000000                                                   |
+		                  				((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+						  				((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
+						  				((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
+								       );
 					}
 					error += dy;
 					if (error > 0 )

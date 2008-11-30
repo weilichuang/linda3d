@@ -4,6 +4,7 @@
 	
 	import linda.math.Vertex4D;
 	import linda.video.ITriangleRenderer;
+	import linda.video.TriangleRenderer;
 	public class TRGouraud extends TriangleRenderer implements ITriangleRenderer
 	{
 		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int): void
@@ -181,7 +182,7 @@
 								pos=xi+yi*height;
 								if (zi > buffer[pos])
 								{
-									target[pos]=(0xFF000000 | ri << 16 | gi << 8 | bi );
+									target[pos]=(ri << 16 | gi << 8 | bi );
 									buffer[pos]=zi;
 								}
 								zi += dz;
@@ -287,7 +288,7 @@
 								pos=xi+yi*height;
 								if (zi > buffer[pos])
 								{
-									target[pos]=(0xFF000000 | ri << 16 | gi << 8 | bi );
+									target[pos]=(ri << 16 | gi << 8 | bi );
 									buffer[pos]=zi;
 								}
 								zi += dz;

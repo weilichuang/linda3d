@@ -1,9 +1,10 @@
-﻿package linda.video.pixel
+﻿package linda.video.pixel32
 {
 	import __AS3__.vec.Vector;
 	
 	import linda.material.ITexture;
 	import linda.video.ITriangleRenderer;
+	import linda.video.TriangleRenderer;
 	import linda.math.Vertex4D;
 	import flash.display.BitmapData;
 	public class TRTextureGouraudAlpha32 extends TriangleRenderer implements ITriangleRenderer
@@ -210,7 +211,7 @@
 							side = 1;
 						}
 				
-						for (yi = ystart; yi <= yend; yi +=1)
+						for (yi = ystart; yi < yend; yi +=1)
 						{
 							ui = ul; vi = vl;
 							ri = rl; gi = gl; bi = bl;
@@ -239,19 +240,33 @@
 								pos=xi+yi*height;
 								bgColor = target[pos];
 								bga = bgColor >> 24 & 0xFF ;
-								if (bga < 0xFF || zi > buffer[pos])
+								if (bga < 0xFF)
 								{
 									if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel (ui / zi, vi / zi);
+										textel = bitmapData.getPixel (int(ui / zi), int(vi / zi));
 									}else
 									{
-										textel = bitmapData.getPixel (ui, vi);
+										textel = bitmapData.getPixel (int(ui), int(vi));
 									}
 									target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                                                   << 24 |
-		                  					       ((int(alpha * ri) + invAlpha * (bgColor >> 16 & 0xFF)) * (textel >> 16 & 0xFF) >> 16)  << 16 | 
-						  					       ((int(alpha * gi) + invAlpha * (bgColor >> 8 & 0xFF))  * (textel >> 8 & 0xFF)  >> 16)  << 8  | 
-						  					       ((int(alpha * bi) + invAlpha * (bgColor & 0xFF))       * (textel & 0xFF)       >> 16)
+		                  					       ((alpha * int(ri) + invAlpha * (bgColor >> 16 & 0xFF)) * (textel >> 16 & 0xFF) >> 16)  << 16 | 
+						  					       ((alpha * int(gi) + invAlpha * (bgColor >> 8 & 0xFF))  * (textel >> 8 & 0xFF)  >> 16)  << 8  | 
+						  					       ((alpha * int(bi) + invAlpha * (bgColor & 0xFF))       * (textel & 0xFF)       >> 16)
+						                          );
+								}else if (zi > buffer[pos])
+								{ //bgAlpha=255
+								    if(perspectiveCorrect)
+									{
+										textel = bitmapData.getPixel (int(ui / zi), int(vi / zi));
+									}else
+									{
+										textel = bitmapData.getPixel (int(ui), int(vi));
+									}                                                      
+		                  			target[pos] = ( 0xFF000000                                                                                  |
+		                  					       ((alpha * int(ri) + invAlpha * (bgColor >> 16 & 0xFF)) * (textel >> 16 & 0xFF) >> 16)  << 16 | 
+						  					       ((alpha * int(gi) + invAlpha * (bgColor >> 8 & 0xFF))  * (textel >> 8 & 0xFF)  >> 16)  << 8  | 
+						  					       ((alpha * int(bi) + invAlpha * (bgColor & 0xFF))       * (textel & 0xFF)       >> 16)
 						                          );
 								}
 								ui += du; vi += dv; zi += dz;
@@ -354,7 +369,7 @@
 						rr = r0; gr = g0; br = b0;
 					}
 					
-					for (yi = ystart; yi <= yend; yi +=1)
+					for (yi = ystart; yi < yend; yi +=1)
 					{
 							ui = ul; vi = vl;
 							zi = zl;
@@ -383,19 +398,33 @@
 								pos=xi+yi*height;
 								bgColor = target[pos];
 								bga = bgColor >> 24 & 0xFF ;
-								if (bga < 0xFF || zi > buffer[pos])
+								if (bga < 0xFF)
 								{
 									if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel (ui / zi, vi / zi);
+										textel = bitmapData.getPixel (int(ui / zi), int(vi / zi));
 									}else
 									{
-										textel = bitmapData.getPixel (ui, vi);
+										textel = bitmapData.getPixel (int(ui), int(vi));
 									}
 									target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                                                   << 24 |
-		                  					       ((int(alpha * ri) + invAlpha * (bgColor >> 16 & 0xFF)) * (textel >> 16 & 0xFF) >> 16)  << 16 | 
-						  					       ((int(alpha * gi) + invAlpha * (bgColor >> 8 & 0xFF))  * (textel >> 8 & 0xFF)  >> 16)  << 8  | 
-						  					       ((int(alpha * bi) + invAlpha * (bgColor & 0xFF))       * (textel & 0xFF)       >> 16)
+		                  					       ((alpha * int(ri) + invAlpha * (bgColor >> 16 & 0xFF)) * (textel >> 16 & 0xFF) >> 16)  << 16 | 
+						  					       ((alpha * int(gi) + invAlpha * (bgColor >> 8 & 0xFF))  * (textel >> 8 & 0xFF)  >> 16)  << 8  | 
+						  					       ((alpha * int(bi) + invAlpha * (bgColor & 0xFF))       * (textel & 0xFF)       >> 16)
+						                          );
+								}else if (zi > buffer[pos])
+								{ //bgAlpha=255
+								    if(perspectiveCorrect)
+									{
+										textel = bitmapData.getPixel (int(ui / zi), int(vi / zi));
+									}else
+									{
+										textel = bitmapData.getPixel (int(ui), int(vi));
+									}                                                      
+		                  			target[pos] = ( 0xFF000000                                                                                  |
+		                  					       ((alpha * int(ri) + invAlpha * (bgColor >> 16 & 0xFF)) * (textel >> 16 & 0xFF) >> 16)  << 16 | 
+						  					       ((alpha * int(gi) + invAlpha * (bgColor >> 8 & 0xFF))  * (textel >> 8 & 0xFF)  >> 16)  << 8  | 
+						  					       ((alpha * int(bi) + invAlpha * (bgColor & 0xFF))       * (textel & 0xFF)       >> 16)
 						                          );
 								}
 								ui += du; vi += dv; zi += dz;

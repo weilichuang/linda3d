@@ -6,6 +6,7 @@
 	import linda.math.Vertex4D;
 	import linda.video.ITriangleRenderer;
 	import flash.display.BitmapData;
+	import linda.video.TriangleRenderer;
 	public class TRTextureFlat extends TriangleRenderer implements ITriangleRenderer
 	{
 		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int): void
@@ -201,10 +202,10 @@
 								{
 									if(perspectiveCorrect)
 									{
-										target[pos] = bitmapData.getPixel32 (ui / zi, vi / zi);
+										target[pos] = bitmapData.getPixel (ui / zi, vi / zi);
 									}else
 									{
-										target[pos] = bitmapData.getPixel32 (ui, vi);
+										target[pos] = bitmapData.getPixel (ui, vi);
 									}
 									buffer[pos] = zi;
 								}
@@ -310,10 +311,10 @@
 								{
 									if(perspectiveCorrect)
 									{
-										target[pos] = bitmapData.getPixel32 (ui / zi, vi / zi);
+										target[pos] = bitmapData.getPixel (ui / zi, vi / zi);
 									}else
 									{
-										target[pos] = bitmapData.getPixel32 (ui, vi);
+										target[pos] = bitmapData.getPixel (ui, vi);
 									}
 									buffer[pos] = zi;
 								}
