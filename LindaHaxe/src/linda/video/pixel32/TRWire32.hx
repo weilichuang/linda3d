@@ -182,7 +182,7 @@
 					bga = bgColor >> 24 & 0xFF ;
 					if (bga < 0xFF || z1 > buffer[pos])
 					{ 
-						target[pos] = (((alpha * bga) >> 8)                                   << 24 |
+						target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                   << 24 |
 						               ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
 						  			   ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
 						  			   ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
@@ -208,7 +208,7 @@
 					bga = bgColor >> 24 & 0xFF ;
 					if (bga < 0xFF || z0 > buffer[pos])
 					{
-						target[pos] = (((alpha * bga) >> 8)                                   << 24 |
+						target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                   << 24 |
 						               ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
 						  			   ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
 						  			   ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)

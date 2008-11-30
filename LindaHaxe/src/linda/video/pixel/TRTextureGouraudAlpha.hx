@@ -259,7 +259,7 @@
 										textel = bitmapData.getPixel (Std.int(ui), Std.int(vi));
 									}
 									target[pos] = (
-		                  					       ((Std.int(alpha * ri) + invAlpha * (bgColor >> 16 & 0xFF)) * (textel >> 16 & 0xFF) >> 16)  << 16 | 
+		                  					       ((Std.int(alpha * ri) + invAlpha * (bgColor >> 16)) * (textel >> 16) >> 16)  << 16 | 
 						  					       ((Std.int(alpha * gi) + invAlpha * (bgColor >> 8 & 0xFF))  * (textel >> 8 & 0xFF)  >> 16)  << 8  | 
 						  					       ((Std.int(alpha * bi) + invAlpha * (bgColor & 0xFF))       * (textel & 0xFF)       >> 16)
 						                          );
@@ -403,7 +403,7 @@
 										textel = bitmapData.getPixel (Std.int(ui), Std.int(vi));
 									}
 							        target[pos] = (
-		                  					       ((Std.int(alpha * ri) + invAlpha * (bgColor >> 16 & 0xFF)) * (textel >> 16 & 0xFF) >> 16)  << 16 | 
+		                  					       ((Std.int(alpha * ri) + invAlpha * (bgColor >> 16)) * (textel >> 16) >> 16)  << 16 | 
 						  					       ((Std.int(alpha * gi) + invAlpha * (bgColor >> 8 & 0xFF))  * (textel >> 8 & 0xFF)  >> 16)  << 8  | 
 						  					       ((Std.int(alpha * bi) + invAlpha * (bgColor & 0xFF))       * (textel & 0xFF)       >> 16)
 						                          );		      

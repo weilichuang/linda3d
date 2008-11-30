@@ -195,7 +195,7 @@
 								{
 									bgColor = target[pos];
 									target[pos] = (
-		                  					       ((alpha * Std.int(ri) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+		                  					       ((alpha * Std.int(ri) + invAlpha * (bgColor >> 16)) >> 8) << 16 | 
 						  					       ((alpha * Std.int(gi) + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
 						  					       ((alpha * Std.int(bi) + invAlpha * (bgColor & 0xFF)) >> 8)
 						                          );
@@ -309,7 +309,7 @@
 									bgColor = target[pos];
 									
 									target[pos] = (
-		                  					       ((alpha * Std.int(ri) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+		                  					       ((alpha * Std.int(ri) + invAlpha * (bgColor >> 16)) >> 8) << 16 | 
 						  					       ((alpha * Std.int(gi) + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
 						  					       ((alpha * Std.int(bi) + invAlpha * (bgColor & 0xFF)) >> 8)
 						                          );

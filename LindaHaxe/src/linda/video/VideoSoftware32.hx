@@ -16,6 +16,9 @@
 	import linda.video.pixel32.TRGouraud32;
 	import linda.video.pixel32.TRTextureFlat32;
 	import linda.video.pixel32.TRTextureGouraud32;
+	/**
+	 * 用于需要背景透明的时候，如果不需要背景透明，强烈建议使用VideoSoftware,那个会快许多。
+	 */
 	class VideoSoftware32 extends VideoSoftware
 	{
 		public function new(size:Dimension2D)

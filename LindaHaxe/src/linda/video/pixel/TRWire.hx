@@ -183,7 +183,7 @@
 					{
 						bgColor = target[pos];
 						target[pos] = (
-						               ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+						               ((alpha * r + invAlpha * (bgColor >> 16)) >> 8) << 16 | 
 						  			   ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
 						  			   ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
 						              );			 
@@ -209,8 +209,8 @@
 						bgColor = target[pos];
 						target[pos] = (
 						               ((alpha * r + invAlpha * (bgColor >> 16)) >> 8) << 16 | 
-						  			   ((alpha * g + invAlpha * (bgColor >> 8)) >> 8)  << 8  | 
-						  			   ((alpha * b + invAlpha * (bgColor)) >> 8)
+						  			   ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
+						  			   ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
 						              );
 					}
 					error += dy;

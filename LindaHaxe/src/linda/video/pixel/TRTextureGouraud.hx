@@ -259,7 +259,7 @@
 									{
 										textel = bitmapData.getPixel (Std.int(ui), Std.int(vi));
 									}
-									target[pos] = ((((textel >> 16 & 0xFF) * Std.int(ri)) >> 8) << 16 |
+									target[pos] = ((((textel >> 16) * Std.int(ri)) >> 8) << 16 |
 									               (((textel >> 8 & 0xFF) * Std.int(gi)) >> 8)  << 8  |
 									               ((textel & 0xFF) * Std.int(bi)) >> 8);
 									buffer[pos] = zi;
@@ -402,7 +402,7 @@
 								{
 									textel = bitmapData.getPixel (Std.int(ui), Std.int(vi));
 								}
-								target[pos] = ((((textel >> 16 & 0xFF) * Std.int(ri)) >> 8) << 16 |
+								target[pos] = ((((textel >> 16) * Std.int(ri)) >> 8) << 16 |
 									           (((textel >> 8 & 0xFF) * Std.int(gi)) >> 8)  << 8  |
 									           ((textel & 0xFF) * Std.int(bi)) >> 8);
 								buffer[pos] = zi;

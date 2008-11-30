@@ -74,20 +74,24 @@ class Main
 		node = new MeshSceneNode(manager, new Sphere(100,20));
 		node.setMaterialFlag(Material.GOURAUD_SHADE, false);
 		node.setMaterialFlag(Material.LIGHT, true);
+		node.setMaterialFlag(Material.TRANSPARTENT, false);
+		node.setMaterialAlpha(0.5);
 		node.setMaterialEmissiveColor(0x000099);
 
 		
 		node2 = new MeshSceneNode(manager, cube0);
-		node2.setMaterialFlag(Material.GOURAUD_SHADE, true);
+		node2.setMaterialFlag(Material.GOURAUD_SHADE, false);
 		node2.setMaterialFlag(Material.LIGHT, true);
 		node2.setMaterialFlag(Material.TRANSPARTENT,true);
-		node2.setMaterialAlpha(0.8);
+		node2.setMaterialAlpha(0.7);
         
 		
 		node3 = new MeshSceneNode(manager, cube1);
 		node3.setMaterialFlag(Material.GOURAUD_SHADE, true);
 		node3.setMaterialFlag(Material.LIGHT, true);
 		node3.setMaterialEmissiveColor(0x990000);
+		node3.setMaterialFlag(Material.TRANSPARTENT,true);
+		node3.setMaterialAlpha(0.6);
 		node3.z = 150;
 		node.addChild(node3);
 		
@@ -95,6 +99,8 @@ class Main
 		node4.setMaterialFlag(Material.LIGHT, true);
 		node4.setMaterialEmissiveColor(0x007700);
 		node4.setMaterialFlag(Material.WIREFRAME, true);
+		node4.setMaterialFlag(Material.TRANSPARTENT,true);
+		node4.setMaterialAlpha(0.5);
 		node4.z = -150;
 		node.addChild(node4);
 		
@@ -119,6 +125,8 @@ class Main
         
 		Log.setColor(0xffffff);
 		t = Lib.getTimer();
+		
+		//Log.trace(0xFF << 8);
 	}
 	
 	private function _onEnterFrame(e:Event):Void

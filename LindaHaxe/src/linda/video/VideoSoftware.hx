@@ -90,6 +90,7 @@
 		private function init (size:Dimension2D) : Void
 		{
 			target = new Bitmap ();
+			target.cacheAsBitmap = false;
 			renderTarget.addChild(target);
 			
 			_clip_scale = new Matrix4 ();

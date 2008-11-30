@@ -156,13 +156,20 @@
 								pos=xi+yi*height;
 								bgColor = target[pos];
 								bga = bgColor >> 24 & 0xFF ;
-								if (bga < 0xFF || zi > buffer[pos])
+								if (bga < 0xFF)
 								{
 									target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                   << 24 |
 		                  					       ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
 						  					       ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
 						  					       ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
 						                          );
+								}else if (zi > buffer[pos])
+								{ //bgAlpha=255
+									target[pos] = ( 0xFF000000                                                  |
+		                  					       ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+						  					       ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
+						  					       ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
+								                  );
 								}
 								zi += dz;
 							}
@@ -222,13 +229,20 @@
 								pos=xi+yi*height;
 								bgColor = target[pos];
 								bga = bgColor >> 24 & 0xFF ;
-								if (bga < 0xFF || zi > buffer[pos])
+								if (bga < 0xFF)
 								{
 									target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                   << 24 |
 		                  					       ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
 						  					       ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
 						  					       ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
 						                          );
+								}else if (zi > buffer[pos])
+								{ //bgAlpha=255
+									target[pos] = ( 0xFF000000                                                  |
+		                  					       ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+						  					       ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
+						  					       ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
+								                  );
 								}
 								zi += dz;
 							}
