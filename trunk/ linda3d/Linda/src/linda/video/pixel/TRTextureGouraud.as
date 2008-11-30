@@ -8,6 +8,7 @@
 	import linda.material.ITexture;
 	import linda.math.Vertex4D;
 	import linda.video.ITriangleRenderer;
+	import linda.video.TriangleRenderer;
 	public class TRTextureGouraud extends TriangleRenderer implements ITriangleRenderer
 	{
 		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int): void
@@ -251,7 +252,7 @@
 									{
 										textel = bitmapData.getPixel (ui, vi);
 									}
-									target[pos] = (0xFF000000 |
+									target[pos] = (
 								                   (((textel >> 16 & 0xFF) * ri) >> 8) << 16 |
 									               (((textel >> 8 & 0xFF) * gi) >> 8)  << 8  |
 									               ((textel & 0xFF) * bi) >> 8);
@@ -393,7 +394,7 @@
 								{
 									textel = bitmapData.getPixel (ui, vi);
 								}
-								target[pos] = (0xFF000000 |
+								target[pos] = (
 								               (((textel >> 16 & 0xFF) * ri) >> 8) << 16 |
 									           (((textel >> 8 & 0xFF) * gi) >> 8)  << 8  |
 									           ((textel & 0xFF) * bi) >> 8);

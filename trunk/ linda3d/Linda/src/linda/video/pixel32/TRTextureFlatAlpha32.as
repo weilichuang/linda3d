@@ -1,9 +1,10 @@
-﻿package linda.video.pixel
+﻿package linda.video.pixel32
 {
 	import __AS3__.vec.Vector;
 	
 	import linda.material.ITexture;
 	import linda.video.ITriangleRenderer;
+	import linda.video.TriangleRenderer;
 	import linda.math.Vertex4D;
 	
 	import flash.display.*;
@@ -180,7 +181,7 @@
 							
 							side = 1 ;
 						}
-						for (yi = ystart; yi <= yend; yi +=1)
+						for (yi = ystart; yi < yend; yi +=1)
 						{
 							ui = ul;
 							vi = vl;
@@ -203,21 +204,35 @@
 								pos=xi+yi*height;
 								bgColor = target[pos];
 								bga = bgColor >> 24 & 0xFF ;
-								if (bga < 0xFF || zi > buffer[pos])
+								if (bga < 0xFF)
 								{
 									if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel (ui / zi, vi / zi);
+										textel = bitmapData.getPixel (int(ui / zi), int(vi / zi));
 									}else
 									{
-										textel = bitmapData.getPixel (ui, vi);
+										textel = bitmapData.getPixel (int(ui), int(vi));
 									}
 									target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                                        << 24 |
 		                  					       ((alpha * (textel >> 16 & 0xFF) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8)  << 16 | 
 						  					       ((alpha * (textel >> 8 & 0xFF)  + invAlpha * (bgColor >> 8 & 0xFF))  >> 8)  << 8  | 
 						  					       ((alpha * (textel & 0xFF)       + invAlpha * (bgColor & 0xFF))       >> 8)
 						                          );
-								  }
+								}else if (zi > buffer[pos])
+								{ //bgAlpha=255
+								    if(perspectiveCorrect)
+									{
+										textel = bitmapData.getPixel (int(ui / zi), int(vi / zi));
+									}else
+									{
+										textel = bitmapData.getPixel (int(ui), int(vi));
+									} 
+		                  			target[pos] =( 0xFF000000                                                                         |
+		                  					       ((alpha * (textel >> 16 & 0xFF) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8)  << 16 | 
+						  					       ((alpha * (textel >> 8 & 0xFF)  + invAlpha * (bgColor >> 8 & 0xFF))  >> 8)  << 8  | 
+						  					       ((alpha * (textel & 0xFF)       + invAlpha * (bgColor & 0xFF))       >> 8)
+						                          );
+								}
 								  ui += du;
 								  vi += dv;
 								  zi += dz;
@@ -294,7 +309,7 @@
 						ul = u0; vl = v0;
 						ur = u0; vr = v0;
 					}
-					for (yi = ystart; yi <= yend; yi +=1)
+					for (yi = ystart; yi < yend; yi +=1)
 					{
 							ui = ul;
 							vi = vl;
@@ -317,21 +332,35 @@
 								pos=xi+yi*height;
 								bgColor = target[pos];
 								bga = bgColor >> 24 & 0xFF ;
-								if (bga < 0xFF || zi > buffer[pos])
+								if (bga < 0xFF)
 								{
 									if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel (ui / zi, vi / zi);
+										textel = bitmapData.getPixel (int(ui / zi), int(vi / zi));
 									}else
 									{
-										textel = bitmapData.getPixel (ui, vi);
+										textel = bitmapData.getPixel (int(ui), int(vi));
 									}
 									target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                                        << 24 |
 		                  					       ((alpha * (textel >> 16 & 0xFF) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8)  << 16 | 
 						  					       ((alpha * (textel >> 8 & 0xFF)  + invAlpha * (bgColor >> 8 & 0xFF))  >> 8)  << 8  | 
 						  					       ((alpha * (textel & 0xFF)       + invAlpha * (bgColor & 0xFF))       >> 8)
 						                          );
-								  }
+								}else if (zi > buffer[pos])
+								{ //bgAlpha=255
+								    if(perspectiveCorrect)
+									{
+										textel = bitmapData.getPixel (int(ui / zi), int(vi / zi));
+									}else
+									{
+										textel = bitmapData.getPixel (int(ui), int(vi));
+									} 
+		                  			target[pos] =( 0xFF000000                                                                         |
+		                  					       ((alpha * (textel >> 16 & 0xFF) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8)  << 16 | 
+						  					       ((alpha * (textel >> 8 & 0xFF)  + invAlpha * (bgColor >> 8 & 0xFF))  >> 8)  << 8  | 
+						  					       ((alpha * (textel & 0xFF)       + invAlpha * (bgColor & 0xFF))       >> 8)
+						                          );
+								}
 								ui += du;
 								vi += dv;
 								zi += dz;

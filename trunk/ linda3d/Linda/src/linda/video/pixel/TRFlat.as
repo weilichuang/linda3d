@@ -4,13 +4,13 @@
 	
 	import linda.math.Vertex4D;
 	import linda.video.ITriangleRenderer;
+	import linda.video.TriangleRenderer;
 	public class TRFlat extends TriangleRenderer implements ITriangleRenderer
 	{
 		public function drawIndexedTriangleList (vertices : Vector.<Vertex4D>, vertexCount : int, indexList : Vector.<int>, indexCount : int): void
 		{
 			var color:uint;
-			
-			//var xstart : int,xend : int;
+			var xstart : int,xend : int;
 			var ystart : int,yend : int;
 			var dyr : Number,dyl : Number;
 			var dxdyl : Number,dxdyr : Number;
@@ -93,7 +93,7 @@
 				z1 = vt1.z;
 				z2 = vt2.z;
 				
-				color = 0xFF000000 | vt0.r << 16 | vt0.g << 8 | vt0.b ;
+				color = vt0.r << 16 | vt0.g << 8 | vt0.b ;
 				
 				side = 0;
 
