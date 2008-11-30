@@ -55,7 +55,7 @@ class Main
 	{
 		prepare();
 		
-		driver = new VideoSoftware(new Dimension2D(500, 500));
+		driver = new VideoSoftware32(new Dimension2D(500, 500));
         driver.setPerspectiveCorrectDistance(500);
         driver.setMipMapDistance(400);
             
