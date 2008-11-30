@@ -212,7 +212,7 @@
 									{
 										textel = bitmapData.getPixel (ui, vi);
 									}
-									target[pos] = (((alpha * bga) >> 8)                                                        << 24 |
+									target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                                        << 24 |
 		                  					       ((alpha * (textel >> 16 & 0xFF) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8)  << 16 | 
 						  					       ((alpha * (textel >> 8 & 0xFF)  + invAlpha * (bgColor >> 8 & 0xFF))  >> 8)  << 8  | 
 						  					       ((alpha * (textel & 0xFF)       + invAlpha * (bgColor & 0xFF))       >> 8)
@@ -326,7 +326,7 @@
 									{
 										textel = bitmapData.getPixel (ui, vi);
 									}
-									target[pos] = (((alpha * bga) >> 8)                                                        << 24 |
+									target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                                        << 24 |
 		                  					       ((alpha * (textel >> 16 & 0xFF) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8)  << 16 | 
 						  					       ((alpha * (textel >> 8 & 0xFF)  + invAlpha * (bgColor >> 8 & 0xFF))  >> 8)  << 8  | 
 						  					       ((alpha * (textel & 0xFF)       + invAlpha * (bgColor & 0xFF))       >> 8)
