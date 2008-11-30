@@ -1,21 +1,20 @@
-﻿package linda.video.pixel;
+﻿package linda.video.pixel32;
 
 	import flash.Vector;
 	
 	import linda.math.Vertex4D;
 	import linda.video.ITriangleRenderer;
 	import linda.video.TriangleRenderer;
-	class TRGouraudAlpha extends TriangleRenderer,implements ITriangleRenderer
+	class TRGouraud32 extends TriangleRenderer,implements ITriangleRenderer
 	{
 		public function new()
 		{
 			super();
 		}
-		public function drawIndexedTriangleList (vertices : Vector<Vertex4D>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int) : Void
+		public function drawIndexedTriangleList (vertices : Vector<Vertex4D>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int): Void
 		{
-			var bga : Int;
-			var bgColor : UInt;
-            var xstart : Int,xend : Int;
+			var color:UInt;
+			var xstart : Int,xend : Int;
 			var ystart : Int,yend : Int;
 			var dyr : Float,dyl : Float;
 			var dxdyl : Float,dxdyr : Float;
@@ -43,7 +42,7 @@
 			var rr : Float,gr : Float,br : Float;
 
 			var dr : Float,dg : Float,db : Float;
-
+			
 			var vt0:Vertex4D;
 		    var vt1:Vertex4D;
 		    var vt2:Vertex4D;
@@ -117,16 +116,15 @@
 				z0 = vt0.z;
 				z1 = vt1.z;
 				z2 = vt2.z;
-
-				side = 0;
-
+				
 				r0 = vt0.r; g0 = vt0.g; b0 = vt0.b;
 				r1 = vt1.r; g1 = vt1.g; b1 = vt1.b;
 				r2 = vt2.r; g2 = vt2.g; b2 = vt2.b;
-
+				
 				ystart = y0;
 				ys     = y1;
                 yend   = y2;
+				side = 0;
 				if(type==0)
 				{
 						dyl = 1 / (y1 - y0);
@@ -142,10 +140,10 @@
 						dgdyr = (g2 - g0) * dyr;
 						dbdyr = (b2 - b0) * dyr;
 						xl = x0 ; xr = x0 ;
-						zl = z0;
-						rl = r0; gl = g0; bl = b0;
-						rr = r0; gr = g0; br = b0;
-						zr = z0;
+						zl = z0 ; zr = z0 ;
+						rl = r0 ; gl = g0 ; bl = b0 ;
+						rr = r0 ; gr = g0 ; br = b0 ;
+
 						if (dxdyr < dxdyl)
 						{
 							temp = dxdyl; dxdyl = dxdyr; dxdyr = temp;
@@ -193,12 +191,8 @@
 								pos=xi+yi*height;
 								if (zi > buffer[pos])
 								{
-									bgColor = target[pos];
-									target[pos] = (
-		                  					       ((alpha * Std.int(ri) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
-						  					       ((alpha * Std.int(gi) + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
-						  					       ((alpha * Std.int(bi) + invAlpha * (bgColor & 0xFF)) >> 8)
-						                          );
+									target[pos]=(0xFF000000 | Std.int(ri) << 16 | Std.int(gi) << 8 | Std.int(bi) );
+									buffer[pos]=zi;
 								}
 								zi += dz;
 								ri += dr; gi += dg; bi += db;
@@ -239,7 +233,7 @@
 									br = b2+dbdyr;
 								}
 							}
-					}
+						}
 				}
 				else
 				{
@@ -279,7 +273,6 @@
 						rl = r0; gl = g0; bl = b0;
 						rr = r0; gr = g0; br = b0;
 					}
-					
 						for (yi in ystart...yend)
 						{
 							zi = zl;
@@ -306,15 +299,8 @@
 								pos=xi+yi*height;
 								if (zi > buffer[pos])
 								{
-									bgColor = target[pos];
-									
-									target[pos] = (
-		                  					       ((alpha * Std.int(ri) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
-						  					       ((alpha * Std.int(gi) + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
-						  					       ((alpha * Std.int(bi) + invAlpha * (bgColor & 0xFF)) >> 8)
-						                          );
-						            			  
-									
+									target[pos]=(0xFF000000 | Std.int(ri) << 16 | Std.int(gi) << 8 | Std.int(bi) );
+									buffer[pos]=zi;
 								}
 								zi += dz;
 								ri += dr; gi += dg; bi += db;
@@ -326,7 +312,7 @@
 							rr += drdyr; gr += dgdyr; br += dbdyr;
 							zr += dzdyr;
 						}
-				} 
+				}
 			}
 		}
 	}

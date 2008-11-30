@@ -1,10 +1,11 @@
 ﻿package linda.video.pixel;
 	import flash.Vector;
-	
+	import flash.display.BitmapData;
 	import linda.material.ITexture;
 	import linda.math.Vertex4D;
 	import linda.video.ITriangleRenderer;
-	import flash.display.BitmapData;
+	import linda.video.TriangleRenderer;
+	
 	class TRTextureFlatAlpha extends TriangleRenderer,implements ITriangleRenderer
 	{
 		public function new()

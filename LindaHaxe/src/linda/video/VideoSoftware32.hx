@@ -7,11 +7,15 @@
 	
 	import linda.math.Dimension2D;
 	import linda.math.Matrix4;
-	import linda.video.pixel.TRFlatAlpha32;
-	import linda.video.pixel.TRGouraudAlpha32;
-	import linda.video.pixel.TRTextureFlatAlpha32;
-	import linda.video.pixel.TRTextureGouraudAlpha32;
-	import linda.video.pixel.TRWire32;
+	import linda.video.pixel32.TRFlatAlpha32;
+	import linda.video.pixel32.TRGouraudAlpha32;
+	import linda.video.pixel32.TRTextureFlatAlpha32;
+	import linda.video.pixel32.TRTextureGouraudAlpha32;
+	import linda.video.pixel32.TRWire32;
+	import linda.video.pixel32.TRFlat32;
+	import linda.video.pixel32.TRGouraud32;
+	import linda.video.pixel32.TRTextureFlat32;
+	import linda.video.pixel32.TRTextureGouraud32;
 	class VideoSoftware32 extends VideoSoftware
 	{
 		public function new(size:Dimension2D)
@@ -20,10 +24,14 @@
 			
 			target.bitmapData = new BitmapData (screenSize.width, screenSize.height, true, 0x0);
 			
-			renderers [TRType.WIRE] = new TRWire32 ();
-			renderers [TRType.FLAT_ALPHA] = new TRFlatAlpha32 ();
-			renderers [TRType.GOURAUD_ALPHA] = new TRGouraudAlpha32 ();
-			renderers [TRType.TEXTURE_FLAT_ALPHA] = new TRTextureFlatAlpha32 ();
+			renderers [TRType.WIRE]                  = new TRWire32 ();
+			renderers [TRType.FLAT]                  = new TRFlat32 ();
+			renderers [TRType.GOURAUD]               = new TRGouraud32 ();
+			renderers [TRType.TEXTURE_FLAT]          = new TRTextureFlat32 ();
+			renderers [TRType.TEXTURE_GOURAUD]       = new TRTextureGouraud32 ();
+			renderers [TRType.FLAT_ALPHA]            = new TRFlatAlpha32 ();
+			renderers [TRType.GOURAUD_ALPHA]         = new TRGouraudAlpha32 ();
+			renderers [TRType.TEXTURE_FLAT_ALPHA]    = new TRTextureFlatAlpha32 ();
 			renderers [TRType.TEXTURE_GOURAUD_ALPHA] = new TRTextureGouraudAlpha32 ();
 			
 			setVector(targetVector,bufferVector);

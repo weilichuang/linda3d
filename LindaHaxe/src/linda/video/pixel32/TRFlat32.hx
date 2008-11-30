@@ -1,12 +1,10 @@
-﻿package linda.video.pixel;
-
+﻿package linda.video.pixel32;
 	import flash.Vector;
-	import haxe.Log;
-	
+
 	import linda.math.Vertex4D;
 	import linda.video.ITriangleRenderer;
 	import linda.video.TriangleRenderer;
-	class TRFlat extends TriangleRenderer,implements ITriangleRenderer
+	class TRFlat32 extends TriangleRenderer,implements ITriangleRenderer
 	{
 		public function new()
 		{
@@ -100,7 +98,7 @@
 				z1 = vt1.z;
 				z2 = vt2.z;
 				
-				color = vt0.r << 16 | vt0.g << 8 | vt0.b ;
+				color = 0xFF000000 | vt0.r << 16 | vt0.g << 8 | vt0.b ;
 				
 				side = 0;
 

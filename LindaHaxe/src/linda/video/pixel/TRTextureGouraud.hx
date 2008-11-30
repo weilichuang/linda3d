@@ -1,12 +1,12 @@
 ﻿package linda.video.pixel;
 
 	import flash.Vector;
-
 	import flash.display.BitmapData;
 	
 	import linda.material.ITexture;
 	import linda.math.Vertex4D;
 	import linda.video.ITriangleRenderer;
+	import linda.video.TriangleRenderer;
 	class TRTextureGouraud extends TriangleRenderer,implements ITriangleRenderer
 	{
 		public function new()
@@ -259,8 +259,7 @@
 									{
 										textel = bitmapData.getPixel (Std.int(ui), Std.int(vi));
 									}
-									target[pos] = (0xFF000000 |
-								                   (((textel >> 16 & 0xFF) * Std.int(ri)) >> 8) << 16 |
+									target[pos] = ((((textel >> 16 & 0xFF) * Std.int(ri)) >> 8) << 16 |
 									               (((textel >> 8 & 0xFF) * Std.int(gi)) >> 8)  << 8  |
 									               ((textel & 0xFF) * Std.int(bi)) >> 8);
 									buffer[pos] = zi;
@@ -403,10 +402,9 @@
 								{
 									textel = bitmapData.getPixel (Std.int(ui), Std.int(vi));
 								}
-								target[pos] = (0xFF000000 |
-								                   (((textel >> 16 & 0xFF) * Std.int(ri)) >> 8) << 16 |
-									               (((textel >> 8 & 0xFF) * Std.int(gi)) >> 8)  << 8  |
-									               ((textel & 0xFF) * Std.int(bi)) >> 8);
+								target[pos] = ((((textel >> 16 & 0xFF) * Std.int(ri)) >> 8) << 16 |
+									           (((textel >> 8 & 0xFF) * Std.int(gi)) >> 8)  << 8  |
+									           ((textel & 0xFF) * Std.int(bi)) >> 8);
 								buffer[pos] = zi;
 							}
 							ui += du; vi += dv; zi += dz;

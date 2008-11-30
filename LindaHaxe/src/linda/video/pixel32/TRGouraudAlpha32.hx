@@ -1,11 +1,11 @@
-﻿package linda.video.pixel;
+﻿package linda.video.pixel32;
 
 	import flash.Vector;
 	
-	import linda.math.Vertex4D;
 	import linda.video.ITriangleRenderer;
 	import linda.video.TriangleRenderer;
-	class TRGouraudAlpha extends TriangleRenderer,implements ITriangleRenderer
+	import linda.math.Vertex4D;
+	class TRGouraudAlpha32 extends TriangleRenderer,implements ITriangleRenderer
 	{
 		public function new()
 		{
@@ -51,6 +51,7 @@
 			var side : Int;
 		 	var ys : Int;
 		 	var type : Int;
+            var oldZ:Float;
             var pos:Int;
 			var n0:Int;
 		 	var n1:Int;
@@ -117,12 +118,12 @@
 				z0 = vt0.z;
 				z1 = vt1.z;
 				z2 = vt2.z;
-
-				side = 0;
-
+				
 				r0 = vt0.r; g0 = vt0.g; b0 = vt0.b;
 				r1 = vt1.r; g1 = vt1.g; b1 = vt1.b;
 				r2 = vt2.r; g2 = vt2.g; b2 = vt2.b;
+				
+				side = 0;
 
 				ystart = y0;
 				ys     = y1;
@@ -166,14 +167,13 @@
 							
 							side = 1;
 						}
-					
 						for (yi in ystart...yend)
 						{
 							ri = rl; gi = gl; bi = bl;
 							zi = zl;
 							xstart = Std.int(xl);
 							xend = Std.int(xr);
-							dx = (xend - xstart);
+							dx = (xr - xl);
 							if (dx > 0)
 							{
 								dx = 1 / dx;
@@ -191,13 +191,14 @@
 							for (xi in xstart...xend)
 							{
 								pos=xi+yi*height;
-								if (zi > buffer[pos])
+								bgColor = target[pos];
+								bga = bgColor >> 24 & 0xFF ;
+								if (bga < 0xFF || zi > buffer[pos])
 								{
-									bgColor = target[pos];
-									target[pos] = (
-		                  					       ((alpha * Std.int(ri) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
-						  					       ((alpha * Std.int(gi) + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
-						  					       ((alpha * Std.int(bi) + invAlpha * (bgColor & 0xFF)) >> 8)
+									target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                             << 24 |
+		                  					       ((Std.int(alpha * ri) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+						  					       ((Std.int(alpha * gi) + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
+						  					       ((Std.int(alpha * bi) + invAlpha * (bgColor & 0xFF)) >> 8)
 						                          );
 								}
 								zi += dz;
@@ -239,7 +240,7 @@
 									br = b2+dbdyr;
 								}
 							}
-					}
+						}
 				}
 				else
 				{
@@ -279,14 +280,13 @@
 						rl = r0; gl = g0; bl = b0;
 						rr = r0; gr = g0; br = b0;
 					}
-					
-						for (yi in ystart...yend)
-						{
+					for (yi in ystart...yend)
+					{
 							zi = zl;
 							ri = rl; gi = gl; bi = bl;
 							xstart = Std.int(xl);
 							xend = Std.int(xr);
-							dx = (xend - xstart);
+							dx = (xr - xl);
 							if (dx > 0)
 							{
 								dx = 1 / dx;
@@ -304,17 +304,15 @@
 							for (xi in xstart...xend)
 							{
 								pos=xi+yi*height;
-								if (zi > buffer[pos])
+								bgColor = target[pos];
+								bga = bgColor >> 24 & 0xFF ;
+								if (bga < 0xFF || zi > buffer[pos])
 								{
-									bgColor = target[pos];
-									
-									target[pos] = (
-		                  					       ((alpha * Std.int(ri) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
-						  					       ((alpha * Std.int(gi) + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
-						  					       ((alpha * Std.int(bi) + invAlpha * (bgColor & 0xFF)) >> 8)
+									target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                             << 24 |
+		                  					       ((Std.int(alpha * ri) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+						  					       ((Std.int(alpha * gi) + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
+						  					       ((Std.int(alpha * bi) + invAlpha * (bgColor & 0xFF)) >> 8)
 						                          );
-						            			  
-									
 								}
 								zi += dz;
 								ri += dr; gi += dg; bi += db;
@@ -325,9 +323,8 @@
 							xr += dxdyr;
 							rr += drdyr; gr += dgdyr; br += dbdyr;
 							zr += dzdyr;
-						}
+					}
 				} 
 			}
 		}
 	}
-

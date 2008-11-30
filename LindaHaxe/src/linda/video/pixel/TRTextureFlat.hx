@@ -1,11 +1,12 @@
 ﻿package linda.video.pixel;
 
 	import flash.Vector;
-	
+	import flash.display.BitmapData;
 	import linda.material.ITexture;
 	import linda.math.Vertex4D;
 	import linda.video.ITriangleRenderer;
-	import flash.display.BitmapData;
+	import linda.video.TriangleRenderer;
+	
 	class TRTextureFlat extends TriangleRenderer,implements ITriangleRenderer
 	{
 		public function new()
@@ -211,10 +212,11 @@
 								{
 									if(perspectiveCorrect)
 									{
-										target[pos] = bitmapData.getPixel32 (Std.int(ui / zi), Std.int(vi / zi));
+										//Todo don`t use getPixel32
+										target[pos] = bitmapData.getPixel (Std.int(ui / zi), Std.int(vi / zi));
 									}else
 									{
-										target[pos] = bitmapData.getPixel32 (Std.int(ui), Std.int(vi));
+										target[pos] = bitmapData.getPixel (Std.int(ui), Std.int(vi));
 									}
 									buffer[pos] = zi;
 								}
@@ -322,10 +324,10 @@
 								{
 									if(perspectiveCorrect)
 									{
-										target[pos] = bitmapData.getPixel32 (Std.int(ui / zi), Std.int(vi / zi));
+										target[pos] = bitmapData.getPixel (Std.int(ui / zi), Std.int(vi / zi));
 									}else
 									{
-										target[pos] = bitmapData.getPixel32 (Std.int(ui), Std.int(vi));
+										target[pos] = bitmapData.getPixel (Std.int(ui), Std.int(vi));
 									}
 									buffer[pos] = zi;
 								}

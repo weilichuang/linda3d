@@ -1,9 +1,10 @@
-﻿package linda.video.pixel;
+﻿package linda.video.pixel32;
 
 	import flash.Vector;
 	
 	import linda.video.ITriangleRenderer;
 	import linda.math.Vertex4D;
+	import linda.video.TriangleRenderer;
     class TRFlatAlpha32 extends TriangleRenderer,implements ITriangleRenderer
 	{
 		public function new()

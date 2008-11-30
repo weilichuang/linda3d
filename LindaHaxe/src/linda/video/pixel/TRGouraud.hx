@@ -4,6 +4,7 @@
 	
 	import linda.math.Vertex4D;
 	import linda.video.ITriangleRenderer;
+	import linda.video.TriangleRenderer;
 	class TRGouraud extends TriangleRenderer,implements ITriangleRenderer
 	{
 		public function new()
@@ -190,7 +191,7 @@
 								pos=xi+yi*height;
 								if (zi > buffer[pos])
 								{
-									target[pos]=(0xFF000000 | Std.int(ri) << 16 | Std.int(gi) << 8 | Std.int(bi) );
+									target[pos]=(Std.int(ri) << 16 | Std.int(gi) << 8 | Std.int(bi) );
 									buffer[pos]=zi;
 								}
 								zi += dz;
@@ -298,7 +299,7 @@
 								pos=xi+yi*height;
 								if (zi > buffer[pos])
 								{
-									target[pos]=(0xFF000000 | Std.int(ri) << 16 | Std.int(gi) << 8 | Std.int(bi) );
+									target[pos]=(Std.int(ri) << 16 | Std.int(gi) << 8 | Std.int(bi) );
 									buffer[pos]=zi;
 								}
 								zi += dz;

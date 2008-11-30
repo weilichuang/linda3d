@@ -1,4 +1,4 @@
-﻿package linda.video.pixel;
+﻿package linda.video;
 
 	import flash.Vector;
 	
