@@ -213,10 +213,10 @@
 								{
 									if(perspectiveCorrect)
 									{
-										target[pos] = bitmapData.getPixel32 (Std.int(ui / zi), Std.int(vi / zi));
+										target[pos] = bitmapData.getPixel (Std.int(ui / zi), Std.int(vi / zi));
 									}else
 									{
-										target[pos] = bitmapData.getPixel32 (Std.int(ui), Std.int(vi));
+										target[pos] = bitmapData.getPixel (Std.int(ui), Std.int(vi));
 									}
 									buffer[pos] = zi;
 								}
@@ -324,10 +324,10 @@
 								{
 									if(perspectiveCorrect)
 									{
-										target[pos] = bitmapData.getPixel32 (Std.int(ui / zi), Std.int(vi / zi));
+										target[pos] = bitmapData.getPixel (Std.int(ui / zi), Std.int(vi / zi));
 									}else
 									{
-										target[pos] = bitmapData.getPixel32 (Std.int(ui), Std.int(vi));
+										target[pos] = bitmapData.getPixel (Std.int(ui), Std.int(vi));
 									}
 									buffer[pos] = zi;
 								}

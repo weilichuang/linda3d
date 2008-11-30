@@ -180,13 +180,20 @@
 					pos=x1+y*height;
 					bgColor = target[pos];
 					bga = bgColor >> 24 & 0xFF ;
-					if (bga < 0xFF || z1 > buffer[pos])
-					{ 
+					if (bga < 0xFF)
+					{
 						target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                   << 24 |
 						               ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
 						  			   ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
 						  			   ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
-						              );			 
+						              );
+					}else if (z1 > buffer[pos])
+					{ 
+						target[pos] = ( 0xFF000000                                                   |
+		                  				((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+						  				((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
+						  				((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
+								       );
 					}
 					error += dx;
 					if (error > 0 )
@@ -206,13 +213,20 @@
 					pos=x+y0*height;
 					bgColor = target[pos];
 					bga = bgColor >> 24 & 0xFF ;
-					if (bga < 0xFF || z0 > buffer[pos])
+					if (bga < 0xFF)
 					{
 						target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                   << 24 |
 						               ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
 						  			   ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
 						  			   ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
 						              );
+					}else if (z0 > buffer[pos])
+					{ 
+						target[pos] = ( 0xFF000000                                                   |
+		                  				((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+						  				((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
+						  				((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
+								       );
 					}
 					error += dy;
 					if (error > 0 )
