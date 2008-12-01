@@ -25,14 +25,14 @@ package mini3d.math
 		{
 			x-=other.x;
 			y-=other.y;
-			z==other.z;
+			z-=other.z;
 		}
 		
 		public function incrementBy(other:Vector3D):void
 		{
-			x-=other.x;
-			y-=other.y;
-			z==other.z;
+			x+=other.x;
+			y+=other.y;
+			z+=other.z;
 		}
 		
 		public function negate():void
@@ -55,8 +55,7 @@ package mini3d.math
 		public function normalize():void
 		{
 			var n : Number = Math.sqrt (x * x + y * y + z * z);
-			if (n == 0) return;
-			n = 1 / n;
+			if (n == 0) n=0 else n=1/n;
 			x *= n;
 			y *= n;
 			z *= n;

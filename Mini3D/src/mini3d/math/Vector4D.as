@@ -25,6 +25,10 @@ package mini3d.math
 		{
 			return new Vector4D(x,y,z,w);
 		}
+		public function dotProduct(other:Vector4D):Number
+		{
+			return (x * other.x + y * other.y + z * other.z + w * other.w);
+		}
 
 	}
 }
