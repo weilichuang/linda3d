@@ -20,24 +20,23 @@ package linda.math;
 		{
 			return new Vector3(x+other.x,y+other.y,z+other.z);
 		}
-		
 		public inline function decrementBy(other:Vector3):Void
 		{
-			x-=other.x;
-			y-=other.y;
-			z==other.z;
+			x -= other.x;
+			y -= other.y;
+			z -= other.z;
 		}
 		public inline function incrementBy(other:Vector3):Void
 		{
-			x-=other.x;
-			y-=other.y;
-			z==other.z;
+			x += other.x;
+			y += other.y;
+			z += other.z;
 		}
 		public inline function negate():Void
 		{
-			x=-x;
-			y=-y;
-			z=-z;
+			x = -x;
+			y = -y;
+			z = -z;
 		}
 		public inline function scale(s:Float):Vector3
 		{
@@ -45,9 +44,9 @@ package linda.math;
 		}
 		public inline function scaleBy(s:Float):Void
 		{
-			x*=s;
-			y*=s;
-			z*=s;
+			x *= s;
+			y *= s;
+			z *= s;
 		}
 		public inline function normalize():Void
 		{
@@ -67,7 +66,7 @@ package linda.math;
 		}
 		public inline function getLength() : Float
 		{
-			return Math.sqrt (x * x + y * y + z * z);
+			return MathUtil.sqrt (x * x + y * y + z * z);
 		}
 		public inline function getLengthSquared() : Float
 		{
@@ -78,13 +77,13 @@ package linda.math;
 			var vx : Float = v0.x - v1.x;
 			var vy : Float = v0.y - v1.y;
 			var vz : Float = v0.z - v1.z;
-			return Math.sqrt(vx * vx + vy * vy + vz * vz);
+			return MathUtil.sqrt(vx * vx + vy * vy + vz * vz);
 		}
 		public inline function copy(other:Vector3):Void
 		{
-			this.x=other.x;
-			this.y=other.y;
-			this.z=other.z;
+			this.x = other.x;
+			this.y = other.y;
+			this.z = other.z;
 		}
 		public inline function clone():Vector3
 		{

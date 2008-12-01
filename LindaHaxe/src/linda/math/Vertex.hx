@@ -71,7 +71,7 @@ import flash.geom.Point;
 		}
 		public inline function getColor () : UInt
 		{
-			return ((r << 16) | (g << 8) | b);
+			return (r << 16 | g << 8 | b);
 		}
 		public inline function setColor (c : UInt) : UInt
 		{

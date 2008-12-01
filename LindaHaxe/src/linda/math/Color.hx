@@ -23,10 +23,6 @@
 			b = color & 0xFF ;
 			return color;
 		}
-		public function toString () : String
-		{
-			return "Color = " + color + " ,r= " + r + " ,g= " + g + " ,b= " + b ;
-		}
 		public inline function setRGB (r : Int, g : Int, b : Int) : Void
 		{
 			color = (r << 16 | g << 8 | b);
@@ -63,5 +59,9 @@
 			c.g=Std.int(g*d+inv*other.g);
 			c.b=Std.int(b*d+inv*other.b);
 			return c;
+		}
+		public function toString () : String
+		{
+			return "Color = " + color + " ,r= " + r + " ,g= " + g + " ,b= " + b ;
 		}
 	}

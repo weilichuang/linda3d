@@ -213,12 +213,6 @@
 			m31 = translation.y;
 			m32 = translation.z;
 		}
-		public inline function setInverseTranslation (translation : Vector3) : Void
-		{
-			m30 = -translation.x;
-			m31 = -translation.y;
-			m32 = -translation.z;
-		}
 		public inline function setScale (scale : Vector3) : Void
 		{
 			m00 = scale.x;
@@ -247,8 +241,7 @@
 			var d : Float = y;
 			var c : Float = Math.cos (y);
 			var rotx : Float, roty : Float, x : Float, z : Float;
-			c = c < 0.? - c : c ;
-			//Math.abs(c);
+			c = MathUtil.abs(c);
 			if (c > 0.0005)
 			{
 				c = 1 / c;
@@ -278,9 +271,9 @@
 			{
 				z += MathUtil.TWO_PI;
 			}
-			x = x * MathUtil.ONE_EIGHTY_OVER_PI;
-			y = y * MathUtil.ONE_EIGHTY_OVER_PI;
-			z = z * MathUtil.ONE_EIGHTY_OVER_PI;
+			x *= MathUtil.ONE_EIGHTY_OVER_PI;
+			y *= MathUtil.ONE_EIGHTY_OVER_PI;
+			z *= MathUtil.ONE_EIGHTY_OVER_PI;
 			return new Vector3 (x, y, z);
 		}
 		public inline function getTranslation () : Vector3
@@ -391,7 +384,7 @@
 			m.m33 = 1.;
 			return m;
 		}
-		public inline function multiplyE (other : Matrix4) : Void
+		public inline function multiplyBy (other : Matrix4) : Void
 		{
 			var n00 : Float = m00; 
 			var n01 : Float = m01; 
@@ -426,7 +419,7 @@
 			m32 = n02 * other.m30 + n12 * other.m31 + n22 * other.m32 + n32 * other.m33;
 			m33 = n03 * other.m30 + n13 * other.m31 + n23 * other.m32 + n33 * other.m33;
 		}
-		public inline function multiply4x3E (other : Matrix4) : Void
+		public inline function multiply4x3By (other : Matrix4) : Void
 		{
 			var n00 : Float = m00; 
 			var n01 : Float = m01; 

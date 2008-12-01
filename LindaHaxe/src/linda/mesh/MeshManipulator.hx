@@ -133,22 +133,28 @@
 			mesh.recalculateBoundingBox ();
 			var box : AABBox3D = mesh.getBoundingBox ();
 			box.repair ();
-			if (box.isEmpty ()) return;
-			var rect : Rectangle = new Rectangle (box.minX, box.minY, (box.maxX - box.minX) , (box.maxY - box.minY));
-			var bcount : Int = mesh.getMeshBufferCount ();
-			for ( i in 0...bcount)
+			if (box.isEmpty())
 			{
-				var buffer : MeshBuffer = mesh.getMeshBuffer (i);
-				
-				var vertices : Vector<Vertex> = buffer.vertices;
-				var vtx_cnt : Int = vertices.length;
-				
-				for ( j in 0...vtx_cnt)
+				return;
+			}else
+			{
+				var rect : Rectangle = new Rectangle (box.minX, box.minY, (box.maxX - box.minX) , (box.maxY - box.minY));
+				var bcount : Int = mesh.getMeshBufferCount ();
+				for ( i in 0...bcount)
 				{
-					var v : Vertex = vertices[j];
-					v.u = (v.x - rect.x) / rect.width;
-					v.v = (v.y - rect.y) / rect.height;
+					var buffer : MeshBuffer = mesh.getMeshBuffer (i);
+				
+					var vertices : Vector<Vertex> = buffer.vertices;
+					var vtx_cnt : Int = vertices.length;
+				
+					for ( j in 0...vtx_cnt)
+					{
+						var v : Vertex = vertices[j];
+						v.u = (v.x - rect.x) / rect.width;
+						v.v = (v.y - rect.y) / rect.height;
+					}
 				}
+				rect = null;
 			}
 		}
 		public static inline function unwrapUVMeshBuffer (buffer : MeshBuffer) : Void
@@ -156,15 +162,21 @@
 			buffer.recalculateBoundingBox ();
 			var box : AABBox3D = buffer.boundingBox;
 			box.repair ();
-			if (box.isEmpty ()) return;
-			var rect : Rectangle = new Rectangle (box.minX, box.minY, (box.maxX - box.minX) , (box.maxY - box.minY));
-			var vtx_cnt : Int = buffer.vertices.length;
-			var vertices : Vector<Vertex> = buffer.vertices;
-			for (j in 0...vtx_cnt)
+			if (box.isEmpty())
 			{
-				var v : Vertex = vertices [j];
-				v.u = (v.x - rect.x) / rect.width;
-				v.v = (v.y - rect.y) / rect.height;
+				return;
+			}else
+			{
+			    var rect : Rectangle = new Rectangle (box.minX, box.minY, (box.maxX - box.minX) , (box.maxY - box.minY));
+			    var vtx_cnt : Int = buffer.vertices.length;
+			    var vertices : Vector<Vertex> = buffer.vertices;
+			    for (j in 0...vtx_cnt)
+			    {
+				    var v : Vertex = vertices [j];
+				    v.u = (v.x - rect.x) / rect.width;
+				    v.v = (v.y - rect.y) / rect.height;
+			    }
+				rect = null;
 			}
 		}
 
@@ -189,9 +201,9 @@
 					var v2 : Vertex = vertices [indices [j + 2]];
 					plane.setPlane3 (v0.position , v1.position , v2.position);
 					var normal : Vector3 = plane.normal;
-					normal.x = Math.abs (normal.x);
-					normal.y = Math.abs (normal.y);
-					normal.z = Math.abs (normal.z);
+					normal.x = MathUtil.abs (normal.x);
+					normal.y = MathUtil.abs (normal.y);
+					normal.z = MathUtil.abs (normal.z);
 					// calculate planar mapping worldspace coordinates
 					if (normal.x > normal.y && normal.x > normal.z)
 					{
@@ -339,8 +351,8 @@
 				vertices = _tmpBuffer.vertices;
 				for (j in 0...vtxCnt)
 				{
-					var vertex : Vertex = vertices [j];
-					buffer.vertices[j] = vertex.clone ();
+					var vertex : Vertex = vertices[j];
+					buffer.vertices[j] = vertex.clone();
 				}
 				for (j in 0...idxCnt)
 				{

@@ -9,7 +9,7 @@
 	import linda.mesh.Mesh;
 	import linda.mesh.MeshBuffer;
 	import linda.mesh.MeshManipulator;
-	 class RegularPolygon extends Mesh
+	class RegularPolygon extends Mesh
 	{
 		private var meshBuffer : MeshBuffer;
 		public function new (?radius : Float = 100., ?sides : Int = 5, ?subdivision : Int = 1, ?backface : Bool = false)
@@ -99,5 +99,6 @@
 				ang += radstep;
 				ang_inc += radstep;
 			}
+			tmpPoints = null;
 		}
 	}

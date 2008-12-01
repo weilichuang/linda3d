@@ -43,7 +43,7 @@
 		{
 			return interpolateBuffer;
 		}
-		public function getFrame(frame : MD2Frame) : MD2Frame
+		public inline function getFrame(frame : MD2Frame) : MD2Frame
 		{
 			var data : MD2Frame = new MD2Frame();
 			data.begin = frame.begin << FRAME_SHIFT;
