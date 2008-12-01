@@ -708,9 +708,9 @@ package linda.video
                                                                         }
                                                                 }
                                                         }
-                                                        tv0.r = globalR + (int (amb_r_sum0 * mamb.r) >> 8) + (int (dif_r_sum0 * mdif.r) >> 8);
-                                                        tv0.g = globalG + (int (amb_g_sum0 * mamb.g) >> 8) + (int (dif_g_sum0 * mdif.g) >> 8);
-                                                        tv0.b = globalB + (int (amb_b_sum0 * mamb.b) >> 8) + (int (dif_b_sum0 * mdif.b) >> 8);
+                                                        tv0.r = globalR + (int (amb_r_sum0 * mamb.r + dif_r_sum0 * mdif.r) >> 8);
+                                                        tv0.g = globalG + (int (amb_g_sum0 * mamb.g + dif_g_sum0 * mdif.g) >> 8);
+                                                        tv0.b = globalB + (int (amb_b_sum0 * mamb.b + dif_b_sum0 * mdif.b) >> 8);
                                                         tv1.r = tv0.r;
                                                         tv1.g = tv0.g;
                                                         tv1.b = tv0.b;
@@ -909,15 +909,15 @@ package linda.video
                                                                         }
                                                                 }
                                                         }
-                                                        tv0.r = globalR + (int (amb_r_sum0 * mamb.r) >> 8) + (int (dif_r_sum0 * mdif.r) >> 8);
-                                                        tv0.g = globalG + (int (amb_g_sum0 * mamb.g) >> 8) + (int (dif_g_sum0 * mdif.g) >> 8);
-                                                        tv0.b = globalB + (int (amb_b_sum0 * mamb.b) >> 8) + (int (dif_b_sum0 * mdif.b) >> 8);
-                                                        tv1.r = globalR + (int (amb_r_sum1 * mamb.r) >> 8) + (int (dif_r_sum1 * mdif.r) >> 8);
-                                                        tv1.g = globalG + (int (amb_g_sum1 * mamb.g) >> 8) + (int (dif_g_sum1 * mdif.g) >> 8);
-                                                        tv1.b = globalB + (int (amb_b_sum1 * mamb.b) >> 8) + (int (dif_b_sum1 * mdif.b) >> 8);
-                                                        tv2.r = globalR + (int (amb_r_sum2 * mamb.r) >> 8) + (int (dif_r_sum2 * mdif.r) >> 8);
-                                                        tv2.g = globalG + (int (amb_g_sum2 * mamb.g) >> 8) + (int (dif_g_sum2 * mdif.g) >> 8);
-                                                        tv2.b = globalB + (int (amb_b_sum2 * mamb.b) >> 8) + (int (dif_b_sum2 * mdif.b) >> 8);
+                                                        tv0.r = globalR + (int (amb_r_sum0 * mamb.r + dif_r_sum0 * mdif.r) >> 8);
+                                                        tv0.g = globalG + (int (amb_g_sum0 * mamb.g + dif_g_sum0 * mdif.g) >> 8);
+                                                        tv0.b = globalB + (int (amb_b_sum0 * mamb.b + dif_b_sum0 * mdif.b) >> 8);
+                                                        tv1.r = globalR + (int (amb_r_sum1 * mamb.r + dif_r_sum1 * mdif.r) >> 8);
+                                                        tv1.g = globalG + (int (amb_g_sum1 * mamb.g + dif_g_sum1 * mdif.g) >> 8);
+                                                        tv1.b = globalB + (int (amb_b_sum1 * mamb.b + dif_b_sum1 * mdif.b) >> 8);
+                                                        tv2.r = globalR + (int (amb_r_sum2 * mamb.r + dif_r_sum2 * mdif.r) >> 8);
+                                                        tv2.g = globalG + (int (amb_g_sum2 * mamb.g + dif_g_sum2 * mdif.g) >> 8);
+                                                        tv2.b = globalB + (int (amb_b_sum2 * mamb.b + dif_b_sum2 * mdif.b) >> 8);
                                                 }
                                                 tv0.r = tv0.r > 0xFF ? 0xFF : tv0.r;
                                                 tv0.g = tv0.g > 0xFF ? 0xFF : tv0.g;
