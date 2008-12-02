@@ -35,6 +35,7 @@
 	{
 		private var curRender : ITriangleRenderer;
 		private var renderers : Vector<ITriangleRenderer>;
+		private var lineRender: ILineRenderer;
 		
 		private var target : Bitmap;
 		private var rect:Rectangle;
@@ -118,6 +119,8 @@
 			renderers [TRType.TEXTURE_FLAT_ALPHA]    = new TRTextureFlatAlpha ();
 			renderers [TRType.TEXTURE_GOURAUD_ALPHA] = new TRTextureGouraudAlpha ();
 			
+			lineRender = new LineRenderer();
+			
 			targetVector=new Vector<UInt>();
 			bufferVector=new Vector<Float>();
 			
@@ -182,7 +185,7 @@
 				_transformedLineVertexes[i] = new Vertex4D();
 			}
 			_clippedLineVertices = new Vector<Vertex4D>();
-			_clippedIndices      = new Vector<Int>();
+			_clippedLineIndices      = new Vector<Int>();
 			
 			setScreenSize(size);
 		}
@@ -1288,8 +1291,9 @@
 			var ii:Int = 0;
 			while( ii < indexCount )
 			{
-				v0 = vertices [indexList[ii]];
-				v1 = vertices [indexList[ii + 1]];
+				v0 = vertices[indexList[ii]];
+				v1 = vertices[indexList[ii + 1]];
+				
 				ii += 2;
 
 				tv0 = _transformedLineVertexes [tCount++];
@@ -1300,13 +1304,13 @@
 				tv0.y = m01 * v0.x + m11 * v0.y + m21 * v0.z + m31;
 				tv0.z = m02 * v0.x + m12 * v0.y + m22 * v0.z + m32;
 				tv0.w = m03 * v0.x + m13 * v0.y + m23 * v0.z + m33;
-				
+
 				tv1.x = m00 * v1.x + m10 * v1.y + m20 * v1.z + m30;
 				tv1.y = m01 * v1.x + m11 * v1.y + m21 * v1.z + m31;
 				tv1.z = m02 * v1.x + m12 * v1.y + m22 * v1.z + m32;
 				tv1.w = m03 * v1.x + m13 * v1.y + m23 * v1.z + m33;
 
-
+                
 				var inside : Bool = true;
 				var clipcount : Int = 0;
 				for (p in 0...6)
@@ -1336,9 +1340,15 @@
 					continue;
 				}
 				
-				Log.setColor(0xff0000);
-				Log.trace("inside=" + inside);
-
+				tv0.r = v0.r;
+				tv0.g = v0.g;
+				tv0.b = v0.b;
+				
+				tv1.r = v1.r;
+				tv1.g = v1.g;
+				tv1.b = v1.b;
+                
+				
 				if (clipcount != 0) //clipping required
 				{
 					// put into list for clipping
@@ -1444,9 +1454,7 @@
 						}
 					}
 				}
-				
-				
-
+                
 				//tv0
 				var tmp : Float = 1 / tv0.w ;
 				tv0.x = (tv0.x * csm00) * tmp + csm30;
@@ -1458,17 +1466,14 @@
 				tv1.y = (tv1.y * csm11) * tmp + csm31;
 				tv1.z = tmp;
 
-				// add to _clippedIndices
-				_clippedLineIndices[iCount]  = vCount;
-				iCount++;
-				_clippedLineVertices[vCount] = tv0;
-				vCount++;
-				_clippedLineIndices[iCount]  = vCount;
-				iCount++;
-				_clippedLineVertices[vCount] = tv1;
-				vCount++;
+				// add to _clippedLineIndices
+				_clippedLineIndices [iCount++]  = vCount;
+				_clippedLineVertices[vCount++]  = tv0;
+				_clippedLineIndices [iCount++]  = vCount;
+				_clippedLineVertices[vCount++]  = tv1;
+				
 			}
-			curRender.drawIndexedLineList (_clippedLineVertices, vCount, _clippedLineIndices, iCount);
+			lineRender.drawIndexedLineList (_clippedLineVertices, vCount, _clippedLineIndices, iCount);
 		}
 		public function getDriverType () : String
 		{
@@ -1503,6 +1508,8 @@
 				var render : ITriangleRenderer = renderers [i];
 				render.setHeight(height);
 			}
+			
+			lineRender.setHeight(height);
 		}
 		public function setVector(tv : Vector<UInt>, bv : Vector<Float>) : Void
 		{
@@ -1511,5 +1518,7 @@
 				var render : ITriangleRenderer = renderers[i];
 				render.setVector(tv,bv);
 			}
+			
+			lineRender.setVector(tv,bv);
 		}
 	}

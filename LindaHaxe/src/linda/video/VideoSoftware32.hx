@@ -37,6 +37,8 @@
 			renderers [TRType.TEXTURE_FLAT_ALPHA]    = new TRTextureFlatAlpha32 ();
 			renderers [TRType.TEXTURE_GOURAUD_ALPHA] = new TRTextureGouraudAlpha32 ();
 			
+			lineRender = new LineRender32();
+			
 			setVector(targetVector,bufferVector);
 
 			setScreenSize(size);

@@ -64,6 +64,7 @@
 				}
 			}
 		}
+		
 		private inline function bresenham (x0 : Int, y0 : Int, z0:Float, x1 : Int, y1 : Int, z1:Float, value : UInt ) : Void
 		{
             var pos:Int;
@@ -223,5 +224,6 @@
 				}
 			}
 		}
+	
 	}
 

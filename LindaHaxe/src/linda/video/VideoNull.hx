@@ -44,7 +44,7 @@
 			persDistance   = 400.;
 			mipMapDistance = 500.;
 			
-			_debugColor = 0x00ff00;
+			_debugColor = 0xff0000;
 			ambientColor = new Color (0, 0, 0);
 			
 			_tmp_lines = new Vector<Vertex>(3,true);
@@ -155,12 +155,12 @@
 		
 		public  function draw3DLine (start : Vector3, end : Vector3, color : UInt) : Void
 		{
-			var vertex : Vertex = _tmp_lines [0];
+			var vertex : Vertex = _tmp_lines[0];
 			vertex.x = start.x;
 			vertex.y = start.y;
 			vertex.z = start.z;
 			vertex.color = color;
-			vertex = _tmp_lines [1];
+			vertex = _tmp_lines[1];
 			vertex.x = end.x;
 			vertex.y = end.y;
 			vertex.z = end.z;
@@ -180,7 +180,7 @@
 			vertex.color = color;
 			drawIndexedLineList (_tmp_lines, 3, _tmp_lines_indices, 6);
 		}
-		public  function drawIndexedLineList (vertices : Vector<Vertex>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int) : Void
+		public function drawIndexedLineList (vertices : Vector<Vertex>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int) : Void
 		{
 		}
 		public function getMipMapDistance():Float
