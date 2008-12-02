@@ -1,8 +1,9 @@
 ﻿package linda.mesh.loader;
 
+	import flash.geom.Vector3D;
 	import flash.Vector;
 	
-	import flash.geom.Vector3;
+	import linda.math.Vector3;
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
 	
@@ -17,7 +18,7 @@
 
 	class MD2MeshFileLoader extends MeshLoader
 	{
-		public static inline var MD2_MAGIC_NUMBER:Int = 844121161;
+		public static inline var MD2_MAGIC_Float:Int = 844121161;
 		public static inline var MD2_VERSION     :Int = 8;
 		public static inline var MD2_MAX_VERTS   :Int = 2048;
 		public static inline var MD2_FRAME_SHIFT :Int = 3;
@@ -50,9 +51,8 @@
 			header.offsetGlCommands = data.readInt();
 			header.offsetEnd = data.readInt();
 
-			if (header.magic != MD2_MAGIC_NUMBER || header.version != MD2_VERSION)
+			if (header.magic != MD2_MAGIC_Float || header.version != MD2_VERSION)
 			{
-				throw new Error("MD2 Loader: Wrong file header");
 				return null;
 			}
 		    
@@ -71,12 +71,12 @@
 			data.position=header.offsetTexcoords;
 
 			// uv 
-			var invWidth:Number=1/header.skinWidth;
-			var invHeight:Number=1/header.skinHeight;
-			var uvList:Vector<Vector<Number>> = new Vector<Vector<Number>>(header.numTexcoords,true);
+			var invWidth:Float=1/header.skinWidth;
+			var invHeight:Float=1/header.skinHeight;
+			var uvList:Vector<Vector<Float>> = new Vector<Vector<Float>>(header.numTexcoords,true);
 			for(i in 0...header.numTexcoords)
 			{
-				var uv:Vector<Number> = new Vector<Number>(2,true);
+				var uv:Vector<Float> = new Vector<Float>(2,true);
 				uv[0] = data.readShort()*invWidth;
 				uv[1] = data.readShort()*invHeight;
 				uvList[i] = uv;
@@ -103,8 +103,8 @@
 			
 			// read Vertices	
 		
-			var vertices:Array = new Array(frameCount);
-			var normals:Array = new Array(frameCount);
+			var vertices:Vector<Vector<Vector3>> = new Vector<Vector<Vector3>>(frameCount);
+			var normals:Vector<Vector<Vector3>> = new Vector<Vector<Vector3>>(frameCount);
 			mesh.boxList = new Vector<AABBox3D>(frameCount);
 			
 			var transformation_matrix:Matrix4 = new Matrix4();
@@ -116,23 +116,23 @@
 			for (i in 0...frameCount)
 			{
 				
-				var frame_vertices:Array = new Array();
+				var frame_vertices:Vector<Vector3> = new Vector<Vector3>();
 				vertices[i] = frame_vertices;
 				
-				var frame_normals:Array = new Array();
+				var frame_normals:Vector<Vector3> = new Vector<Vector3>();
 				normals[i] = frame_normals;
 				
 				var box:AABBox3D=new AABBox3D();
 				mesh.boxList[i]=box;
 				
 				// read data into frame
-				var sx:Number = data.readFloat();
-				var sy:Number = data.readFloat();
-				var sz:Number = data.readFloat();
+				var sx:Float = data.readFloat();
+				var sy:Float = data.readFloat();
+				var sz:Float = data.readFloat();
 				
-				var tx:Number = data.readFloat();
-				var ty:Number = data.readFloat();
-				var tz:Number = data.readFloat();
+				var tx:Float = data.readFloat();
+				var ty:Float = data.readFloat();
+				var tz:Float = data.readFloat();
 				
 				var name:String = data.readUTFBytes(16);
 				
@@ -156,9 +156,9 @@
 					
 					if (normal_index > -1 && normal_index < VERTEX_NORMAL_TABLE_SIZE)
 					{
-						nml.x = VERTEX_NORMAL_TABLE[int((normal_index*3)+0)];
-						nml.z = VERTEX_NORMAL_TABLE[int((normal_index*3)+1)];
-						nml.y = VERTEX_NORMAL_TABLE[int((normal_index*3)+2)];
+						nml.x = VERTEX_NORMAL_TABLE[((normal_index*3)+0)];
+						nml.z = VERTEX_NORMAL_TABLE[((normal_index*3)+1)];
+						nml.y = VERTEX_NORMAL_TABLE[((normal_index*3)+2)];
 						
 						transformation_matrix.transformVector(nml);
 					}
@@ -185,13 +185,13 @@
 				frame_data.end = i;
 				frame_data.fps = 7;
 				frame_data.name = '';
-		
+		        
 				// find the current frame's name
 				var sl:Int = name.length;
 				if (sl > 0)
 				{
-					var replace_pattern:RegExp = /([0-9])/g; 
-					frame_data.name = name.replace(replace_pattern,"");
+					var replace_pattern:EReg = new EReg("/([0-9])/g"); 
+					frame_data.name = replace_pattern.replace(name,"");
 
 					if (mesh.frameData.length == 0)
 					{
@@ -489,4 +489,8 @@ class MD2Header
 	public var offsetFrames : Int;
 	public var offsetGlCommands : Int;
 	public var offsetEnd : Int;
+	public function new()
+	{
+		
+	}
 }

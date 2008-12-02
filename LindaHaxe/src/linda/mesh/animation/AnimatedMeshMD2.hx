@@ -1,6 +1,6 @@
 ﻿package linda.mesh.animation;
 
-	import __AS3__.vec.Vector;
+	import flash.Vector;
 	
 	import linda.material.Material;
 	import linda.math.AABBox3D;
@@ -75,7 +75,7 @@
 		{
 			return 1;
 		}
-		public function getIndices() : Vector<int>
+		public function getIndices() : Vector<Int>
 		{
 			return interpolateBuffer.indices;
 		}
@@ -140,7 +140,7 @@
 			interpolateBuffer.boundingBox.interpolate(boxList[secondFrame], boxList[firstFrame], div);
 		}
 		// returns the animated mesh based on a detail level. 0 is the lowest, 255 the highest detail. Note, that some Meshes will ignore the detail level.
-		public inline function getMesh (frame : Int, ?detailLevel : Int = 255, ?startFrameLoop : Int = - 1, ?endFrameLoop : Int = - 1) : IMesh
+		public function getMesh (frame : Int, ?detailLevel : Int = 255, ?startFrameLoop : Int = - 1, ?endFrameLoop : Int = - 1) : IMesh
 		{
 			if (frame >= getFrameCount () - 1) frame = (frame % getFrameCount ());
 			if (startFrameLoop == - 1 && endFrameLoop == - 1)

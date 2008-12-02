@@ -1,5 +1,6 @@
 ﻿package linda.scene;
 
+	import flash.Boot;
 	import flash.Vector;
 	
 	import linda.math.Vector3;
@@ -18,9 +19,18 @@
 	class MeshBufferSceneNode extends SceneNode
 	{
 		private var meshBuffer:MeshBuffer;
-		public function new (mgr:SceneManager,?buffer : MeshBuffer = null)
+		private var useDefaultMaterial:Bool ;
+		private var material:Material;
+		/**
+		 * 
+		 * @param	mgr  SceneManager
+		 * @param	?buffer MeshBuffer
+		 * @param	?useDefaultMaterial
+		 */
+		public function new (mgr:SceneManager,?buffer : MeshBuffer = null,?useDefaultMaterial:Bool=true)
 		{
 			super (mgr);
+			this.useDefaultMaterial = useDefaultMaterial;
 			setMeshBuffer(buffer);
 		}
 		override public function destroy():Void
@@ -35,6 +45,31 @@
 		public  function setMeshBuffer (buffer : MeshBuffer) : Void
 		{
 			meshBuffer = buffer;
+			setMaterial(useDefaultMaterial);
+		}
+		private inline function setMaterial(value:Bool):Void 
+		{
+			material = null;
+			if (meshBuffer!=null)
+			{
+				if (value)
+				{
+					material = meshBuffer.material;
+				}else
+				{
+					material = meshBuffer.material.clone();
+				}
+			}
+		}
+		public function setUseDefaultMaterial(value:Bool):Void 
+		{
+			useDefaultMaterial = value;
+				
+			setMaterial(useDefaultMaterial);
+		}
+		public function getUseDefaultMaterial():Bool 
+		{
+			return useDefaultMaterial;
 		}
 		public function getMeshBuffer () : MeshBuffer
 		{
@@ -42,7 +77,7 @@
 		}
 		override public function onRegisterSceneNode() : Void
 		{
-			if (visible && meshBuffer!=null)
+			if (visible)
 			{
 				if (meshBuffer.material.transparenting)
 				{
@@ -56,11 +91,11 @@
 		}
 		override public function render() : Void
 		{
+			if (meshBuffer == null) return;
+			
 			var driver : IVideoDriver = sceneManager.getVideoDriver();
-
 			driver.setTransformWorld(_absoluteMatrix);
-
-			driver.setMaterial(meshBuffer.material);
+			driver.setMaterial(material);
 			driver.drawMeshBuffer(meshBuffer);
 
 			if(debug)
@@ -74,8 +109,7 @@
 		}
 		override  public function getMaterial (?i : Int = 0) : Material
 		{
-			if (meshBuffer == null) return null;
-			return meshBuffer.material;
+			return material;
 		}
 		override public function getMaterialCount () : Int
 		{

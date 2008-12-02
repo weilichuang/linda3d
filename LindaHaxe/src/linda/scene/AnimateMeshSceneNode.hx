@@ -2,13 +2,13 @@
 
 	import flash.Vector;
 	
-	import flash.geom.Vector3;
-	import flash.utils.getTimer;
-	
-	import linda.events.AnimationEvent;
+	import linda.math.Vector3;
+	import flash.Lib;
+
 	import linda.material.Material;
 	import linda.math.AABBox3D;
 	import linda.mesh.IMesh;
+	import linda.mesh.MeshBuffer;
 	import linda.mesh.animation.AnimatedMeshMD2;
 	import linda.mesh.animation.AnimatedMeshType;
 	import linda.mesh.animation.IAnimateMesh;
@@ -18,58 +18,61 @@
 	class AnimateMeshSceneNode extends SceneNode
 	{
 		private var materials : Vector<Material>;
-		private var mesh : IAnimateMesh;
+		private var useDefaultMaterial:Bool ;
+		
+		private var animateMesh : IAnimateMesh;
+		
 		private var beginFrameTime : Int;
 		private var startFrame : Int;
 		private var endFrame : Int;
 		private var framesPerSecond : Float;
 		private var currentFrameNr : Int;
 		private var looping : Bool;
-		public function new (mgr:SceneManager,?mesh : IAnimateMesh = null)
+		public function new (mgr:SceneManager,?mesh : IAnimateMesh = null,?useDefaultMaterial:Bool=true)
 		{
 			super (mgr);
-			beginFrameTime = getTimer ();
+			beginFrameTime = Lib.getTimer ();
 			startFrame = 0;
 			endFrame = 0;
 			framesPerSecond = 0.025;
 			looping = true;
+			
 			materials = new Vector<Material> ();
-
-			setMesh (mesh);
+			this.useDefaultMaterial = useDefaultMaterial;
+			setAnimateMesh(mesh);
 		}
 		override public function destroy():Void
 		{
 			materials=null;
-			mesh=null;
+			this.animateMesh=null;
 			super.destroy();	
 		}
 		public function setCurrentFrame (frame : Float) : Void
 		{
 			if (frame < startFrame || frame > endFrame) return;
-			currentFrameNr = frame;
-			beginFrameTime = getTimer() - (currentFrameNr - startFrame) / framesPerSecond;
+			currentFrameNr = Std.int(frame);
+			beginFrameTime = Lib.getTimer() - Std.int((currentFrameNr - startFrame) / framesPerSecond);
 		}
-		public function buildFrameFloat (timeMs : Int) : Int
+		public function buildFrameNumber (timeMs : Int) : Int
 		{
 			if (startFrame == endFrame) return startFrame;
 			if (framesPerSecond == 0) return startFrame;
 			if (looping)
 			{
-					var lenInTime : Int = (endFrame - startFrame) / framesPerSecond;
-					return startFrame + ((timeMs - beginFrameTime) % lenInTime) * framesPerSecond;
+					var lenInTime : Int = Std.int((endFrame - startFrame) / framesPerSecond);
+					return Std.int(startFrame + ((timeMs - beginFrameTime) % lenInTime) * framesPerSecond);
 			} else
 			{
 				var deltaFrame : Float = (timeMs - beginFrameTime ) * framesPerSecond;
-				var frame : Int = startFrame + deltaFrame;
+				var frame : Int = Std.int(startFrame + deltaFrame);
 				if (frame > endFrame)
 				{
 					frame = endFrame;
-					dispatchEvent(new AnimationEvent("end"));
 				}
 				return frame;
 			}
 		}
-		public function getFrameFloat () : Int
+		public function getFrameNumber () : Int
 		{
 			return currentFrameNr;
 		}
@@ -109,20 +112,20 @@
 		}
 		override public function onAnimate (timeMs : Int) : Void
 		{
-			currentFrameNr = buildFrameFloat (timeMs);
+			currentFrameNr = buildFrameNumber (timeMs);
 			super.onAnimate (timeMs);
 		}
 		override public function render () : Void
 		{
-			var driver : IVideoDriver = sceneManager.getVideoDriver ();
-			if ( ! mesh) return;
+			if (animateMesh==null) return;
 
-			var m : IMesh= mesh.getMesh (currentFrameNr , 255, startFrame, endFrame);
+			var m : IMesh= animateMesh.getMesh (currentFrameNr , 255, startFrame, endFrame);
 			
+			var driver : IVideoDriver = sceneManager.getVideoDriver ();
 			driver.setTransformWorld (_absoluteMatrix);
 			
 			var len:Int=m.getMeshBufferCount ();
-			for (var i : Int = 0; i < len; i+=1)
+			for (i in 0...len)
 			{	
 			    driver.setMaterial(materials[i]);
 				driver.drawMeshBuffer(m.getMeshBuffer(i));
@@ -142,7 +145,7 @@
 		}
 		public function setFrameLoop (begin : Int, end : Int) : Bool
 		{
-			var maxFrameCount : Int = mesh.getFrameCount () - 1;
+			var maxFrameCount : Int = this.animateMesh.getFrameCount () - 1;
 			if (end > maxFrameCount || begin > maxFrameCount) return false;
 			if (end < begin)
 			{
@@ -163,16 +166,16 @@
 		}
 		public function getAnimationSpeed () : Int
 		{
-			return framesPerSecond * 1000;
+			return Std.int(framesPerSecond * 1000);
 		}
 		override public function getBoundingBox () : AABBox3D
 		{
-			if(!mesh) return null;
-			return mesh.getBoundingBox();
+			if(animateMesh==null) return null;
+			return animateMesh.getBoundingBox();
 		}
 		override public function getMaterial (i : Int = 0) : Material
 		{
-			if (i < 0 || i >= materials.length) return super.getMaterial (i);
+			if (i < 0 || i >= materials.length) return null;
 			return materials [i];
 		}
 		override public function getMaterialCount () : Int
@@ -181,12 +184,13 @@
 		}
 		public function setMD2Animation (data : MD2Frame) : Bool
 		{
-			if ( ! mesh || mesh.getMeshType () != AnimatedMeshType.AMT_MD2) return false;
+			if ( animateMesh==null || animateMesh.getMeshType () != AnimatedMeshType.AMT_MD2) return false;
 			
-			var m : AnimatedMeshMD2 = mesh as AnimatedMeshMD2;
-			if(!m) return false;
+			var m : AnimatedMeshMD2 = Lib.as(animateMesh,AnimatedMeshMD2);
+			if (m == null) return false;
+			
             var frameData : MD2Frame = m.getFrame(data);
-			if (frameData)
+			if (frameData!=null)
 			{
 				setAnimationSpeed (frameData.fps);
 				setFrameLoop (frameData.begin, frameData.end);
@@ -199,25 +203,51 @@
 		{
 			looping = looped;
 		}
-		public function setMesh (mesh : IAnimateMesh) : Void
+		public function setAnimateMesh (mesh : IAnimateMesh) : Void
 		{
-			if ( mesh == null ) return;
-			this.mesh = mesh;
+			animateMesh = mesh;
 			
-			var m : IMesh = mesh.getMesh (0, 255);
-			
-			if (!m) return;
-            
-            materials=new Vector<Material> ();
-			var mat : Material;
-			var len:Int=m.getMeshBufferCount ();
-			for (var i : Int = 0; i < len; i+=1)
+			if (animateMesh!=null)
 			{
-				mat = m.getMeshBuffer(i).material;
-				materials.push (mat.clone());
+				var m : IMesh = animateMesh.getMesh (currentFrameNr, 255);
+				
+				setMaterials(m, useDefaultMaterial);
+				
+				setFrameLoop (0, animateMesh.getFrameCount () - 1);
 			}
+		}
+		
+		private inline function setMaterials(m:IMesh,value:Bool):Void 
+		{
+			materials.length = 0;
+			if (m!=null)
+			{
+				var mb : MeshBuffer;
+				var count:Int=m.getMeshBufferCount();
+				for (i in 0...count)
+				{
+					mb = m.getMeshBuffer(i);
+					if (value)
+					{
+						materials[i]=mb.material;
+					}else
+					{
+						materials[i]=mb.material.clone();
+					}
+				}
+			}
+		}
+		public inline function setUseDefaultMaterial(value:Bool):Void 
+		{
+			useDefaultMaterial = value;
 			
-			setFrameLoop (0, mesh.getFrameCount () - 1);
+			var m : IMesh = animateMesh.getMesh(currentFrameNr, 255);	
+			
+			setMaterials(m, useDefaultMaterial);
+		}
+		public inline function getUseDefaultMaterial():Bool 
+		{
+			return useDefaultMaterial;
 		}
 	}
 

@@ -16,10 +16,12 @@
 	{
 		private var materials : Vector<Material>;
 		private var mesh : IMesh;
-		public function new (mgr:SceneManager,?mesh : IMesh = null)
+		private var useDefaultMaterial:Bool ;
+		public function new (mgr:SceneManager,?mesh : IMesh = null,?useDefaultMaterial:Bool=true)
 		{
 			super (mgr);
 			materials = new Vector<Material> ();
+			this.useDefaultMaterial = useDefaultMaterial;
 			setMesh (mesh);
 		}
 		override public function destroy():Void
@@ -28,24 +30,16 @@
 			materials=null;
 			mesh=null;
 		}
-		public  function clear () : Void
+		public inline function setMesh (m : IMesh) : Void
 		{
-			mesh = null;
-			materials.length = 0;
-		}
-		public  function setMesh (m : IMesh) : Void
-		{
-			if(m!=null)
-			{
-				mesh = m;
-				cloneMaterials();
-			}
+			mesh = m;
+			setMaterials(useDefaultMaterial);
 		}
 		public function getMesh () : IMesh
 		{
 			return mesh;
 		}
-		public function cloneMaterials():Void
+		private inline function setMaterials(value:Bool):Void 
 		{
 			materials.length = 0;
 			if (mesh!=null)
@@ -55,9 +49,25 @@
 				for (i in 0...count)
 				{
 					mb = mesh.getMeshBuffer(i);
-					materials.push(mb.material.clone());
+					if (value)
+					{
+						materials[i]=mb.material;
+					}else
+					{
+						materials[i]=mb.material.clone();
+					}
 				}
 			}
+		}
+		public inline function setUseDefaultMaterial(value:Bool):Void 
+		{
+			useDefaultMaterial = value;
+				
+			setMaterials(useDefaultMaterial);
+		}
+		public inline function getUseDefaultMaterial():Bool 
+		{
+			return useDefaultMaterial;
 		}
 		override public function onRegisterSceneNode() : Void
 		{
@@ -69,7 +79,7 @@
 				var solidCount:Int = 0;
 				for ( i in 0...len)
 				{
-					mt = materials [i];
+					mt = materials[i];
 					if (mt.transparenting) 
 					{
 						transparentCount++;
@@ -95,9 +105,9 @@
 		}
 		override public function render() : Void
 		{
+			if ( mesh == null) return;
+			
 			var driver : IVideoDriver = sceneManager.getVideoDriver();
-			if ( mesh==null) return;
-
 			driver.setTransformWorld(_absoluteMatrix);
 			
 			var mb : MeshBuffer;

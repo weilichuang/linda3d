@@ -7,3 +7,5 @@ Todo:
 减少浮点数到整数的转换
 
 透明度处理
+测试贴图
+修改MD2MeshFileLoader
