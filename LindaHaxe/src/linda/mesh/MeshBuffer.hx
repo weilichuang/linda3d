@@ -23,9 +23,9 @@
 			var r : Int = color >> 16 & 0xFF;
 			var g : Int = color >> 8 & 0xFF;
 			var b : Int = color & 0xFF;
-			var vdxcnt : Int = vertices.length;
+			var len : Int = vertices.length;
 			var vertex:Vertex;
-			for (j in 0...vdxcnt)
+			for (j in 0...len)
 			{
 				vertex=vertices[j];
 				vertex.r = r;
@@ -33,8 +33,9 @@
 				vertex.b = b;
 			}
 		}
-		public inline function getVertex(i:Int):Vertex
+		public function getVertex(i:Int):Vertex
 		{
+			if ( i<0 || i >=vertices.length) return null;
 			return vertices[i];
 		}
 		public inline function recalculateBoundingBox () : Void
@@ -51,7 +52,7 @@
 			     }
 			}
 		}
-		public inline function append (verts : Vector<Vertex>, numVertices : Int, inds : Vector<Int>, numIndices : Int) : Void
+		public function append (verts : Vector<Vertex>, numVertices : Int, inds : Vector<Int>, numIndices : Int) : Void
 		{
 			var vertexCount : Int = vertices.length;
 			var vertex:Vertex;
@@ -66,7 +67,7 @@
 				indices.push (inds[i] + vertexCount);
 			}
 		}
-		public inline function appendMeshBuffer (other : MeshBuffer) : Void
+		public function appendMeshBuffer (other : MeshBuffer) : Void
 		{
             //concat vertices;
 			vertices.concat(other.vertices);

@@ -9,6 +9,6 @@ import haxe.Log;
 		}
 		public static function log():Void
 		{
-			Log.trace("Linda3D " + VERSION);
+			Log.trace("Linda " + VERSION);
 		}
 	}

@@ -1,6 +1,5 @@
 ﻿package linda.scene;
 
-	import flash.Boot;
 	import flash.Vector;
 	
 	import linda.math.Vector3;
