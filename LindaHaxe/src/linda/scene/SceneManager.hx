@@ -80,7 +80,7 @@
 		}
 		public function drawAll () : Void
 		{
-			onPreRender ();
+			onRegisterSceneNode ();
 
 			_activeCamera.render();
 			

@@ -32,36 +32,32 @@
 		
 		private var _tmp_lines : Vector<Vertex> ;
 		private var _tmp_lines_indices : Vector<Int>;
-		
-		private var _debugMat : Material;
-		
+
 		public function new ()
 		{
 			primitivesDrawn = 0;
-			renderTarget = new Sprite ();
-			screenSize = new Dimension2D(300, 300);
-			_lights = new Vector<Light>(8,true);
-			_lightCount = 0;
+			renderTarget    = new Sprite ();
+			screenSize      = new Dimension2D(300, 300);
+			_lights         = new Vector<Light>(8,true);
+			_lightCount     = 0;
 			
-			persDistance = 400.;
+			persDistance   = 400.;
 			mipMapDistance = 500.;
 			
 			_debugColor = 0x00ff00;
 			ambientColor = new Color (0, 0, 0);
 			
-			_tmp_lines= new Vector<Vertex>(3,true);
-			_tmp_lines[0]=new Vertex ();
-			_tmp_lines[1]=new Vertex ();
-			_tmp_lines[2]=new Vertex ();
+			_tmp_lines = new Vector<Vertex>(3,true);
+			_tmp_lines[0] = new Vertex ();
+			_tmp_lines[1] = new Vertex ();
+			_tmp_lines[2] = new Vertex ();
 			_tmp_lines_indices = new Vector<Int>(6,true);
-			_tmp_lines_indices[0]=0;
-			_tmp_lines_indices[1]=1;
-			_tmp_lines_indices[2]=1;
-			_tmp_lines_indices[3]=2;
-			_tmp_lines_indices[4]=2;
+			_tmp_lines_indices[0] = 0;
+			_tmp_lines_indices[1] = 1;
+			_tmp_lines_indices[2] = 1;
+			_tmp_lines_indices[3] = 2;
+			_tmp_lines_indices[4] = 2;
 			_tmp_lines_indices[5] = 0;
-			
-			_debugMat  = new Material ();
 		}
 		public function getScreenSize () : Dimension2D
 		{
@@ -159,7 +155,6 @@
 		
 		public  function draw3DLine (start : Vector3, end : Vector3, color : UInt) : Void
 		{
-			setMaterial (_debugMat);
 			var vertex : Vertex = _tmp_lines [0];
 			vertex.x = start.x;
 			vertex.y = start.y;
@@ -174,7 +169,6 @@
 		}
 		public  function draw3DTriangle (v0 : Vertex, v1 : Vertex, v2 : Vertex, color : UInt) : Void
 		{
-			setMaterial (_debugMat);
 			var vertex : Vertex = _tmp_lines [0];
 			vertex.copy (v0);
 			vertex.color = color;

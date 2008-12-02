@@ -5,21 +5,18 @@
 	import linda.math.Vector3;
 	import linda.math.AABBox3D;
 	import linda.math.Vertex;
-	import linda.mesh.Mesh;
 	import linda.mesh.MeshBuffer;
-	class Sphere extends Mesh
+	class Sphere extends MeshBuffer
 	{
-		private var meshBuffer : MeshBuffer;
 		public function new (?radius : Float = 100., ?polyCount : Int = 6)
 		{
 			super ();
-			meshBuffer = new MeshBuffer ();
 			setSizeAndPolys(radius, polyCount);
-			meshBuffers.push(meshBuffer);
-			recalculateBoundingBox();
 		}
 		private function setSizeAndPolys (radius : Float, polyCount : Int) : Void
 		{
+			vertices.length = 0;
+			indices.length  = 0;
 			if (polyCount < 2 )
 			{
 				polyCount = 2;
@@ -29,9 +26,9 @@
 				polyCount = 180;
 			}
 			var vertexCount : Int = polyCount * polyCount + 2;
-			var vertices : Vector<Vertex> = new Vector<Vertex> (vertexCount);
+			vertices.length = vertexCount;
 			var indexCount : Int = polyCount * polyCount * 6;
-			var indices : Vector<Int> = new Vector<Int> (indexCount);
+			indices.length = indexCount;
 			var clr : UInt = 0xffffff;
 			var level : Int = 0;
 			var n : Int = 0;
@@ -119,17 +116,14 @@
 			vertices[n ++] = new Vertex (0., radius, 0., 1., 1., 1., clr, 0.5, 0.);
 			// the vertex at the bottom of the sphere
 			vertices [n] = new Vertex (0., - radius, 0., - 1., - 1., - 1., clr, 0.5, 1.);
+			
 			// recalculate bounding box
-			var box : AABBox3D = new AABBox3D ();
-			box.addXYZ (vertices [n].x, vertices [n].y, vertices [n].z);
-			box.addXYZ (vertices [n - 1].x, vertices [n - 1].y, vertices [n - 1].z);
-			box.addXYZ (radius, 0., 0.);
-			box.addXYZ ( - radius, 0., 0.);
-			box.addXYZ (0., 0., radius);
-			box.addXYZ (0., 0., - radius);
-			meshBuffer.indices = indices;
-			meshBuffer.vertices = vertices;
-			meshBuffer.boundingBox = box;
+			boundingBox.resetVertex(vertices[n]);
+			boundingBox.addVertex(vertices[n - 1]);
+			boundingBox.addXYZ (radius, 0., 0.);
+			boundingBox.addXYZ ( - radius, 0., 0.);
+			boundingBox.addXYZ (0., 0., radius);
+			boundingBox.addXYZ (0., 0., - radius);
 		}
 	}
 

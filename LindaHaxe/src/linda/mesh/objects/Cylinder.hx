@@ -5,26 +5,21 @@
 	import flash.geom.Point;
 	import linda.math.MathUtil;
 	import linda.math.Vertex;
-	import linda.mesh.Mesh;
 	import linda.mesh.MeshBuffer;
 	import linda.mesh.MeshManipulator;
-	class Cylinder extends Mesh
+	class Cylinder extends MeshBuffer
 	{
-		private var meshBuffer : MeshBuffer;
 		public function new (?radius : Float = 100., ?height : Float = 100., ?segmentsW : Int = 8, ?segmentsH : Int = 6, ?topRadius : Float = 0.)
 		{
 			super ();
-			meshBuffer = new MeshBuffer ();
 			createCylinder (radius, height, segmentsW, segmentsH, topRadius);
-			MeshManipulator.recalculateNormals (meshBuffer, true);
-			meshBuffers.push (meshBuffer);
-			meshBuffer.recalculateBoundingBox();
-			recalculateBoundingBox ();
+			recalculateBoundingBox();
+			MeshManipulator.recalculateNormals (this, true);
 		}
 		private function createCylinder (radius : Float, height : Float, segmentsW : Int, segmentsH : Int, topRadius : Float) : Void
 		{
-			var vertices : Vector<Vertex> = meshBuffer.vertices;
-			var indices : Vector<Int> = meshBuffer.indices;
+			vertices.length = 0;
+			indices.length  = 0;
 			if (topRadius == - 1) topRadius = radius;
 			var k : Float;
 			var indexCount : Int = 0;

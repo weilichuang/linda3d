@@ -22,13 +22,10 @@
 		public static inline var TRANSPARENT : Int = 4;
 		public static inline var SHADOW      : Int = 5;
 		
-		
 		private var _parent : SceneNode;
 		private var _children : Vector<SceneNode> ;
 		private var _animators : Vector<IAnimator> ;
 		
-		private var sceneManager : SceneManager;
-
 		private var _absoluteMatrix : Matrix4;
 		private var _relativeMatrix : Matrix4;
 		
@@ -36,8 +33,8 @@
 		private var _relativeRotation : Vector3;
 		private var _relativeScale : Vector3;
 
-		private static var _totalId:Int = -1;
-		
+		private var sceneManager : SceneManager;
+
 		public var distance : Float ;
 		
 		public var debug:Bool;
@@ -49,6 +46,8 @@
 		public var visible : Bool ;
 		
 		public var hasShadow : Bool ;
+		
+		public var id:Int;
 
 		public inline var x(getX, setX):Float;
 		public inline var y(getY, setY):Float;
@@ -91,7 +90,6 @@
 		public function destroy():Void
 		{
 			_parent=null;
-			
 			_animators=null;
 			sceneManager=null;
 			name=null;
@@ -118,10 +116,14 @@
 		{
 			if (child!=null && (child != this))
 			{
+				//FixMe
+				// change scene manager?
+				//if (sceneManager != child.sceneManager)
+				//{
+				//	child.setSceneManager(sceneManager);
+				//}
 				child.remove(); // remove from old parent
 				child._parent = this;
-				child.updateAbsoluteMatrix ();
-				
 				_children.push(child);
 			}
 		}
@@ -325,14 +327,14 @@
 				}
 			}
 		}
-		public function onPreRender () : Void
+		public function onRegisterSceneNode() : Void
 		{
 			if (visible)
 			{
 				var len : Int = _children.length;
 				for (i in 0...len)
 				{
-					_children[i].onPreRender ();
+					_children[i].onRegisterSceneNode();
 				}
 			}
 		}
@@ -541,5 +543,22 @@
 		public function getAnimators():Vector<IAnimator>
 		{
 	           return _animators;
+		}
+		
+		/**
+		 * 
+		 * @param	SceneManager newManager
+		 * Sets the new scene manager for this node and all children.
+         * Called by addChild when moving nodes between scene managers
+		 */ 
+		public function setSceneManager(newManager:SceneManager):Void 
+		{
+			sceneManager = newManager;
+            
+			var len:Int = _children.length;
+			for ( i in 0...len)
+			{
+				_children[i].setSceneManager(newManager);
+			}
 		}
 	}

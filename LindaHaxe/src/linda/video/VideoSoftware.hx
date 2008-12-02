@@ -1,10 +1,13 @@
 ﻿package linda.video;
 
+	import flash.geom.Vector3D;
 	import flash.Vector;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.geom.Rectangle;
+	import haxe.Log;
+	
 
 	import linda.light.Light;
 	import linda.material.ITexture;
@@ -39,7 +42,7 @@
 		private var targetVector : Vector<UInt>;
 		private var bufferVector : Vector<Float>;
 		
-		private var _clip_scale : Matrix4;
+		private var _scaleMatrix : Matrix4;
 
 		private var texture : ITexture;
 		private var material : Material;
@@ -60,19 +63,26 @@
 		private var _oppcam_pos : Vector3;
 		private var _cam_pos : Vector3;
 		
-		private var _ndc_planes         : Vector<Vector4>;
+		private var _clipPlanes          : Vector<Vector4>;
 
-		private var _transformedVertexs : Vector<Vertex4D>;
-		private var _unclipped_vertices : Vector<Vertex4D>;
-		private var _clipped_vertices   : Vector<Vertex4D>;
-		private var _clipped_indices    : Vector<Int>;
-		private var _clipped_vertices0  : Vector<Vertex4D>;
-		private var _clipped_vertices1  : Vector<Vertex4D>;
-		private var _clipped_vertices2  : Vector<Vertex4D>;
-		private var _clipped_vertices3  : Vector<Vertex4D>;
-		private var _clipped_vertices4  : Vector<Vertex4D>;
+		private var _transformedVertexes : Vector<Vertex4D>;
+		private var _unclippedVertices   : Vector<Vertex4D>;
+		private var _clippedVertices     : Vector<Vertex4D>;
+		private var _clippedIndices      : Vector<Int>;
+		private var _clippedVertices0    : Vector<Vertex4D>;
+		private var _clippedVertices1    : Vector<Vertex4D>;
+		private var _clippedVertices2    : Vector<Vertex4D>;
+		private var _clippedVertices3    : Vector<Vertex4D>;
+		private var _clippedVertices4    : Vector<Vertex4D>;
 		
 		
+		//线段裁剪时不会多出点
+		private var _transformedLineVertexes :Vector<Vertex4D>;// 不需要光照等的线段渲染点
+		private var _clippedLineVertices     :Vector<Vertex4D>;
+		private var _clippedLineIndices      :Vector<Int>;
+		private var _tmpVertex      :Vertex4D;
+		
+		//lighting
 		private var l : Vector3 ;
 		private var n : Vector3 ;
 		private var v : Vector3 ;
@@ -86,14 +96,15 @@
 			l  = new Vector3 ();
 		    n  = new Vector3 ();
 		    v  = new Vector3 ();
+			
+			_tmpVertex = new Vertex4D();
 		}
 		private function init (size:Dimension2D) : Void
 		{
 			target = new Bitmap ();
-			target.cacheAsBitmap = false;
 			renderTarget.addChild(target);
 			
-			_clip_scale = new Matrix4 ();
+			_scaleMatrix = new Matrix4 ();
 
 			//render
 			renderers = new Vector<ITriangleRenderer>(TRType.COUNT, true);
@@ -106,12 +117,18 @@
 			renderers [TRType.GOURAUD_ALPHA]         = new TRGouraudAlpha ();
 			renderers [TRType.TEXTURE_FLAT_ALPHA]    = new TRTextureFlatAlpha ();
 			renderers [TRType.TEXTURE_GOURAUD_ALPHA] = new TRTextureGouraudAlpha ();
+			
+			targetVector=new Vector<UInt>();
+			bufferVector=new Vector<Float>();
+			
+			setVector(targetVector,bufferVector);
+			
 
 			//预存一些点
-			_transformedVertexs = new Vector<Vertex4D>(2000);
+			_transformedVertexes = new Vector<Vertex4D>(2000);
 			for ( i in 0...2000)
 			{
-				_transformedVertexs[i] = new Vertex4D();
+				_transformedVertexes[i] = new Vertex4D();
 			}
 			//matrix4
 			_current      = new Matrix4();
@@ -140,31 +157,33 @@
 			special case ndc frustum <-w,w>,<-w,w>,<-w,w>
 			can be rewritten with compares e.q near plane, a.z < -a.w and b.z < -b.w
 			*/
-			_ndc_planes = new Vector<Vector4>(6,true);
-			
-			_ndc_planes[0]=new Vector4(0.0 , 0.0 , -1.0, -1.0 ); // near
-			_ndc_planes[1]=new Vector4(0.0 , 0.0 , 1.0 , -1.0 ); // far
-			_ndc_planes[2]=new Vector4(1.0 , 0.0 , 0.0 , -1.0 ); // left
-			_ndc_planes[3]=new Vector4(-1.0, 0.0 , 0.0 , -1.0 ); // right
-			_ndc_planes[4]=new Vector4(0.0 , 1.0 , 0.0 , -1.0 ); // bottom
-			_ndc_planes[5]=new Vector4(0.0 , -1.0, 0.0 , -1.0 ); //top
+			_clipPlanes = new Vector<Vector4>(6,true);
+			_clipPlanes[0]=new Vector4(0.0 , 0.0 , -1.0, -1.0 ); // far
+			_clipPlanes[1]=new Vector4(0.0 , 0.0 , 1.0 , -1.0 ); // near
+			_clipPlanes[2]=new Vector4(1.0 , 0.0 , 0.0 , -1.0 ); // left
+			_clipPlanes[3]=new Vector4(-1.0, 0.0 , 0.0 , -1.0 ); // right
+			_clipPlanes[4]=new Vector4(0.0 , 1.0 , 0.0 , -1.0 ); // bottom
+			_clipPlanes[5]=new Vector4(0.0 , -1.0, 0.0 , -1.0 ); // top
 
 			// arrays for storing clipped vertices & indices
-			_clipped_indices = new Vector<Int>();
+			_clippedIndices    = new Vector<Int>();
+			_clippedVertices   = new Vector<Vertex4D>();
+			_unclippedVertices = new Vector<Vertex4D>();
+			_clippedVertices0  = new Vector<Vertex4D>();
+			_clippedVertices1  = new Vector<Vertex4D>();
+			_clippedVertices2  = new Vector<Vertex4D>();
+			_clippedVertices3  = new Vector<Vertex4D>();
+			_clippedVertices4  = new Vector<Vertex4D>();
 			
-			_clipped_vertices   = new Vector<Vertex4D>();
-			_unclipped_vertices = new Vector<Vertex4D>();
-			_clipped_vertices0  = new Vector<Vertex4D>();
-			_clipped_vertices1  = new Vector<Vertex4D>();
-			_clipped_vertices2  = new Vector<Vertex4D>();
-			_clipped_vertices3  = new Vector<Vertex4D>();
-			_clipped_vertices4  = new Vector<Vertex4D>();
-
-			targetVector=new Vector<UInt>();
-			bufferVector=new Vector<Float>();
+			//arrays for storing clipped line vertices & indices
+			_transformedLineVertexes = new Vector<Vertex4D>();
+            for ( i in 0...500)
+			{
+				_transformedLineVertexes[i] = new Vertex4D();
+			}
+			_clippedLineVertices = new Vector<Vertex4D>();
+			_clippedIndices      = new Vector<Int>();
 			
-			setVector(targetVector,bufferVector);
-
 			setScreenSize(size);
 		}
 		private inline function reset():Void
@@ -260,7 +279,7 @@
 			_world = mat;
 			
 			_current.copy(_view_project);
-			_current.multiplyE(_world);
+			_current.multiplyBy(_world);
 
 			_world_inv.copy(_world);
 			_world_inv.inverse();
@@ -273,7 +292,7 @@
 		{
 			_view = mat;
 			_view_project.copy(_projection);
-			_view_project.multiplyE(_view);
+			_view_project.multiplyBy(_view);
 		}
 
 		override public function setMaterial (mat : Material) : Void
@@ -305,7 +324,7 @@
 				target.bitmapData = new BitmapData(screenSize.width, screenSize.height, false, 0);
 			}
 			
-			_clip_scale.buildNDCToDCMatrix(screenSize,1);
+			_scaleMatrix.buildNDCToDCMatrix(screenSize,1);
 			
 			var len:Int=screenSize.width*screenSize.height;
 			targetVector.length=len;
@@ -354,12 +373,12 @@
 			var lightLen:Int=getLightCount();
 
 			var len : Int = triangleCount * 2;
-			var _transformLen : Int = _transformedVertexs.length;
+			var _transformLen : Int = _transformedVertexes.length;
 			if (_transformLen < len)
 			{
 				for (i in _transformLen...len)
 				{
-					_transformedVertexs[i] = new Vertex4D ();
+					_transformedVertexes[i] = new Vertex4D ();
 				}
 			}
 
@@ -419,10 +438,10 @@
 			var m13 : Float = _current.m13;
 			var m23 : Float = _current.m23;
 			var m33 : Float = _current.m33;
-			var csm00 : Float = _clip_scale.m00;
-			var csm30 : Float = _clip_scale.m30;
-			var csm11 : Float = _clip_scale.m11;
-			var csm31 : Float = _clip_scale.m31;
+			var csm00 : Float = _scaleMatrix.m00;
+			var csm30 : Float = _scaleMatrix.m30;
+			var csm11 : Float = _scaleMatrix.m11;
+			var csm31 : Float = _scaleMatrix.m31;
 			var memi : Color = material.emissiveColor;
 			var mamb : Color = material.ambientColor;
 			var mdif : Color = material.diffuseColor;
@@ -451,9 +470,9 @@
 					}
 				}
 				
-				tv0 = _transformedVertexs [tCount++];
-				tv1 = _transformedVertexs [tCount++];
-				tv2 = _transformedVertexs [tCount++];
+				tv0 = _transformedVertexes [tCount++];
+				tv1 = _transformedVertexes [tCount++];
+				tv2 = _transformedVertexes [tCount++];
 				
 				//	- transform Model * World * Camera * Projection matrix ,then after clip and light * NDCSpace matrix
 				tv0.x = m00 * v0.x + m10 * v0.y + m20 * v0.z + m30;
@@ -476,7 +495,7 @@
 				var clipcount : Int = 0;
 				for (p in 0...6)
 				{
-					plane = _ndc_planes[p];
+					plane = _clipPlanes[p];
 					if (((tv0.x * plane.x) + (tv0.y * plane.y) + (tv0.z * plane.z) + (tv0.w * plane.w)) > 0.0)
 					{
 						if (((tv1.x * plane.x) + (tv1.y * plane.y) + (tv1.z * plane.z) + (tv1.w * plane.w)) > 0.0)
@@ -515,7 +534,7 @@
 					continue;
 				}
 				
-								//lighting
+				//lighting 在物体自身坐标计算
 				if (lighting)
 				{
 					//初始化总体环境光照颜色
@@ -649,9 +668,9 @@
 									}
 								}
 							}
-							tv0.r = globalR + (Std.int (amb_r_sum0 * mamb.r) >> 8) + (Std.int (dif_r_sum0 * mdif.r) >> 8);
-							tv0.g = globalG + (Std.int (amb_g_sum0 * mamb.g) >> 8) + (Std.int (dif_g_sum0 * mdif.g) >> 8);
-							tv0.b = globalB + (Std.int (amb_b_sum0 * mamb.b) >> 8) + (Std.int (dif_b_sum0 * mdif.b) >> 8);
+							tv0.r = globalR + (Std.int (amb_r_sum0 * mamb.r + dif_r_sum0 * mdif.r) >> 8);
+							tv0.g = globalG + (Std.int (amb_g_sum0 * mamb.g + dif_g_sum0 * mdif.g) >> 8);
+							tv0.b = globalB + (Std.int (amb_b_sum0 * mamb.b + dif_b_sum0 * mdif.b) >> 8);
 							tv1.r = tv0.r;
 							tv1.g = tv0.g;
 							tv1.b = tv0.b;
@@ -848,15 +867,15 @@
 									}
 								}
 							}
-							tv0.r = globalR + (Std.int(amb_r_sum0 * mamb.r) >> 8) + (Std.int(dif_r_sum0 * mdif.r) >> 8);
-							tv0.g = globalG + (Std.int(amb_g_sum0 * mamb.g) >> 8) + (Std.int(dif_g_sum0 * mdif.g) >> 8);
-							tv0.b = globalB + (Std.int(amb_b_sum0 * mamb.b) >> 8) + (Std.int(dif_b_sum0 * mdif.b) >> 8);
-							tv1.r = globalR + (Std.int(amb_r_sum1 * mamb.r) >> 8) + (Std.int(dif_r_sum1 * mdif.r) >> 8);
-							tv1.g = globalG + (Std.int(amb_g_sum1 * mamb.g) >> 8) + (Std.int(dif_g_sum1 * mdif.g) >> 8);
-							tv1.b = globalB + (Std.int(amb_b_sum1 * mamb.b) >> 8) + (Std.int(dif_b_sum1 * mdif.b) >> 8);
-							tv2.r = globalR + (Std.int(amb_r_sum2 * mamb.r) >> 8) + (Std.int(dif_r_sum2 * mdif.r) >> 8);
-							tv2.g = globalG + (Std.int(amb_g_sum2 * mamb.g) >> 8) + (Std.int(dif_g_sum2 * mdif.g) >> 8);
-							tv2.b = globalB + (Std.int(amb_b_sum2 * mamb.b) >> 8) + (Std.int(dif_b_sum2 * mdif.b) >> 8);
+							tv0.r = globalR + (Std.int(amb_r_sum0 * mamb.r + dif_r_sum0 * mdif.r) >> 8);
+							tv0.g = globalG + (Std.int(amb_g_sum0 * mamb.g + dif_g_sum0 * mdif.g) >> 8);
+							tv0.b = globalB + (Std.int(amb_b_sum0 * mamb.b + dif_b_sum0 * mdif.b) >> 8);
+							tv1.r = globalR + (Std.int(amb_r_sum1 * mamb.r + dif_r_sum1 * mdif.r) >> 8);
+							tv1.g = globalG + (Std.int(amb_g_sum1 * mamb.g + dif_g_sum1 * mdif.g) >> 8);
+							tv1.b = globalB + (Std.int(amb_b_sum1 * mamb.b + dif_b_sum1 * mdif.b) >> 8);
+							tv2.r = globalR + (Std.int(amb_r_sum2 * mamb.r + dif_r_sum2 * mdif.r) >> 8);
+							tv2.g = globalG + (Std.int(amb_g_sum2 * mamb.g + dif_g_sum2 * mdif.g) >> 8);
+							tv2.b = globalB + (Std.int(amb_b_sum2 * mamb.b + dif_b_sum2 * mdif.b) >> 8);
 						}
 						tv0.r = tv0.r > 0xFF ? 0xFF : tv0.r;
 						tv0.g = tv0.g > 0xFF ? 0xFF : tv0.g;
@@ -923,29 +942,29 @@
 					tv2.x = (tv2.x * csm00) * tmp + csm30;
 					tv2.y = (tv2.y * csm11) * tmp + csm31;
 					tv2.z = tmp;
-					// add to _clipped_indices
-					_clipped_indices [iCount] = vCount;
+					// add to _clippedIndices
+					_clippedIndices [iCount] = vCount;
 					iCount++;
-					_clipped_vertices [vCount] = tv0;
+					_clippedVertices [vCount] = tv0;
 					vCount++;
-					_clipped_indices [iCount] = vCount;
+					_clippedIndices [iCount] = vCount;
 					iCount++;
-					_clipped_vertices [vCount] = tv1;
+					_clippedVertices [vCount] = tv1;
 					vCount++;
-					_clipped_indices [iCount] = vCount;
+					_clippedIndices [iCount] = vCount;
 					iCount++;
-					_clipped_vertices [vCount] = tv2;
+					_clippedVertices [vCount] = tv2;
 					vCount++;
 					continue;
 				}
 				
 				
 				// put into list for clipping
-				_unclipped_vertices[0] = tv0;
-				_unclipped_vertices[1] = tv1;
-				_unclipped_vertices[2] = tv2;
+				_unclippedVertices[0] = tv0;
+				_unclippedVertices[1] = tv1;
+				_unclippedVertices[2] = tv2;
 				
-				source = _unclipped_vertices;
+				source = _unclippedVertices;
 				outCount = 3;
 
 				// clip in NDC Space to Frustum
@@ -954,8 +973,8 @@
 				{
 					inCount = outCount;
 					outCount = 0;
-					dest = _clipped_vertices4;
-					plane = _ndc_planes[1];
+					dest = _clippedVertices4;
+					plane = _clipPlanes[1];
 					b = source[0];
 					bdot = (b.z * plane.z) + (b.w * plane.w);
 					var i:Int = 1;
@@ -970,7 +989,7 @@
 							// last point outside
 							if (bdot > 0.0 )
 							{
-								out = _transformedVertexs [tCount++];
+								out = _transformedVertexes [tCount++];
 								dest [outCount++] = out;
 								t = bdot / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
 								out.interpolate(a, b, t);
@@ -982,7 +1001,7 @@
 						{
 							if (bdot <= 0.0 )
 							{
-								out = _transformedVertexs [tCount++];
+								out = _transformedVertexes [tCount++];
 								dest [outCount ++] = out;
 								t = bdot / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
 								out.interpolate(a, b, t);
@@ -996,7 +1015,7 @@
 					{
 						continue;
 					}
-					source = _clipped_vertices4;
+					source = _clippedVertices4;
 				}
 
 				//new Vector3 (1.0, 0.0, 0.0, - 1.0 )  left
@@ -1004,8 +1023,8 @@
 				{
 					inCount = outCount;
 					outCount = 0;
-					dest = _clipped_vertices3;
-					plane = _ndc_planes [2];
+					dest = _clippedVertices3;
+					plane = _clipPlanes [2];
 					b = source [0];
 					bdot = (b.x * plane.x) + (b.w * plane.w);
 					var i:Int = 1;
@@ -1018,7 +1037,7 @@
 						{
 							if (bdot > 0.0 )
 							{
-								out = _transformedVertexs [tCount++];
+								out = _transformedVertexes [tCount++];
 								dest [outCount++] = out;
 								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w));
 								out.interpolate(a, b, t);
@@ -1030,7 +1049,7 @@
 						{
 							if (bdot <= 0.0 )
 							{
-								out = _transformedVertexs [tCount++];
+								out = _transformedVertexes [tCount++];
 								dest [outCount++] = out;
 								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w));
 								out.interpolate(a, b, t);
@@ -1043,15 +1062,15 @@
 					{
 						continue;
 					}
-					source = _clipped_vertices3;
+					source = _clippedVertices3;
 				}
 				//new Vector3 ( - 1.0, 0.0, 0.0, - 1.0 )  right
 				if ((clipcount & 8) == 8)
 				{
 					inCount = outCount;
 					outCount = 0;
-					dest = _clipped_vertices2;
-					plane = _ndc_planes[3];
+					dest = _clippedVertices2;
+					plane = _clipPlanes[3];
 					b = source[0];
 					bdot = (b.x * plane.x) + (b.w * plane.w);
 					var i:Int = 1;
@@ -1064,7 +1083,7 @@
 						{
 							if (bdot > 0.0 )
 							{
-								out = _transformedVertexs [tCount++];
+								out = _transformedVertexes [tCount++];
 								dest [outCount++] = out;
 								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w));
 								out.interpolate(a, b, t);
@@ -1075,7 +1094,7 @@
 						{
 							if (bdot <= 0.0 )
 							{
-								out = _transformedVertexs [tCount++];
+								out = _transformedVertexes [tCount++];
 								dest [outCount++] = out;
 								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w));
 								out.interpolate(a, b, t);
@@ -1088,15 +1107,15 @@
 					{
 						continue;
 					}
-					source = _clipped_vertices2;
+					source = _clippedVertices2;
 				}
 				//new Vector3 (0.0, 1.0, 0.0, - 1.0 ) bottom
 				if ((clipcount & 16) == 16)
 				{
 					inCount = outCount;
 					outCount = 0;
-					dest = _clipped_vertices1;
-					plane = _ndc_planes [4];
+					dest = _clippedVertices1;
+					plane = _clipPlanes [4];
 					b = source [0];
 					bdot = (b.y * plane.y) + (b.w * plane.w);
 					var i:Int = 1;
@@ -1109,7 +1128,7 @@
 						{
 							if (bdot > 0.0 )
 							{
-								out = _transformedVertexs [tCount++];
+								out = _transformedVertexes [tCount++];
 								dest [outCount++] = out;
 								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
 								out.interpolate(a, b, t);
@@ -1120,7 +1139,7 @@
 						{
 							if (bdot <= 0.0 )
 							{
-								out = _transformedVertexs [tCount++];
+								out = _transformedVertexes [tCount++];
 								dest [outCount++] = out;
 								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
 								out.interpolate(a, b, t);
@@ -1133,15 +1152,15 @@
 					{
 						continue;
 					}
-					source = _clipped_vertices1;
+					source = _clippedVertices1;
 				}
 				//new Vector3 (0.0, - 1.0, 0.0, - 1.0 ) top
 				if ((clipcount & 32) == 32)
 				{
 					inCount = outCount;
 					outCount = 0;
-					dest = _clipped_vertices0;
-					plane = _ndc_planes[5];
+					dest = _clippedVertices0;
+					plane = _clipPlanes[5];
 					b = source[0];
 					bdot = (b.y * plane.y) + (b.w * plane.w);
 					var i:Int = 1;
@@ -1154,7 +1173,7 @@
 						{
 							if (bdot > 0.0 )
 							{
-								out = _transformedVertexs [tCount++];
+								out = _transformedVertexes [tCount++];
 								dest [outCount++] = out;
 								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
 								out.interpolate(a, b, t);
@@ -1165,7 +1184,7 @@
 						{
 							if (bdot <= 0.0 )
 							{
-								out = _transformedVertexs [tCount++];
+								out = _transformedVertexes [tCount++];
 								dest [outCount++] = out;
 								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
 								out.interpolate(a, b, t);
@@ -1178,7 +1197,7 @@
 					{
 						continue;
 					}
-					source = _clipped_vertices0;
+					source = _clippedVertices0;
 				}
 				
 				// put back into screen space.
@@ -1190,33 +1209,266 @@
 					tv0.x = (tv0.x * csm00) * tmp + csm30;
 					tv0.y = (tv0.y * csm11) * tmp + csm31;
 					tv0.z = tmp;
-					_clipped_vertices [vCount++] = tv0;
+					_clippedVertices [vCount++] = tv0;
 				}
 				// re-tesselate ( triangle-fan, 0-1-2,0-2-3.. )
 				for (g in 0...(outCount - 2))
 				{
-					_clipped_indices[iCount++] = vCount2;
-					_clipped_indices[iCount++] = (vCount2 + g + 1);
-					_clipped_indices[iCount++] = (vCount2 + g + 2);
+					_clippedIndices[iCount++] = vCount2;
+					_clippedIndices[iCount++] = (vCount2 + g + 1);
+					_clippedIndices[iCount++] = (vCount2 + g + 2);
 				}
 			}
 			primitivesDrawn += Std.int(iCount / 3);
-			curRender.drawIndexedTriangleList (_clipped_vertices, vCount, _clipped_indices, iCount);
+			curRender.drawIndexedTriangleList (_clippedVertices, vCount, _clippedIndices, iCount);
 		}
-		public  function drawMeshBuffer(mesh:MeshBuffer):Void
+		public function drawMeshBuffer(mesh:MeshBuffer):Void
 		{
 			drawIndexedTriangleList(mesh.vertices,mesh.vertices.length,mesh.indices,mesh.indices.length);
 		}
 		/**
-		*用来渲染由线段组成的物体 ,此类物体不需要进行光照，贴图，和贴图坐标计算等
+		* 用来渲染由线段组成的物体 ,此类物体不需要进行光照和贴图计算等
 		* @vertices  Array 点的集合
 		* @vertexCount int vertices的长度
 		* @indexList 点与点之间的顺序(2点组成一条直线)
 		* @indexCount int indexList.length
 		*/
-		//Todo 这个方法有误,删除,以后添加
-		override public  function drawIndexedLineList (vertices : Vector<Vertex>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int) : Void
+		override public function drawIndexedLineList (vertices : Vector<Vertex>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int) : Void
 		{
+			var v0      : Vertex;
+			var v1      : Vertex;
+			var tv0     : Vertex4D;
+			var tv1     : Vertex4D;
+			var tCount  : Int;
+			var iCount  : Int; 
+			var vCount  : Int;
+
+			//clipping
+			var a      : Vertex4D;
+			var b      : Vertex4D;
+			var plane  : Vector4;
+			var adot   : Float;
+			var bdot   : Float;
+			var t      : Float;
+
+			var _transformLen : Int = _transformedLineVertexes.length;
+			if (_transformLen < indexCount)
+			{
+				for (i in _transformLen...indexCount)
+				{
+					_transformedLineVertexes[i] = new Vertex4D ();
+				}
+			}
+
+			tCount = 0;
+			iCount = 0;
+			vCount = 0;
+			
+			var m00 : Float = _current.m00;
+			var m10 : Float = _current.m10;
+			var m20 : Float = _current.m20;
+			var m30 : Float = _current.m30;
+			var m01 : Float = _current.m01;
+			var m11 : Float = _current.m11;
+			var m21 : Float = _current.m21;
+			var m31 : Float = _current.m31;
+			var m02 : Float = _current.m02;
+			var m12 : Float = _current.m12;
+			var m22 : Float = _current.m22;
+			var m32 : Float = _current.m32;
+			var m03 : Float = _current.m03;
+			var m13 : Float = _current.m13;
+			var m23 : Float = _current.m23;
+			var m33 : Float = _current.m33;
+			var csm00 : Float = _scaleMatrix.m00;
+			var csm30 : Float = _scaleMatrix.m30;
+			var csm11 : Float = _scaleMatrix.m11;
+			var csm31 : Float = _scaleMatrix.m31;
+
+			var ii:Int = 0;
+			while( ii < indexCount )
+			{
+				v0 = vertices [indexList[ii]];
+				v1 = vertices [indexList[ii + 1]];
+				ii += 2;
+
+				tv0 = _transformedLineVertexes [tCount++];
+				tv1 = _transformedLineVertexes [tCount++];
+				
+				//	- transform Model * World * Camera * Projection matrix ,then after clip and light * NDCSpace matrix
+				tv0.x = m00 * v0.x + m10 * v0.y + m20 * v0.z + m30;
+				tv0.y = m01 * v0.x + m11 * v0.y + m21 * v0.z + m31;
+				tv0.z = m02 * v0.x + m12 * v0.y + m22 * v0.z + m32;
+				tv0.w = m03 * v0.x + m13 * v0.y + m23 * v0.z + m33;
+				
+				tv1.x = m00 * v1.x + m10 * v1.y + m20 * v1.z + m30;
+				tv1.y = m01 * v1.x + m11 * v1.y + m21 * v1.z + m31;
+				tv1.z = m02 * v1.x + m12 * v1.y + m22 * v1.z + m32;
+				tv1.w = m03 * v1.x + m13 * v1.y + m23 * v1.z + m33;
+
+
+				var inside : Bool = true;
+				var clipcount : Int = 0;
+				for (p in 0...6)
+				{
+					plane = _clipPlanes[p];
+					if (((tv0.x * plane.x) + (tv0.y * plane.y) + (tv0.z * plane.z) + (tv0.w * plane.w)) > 0.0)
+					{
+						if (((tv1.x * plane.x) + (tv1.y * plane.y) + (tv1.z * plane.z) + (tv1.w * plane.w)) > 0.0)
+						{
+							inside = false;
+							break;
+						}
+						clipcount += (1 << p);
+					} 
+					else
+					{
+						if (((tv1.x * plane.x) + (tv1.y * plane.y) + (tv1.z * plane.z) + (tv1.w * plane.w)) >= 0.0)
+						{
+							clipcount += (1 << p);
+						}
+					}
+				}
+				
+				if ( ! inside)
+				{
+					tCount -= 2;
+					continue;
+				}
+				
+				Log.setColor(0xff0000);
+				Log.trace("inside=" + inside);
+
+				if (clipcount != 0) //clipping required
+				{
+					// put into list for clipping
+					a = tv0;
+					b = tv1;
+					
+					// clip in NDC Space to Frustum
+					//near
+					if ((clipcount & 2) == 2)
+					{
+						plane = _clipPlanes[1];
+						adot = (a.z * plane.z) + (a.w * plane.w);
+						bdot = (b.z * plane.z) + (b.w * plane.w);
+						// current point inside
+						if (adot <= 0.0 )
+						{
+							t = bdot / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
+							_tmpVertex.interpolate(a, b, t);
+							b.copy(_tmpVertex);
+						} 
+						else
+						{
+							t = bdot / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
+							_tmpVertex.interpolate(a, b, t);
+							a.copy(_tmpVertex);
+						}
+					}
+
+					//new Vector3 (1.0, 0.0, 0.0, - 1.0 )  left
+					if ((clipcount & 4) == 4)
+					{
+						plane = _clipPlanes[2];
+						adot = (a.x * plane.x) + (a.w * plane.w);
+						bdot = (b.x * plane.x) + (b.w * plane.w);
+						if (adot <= 0.0 )
+						{
+							t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w));
+							_tmpVertex.interpolate(a, b, t);
+							b.copy(_tmpVertex);
+						} 
+						else
+						{
+							t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w));
+							_tmpVertex.interpolate(a, b, t);
+							a.copy(_tmpVertex);
+						}
+					}
+					//new Vector3 ( - 1.0, 0.0, 0.0, - 1.0 )  right
+					if ((clipcount & 8) == 8)
+					{
+						plane = _clipPlanes[3];
+						bdot = (b.x * plane.x) + (b.w * plane.w);
+						adot = (a.x * plane.x) + (a.w * plane.w);
+						if (adot <= 0.0 )
+						{
+							t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w));
+							_tmpVertex.interpolate(a, b, t);
+							b.copy(_tmpVertex);
+						} 
+						else
+						{
+							t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w));
+							_tmpVertex.interpolate(a, b, t);
+							a.copy(_tmpVertex);
+						}
+					}
+					//new Vector3 (0.0, 1.0, 0.0, - 1.0 ) bottom
+					if ((clipcount & 16) == 16)
+					{
+						plane = _clipPlanes[4];
+						bdot = (b.y * plane.y) + (b.w * plane.w);
+						adot = (a.y * plane.y) + (a.w * plane.w);
+						if (adot <= 0.0 )
+						{
+							t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
+							_tmpVertex.interpolate(a, b, t);
+							b.copy(_tmpVertex);
+						} 
+						else
+						{
+							t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
+							_tmpVertex.interpolate(a, b, t);
+							a.copy(_tmpVertex);
+						}
+					}
+					//new Vector3 (0.0, - 1.0, 0.0, - 1.0 ) top
+					if ((clipcount & 32) == 32)
+					{
+						plane = _clipPlanes[5];
+						bdot = (b.y * plane.y) + (b.w * plane.w);
+						adot = (a.y * plane.y) + (a.w * plane.w);
+						if (adot <= 0.0 )
+						{
+							t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
+							_tmpVertex.interpolate(a, b, t);
+							b.copy(_tmpVertex);
+						} 
+						else
+						{
+							t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
+							_tmpVertex.interpolate(a, b, t);
+							a.copy(_tmpVertex);
+						}
+					}
+				}
+				
+				
+
+				//tv0
+				var tmp : Float = 1 / tv0.w ;
+				tv0.x = (tv0.x * csm00) * tmp + csm30;
+				tv0.y = (tv0.y * csm11) * tmp + csm31;
+				tv0.z = tmp;
+				//tv1
+				tmp = 1 / tv1.w ;
+				tv1.x = (tv1.x * csm00) * tmp + csm30;
+				tv1.y = (tv1.y * csm11) * tmp + csm31;
+				tv1.z = tmp;
+
+				// add to _clippedIndices
+				_clippedLineIndices[iCount]  = vCount;
+				iCount++;
+				_clippedLineVertices[vCount] = tv0;
+				vCount++;
+				_clippedLineIndices[iCount]  = vCount;
+				iCount++;
+				_clippedLineVertices[vCount] = tv1;
+				vCount++;
+			}
+			curRender.drawIndexedLineList (_clippedLineVertices, vCount, _clippedLineIndices, iCount);
 		}
 		public function getDriverType () : String
 		{

@@ -59,33 +59,41 @@
 				}
 			}
 		}
-		override  public function onPreRender() : Void
+		override public function onRegisterSceneNode() : Void
 		{
 			if (visible)
 			{
-				var len:Int=materials.length;
-				var transparent:Bool=false;
+				var len:Int = materials.length;
 				var mt : Material;
-				for (i in 0...len)
+				var transparentCount:Int = 0;
+				var solidCount:Int = 0;
+				for ( i in 0...len)
 				{
 					mt = materials [i];
-					if (mt.transparenting)
+					if (mt.transparenting) 
 					{
-						transparent = true;
-						break;
+						transparentCount++;
+					}else 
+					{
+						solidCount++;
 					}
+
+					if (solidCount>0 && transparentCount>0)
+						break;
 				}
-				if (transparent)
+				
+				if (transparentCount > 0)
 				{
 					sceneManager.registerNodeForRendering(this, SceneNode.TRANSPARENT);
-				} else
+				}
+				if ( solidCount > 0)
 				{
 					sceneManager.registerNodeForRendering(this, SceneNode.SOLID);
 				}
-				super.onPreRender();
+				super.onRegisterSceneNode();
 			}
 		}
-		override  public function render() : Void
+		override public function render() : Void
 		{
 			var driver : IVideoDriver = sceneManager.getVideoDriver();
 			if ( mesh==null) return;

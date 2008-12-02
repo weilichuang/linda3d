@@ -6,27 +6,21 @@
 	import linda.math.Vector3;
 	
 	import linda.math.Vertex;
-	import linda.mesh.Mesh;
 	import linda.mesh.MeshBuffer;
 	import linda.mesh.MeshManipulator;
-	class RegularPolygon extends Mesh
+	class RegularPolygon extends MeshBuffer
 	{
-		private var meshBuffer : MeshBuffer;
 		public function new (?radius : Float = 100., ?sides : Int = 5, ?subdivision : Int = 1, ?backface : Bool = false)
 		{
 			super ();
-			meshBuffer = new MeshBuffer ();
-			meshBuffer.material.backfaceCulling = backface;
 			createRegularPolygon (radius, sides, subdivision);
-			MeshManipulator.recalculateNormals (meshBuffer, true);
-			meshBuffers.push (meshBuffer);
-			meshBuffer.recalculateBoundingBox();
-			recalculateBoundingBox ();
+			this.recalculateBoundingBox();
+			MeshManipulator.recalculateNormals (this, true);
 		}
 		private function createRegularPolygon (radius : Float, sides : Int, subdivision : Int) : Void
 		{
-			var vertices : Vector<Vertex> = meshBuffer.vertices;
-			var indices : Vector<Int> = meshBuffer.indices;
+			vertices.length = 0;
+			indices.length  = 0;
 			if (sides < 3) sides = 3;
 			if (subdivision < 1 ) subdivision = 1;
 			var tmpPoints : Vector<Vector3> = new Vector<Vector3> ();

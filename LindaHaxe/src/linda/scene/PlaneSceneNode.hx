@@ -94,7 +94,7 @@ package linda.scene;
                 {
                     return box;
                 }
-                override  public function onPreRender () : Void
+                override  public function onRegisterSceneNode () : Void
                 { 
                    if (visible)
                    {
@@ -105,7 +105,7 @@ package linda.scene;
                        {
                           sceneManager.registerNodeForRendering(this,SceneNode.SOLID);
                        }
-                       super.onPreRender ();
+                       super.onRegisterSceneNode ();
                    }
                         
                 }

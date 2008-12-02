@@ -81,7 +81,7 @@
 		{
 			return viewFrustum;
 		}
-		override public function onPreRender () : Void
+		override public function onRegisterSceneNode() : Void
 		{
 			var driver : IVideoDriver = sceneManager.getVideoDriver ();
 			if (visible && sceneManager.getActiveCamera () == this)
@@ -113,7 +113,7 @@
 				// multiply projection * view
 				view_projection.copy(projection);
 
-				view_projection.multiplyE (view);
+				view_projection.multiplyBy (view);
 
 				recalculateViewArea ();
 
@@ -121,7 +121,7 @@
 				
 				sceneManager.registerNodeForRendering (this, SceneNode.CAMERA);
 				
-				super.onPreRender ();
+				super.onRegisterSceneNode();
 			}
 		}
 		override public function render() : Void

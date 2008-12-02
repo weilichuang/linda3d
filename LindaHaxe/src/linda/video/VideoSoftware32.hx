@@ -60,7 +60,7 @@
 				target.bitmapData = new BitmapData (screenSize.width, screenSize.height, true, 0);
 			}
 			
-			_clip_scale.buildNDCToDCMatrix(screenSize,1);
+			_scaleMatrix.buildNDCToDCMatrix(screenSize,1);
 			
 			var len:Int=screenSize.width*screenSize.height;
 			targetVector.length=len;

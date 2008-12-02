@@ -5,26 +5,21 @@
 	import flash.geom.Point;
 	
 	import linda.math.Vertex;
-	import linda.mesh.Mesh;
 	import linda.mesh.MeshBuffer;
 	import linda.mesh.MeshManipulator;
-	class Torus extends Mesh
+	class Torus extends MeshBuffer
 	{
-		private var meshBuffer : MeshBuffer;
 		public function new (?radius : Float = 100., ?tube : Float = 10., ?segsR : Int = 5, ?segsT : Int = 5)
 		{
 			super();
-			meshBuffer = new MeshBuffer ();
 			createTorus (radius, tube, segsR, segsT);
-			MeshManipulator.recalculateNormals (meshBuffer, true);
-			meshBuffer.recalculateBoundingBox();
-			meshBuffers.push (meshBuffer);
-			recalculateBoundingBox ();
+			recalculateBoundingBox();
+			MeshManipulator.recalculateNormals (this, true);
 		}
 		private function createTorus (radius : Float, tube : Float, segsR : Int, segsT : Int) : Void
 		{
-			var vertices : Vector<Vertex> = meshBuffer.vertices;
-			var indices : Vector<Int> = meshBuffer.indices;
+			vertices.length = 0;
+			indices.length  = 0;
 
 			var gridVertices : Vector<Vector<Vertex>> = new Vector<Vector<Vertex>>(segsR);
 			for (i in 0...segsR)

@@ -16,6 +16,8 @@ import linda.math.MathUtil;
 import flash.Memory;
 import flash.utils.ByteArray;
 import linda.material.Material;
+import linda.mesh.Mesh;
+import linda.mesh.MeshBuffer;
 import linda.mesh.objects.Cone;
 import linda.mesh.objects.Cube;
 import linda.mesh.objects.Cylinder;
@@ -25,6 +27,7 @@ import linda.mesh.objects.Torus;
 import linda.scene.CameraSceneNode;
 import linda.scene.LightSceneNode;
 import linda.scene.MeshSceneNode;
+import linda.scene.MeshBufferSceneNode;
 import linda.scene.PlaneSceneNode;
 import linda.scene.SceneManager;
 import linda.scene.SceneNode;
@@ -55,7 +58,7 @@ class Main
 	{
 		prepare();
 		
-		driver = new VideoSoftware32(new Dimension2D(500, 500));
+		driver = new VideoSoftware(new Dimension2D(500, 500));
         driver.setPerspectiveCorrectDistance(500);
         driver.setMipMapDistance(400);
             
@@ -71,40 +74,42 @@ class Main
 		var cube0:Cube = new Cube(250, 250, 250);
 		var cube1:Cube = new Cube(100, 100, 100);
 
-		node = new MeshSceneNode(manager, new Sphere(100,20));
+		node = new MeshBufferSceneNode(manager, new Sphere(100,20));
 		node.setMaterialFlag(Material.GOURAUD_SHADE, false);
 		node.setMaterialFlag(Material.LIGHT, true);
-		node.setMaterialFlag(Material.TRANSPARTENT, false);
-		node.setMaterialAlpha(0.5);
+		node.setMaterialFlag(Material.TRANSPARTENT, true);
+		node.setMaterialFlag(Material.WIREFRAME, false);
+		node.setMaterialAlpha(0.6);
 		node.setMaterialEmissiveColor(0x000099);
+		//node.debug = true;
 
 		
-		node2 = new MeshSceneNode(manager, cube0);
+		node2 = new MeshBufferSceneNode(manager, cube0);
 		node2.setMaterialFlag(Material.GOURAUD_SHADE, false);
 		node2.setMaterialFlag(Material.LIGHT, true);
-		node2.setMaterialFlag(Material.TRANSPARTENT,true);
+		node2.setMaterialFlag(Material.TRANSPARTENT, true);
+		node2.setMaterialFlag(Material.WIREFRAME, false);
 		node2.setMaterialAlpha(0.7);
         
 		
-		node3 = new MeshSceneNode(manager, cube1);
+		node3 = new MeshBufferSceneNode(manager, cube1);
 		node3.setMaterialFlag(Material.GOURAUD_SHADE, true);
 		node3.setMaterialFlag(Material.LIGHT, true);
 		node3.setMaterialEmissiveColor(0x990000);
-		node3.setMaterialFlag(Material.TRANSPARTENT,true);
+		node3.setMaterialFlag(Material.TRANSPARTENT, false);
+		node3.setMaterialFlag(Material.WIREFRAME, false);
 		node3.setMaterialAlpha(0.6);
 		node3.z = 150;
 		node.addChild(node3);
 		
-		node4 = new MeshSceneNode(manager, cube1);
+		node4 = new MeshBufferSceneNode(manager, cube1);
 		node4.setMaterialFlag(Material.LIGHT, true);
 		node4.setMaterialEmissiveColor(0x007700);
 		node4.setMaterialFlag(Material.WIREFRAME, true);
-		node4.setMaterialFlag(Material.TRANSPARTENT,true);
-		node4.setMaterialAlpha(0.5);
 		node4.z = -150;
 		node.addChild(node4);
 		
-		node1 = new MeshSceneNode(manager, cube1);
+		node1 = new MeshBufferSceneNode(manager, cube1);
 		node1.setMaterialFlag(Material.LIGHT, false);
 		node1.setMaterialEmissiveColor(0x0000ff);
 		node1.setMaterialFlag(Material.BACKFACE, false);
@@ -114,8 +119,24 @@ class Main
 
 		light=new LightSceneNode(manager,0xff6600,200.,1);
 		light.setPosition(new Vector3(0., 100., 200.));
+		light.setAmbientColor(0x00ff00);
 		
-		manager.addChild(node);
+		var mesh:Mesh = new Mesh();
+		var sphere:Sphere = new Sphere(100, 20);
+		sphere.material.transparenting = true;
+		sphere.material.alpha = 0.5;
+		
+		var sphere1:Sphere = new Sphere(50, 20);
+		sphere1.material.transparenting = false;
+		sphere1.material.lighting = true;
+		sphere1.material.emissiveColor.color = 0x00ff00;
+		
+		mesh.addMeshBuffer(sphere);
+		mesh.addMeshBuffer(sphere1);
+		mesh.recalculateBoundingBox();
+		var meshNode:MeshSceneNode=new MeshSceneNode(this.manager, mesh);
+		
+		manager.addChild(meshNode);
 		manager.addChild(node2);
 		manager.addChild(light);
 

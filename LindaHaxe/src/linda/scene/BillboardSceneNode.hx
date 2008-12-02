@@ -54,7 +54,7 @@
 			
 			setSize (size);
 		}
-		override public function onPreRender () : Void
+		override public function onRegisterSceneNode () : Void
 		{
 			if (visible)
 			{
@@ -65,7 +65,7 @@
 				{
 					sceneManager.registerNodeForRendering (this, SceneNode.SOLID);
 				}
-				super.onPreRender ();
+				super.onRegisterSceneNode ();
 			}
 		}
 		private var _tmpMatrix:Matrix4=new Matrix4();

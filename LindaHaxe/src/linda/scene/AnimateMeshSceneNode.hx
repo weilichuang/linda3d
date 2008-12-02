@@ -25,7 +25,6 @@
 		private var framesPerSecond : Float;
 		private var currentFrameNr : Int;
 		private var looping : Bool;
-		private var transparent : Bool;
 		public function new (mgr:SceneManager,?mesh : IAnimateMesh = null)
 		{
 			super (mgr);
@@ -74,19 +73,38 @@
 		{
 			return currentFrameNr;
 		}
-		override public function onPreRender () : Void
+		override public function onRegisterSceneNode () : Void
 		{
 			if (visible)
 			{
-				var dirver : IVideoDriver = sceneManager.getVideoDriver ();
-                if(transparent)
-                {
-                	sceneManager.registerNodeForRendering (this, SceneNode.TRANSPARENT);
-                }else
-                {
-                	sceneManager.registerNodeForRendering (this, SceneNode.SOLID);
-                }
-				super.onPreRender ();
+				var len:Int = materials.length;
+				var mt : Material;
+				var transparentCount:Int = 0;
+				var solidCount:Int = 0;
+				for ( i in 0...len)
+				{
+					mt = materials[i];
+					if (mt.transparenting) 
+					{
+						transparentCount++;
+					}else 
+					{
+						solidCount++;
+					}
+
+					if (solidCount>0 && transparentCount>0)
+						break;
+				}
+				
+				if (transparentCount > 0)
+				{
+					sceneManager.registerNodeForRendering(this, SceneNode.TRANSPARENT);
+				}
+				if ( solidCount > 0)
+				{
+					sceneManager.registerNodeForRendering(this, SceneNode.SOLID);
+				}
+				super.onRegisterSceneNode ();
 			}
 		}
 		override public function onAnimate (timeMs : Int) : Void

@@ -38,7 +38,7 @@
   </library>
   <!-- Paths to exclude from the Project Explorer tree -->
   <hiddenPaths>
-    <!-- example: <hidden path="..." /> -->
+    <hidden path=".project" />
   </hiddenPaths>
   <!-- Executed before build -->
   <preBuildCommand />

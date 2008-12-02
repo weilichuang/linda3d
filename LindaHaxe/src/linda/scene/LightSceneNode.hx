@@ -31,11 +31,19 @@
 			box   = null;
 			super.destroy();
 		}
-		public function setDiffuseColor (color : UInt) : Void
+		public inline function setDiffuseColor (color : UInt) : Void
 		{
 			light.diffuseColor.color = color;
 		}
-		override public function onPreRender () : Void
+		public inline function setAmbientColor(color : UInt) : Void
+		{
+			light.ambientColor.color = color;
+		}
+		public inline function setSpecularColor(color : UInt) : Void
+		{
+			light.specularColor.color = color;
+		}
+		override public function onRegisterSceneNode () : Void
 		{
 			if (visible)
 			{
@@ -56,7 +64,7 @@
 					light.position.z = matrix.m32;
 				}				
 				sceneManager.registerNodeForRendering (this, SceneNode.LIGHT);
-				super.onPreRender ();
+				super.onRegisterSceneNode ();
 			}
 		}
 		override public function render () : Void
