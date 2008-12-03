@@ -68,7 +68,7 @@
 			targetVector.length=len;
 			bufferVector.length=len;
 			
-			setHeight(screenSize.height);
+			setWidth(screenSize.width);
 		}
 		override public function getDriverType () : String
 		{

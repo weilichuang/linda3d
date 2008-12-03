@@ -21,8 +21,8 @@
 		public var specularColor:Color;
 
 		//纹理图
-		public var texture1 : ITexture;
-		public var texture2 : ITexture;
+		public var texture : Texture;
+		public var texture1 : Texture;
 		
 		public var shininess:Int;//指数，用于高光部分
 		
@@ -62,23 +62,23 @@
 		{
 			return _alpha;
 		}
-		public inline function setTexture(texture:ITexture,layer:Int=1):Void
+		public inline function setTexture(texture:Texture,layer:Int=1):Void
 		{
 			if(layer == 1)
 			{
-				texture1=texture;
+				this.texture=texture;
 			}else if(layer == 2)
 			{
-				texture2=texture;
+				texture1=texture;
 			}
 		}
-		public inline function getTexture():ITexture
+		public inline function getTexture():Texture
+		{
+			return texture;
+		}
+		public inline function getTexture1():Texture
 		{
 			return texture1;
-		}
-		public inline function getTexture2():ITexture
-		{
-			return texture2;
 		}
 		public inline function setFlag(flag:Int,value:Bool):Void
 		{
@@ -100,41 +100,41 @@
 		{
 			var mat:Material = new Material();
 			
-			mat.backfaceCulling=backfaceCulling;
-			mat.transparenting=transparenting;
-			mat.gouraudShading=gouraudShading;
-			mat.wireframe=wireframe;
-			mat.lighting=lighting;
+			mat.backfaceCulling = backfaceCulling;
+			mat.transparenting = transparenting;
+			mat.gouraudShading = gouraudShading;
+			mat.wireframe = wireframe;
+			mat.lighting = lighting;
 			
 			mat.ambientColor.copy(ambientColor);
 			mat.diffuseColor.copy(diffuseColor);
 			mat.emissiveColor.copy(emissiveColor);
 			
-			mat._alpha=_alpha;
-			mat.shininess=shininess;
+			mat._alpha = _alpha;
+			mat.shininess = shininess;
 			
-			mat.texture1=texture1;
-			mat.texture2=texture2;
+			mat.texture = texture;
+			mat.texture1 = texture1;
 			
 			return mat;
 		}
 		public inline function copy(mat:Material):Void
 		{
-			backfaceCulling=mat.backfaceCulling;
-			transparenting=mat.transparenting;
-			gouraudShading=mat.gouraudShading;
-			wireframe=mat.wireframe;
-			lighting=mat.lighting;
+			backfaceCulling = mat.backfaceCulling;
+			transparenting = mat.transparenting;
+			gouraudShading = mat.gouraudShading;
+			wireframe = mat.wireframe;
+			lighting = mat.lighting;
 			
 			ambientColor.copy(mat.ambientColor);
 		    diffuseColor.copy(mat.diffuseColor);
 			emissiveColor.copy(mat.emissiveColor);
 			
-			_alpha=mat._alpha;
-			shininess=mat.shininess;
+			_alpha = mat._alpha;
+			shininess = mat.shininess;
 			
-			texture1=mat.texture1;
-			texture2=mat.texture2;
+			texture  = mat.texture;
+			texture1 = mat.texture1;
 		}
 		public function toString():String
 		{

@@ -1,8 +1,12 @@
 ﻿package linda.video.pixel;
 
+	import flash.geom.Vector3D;
 	import flash.Vector;
 	import flash.display.BitmapData;
-	import linda.material.ITexture;
+	import haxe.Log;
+	import linda.material.Texture;
+	import linda.material.Material;
+	import linda.math.Dimension2D;
 	import linda.math.Vertex4D;
 	import linda.video.ITriangleRenderer;
 	import linda.video.TriangleRenderer;
@@ -15,13 +19,6 @@
 		}
 		public function drawIndexedTriangleList (vertices : Vector<Vertex4D>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int): Void
 		{
-			var textel : UInt;
-		
-			var tw:Float;
-			var th:Float;
-		
-			var bitmapData:BitmapData;
-			
 			var dudyl : Float,dudyr : Float;
 			var dvdyl : Float,dvdyr : Float;
 
@@ -62,8 +59,8 @@
 		 	var n1:Int;
 		 	var n2:Int;
 		 	var tmp:Int;
-		 	var texture:ITexture=material.getTexture();
 			var i:Int = 0;
+			
 			while( i < indexCount)
 			{
 				n0  = indexList[i];
@@ -128,16 +125,21 @@
 				side=0;
 				
 				//mipmap
-                var level:Int = Std.int((vt0.w+vt1.w+vt2.w)*0.333/mipMapDistance);
-                bitmapData=texture.getBitmapData(level);
-	            tw=bitmapData.width;
-	            th=bitmapData.height;
+                var level:Int = Std.int((vt0.w + vt1.w + vt2.w) * 0.333 / mipMapDistance);
+
+			    texVector = texture.getVector(level);
+	            texWidth  = texture.getWidth(level);
+				texHeight = texture.getHeight(level);
+				
+				var tw:Int = texWidth - 1;
+				var th:Int = texHeight - 1;
+
 				perspectiveCorrect = (vt0.w < perspectiveDistance && vt1.w < perspectiveDistance && vt2.w < perspectiveDistance); 
 	            if(perspectiveCorrect)
 	            {
-				     u0 = vt0.u * tw * z0; v0 = vt0.v * th * z0;			
-				     u1 = vt1.u * tw * z1; v1 = vt1.v * th * z1;
-				     u2 = vt2.u * tw * z2; v2 = vt2.v * th * z2;
+					u0 = vt0.u * tw * z0; v0 = vt0.v * th * z0;			
+					u1 = vt1.u * tw * z1; v1 = vt1.v * th * z1;
+					u2 = vt2.u * tw * z2; v2 = vt2.v * th * z2;
 	            }else
 	            {
 	            	 u0 = vt0.u * tw; v0 = vt0.v * th;			
@@ -192,7 +194,7 @@
 							zi = zl;
 							xstart = Std.int(xl); 
 							xend   = Std.int(xr);
-							dx = (xr - xl);
+							dx = (xend - xstart);
 							if (dx > 0)
 							{
 								dx = 1 / dx;
@@ -207,16 +209,15 @@
 							}
 							for(xi in xstart...xend)
 							{
-								pos=xi+yi*height;
+								pos=xi+yi*width;
 								if (zi > buffer[pos])
 								{
 									if(perspectiveCorrect)
 									{
-										//Todo don`t use getPixel32
-										target[pos] = bitmapData.getPixel (Std.int(ui / zi), Std.int(vi / zi));
+										target[pos] = texVector[Std.int(ui/zi) + Std.int(vi/zi) * texWidth];
 									}else
 									{
-										target[pos] = bitmapData.getPixel (Std.int(ui), Std.int(vi));
+										target[pos] = texVector[Std.int(ui) + Std.int(vi) * texWidth];
 									}
 									buffer[pos] = zi;
 								}
@@ -304,7 +305,7 @@
 							zi = zl;
 							xstart = Std.int(xl); 
 							xend   = Std.int(xr);
-							dx = (xr - xl);
+							dx = (xend - xstart);
 							if (dx > 0)
 							{
 								dx = 1 / dx;
@@ -317,17 +318,17 @@
 								dv = (vr - vl);
 								dz = (zr - zl);
 							}
-							for (xi in xstart...xend)
+							for(xi in xstart...xend)
 							{
-								pos=xi+yi*height;
+								pos=xi+yi*width;
 								if (zi > buffer[pos])
 								{
 									if(perspectiveCorrect)
 									{
-										target[pos] = bitmapData.getPixel (Std.int(ui / zi), Std.int(vi / zi));
+										target[pos] = texVector[Std.int(ui/zi) + Std.int(vi/zi) * texWidth];
 									}else
 									{
-										target[pos] = bitmapData.getPixel (Std.int(ui), Std.int(vi));
+										target[pos] = texVector[Std.int(ui) + Std.int(vi) * texWidth];
 									}
 									buffer[pos] = zi;
 								}

@@ -83,7 +83,7 @@ class LineRender32 extends LineRenderer
 				dzdy = dz / (y0 - y1);
 				for (y in y1...y0)
 				{
-					pos=x1+y*height;
+					pos=x1+y*width;
 					bgColor = target[pos];
 					bga = bgColor >> 24 & 0xFF ;
 					if (bga < 0xFF)
@@ -116,7 +116,7 @@ class LineRender32 extends LineRenderer
 				dzdy = dz / (x1 - x0);
 				for (x in x0...x1)
 				{
-					pos=x+y0*height;
+					pos=x+y0*width;
 					bgColor = target[pos];
 					bga = bgColor >> 24 & 0xFF ;
 					if (bga < 0xFF)

@@ -37,7 +37,6 @@
 			var side : Int;
 		 	var ys : Int;
 		 	var type : Int;
-            var oldZ:Float;
             var pos:Int;
 			var n0:Int;
 		 	var n1:Int;
@@ -143,7 +142,7 @@
 							zi = zl;
 							xstart = Std.int(xl);
 							xend = Std.int(xr);
-							dx = (xr - xl);
+							dx = (xend - xstart);
 							if (dx > 0)
 							{
 								dz = (zr - zl) / dx;
@@ -153,7 +152,7 @@
 							}
 							for (xi in xstart...xend)
 							{
-								pos=xi+yi*height;
+								pos=xi+yi*width;
 								bgColor = target[pos];
 								bga = bgColor >> 24 & 0xFF ;
 								if (bga < 0xFF)
@@ -216,7 +215,7 @@
 							zi = zl;
 							xstart = Std.int(xl);
 							xend = Std.int(xr);
-							dx = (xr - xl);
+							dx = (xend - xstart);
 							if (dx > 0)
 							{
 								dz = (zr - zl) / dx;
@@ -226,7 +225,7 @@
 							}
 							for (xi in xstart...xend)
 							{
-								pos=xi+yi*height;
+								pos=xi+yi*width;
 								bgColor = target[pos];
 								bga = bgColor >> 24 & 0xFF ;
 								if (bga < 0xFF)

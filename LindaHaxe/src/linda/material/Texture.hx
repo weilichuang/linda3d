@@ -1,93 +1,122 @@
 ﻿package linda.material;
 
 	import flash.Vector;
-	
 	import flash.display.BitmapData;
 	import flash.geom.Matrix;
-	class Texture implements ITexture
+	import linda.math.Dimension2D;
+	import linda.math.MathUtil;
+	
+	//Todo 设置是否需要MipMap,如果需要的话，则每次重新赋值贴图时需要重新生成MipMaps
+	class Texture
 	{	
 		public var name : String;
-		private var source:BitmapData;
-		private var mipMap : Vector<BitmapData>;
-		private var mipMapCount:Int;
-		public function new (?image : BitmapData=null)
-		{
-			mipMap= new Vector<BitmapData> ();
-			mipMapCount=0;
-			name = "";
-			source=new BitmapData(1,1,true,0xffffffff);
-			setImage(image);
-		}
+		private var vectors : Vector < Vector < UInt >> ;
+		private var dimensions:Vector<Dimension2D>;// 对应每一个Vector数组的长和宽
+		private var vectorCount:Int;
+		private var useMipMap:Bool;
+		private var level:Int;
 		/**
-		 * 对source执行缩放
+		 * 要想重新生成新的MipMap必须重新调用setImage()
+		 * @param	?image image.transparent must be true
+		 * @param	?useMipMap
+		 * @param	?level when useMipMap true,this active
 		 */
-		private inline function scale (value:Float):BitmapData
+		public function new (?image : BitmapData=null,?useMipMap:Bool=false,?level:Int=16)
 		{
-			var data:BitmapData=new BitmapData(Std.int(source.width*value),Std.int(source.height*value),source.transparent,0x0);
-			var matrix:Matrix=new Matrix();
-			matrix.a=value;
-			matrix.d=value;
-			data.draw(source,matrix);
-            return data;
+			name = "";
+			vectors = new Vector < Vector < UInt >> ();
+			dimensions= new Vector<Dimension2D>();
+			vectorCount = 0;
+			
+			this.useMipMap = useMipMap;
+			this.level = level;
+			
+			setImage(image);
 		}
 		public function setImage (image : BitmapData) : Void
 		{
-			if (image == null) return;
-			if(source!=null)
+			if (image != null)
 			{
-				clearMipMaps ();
-				source.dispose();
-			} 
-			source=image;
-		}
-		public function getBitmapData (?level : Int=-1) : BitmapData
-		{
-			if (level <= 0 || mipMapCount == 0)
-			{
-				return source;
+				clear();
+				
+				vectors[0] = image.getVector(image.rect);
+				dimensions[0] = new Dimension2D(image.width,image.height);
+				vectorCount = 1;
+				
+				if (useMipMap)
+				{
+					generateMipMaps(image);
+				}
 			}
-			if (level >= mipMapCount)
-			{
-				return mipMap [mipMapCount-1];
-			}
-			return mipMap [level-1];
 		}
-		public function getMipMapCount () : Int
+		public function getVector (?i:Int = 0) : Vector<UInt>
 		{
-			return mipMapCount;
+			if (i < 0 || i >= vectorCount) return vectors[0];
+			return vectors[i];
 		}
-		public function hasMipMaps():Bool
+		public function getWidth(?i:Int = 0):Int
 		{
-			return mipMapCount >= 1;
+			if (i < 0 || i >= vectorCount) return dimensions[0].width;
+			return dimensions[i].width;
 		}
+		public function getHeight(?i:Int = 0):Int
+		{
+			if (i < 0 || i >= vectorCount) return dimensions[0].height;
+			return dimensions[i].height;
+		}
+		public function getVectorCount () : Int
+		{
+			return vectorCount;
+		}
+		
 		/**
 		 * level 最小等级图片的大小
 		 */
-		public function generateMipMaps (?level:Int=16) : Void
+		private inline function generateMipMaps (image:BitmapData) : Void
 		{
-			clearMipMaps ();
-			var min:Int = Std.int(Math.min(source.width, source.height));
-			
+			var min:Int = MathUtil.minInt(image.width, image.height);
 			var i:Int = Std.int(min >> 1);
 			while ( i >= level)
 			{
-				mipMap [mipMapCount] = scale(1/Math.pow(2,(mipMapCount+1)));
-				mipMapCount++;
+				var data:BitmapData = scale(image,1 / Math.pow(2, vectorCount+1));
+				
+				vectors[vectorCount] = data.getVector(data.rect);
+				
+				dimensions[vectorCount] = new Dimension2D(data.width,data.height);
+				
+				data.dispose();
+				
+				vectorCount++;
 				
 				i >>= 1;
 			}
 		}
 		
-		public inline function clearMipMaps () : Void
+		/**
+		 * 对source执行缩放
+		 */
+		private inline function scale (image:BitmapData,value:Float):BitmapData
+		{
+			var data:BitmapData=new BitmapData(Std.int(image.width*value),Std.int(image.height*value),true,0x0);
+			var matrix:Matrix=new Matrix();
+			matrix.a = value;
+			matrix.d = value;
+			data.draw(image, matrix);
+			matrix = null;
+            return data;
+		}
+		
+		public inline function clear() : Void
 		{	
-			for (i in 0...mipMapCount)
-			{
-				var tx : BitmapData = mipMap[i];
-				tx.dispose ();
-				tx=null;
-			}
-			mipMap=new Vector<BitmapData>();
-			mipMapCount=0;
+			vectors.length = 0;
+			vectorCount = 0;
+		}
+		
+		public function dispose():Void 
+		{
+			vectors.length = 0;
+			vectors = null;
+			vectorCount = 0;
 		}
 		
 		public function toString():String

@@ -190,7 +190,7 @@
 							}
 							for (xi in xstart...xend)
 							{
-								pos=xi+yi*height;
+								pos=xi+yi*width;
 								if (zi > buffer[pos])
 								{
 									bgColor = target[pos];
@@ -303,7 +303,7 @@
 							}
 							for (xi in xstart...xend)
 							{
-								pos=xi+yi*height;
+								pos=xi+yi*width;
 								if (zi > buffer[pos])
 								{
 									bgColor = target[pos];

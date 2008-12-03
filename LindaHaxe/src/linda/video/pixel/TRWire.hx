@@ -102,7 +102,7 @@
 				dzdy = dz / (y0 - y1);
 				for (y in y1...y0)
 				{
-					pos=x1+y*height;
+					pos=x1+y*width;
 					if (z1 > buffer[pos])
 					{
 						target[pos] = value;
@@ -123,7 +123,7 @@
 				dzdy = dz / (x1 - x0);
 				for (x in x0...x1)
 				{
-					pos=x+y0*height;
+					pos=x+y0*width;
 					if (z0 > buffer[pos])
 					{
 						target[pos] = value;
@@ -179,7 +179,7 @@
 				dzdy = dz / (y0 - y1);
 				for (y in y1...y0)
 				{
-					pos=x1+y*height;
+					pos=x1+y*width;
 					if (z1 > buffer[pos])
 					{
 						bgColor = target[pos];
@@ -204,7 +204,7 @@
 				dzdy = dz / (x1 - x0);
 				for (x in x0...x1)
 				{
-					pos=x+y0*height;
+					pos=x+y0*width;
 					if (z0 > buffer[pos])
 					{
 						bgColor = target[pos];

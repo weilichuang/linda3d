@@ -13,7 +13,6 @@
 		}
 		public function drawIndexedTriangleList (vertices : Vector<Vertex4D>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int): Void
 		{
-			var color:UInt;
 			var xstart : Int,xend : Int;
 			var ystart : Int,yend : Int;
 			var dyr : Float,dyl : Float;
@@ -188,7 +187,7 @@
 							}
 							for (xi in xstart...xend)
 							{
-								pos=xi+yi*height;
+								pos=xi+yi*width;
 								if (zi > buffer[pos])
 								{
 									target[pos]=(0xFF000000 | Std.int(ri) << 16 | Std.int(gi) << 8 | Std.int(bi) );
@@ -296,7 +295,7 @@
 							}
 							for (xi in xstart...xend)
 							{
-								pos=xi+yi*height;
+								pos=xi+yi*width;
 								if (zi > buffer[pos])
 								{
 									target[pos]=(0xFF000000 | Std.int(ri) << 16 | Std.int(gi) << 8 | Std.int(bi) );

@@ -1,7 +1,7 @@
 ﻿package linda.video.pixel;
 	import flash.Vector;
 	import flash.display.BitmapData;
-	import linda.material.ITexture;
+	import linda.material.Texture;
 	import linda.math.Vertex4D;
 	import linda.video.ITriangleRenderer;
 	import linda.video.TriangleRenderer;
@@ -14,17 +14,10 @@
 		}
 		public function drawIndexedTriangleList (vertices : Vector<Vertex4D>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int): Void
 		{
-			var color:UInt;
-			
 			var bga : Int;
 			var bgColor : UInt;
 
 			var textel : UInt;
-		
-			var tw:Float;
-			var th:Float;
-		
-			var bitmapData:BitmapData;
 
 			var dudyl : Float,dudyr : Float;
 			var dvdyl : Float,dvdyr : Float;
@@ -61,7 +54,6 @@
 		 	var ys : Int;
 		 	var type : Int;
             var pos:Int;
-			var texture:ITexture=material.getTexture();
             var n0:Int;
 		 	var n1:Int;
 		 	var n2:Int;
@@ -128,12 +120,18 @@
 				z1 = vt1.z;
 				z2 = vt2.z;
 				
-				side=0;
+				side = 0;
+
 				//mipmap
-                var level:Int = Std.int((vt0.w+vt1.w+vt2.w)*0.333/mipMapDistance);
-                bitmapData=texture.getBitmapData(level);
-	            tw=bitmapData.width;
-	            th=bitmapData.height;
+                var level:Int = Std.int((vt0.w + vt1.w + vt2.w) * 0.333 / mipMapDistance);
+
+			    texVector = texture.getVector(level);
+	            texWidth  = texture.getWidth(level);
+				texHeight = texture.getHeight(level);
+				
+				var tw:Int = texWidth - 1;
+				var th:Int = texHeight - 1;
+				
 	            perspectiveCorrect = (vt0.w < perspectiveDistance && vt1.w < perspectiveDistance && vt2.w < perspectiveDistance); 
 				if(perspectiveCorrect)
 	            {
@@ -152,7 +150,6 @@
 				ystart = y0;
 				if(type==0)
 				{
-					
 						dyl = 1 / (y1 - y0);
 						dxdyl = (x1 - x0) * dyl;
 						dzdyl = (z1 - z0) * dyl;
@@ -190,14 +187,14 @@
 							side = 1 ;
 						}
 					
-						for (yi in ystart...(yend+1))
+						for (yi in ystart...yend)
 						{
 							ui = ul;
 							vi = vl;
 							zi = zl;
 							xstart = Std.int(xl);
 							xend = Std.int(xr);
-							dx = (xr - xl);
+							dx = (xend - xstart);
 							if (dx > 0.)
 							{
 								dx = 1 / dx;
@@ -212,22 +209,21 @@
 							}
 							for (xi in xstart...xend)
 							{
-								pos=xi+yi*height;
+								pos=xi+yi*width;
 								if (zi > buffer[pos])
 								{
 									bgColor = target[pos];
-									
 									if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel (Std.int(ui / zi), Std.int(vi / zi));
+										textel = texVector[Std.int(ui/zi) + Std.int(vi/zi) * texWidth];
 									}else
 									{
-										textel = bitmapData.getPixel (Std.int(ui), Std.int(vi));
+										textel = texVector[Std.int(ui) + Std.int(vi) * texWidth];
 									}
 									target[pos] = (
-		                  					       ((alpha * (textel >> 16) + invAlpha * (bgColor >> 16)) >> 8)  << 16 | 
-						  					       ((alpha * (textel >> 8 & 0xFF)  + invAlpha * (bgColor >> 8 & 0xFF))  >> 8)  << 8  | 
-						  					       ((alpha * (textel & 0xFF)       + invAlpha * (bgColor & 0xFF))       >> 8)
+		                  					       ((alpha * 0xFF + invAlpha * (bgColor >> 16 & 0xFF)) * (textel >> 16 & 0xFF) >> 16)  << 16 | 
+						  					       ((alpha * 0xFF + invAlpha * (bgColor >> 8 & 0xFF))  * (textel >> 8 & 0xFF)  >> 16)  << 8  | 
+						  					       ((alpha * 0xFF + invAlpha * (bgColor & 0xFF))       * (textel & 0xFF)       >> 16)
 						                          );
 								}
 								ui += du;
@@ -306,15 +302,14 @@
 						ul = u0; vl = v0;
 						ur = u0; vr = v0;
 					}
-					
-						for (yi in ystart...(yend+1))
+						for (yi in ystart...yend)
 						{
 							ui = ul;
 							vi = vl;
 							zi = zl;
 							xstart = Std.int(xl);
 							xend = Std.int(xr);
-							dx = (xr - xl);
+							dx = (xend - xstart);
 							if (dx > 0)
 							{
 								dx = 1 / dx;
@@ -329,23 +324,22 @@
 							}
 							for (xi in xstart...xend)
 							{
-								pos=xi+yi*height;
+								pos=xi+yi*width;
 								if (zi > buffer[pos])
 								{
 									bgColor = target[pos];
-									
 									if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel (Std.int(ui / zi), Std.int(vi / zi));
+										textel = texVector[Std.int(ui/zi) + Std.int(vi/zi) * texWidth];
 									}else
 									{
-										textel = bitmapData.getPixel (Std.int(ui), Std.int(vi));
+										textel = texVector[Std.int(ui) + Std.int(vi) * texWidth];
 									}
 									target[pos] = (
-		                  					       ((alpha * (textel >> 16) + invAlpha * (bgColor >> 16)) >> 8)  << 16 | 
-						  					       ((alpha * (textel >> 8 & 0xFF)  + invAlpha * (bgColor >> 8 & 0xFF))  >> 8)  << 8  | 
-						  					       ((alpha * (textel & 0xFF)       + invAlpha * (bgColor & 0xFF))       >> 8)
-						                          );			
+		                  					       ((alpha * 0xFF + invAlpha * (bgColor >> 16 & 0xFF)) * (textel >> 16 & 0xFF) >> 16)  << 16 | 
+						  					       ((alpha * 0xFF + invAlpha * (bgColor >> 8 & 0xFF))  * (textel >> 8 & 0xFF)  >> 16)  << 8  | 
+						  					       ((alpha * 0xFF + invAlpha * (bgColor & 0xFF))       * (textel & 0xFF)       >> 16)
+						                          );
 								}
 								ui += du;
 								vi += dv;
@@ -361,8 +355,6 @@
 							zr += dzdyr;
 						}
 				}
-				
-				i += 3;
 			}
 		}
 	}

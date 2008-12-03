@@ -3,7 +3,7 @@
 	import flash.Vector;
 	import flash.display.BitmapData;
 	
-	import linda.material.ITexture;
+	import linda.material.Texture;
 	import linda.video.ITriangleRenderer;
 	import linda.video.TriangleRenderer;
 	import linda.math.Vertex4D;
@@ -20,11 +20,6 @@
 			var bgColor : UInt;
 
 			var textel : UInt;
-		
-			var tw:Float;
-			var th:Float;
-		
-			var bitmapData:BitmapData;
 
 			var dudyl : Float,dudyr : Float;
 			var dvdyl : Float,dvdyr : Float;
@@ -61,7 +56,6 @@
 		 	var ys : Int;
 		 	var type : Int;
             var pos:Int;
-			var texture:ITexture=material.getTexture();
             var n0:Int;
 		 	var n1:Int;
 		 	var n2:Int;
@@ -128,11 +122,18 @@
 				z1 = vt1.z;
 				z2 = vt2.z;
 
+				
 				//mipmap
-                var level:Int = Std.int((vt0.w+vt1.w+vt2.w)*0.333/mipMapDistance);
-                bitmapData=texture.getBitmapData(level);
-	            tw=bitmapData.width;
-	            th=bitmapData.height;
+                var level:Int = Std.int((vt0.w + vt1.w + vt2.w) * 0.333 / mipMapDistance);
+
+			    texVector = texture.getVector(level);
+	            texWidth  = texture.getWidth(level);
+				texHeight = texture.getHeight(level);
+				
+				var tw:Int = texWidth - 1;
+				var th:Int = texHeight - 1;
+				
+	            
 	            perspectiveCorrect = (vt0.w < perspectiveDistance && vt1.w < perspectiveDistance && vt2.w < perspectiveDistance); 
 				if(perspectiveCorrect)
 	            {
@@ -188,14 +189,14 @@
 							
 							side = 1 ;
 						}
-						for (yi in ystart...(yend+1))
+						for (yi in ystart...yend)
 						{
 							ui = ul;
 							vi = vl;
 							zi = zl;
 							xstart = Std.int(xl);
 							xend = Std.int(xr);
-							dx = (xr - xl);
+							dx = (xend - xstart);
 							if (dx > 0)
 							{
 								dx = 1 / dx;
@@ -210,17 +211,17 @@
 							}
 							for (xi in xstart...xend)
 							{
-								pos=xi+yi*height;
+								pos=xi+yi*width;
 								bgColor = target[pos];
 								bga = bgColor >> 24 & 0xFF ;
 								if (bga < 0xFF)
 								{
 									if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel (Std.int(ui / zi), Std.int(vi / zi));
+										textel = texVector[Std.int(ui/zi) + Std.int(vi/zi) * texWidth];
 									}else
 									{
-										textel = bitmapData.getPixel (Std.int(ui), Std.int(vi));
+										textel = texVector[Std.int(ui) + Std.int(vi) * texWidth];
 									}
 									target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                                        << 24 |
 		                  					       ((alpha * (textel >> 16 & 0xFF) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8)  << 16 | 
@@ -231,11 +232,11 @@
 								{ //bgAlpha=255
 								    if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel (Std.int(ui / zi), Std.int(vi / zi));
+										textel = texVector[Std.int(ui/zi) + Std.int(vi/zi) * texWidth];
 									}else
 									{
-										textel = bitmapData.getPixel (Std.int(ui), Std.int(vi));
-									} 
+										textel = texVector[Std.int(ui) + Std.int(vi) * texWidth];
+									}
 		                  			target[pos] =( 0xFF000000                                                                         |
 		                  					       ((alpha * (textel >> 16 & 0xFF) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8)  << 16 | 
 						  					       ((alpha * (textel >> 8 & 0xFF)  + invAlpha * (bgColor >> 8 & 0xFF))  >> 8)  << 8  | 
@@ -318,14 +319,14 @@
 						ul = u0; vl = v0;
 						ur = u0; vr = v0;
 					}
-					for (yi in ystart...(yend+1))
+					for (yi in ystart...yend)
 					{
 							ui = ul;
 							vi = vl;
 							zi = zl;
 							xstart = Std.int(xl);
 							xend = Std.int(xr);
-							dx = (xr - xl);
+							dx = (xend - xstart);
 							if (dx > 0)
 							{
 								dx = 1 / dx;
@@ -340,19 +341,18 @@
 							}
 							for (xi in xstart...xend)
 							{
-								pos=xi+yi*height;
+								pos=xi+yi*width;
 								bgColor = target[pos];
 								bga = bgColor >> 24 & 0xFF ;
 								if (bga < 0xFF)
 								{
 									if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel (Std.int(ui / zi), Std.int(vi / zi));
+										textel = texVector[Std.int(ui/zi) + Std.int(vi/zi) * texWidth];
 									}else
 									{
-										textel = bitmapData.getPixel (Std.int(ui), Std.int(vi));
+										textel = texVector[Std.int(ui) + Std.int(vi) * texWidth];
 									}
-									
 									target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                                        << 24 |
 		                  					       ((alpha * (textel >> 16 & 0xFF) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8)  << 16 | 
 						  					       ((alpha * (textel >> 8 & 0xFF)  + invAlpha * (bgColor >> 8 & 0xFF))  >> 8)  << 8  | 
@@ -362,12 +362,12 @@
 								{ //bgAlpha=255
 								    if(perspectiveCorrect)
 									{
-										textel = bitmapData.getPixel (Std.int(ui / zi), Std.int(vi / zi));
+										textel = texVector[Std.int(ui/zi) + Std.int(vi/zi) * texWidth];
 									}else
 									{
-										textel = bitmapData.getPixel (Std.int(ui), Std.int(vi));
-									}                                                         
-		                  			target[pos] =(0xFF000000                                                                        |
+										textel = texVector[Std.int(ui) + Std.int(vi) * texWidth];
+									}
+		                  			target[pos] =( 0xFF000000                                                                         |
 		                  					       ((alpha * (textel >> 16 & 0xFF) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8)  << 16 | 
 						  					       ((alpha * (textel >> 8 & 0xFF)  + invAlpha * (bgColor >> 8 & 0xFF))  >> 8)  << 8  | 
 						  					       ((alpha * (textel & 0xFF)       + invAlpha * (bgColor & 0xFF))       >> 8)

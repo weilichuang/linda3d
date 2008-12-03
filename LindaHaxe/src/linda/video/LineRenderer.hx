@@ -7,7 +7,7 @@ class LineRenderer implements ILineRenderer
     private var target : Vector<UInt>;
 	private var buffer : Vector<Float>;
 	
-	public var height:Int;
+	public var width:Int;
 
 	//alpha
 	private var alpha:Int;
@@ -15,7 +15,7 @@ class LineRenderer implements ILineRenderer
 	
 	public function new() 
 	{
-		height = 0;
+		width = 0;
 		alpha = 0xFF;
 		invAlpha = 0;
 	}
@@ -24,9 +24,9 @@ class LineRenderer implements ILineRenderer
 		this.target = target;
 		this.buffer = buffer;
 	}
-	public function setHeight(height:Int):Void
+	public function setWidth(width:Int):Void
 	{
-		this.height=height;
+		this.width=width;
 	}
 	public function setAlpha(value:Float):Void 
 	{
@@ -121,7 +121,7 @@ class LineRenderer implements ILineRenderer
 				dzdy = dz / (y0 - y1);
 				for (y in y1...y0)
 				{
-					pos=x1+y*height;
+					pos=x1+y*width;
 					if (z1 > buffer[pos])
 					{
 						target[pos] = color;
@@ -142,7 +142,7 @@ class LineRenderer implements ILineRenderer
 				dzdy = dz / (x1 - x0);
 				for (x in x0...x1)
 				{
-					pos=x+y0*height;
+					pos=x+y0*width;
 					if (z0 > buffer[pos])
 					{
 						target[pos] = color;
@@ -198,7 +198,7 @@ class LineRenderer implements ILineRenderer
 				dzdy = dz / (y0 - y1);
 				for (y in y1...y0)
 				{
-					pos=x1+y*height;
+					pos=x1+y*width;
 					if (z1 > buffer[pos])
 					{
 						bgColor = target[pos];
@@ -223,7 +223,7 @@ class LineRenderer implements ILineRenderer
 				dzdy = dz / (x1 - x0);
 				for (x in x0...x1)
 				{
-					pos=x+y0*height;
+					pos=x+y0*width;
 					if (z0 > buffer[pos])
 					{
 						bgColor = target[pos];

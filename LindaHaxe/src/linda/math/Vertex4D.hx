@@ -41,7 +41,7 @@ import linda.video.ITriangleRenderer;
 			v = c.v;
 		}
 		
-		public inline function interpolate(v0:Vertex4D, v1:Vertex4D, t:Float):Void 
+		public inline function interpolate(v0:Vertex4D, v1:Vertex4D, t:Float,useUV:Bool):Void 
 		{
 			x = v1.x + (v0.x - v1.x) * t ;
 			y = v1.y + (v0.y - v1.y) * t ;
@@ -50,7 +50,10 @@ import linda.video.ITriangleRenderer;
 			r = Std.int(v1.r + (v0.r - v1.r) * t) ;
 			g = Std.int(v1.g + (v0.g - v1.g) * t) ;
 			b = Std.int(v1.b + (v0.b - v1.b) * t) ;
-			u = v1.u + (v0.u - v1.u) * t ;
-			v = v1.v + (v0.v - v1.v) * t ;
+			if (useUV)
+			{
+			   u = v1.u + (v0.u - v1.u) * t ;
+			   v = v1.v + (v0.v - v1.v) * t ;
+			}
 		}
 	}

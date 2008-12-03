@@ -70,7 +70,7 @@
 			}
 		}
 		/**
-		 * 
+		 * 不使用光照和贴图时，这个才会有效果。
 		 * @param	colors Vector<UInt> colors.length >=12
 		 */
 		public inline function setColor(colors:Vector<UInt>):Void 

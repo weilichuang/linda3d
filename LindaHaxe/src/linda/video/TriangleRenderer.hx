@@ -1,17 +1,26 @@
 ﻿package linda.video;
 
+	import flash.geom.Vector3D;
 	import flash.Vector;
+	import linda.material.Texture;
+	import linda.math.Dimension2D;
 	
 	import flash.display.BitmapData;
 	
 	import linda.material.Material;
 	import linda.math.Vertex4D;
 	//Todo 设置MipMap方式需要修改
+	//Todo 添加texture1处理
 	class TriangleRenderer
 	{
 		private var target : Vector<UInt>;
 		private var buffer : Vector<Float>;
 		private var material : Material;
+		private var texture : Texture;
+		private var texture1: Texture;
+		private var texVector:Vector<UInt>;
+		private var texWidth:Int;
+		private var texHeight:Int;
 
 		private var perspectiveCorrect:Bool;
 		private var perspectiveDistance:Float;
@@ -21,7 +30,7 @@
 		private var alpha:Int;
 		private var invAlpha:Int;
 		
-		public var height:Int;
+		public var width:Int;
 		
 		public function new()
 		{
@@ -35,9 +44,9 @@
 			this.target = target;
 			this.buffer = buffer;
 		}
-		public function setHeight(height:Int):Void
+		public function setWidth(width:Int):Void
 		{
-			this.height=height;
+			this.width=width;
 		}
 		public function setPerspectiveCorrectDistance(?distance:Float=400.):Void
 		{
@@ -54,7 +63,9 @@
 			{
 				alpha = Std.int(material.alpha*0xFF);
 				invAlpha = 0xFF - alpha;
-			}	
+			}
+			texture = material.getTexture();
+			texture1 = material.getTexture1();
 		}
 	}
 

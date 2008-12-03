@@ -10,7 +10,7 @@
 	
 
 	import linda.light.Light;
-	import linda.material.ITexture;
+	import linda.material.Texture;
 	import linda.material.Material;
 	import linda.math.Vector3;
 	import linda.math.Vector4;
@@ -45,13 +45,12 @@
 		
 		private var _scaleMatrix : Matrix4;
 
-		private var texture : ITexture;
+		private var texture : Texture;
 		private var material : Material;
 		
 		private var _lightDirs : Vector<Vector3>;
 		private var _lightsPos : Vector<Vector3>;
-		
-		
+
 		//matrix vars
 		private var _view : Matrix4;
 		private var _world : Matrix4;
@@ -113,7 +112,7 @@
 			renderers [TRType.FLAT]                  = new TRFlat ();
 			renderers [TRType.GOURAUD]               = new TRGouraud ();
 			renderers [TRType.TEXTURE_FLAT]          = new TRTextureFlat ();
-			renderers [TRType.TEXTURE_GOURAUD]       = new TRTextureGouraud ();
+			renderers [TRType.TEXTURE_GOURAUD]       = new TRTextureGouraud();
 			renderers [TRType.FLAT_ALPHA]            = new TRFlatAlpha ();
 			renderers [TRType.GOURAUD_ALPHA]         = new TRGouraudAlpha ();
 			renderers [TRType.TEXTURE_FLAT_ALPHA]    = new TRTextureFlatAlpha ();
@@ -301,10 +300,8 @@
 		override public function setMaterial (mat : Material) : Void
 		{
 			material = mat;
-			texture = material.texture1;
-			
-			var index:Int=getTRIndex();
-			curRender = renderers[index];
+			texture = material.texture;
+			curRender = renderers[getTRIndex()];
 			curRender.setMaterial(material);
 		}
 
@@ -333,7 +330,7 @@
 			targetVector.length=len;
 			bufferVector.length=len;
 			
-			setHeight(screenSize.height);
+			setWidth(screenSize.width);
 		}
 		public override function setRenderTarget (target : Sprite) : Void
 		{
@@ -995,10 +992,10 @@
 								out = _transformedVertexes [tCount++];
 								dest [outCount++] = out;
 								t = bdot / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
-								out.interpolate(a, b, t);
+								out.interpolate(a, b, t,hasTexture);
 							}
 							// add a to out
-							dest [outCount++] = a;
+							dest[outCount++] = a;
 						} 
 						else
 						{
@@ -1007,7 +1004,7 @@
 								out = _transformedVertexes [tCount++];
 								dest [outCount ++] = out;
 								t = bdot / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
-								out.interpolate(a, b, t);
+								out.interpolate(a, b, t,hasTexture);
 							}
 						}
 						b = a;
@@ -1043,7 +1040,7 @@
 								out = _transformedVertexes [tCount++];
 								dest [outCount++] = out;
 								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w));
-								out.interpolate(a, b, t);
+								out.interpolate(a, b, t,hasTexture);
 							}
 							// add a to out
 							dest [outCount ++] = a;
@@ -1055,7 +1052,7 @@
 								out = _transformedVertexes [tCount++];
 								dest [outCount++] = out;
 								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w));
-								out.interpolate(a, b, t);
+								out.interpolate(a, b, t,hasTexture);
 							}
 						}
 						b = a;
@@ -1089,7 +1086,7 @@
 								out = _transformedVertexes [tCount++];
 								dest [outCount++] = out;
 								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w));
-								out.interpolate(a, b, t);
+								out.interpolate(a, b, t,hasTexture);
 							}
 							dest [outCount++] = a;
 						} 
@@ -1100,7 +1097,7 @@
 								out = _transformedVertexes [tCount++];
 								dest [outCount++] = out;
 								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w));
-								out.interpolate(a, b, t);
+								out.interpolate(a, b, t,hasTexture);
 							}
 						}
 						b = a;
@@ -1134,7 +1131,7 @@
 								out = _transformedVertexes [tCount++];
 								dest [outCount++] = out;
 								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
-								out.interpolate(a, b, t);
+								out.interpolate(a, b, t,hasTexture);
 							}
 							dest [outCount++] = a;
 						} 
@@ -1145,7 +1142,7 @@
 								out = _transformedVertexes [tCount++];
 								dest [outCount++] = out;
 								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
-								out.interpolate(a, b, t);
+								out.interpolate(a, b, t,hasTexture);
 							}
 						}
 						b = a;
@@ -1179,7 +1176,7 @@
 								out = _transformedVertexes [tCount++];
 								dest [outCount++] = out;
 								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
-								out.interpolate(a, b, t);
+								out.interpolate(a, b, t,hasTexture);
 							}
 							dest [outCount++] = a;
 						} 
@@ -1190,7 +1187,7 @@
 								out = _transformedVertexes [tCount++];
 								dest [outCount++] = out;
 								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
-								out.interpolate(a, b, t);
+								out.interpolate(a, b, t,hasTexture);
 							}
 						}
 						b = a;
@@ -1366,13 +1363,13 @@
 						if (adot <= 0.0 )
 						{
 							t = bdot / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
-							_tmpVertex.interpolate(a, b, t);
+							_tmpVertex.interpolate(a, b, t,false);
 							b.copy(_tmpVertex);
 						} 
 						else
 						{
 							t = bdot / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
-							_tmpVertex.interpolate(a, b, t);
+							_tmpVertex.interpolate(a, b, t,false);
 							a.copy(_tmpVertex);
 						}
 					}
@@ -1386,13 +1383,13 @@
 						if (adot <= 0.0 )
 						{
 							t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w));
-							_tmpVertex.interpolate(a, b, t);
+							_tmpVertex.interpolate(a, b, t,false);
 							b.copy(_tmpVertex);
 						} 
 						else
 						{
 							t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w));
-							_tmpVertex.interpolate(a, b, t);
+							_tmpVertex.interpolate(a, b, t,false);
 							a.copy(_tmpVertex);
 						}
 					}
@@ -1405,13 +1402,13 @@
 						if (adot <= 0.0 )
 						{
 							t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w));
-							_tmpVertex.interpolate(a, b, t);
+							_tmpVertex.interpolate(a, b, t,false);
 							b.copy(_tmpVertex);
 						} 
 						else
 						{
 							t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w));
-							_tmpVertex.interpolate(a, b, t);
+							_tmpVertex.interpolate(a, b, t,false);
 							a.copy(_tmpVertex);
 						}
 					}
@@ -1424,13 +1421,13 @@
 						if (adot <= 0.0 )
 						{
 							t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
-							_tmpVertex.interpolate(a, b, t);
+							_tmpVertex.interpolate(a, b, t,false);
 							b.copy(_tmpVertex);
 						} 
 						else
 						{
 							t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
-							_tmpVertex.interpolate(a, b, t);
+							_tmpVertex.interpolate(a, b, t,false);
 							a.copy(_tmpVertex);
 						}
 					}
@@ -1443,13 +1440,13 @@
 						if (adot <= 0.0 )
 						{
 							t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
-							_tmpVertex.interpolate(a, b, t);
+							_tmpVertex.interpolate(a, b, t,false);
 							b.copy(_tmpVertex);
 						} 
 						else
 						{
 							t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
-							_tmpVertex.interpolate(a, b, t);
+							_tmpVertex.interpolate(a, b, t,false);
 							a.copy(_tmpVertex);
 						}
 					}
@@ -1501,15 +1498,15 @@
 				render.setMipMapDistance (distance);
 			}
 		}
-		public function setHeight(height:Int) : Void
+		public function setWidth(width:Int) : Void
 		{
 			for ( i in 0...TRType.COUNT)
 			{
 				var render : ITriangleRenderer = renderers [i];
-				render.setHeight(height);
+				render.setWidth(width);
 			}
 			
-			lineRender.setHeight(height);
+			lineRender.setWidth(width);
 		}
 		public function setVector(tv : Vector<UInt>, bv : Vector<Float>) : Void
 		{
