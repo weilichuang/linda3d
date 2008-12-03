@@ -12,15 +12,12 @@
 		public function new (?radius : Float = 100., ?tube : Float = 10., ?segsR : Int = 5, ?segsT : Int = 5)
 		{
 			super();
-			createTorus (radius, tube, segsR, segsT);
-			recalculateBoundingBox();
-			MeshManipulator.recalculateNormals (this, true);
+			build (radius, tube, segsR, segsT);
 		}
-		private function createTorus (radius : Float, tube : Float, segsR : Int, segsT : Int) : Void
+		public inline function build (radius : Float, tube : Float, segsR : Int, segsT : Int) : Void
 		{
 			vertices.length = 0;
 			indices.length  = 0;
-
 			var gridVertices : Vector<Vector<Vertex>> = new Vector<Vector<Vertex>>(segsR);
 			for (i in 0...segsR)
 			{
@@ -65,6 +62,9 @@
 					indexCount += 4;
 				}
 			}
+			gridVertices = null;
+			recalculateBoundingBox();
+			MeshManipulator.recalculateNormals (this, true);
 		}
 	}
 

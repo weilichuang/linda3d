@@ -12,11 +12,9 @@
 		public function new (?radius : Float = 100., ?height : Float = 100., ?segmentsW : Int = 8, ?segmentsH : Int = 6, ?topRadius : Float = 0.)
 		{
 			super ();
-			createCylinder (radius, height, segmentsW, segmentsH, topRadius);
-			recalculateBoundingBox();
-			MeshManipulator.recalculateNormals (this, true);
+			build (radius, height, segmentsW, segmentsH, topRadius);
 		}
-		private function createCylinder (radius : Float, height : Float, segmentsW : Int, segmentsH : Int, topRadius : Float) : Void
+		public inline function build(radius : Float, height : Float, segmentsW : Int, segmentsH : Int, topRadius : Float) : Void
 		{
 			vertices.length = 0;
 			indices.length  = 0;
@@ -136,6 +134,8 @@
 				}
 			}
 			tmpVertices = null;
+			recalculateBoundingBox();
+			MeshManipulator.recalculateNormals (this, true);
 		}
 	}
 

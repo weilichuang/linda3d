@@ -1,5 +1,6 @@
 ﻿package linda.mesh.objects;
 
+	import flash.geom.Vector3D;
 	import flash.Vector;
 
 	import linda.math.AABBox3D;
@@ -13,7 +14,6 @@
 	import linda.mesh.MeshManipulator;
 	class Cube extends MeshBuffer
 	{
-		private var meshBuffer : MeshBuffer;
 		/**
 		 * 
 		 * @param	len    x
@@ -23,10 +23,9 @@
 		public function new (?length : Float = 100.,?height : Float = 100.,?width : Float = 100.)
 		{
 			super ();
-			createCube (length, width, height);
-			MeshManipulator.recalculateNormals (this, true);
+			build (length, width, height);
 		}
-		private function createCube (length : Float, width : Float, height : Float) : Void
+		public inline function build (length : Float, width : Float, height : Float) : Void
 		{
 			vertices.length = 0;
 			indices.length  = 0;
@@ -68,6 +67,17 @@
 				}else {
 					boundingBox.addVertex(vertex);
 				}
+			}
+		}
+		/**
+		 * 
+		 * @param	colors Vector<UInt> colors.length >=12
+		 */
+		public inline function setColor(colors:Vector<UInt>):Void 
+		{
+			for (i in 0...12)
+			{
+				vertices[i].color = colors[i];
 			}
 		}
 	}

@@ -13,11 +13,9 @@
 		public function new (?radius : Float = 100., ?sides : Int = 5, ?subdivision : Int = 1, ?backface : Bool = false)
 		{
 			super ();
-			createRegularPolygon (radius, sides, subdivision);
-			this.recalculateBoundingBox();
-			MeshManipulator.recalculateNormals (this, true);
+			build (radius, sides, subdivision);
 		}
-		private function createRegularPolygon (radius : Float, sides : Int, subdivision : Int) : Void
+		public inline function build (radius : Float, sides : Int, subdivision : Int) : Void
 		{
 			vertices.length = 0;
 			indices.length  = 0;
@@ -94,5 +92,7 @@
 				ang_inc += radstep;
 			}
 			tmpPoints = null;
+			recalculateBoundingBox();
+			MeshManipulator.recalculateNormals (this, true);
 		}
 	}

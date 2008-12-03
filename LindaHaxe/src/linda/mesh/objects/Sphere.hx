@@ -11,9 +11,9 @@
 		public function new (?radius : Float = 100., ?polyCount : Int = 6)
 		{
 			super ();
-			setSizeAndPolys(radius, polyCount);
+			build(radius, polyCount);
 		}
-		private function setSizeAndPolys (radius : Float, polyCount : Int) : Void
+		public inline function build (radius : Float, polyCount : Int) : Void
 		{
 			vertices.length = 0;
 			indices.length  = 0;
