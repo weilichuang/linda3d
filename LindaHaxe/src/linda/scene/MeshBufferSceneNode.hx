@@ -95,6 +95,7 @@
 			var driver : IVideoDriver = sceneManager.getVideoDriver();
 			driver.setTransformWorld(_absoluteMatrix);
 			driver.setMaterial(material);
+			driver.setDistance(distance);
 			driver.drawMeshBuffer(meshBuffer);
 
 			if(debug)

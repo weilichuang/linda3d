@@ -3,6 +3,7 @@
 	import flash.Vector;
 	import flash.display.BitmapData;
 	import flash.geom.Matrix;
+	import haxe.Log;
 	import linda.math.Dimension2D;
 	import linda.math.MathUtil;
 	
@@ -29,7 +30,8 @@
 			vectorCount = 0;
 			
 			this.useMipMap = useMipMap;
-			this.level = level;
+
+			this.level = (level < 1) ? 1 : level;
 			
 			setImage(image);
 		}
@@ -51,17 +53,20 @@
 		}
 		public function getVector (?i:Int = 0) : Vector<UInt>
 		{
-			if (i < 0 || i >= vectorCount) return vectors[0];
+			if (i < 0) return vectors[0];
+			if (i >= vectorCount) return vectors[vectorCount - 1];
 			return vectors[i];
 		}
 		public function getWidth(?i:Int = 0):Int
 		{
-			if (i < 0 || i >= vectorCount) return dimensions[0].width;
+			if (i < 0) return dimensions[0].width;
+			if (i >= vectorCount) return dimensions[vectorCount - 1].width;
 			return dimensions[i].width;
 		}
 		public function getHeight(?i:Int = 0):Int
 		{
-			if (i < 0 || i >= vectorCount) return dimensions[0].height;
+			if (i < 0) return dimensions[0].height;
+			if (i >= vectorCount) return dimensions[vectorCount - 1].height;
 			return dimensions[i].height;
 		}
 		public function getVectorCount () : Int
@@ -78,8 +83,8 @@
 			var i:Int = Std.int(min >> 1);
 			while ( i >= level)
 			{
-				var data:BitmapData = scale(image,1 / Math.pow(2, vectorCount+1));
-				
+				var data:BitmapData = scale(image, 1 / Math.pow(2, vectorCount));
+
 				vectors[vectorCount] = data.getVector(data.rect);
 				
 				dimensions[vectorCount] = new Dimension2D(data.width,data.height);

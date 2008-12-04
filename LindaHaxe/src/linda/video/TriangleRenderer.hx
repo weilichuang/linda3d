@@ -9,8 +9,7 @@
 	
 	import linda.material.Material;
 	import linda.math.Vertex4D;
-	//Todo 设置MipMap方式需要修改
-	//Todo 添加texture1处理
+
 	class TriangleRenderer
 	{
 		private var target : Vector<UInt>;
@@ -32,11 +31,19 @@
 		
 		public var width:Int;
 		
+		public var distance:Float;
+		
 		public function new()
 		{
 			perspectiveCorrect = false;
 			perspectiveDistance = 400.;
 			mipMapDistance = 500.;
+			distance = 0;
+		}
+		
+		public function setDistance(distance:Float):Void 
+		{
+			this.distance = distance;
 		}
 		
 		public function setVector (target : Vector<UInt>, buffer : Vector<Float>) : Void

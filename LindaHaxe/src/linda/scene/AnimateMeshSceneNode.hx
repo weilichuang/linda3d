@@ -128,6 +128,7 @@
 			for (i in 0...len)
 			{	
 			    driver.setMaterial(materials[i]);
+				driver.setDistance(distance);
 				driver.drawMeshBuffer(m.getMeshBuffer(i));
 			}
 			if(debug)

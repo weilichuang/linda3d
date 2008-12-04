@@ -87,6 +87,7 @@ package linda.scene;
                 {
                     var driver : IVideoDriver = sceneManager.getVideoDriver ();
                     driver.setMaterial (material);
+					driver.setDistance(distance);
                     driver.setTransformWorld(_absoluteMatrix);
                     driver.drawIndexedTriangleList (vertices, vertices.length, indices, indices.length);
                 }

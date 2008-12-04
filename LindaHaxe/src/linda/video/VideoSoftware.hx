@@ -1518,4 +1518,8 @@
 			
 			lineRender.setVector(tv,bv);
 		}
+		public function setDistance(distance:Float):Void 
+		{
+			if (curRender != null) curRender.setDistance(distance);
+		}
 	}

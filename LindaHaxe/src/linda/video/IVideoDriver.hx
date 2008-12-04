@@ -18,13 +18,15 @@
 	{
 		function beginScene () : Void;
 		function endScene () : Void;
-
+        
+		function setCameraPosition(ps:Vector3):Void;
 		function setTransformViewProjection (mat : Matrix4) : Void;
 		function setTransformWorld (mat : Matrix4) : Void;
 		function setTransformView (mat : Matrix4) : Void;
 		function setTransformProjection (mat : Matrix4) : Void;
 		
 		function setMaterial (material : Material) : Void;
+		function setDistance(distance:Float):Void ;//根据物体的深度来判断是否使用MipMap和PerspectiveCorrect
 		function setPerspectiveCorrectDistance(?distance:Float=400.):Void;
 		function getPerspectiveCorrectDistance():Float;
 		function setMipMapDistance(?distance:Float=500.):Void;
@@ -32,6 +34,8 @@
 
 		function setRenderTarget (target : Sprite) : Void;
 		function getRenderTarget () : Sprite;
+		
+		function drawIndexedLineList (vertices : Vector<Vertex>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int) : Void;
 		function drawIndexedTriangleList (vertices : Vector<Vertex>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int) : Void;
 		function drawMeshBuffer(mb:MeshBuffer):Void;
 
@@ -40,22 +44,18 @@
 		function getPrimitiveCountDrawn () : Int;
 
 		//动态灯光相关
+		function setAmbient (color : UInt) : Void;
 		function removeAllLights () : Void;
 		function addLight (light : Light) : Void;
 		function getLight (i : Int) : Light;
 		function getLightCount () : Int;
 		
-		function setAmbient (color : UInt) : Void;
-
 		function getDriverType () : String;
 		function createScreenShot():BitmapData;
-
-		function setCameraPosition(ps:Vector3):Void;
-		//draw debug box
+		// debug 
 		function draw3DBox(box:AABBox3D,color:UInt):Void;
 		function draw3DLine(vs:Vector3,ve:Vector3,color:UInt):Void;
 		function draw3DTriangle(v0:Vertex,v1:Vertex,v2:Vertex,color:UInt):Void;
-		function drawIndexedLineList (vertices : Vector<Vertex>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int) : Void;
 		function setDebugColor(color:UInt):Void;
 		function getDebugColor():UInt;
 	}

@@ -15,6 +15,16 @@
 		}
 		public function drawIndexedTriangleList (vertices : Vector<Vertex4D>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int): Void
 		{
+			//mipmap
+            var level:Int = Std.int(distance / mipMapDistance);
+			texVector = texture.getVector(level);
+	        texWidth  = texture.getWidth(level);
+			texHeight = texture.getHeight(level);
+			var tw:Int = texWidth - 1;
+			var th:Int = texHeight - 1;
+			perspectiveCorrect = (distance < perspectiveDistance);
+			
+			
 			var textel : UInt;
 
             var xstart : Int,xend : Int;
@@ -133,20 +143,8 @@
 				r1 = vt1.r; g1 = vt1.g; b1 = vt1.b;
                 r2 = vt2.r; g2 = vt2.g; b2 = vt2.b;
                 
-                side=0;
-
-				//mipmap
-                var level:Int = Std.int((vt0.w + vt1.w + vt2.w) * 0.333 / mipMapDistance);
-
-			    texVector = texture.getVector(level);
-	            texWidth  = texture.getWidth(level);
-				texHeight = texture.getHeight(level);
+                side = 0;
 				
-				var tw:Int = texWidth - 1;
-				var th:Int = texHeight - 1;
-
-	            perspectiveCorrect = (vt0.w < perspectiveDistance && vt1.w < perspectiveDistance && vt2.w < perspectiveDistance);
-
 				if(perspectiveCorrect)
 	            {
 				     u0 = vt0.u * tw * z0; v0 = vt0.v * th * z0;			

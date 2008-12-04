@@ -131,6 +131,7 @@
 			_tmpMatrix.identity();
 			driver.setMaterial (material);
 			driver.setTransformWorld (_tmpMatrix);
+			driver.setDistance(distance);
 			driver.drawIndexedTriangleList(vertices, 4, indices, 6);
 			
 			if(debug)

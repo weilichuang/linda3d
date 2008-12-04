@@ -118,6 +118,7 @@
 				if (mb!=null)
 				{
 					driver.setMaterial(materials[i]);
+					driver.setDistance(distance);
 					driver.drawMeshBuffer(mb);
 				}
 			}
