@@ -78,7 +78,7 @@
 		{
 			if (visible)
 			{
-				if (meshBuffer.material.transparenting)
+				if (material.transparenting)
 				{
 					sceneManager.registerNodeForRendering(this, SceneNode.TRANSPARENT);
 				}else

@@ -23,8 +23,7 @@
 			var tw:Int = texWidth - 1;
 			var th:Int = texHeight - 1;
 			perspectiveCorrect = (distance < perspectiveDistance);
-			
-			
+
 			var textel : UInt;
 
             var xstart : Int,xend : Int;

@@ -125,7 +125,6 @@
 				z1 = vt1.z;
 				z2 = vt2.z;
 				
-				side = 0;
 				if(perspectiveCorrect)
 	            {
 				     u0 = vt0.u * tw * z0; v0 = vt0.v * th * z0;			
@@ -138,6 +137,7 @@
 				     u2 = vt2.u * tw; v2 = vt2.v * th;
 	            }
 				
+				side = 0;
 				ys = y1;
 				yend = y2;
 				ystart = y0;
@@ -295,8 +295,8 @@
 						ul = u0; vl = v0;
 						ur = u0; vr = v0;
 					}
-						for (yi in ystart...yend)
-						{
+					for (yi in ystart...yend)
+					{
 							ui = ul;
 							vi = vl;
 							zi = zl;
@@ -346,7 +346,7 @@
 							ur += dudyr;
 							vr += dvdyr;
 							zr += dzdyr;
-						}
+					}
 				}
 			}
 		}

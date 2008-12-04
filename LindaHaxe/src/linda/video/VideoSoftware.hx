@@ -284,7 +284,7 @@
 			_current.multiplyBy(_world);
 
 			_world_inv.copy(_world);
-			_world_inv.inverse();
+			_world_inv.inverse4x3();
 
 			_oppcam_pos.copy(_cam_pos);
 			_world_inv.transformVector(_oppcam_pos);

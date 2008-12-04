@@ -146,6 +146,43 @@
 			m33 = n33;
 			
 		}
+		
+		public inline function inverse4x3 () :Void
+		{
+			var d : Float = (m00 * m11 - m01 * m10) * m22  - (m00 * m12 - m02 * m10) * m21 + (m01 * m12 - m02 * m11) * m20 ;
+			if (d == 0.0) d = 0 else d = 1.0 / d;
+
+			var n00 : Float = d * (m11 * m22 - m12 * m21);
+			var n01 : Float = d * (m21 * m02 - m22 * m01);
+			var n02 : Float = d * (m01 * m12 - m02 * m11);
+			var n10 : Float = d * (m12 * m20 - m10 * m22);
+			var n11 : Float = d * (m22 * m00 - m20 * m02);
+			var n12 : Float = d * (m02 * m10 - m00 * m12);
+			var n20 : Float = d * (m10 * m21 - m11 * m20);
+			var n21 : Float = d * (m20 * m01 - m21 * m00);
+			var n22 : Float = d * (m00 * m11 - m01 * m10);
+			var n30 : Float = d * (m10 * (m22 * m31 - m21 * m32) + m11 * (m20 * m32 - m22 * m30) + m12 * (m21 * m30 - m20 * m31));
+			var n31 : Float = d * (m20 * (m02 * m31 - m01 * m32) + m21 * (m00 * m32 - m02 * m30) + m22 * (m01 * m30 - m00 * m31));
+			var n32 : Float = d * (m30 * (m02 * m11 - m01 * m12) + m31 * (m00 * m12 - m02 * m10) + m32 * (m01 * m10 - m00 * m11));
+
+			m00 = n00;
+			m01 = n01;
+			m02 = n02;
+			m03 = 0;
+			m10 = n10;
+			m11 = n11;
+			m12 = n12;
+			m13 = 0;
+			m20 = n20;
+			m21 = n21;
+			m22 = n22;
+			m23 = 0;
+			m30 = n30;
+			m31 = n31;
+			m32 = n32;
+			m33 = 1;
+			
+		}
 
 		public inline function buildNDCToDCMatrix (rect :Dimension2D, ?scale : Float = 1.) : Void
 		{
@@ -487,7 +524,7 @@
 
 		public inline function transformPlane (plane : Plane3D) : Void
 		{
-			//rotate normal -> rotateVect ( plane.n );
+			//rotate normal -> rotateVect( plane.n );
 			var x : Float;
 			var y : Float;
 			var z : Float;
