@@ -13,35 +13,31 @@
 		private static inline var FRAME_SHIFT_RECIPROCAL : Float = 1 / (1 << FRAME_SHIFT );
 		
 		public var interpolateBuffer : MeshBuffer;
-		public var frameList         : Vector<Vector<Vertex>>;
+		public var vertexList        : Vector<Vector<Vertex>>;
 		public var boxList           : Vector<AABBox3D>;
-		public var frameData         : Vector<MD2Frame>;
+		public var frameList         : Vector<MD2Frame>;
 		public var frameCount        : Int;
 		public var name              : String;
 		
 		public function new ()
 		{
 			interpolateBuffer = new MeshBuffer ();
-			frameList = new Vector<Vector<Vertex>> ();
+			vertexList = new Vector<Vector<Vertex>> ();
 			boxList = new Vector<AABBox3D> ();
-			frameData = new Vector<MD2Frame> ();
+			frameList = new Vector<MD2Frame> ();
 			name = '';
 		}
-		public function getFrameList () : Vector<Vector<Vertex>>
+		public function getVertexList () : Vector<Vector<Vertex>>
 		{
-			return frameList;
+			return vertexList;
 		}
 		public function getBoxList () : Vector<AABBox3D>
 		{
 			return boxList;
 		}
-		public function getFrameData () : Vector<MD2Frame>
+		public function getFrameList () : Vector<MD2Frame>
 		{
-			return frameData;
-		}
-		public function getInterpolateBuffer () : MeshBuffer
-		{
-			return interpolateBuffer;
+			return frameList;
 		}
 		public inline function getFrame(frame : MD2Frame) : MD2Frame
 		{
@@ -85,7 +81,7 @@
 		}
 		public function getAnimationCount() : Int
 		{
-			return frameData.length;
+			return frameList.length;
 		}
 		public function getFrameCount() : Int
 		{
@@ -93,51 +89,73 @@
 		}
 		public function getAnimationName (i : Int) : String
 		{
-			if (i < 0 || i >= frameData.length) return null;
-			return frameData [i].name;
+			if (i < 0 || i >= frameList.length) return null;
+			return frameList [i].name;
 		}
 		
 		public inline function updateInterpolationBuffer (frame : Int, startFrameLoop : Int, endFrameLoop : Int) : Void
 		{
 			var firstFrame : Int, secondFrame : Int;
-			var div : Float;
-			if (endFrameLoop - startFrameLoop == 0)
+			
+			if (endFrameLoop == startFrameLoop)
 			{
 				firstFrame = frame >> FRAME_SHIFT;
-				secondFrame = frame >> FRAME_SHIFT;
-				div = 1;
+
+				var targetVertexs :Vector<Vertex> = interpolateBuffer.vertices;
+				var firstVertexs : Vector<Vertex> = vertexList [firstFrame];
+			
+				var count : Int = vertexList[firstFrame].length;
+				for ( i in 0...count)
+				{
+					var target : Vertex = targetVertexs [i];
+					var first  : Vertex = firstVertexs [i];
+				
+					target.x = first.x;
+					target.y = first.y;
+					target.z = first.z;
+				
+					target.nx = first.nx;
+					target.ny = first.ny;
+					target.nz = first.nz;
+				}
+				//update bounding box
+				interpolateBuffer.boundingBox.copy(boxList[firstFrame]);
 			} 
 			else
 			{
 				//key frames
 				var s : Int = startFrameLoop >> FRAME_SHIFT;
 				var e : Int = endFrameLoop >> FRAME_SHIFT;
+				
 				firstFrame = frame >> FRAME_SHIFT;
 				secondFrame = (firstFrame + 1 > e) ? s : firstFrame + 1;
+				
 				frame &= (1 << FRAME_SHIFT) - 1;
-				div = frame * FRAME_SHIFT_RECIPROCAL;
+				
+				var div : Float = frame * FRAME_SHIFT_RECIPROCAL;
+				
+				var targetVertexs :Vector<Vertex> = interpolateBuffer.vertices;
+				var firstVertexs : Vector<Vertex> = vertexList [firstFrame];
+				var secondVertexs : Vector<Vertex> = vertexList [secondFrame];
+			
+				var count : Int = vertexList[firstFrame].length;
+				for ( i in 0...count)
+				{
+					var target : Vertex = targetVertexs [i];
+					var first  : Vertex = firstVertexs  [i];
+					var second : Vertex = secondVertexs [i];
+				
+					target.x = (second.x - first.x) * div + first.x;
+					target.y = (second.y - first.y) * div + first.y;
+					target.z = (second.z - first.z) * div + first.z;
+				
+					target.nx = (second.nx - first.nx) * div + first.nx;
+					target.ny = (second.ny - first.ny) * div + first.ny;
+					target.nz = (second.nz - first.nz) * div + first.nz;
+				}
+				//update bounding box
+				interpolateBuffer.boundingBox.interpolate(boxList[secondFrame], boxList[firstFrame], div);
 			}
-			var targetArray :Vector<Vertex> = interpolateBuffer.vertices;
-			var firstArray : Vector<Vertex> = frameList [firstFrame];
-			var secondArray : Vector<Vertex> = frameList [secondFrame];
-			var count : Int = frameList[firstFrame].length;
-			for ( i in 0...count)
-			{
-				var target : Vertex = targetArray [i];
-				var first  : Vertex = firstArray [i];
-				var second : Vertex = secondArray [i];
-				
-				target.x = (second.x - first.x) * div + first.x;
-				target.y = (second.y - first.y) * div + first.y;
-				target.z = (second.z - first.z) * div + first.z;
-				
-				target.nx=(second.nx-first.nx)*div+first.nx;
-				target.ny=(second.ny-first.ny)*div+first.ny;
-				target.nz=(second.nz-first.nz)*div+first.nz;
-				
-			}
-			//update bounding box
-			interpolateBuffer.boundingBox.interpolate(boxList[secondFrame], boxList[firstFrame], div);
 		}
 		// returns the animated mesh based on a detail level. 0 is the lowest, 255 the highest detail. Note, that some Meshes will ignore the detail level.
 		public function getMesh (frame : Int, ?detailLevel : Int = 255, ?startFrameLoop : Int = - 1, ?endFrameLoop : Int = - 1) : IMesh
@@ -177,10 +195,6 @@
 		}
 		public function appendMesh(m:IMesh):Void
 		{
-		}
-		public function getName():String
-		{
-			return name;
 		}
 		public function recalculateBoundingBox () : Void
 		{
