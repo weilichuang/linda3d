@@ -1,19 +1,23 @@
 ﻿package linda.mesh.loader;
 
 	import flash.Vector;
-	
 	import flash.utils.ByteArray;
 	import flash.utils.Endian;
+	import haxe.Log;
 	
 	import linda.math.Vertex;
 	import linda.mesh.IMesh;
 	import linda.mesh.Mesh;
 	import linda.mesh.MeshBuffer;
-	import linda.mesh.export.max3ds.Max3DSChunk;
+	import linda.mesh.loader.Max3DSChunk;
 	import linda.mesh.loader.MeshLoader;
 	import linda.mesh.MeshManipulator;
 	class Max3DSMeshFileLoader extends MeshLoader
 	{
+		public function new()
+		{
+			super();
+		}
 		override public function createMesh (data : ByteArray) : IMesh
 		{
 			if (data == null) return null;
@@ -21,9 +25,13 @@
 			var frameCount : Int;
 			var count : Int;
 			var mesh : Mesh = new Mesh ();
-			var meshBuffer : MeshBuffer;
+			
 			data.endian = Endian.LITTLE_ENDIAN;
 			data.position = 0;
+			
+			var meshBuffer : MeshBuffer= new MeshBuffer ();
+			var vertices : Vector<Vertex>=new Vector<Vertex>();
+			
 			var maxLength : Int = data.length;
 			while (data.position < maxLength)
 			{
@@ -94,7 +102,7 @@
 					case Max3DSChunk.TRI_VERTEX :
 					{
 							count = data.readShort ();
-							var vertices : Vector<Vertex> = meshBuffer.vertices;
+							vertices = meshBuffer.vertices;
 							for (i in 0...count)
 							{
 								var vertex : Vertex = new Vertex ();
@@ -113,7 +121,9 @@
 								var t0 : Int = data.readShort ();
 								var t1 : Int = data.readShort ();
 								var t2 : Int = data.readShort ();
-								indices.push (t0 , t2 , t1);
+								indices.push (t0);
+								indices.push (t2);
+								indices.push (t1);
 								data.readShort ();
 							}
 					}
@@ -136,7 +146,7 @@
 							count = data.readShort ();
 							for (i in 0...count)
 							{
-								vertex = vertices [i];
+								var vertex:Vertex = vertices [i];
 								vertex.u = data.readFloat ();
 								vertex.v = 1 - data.readFloat ();
 							}
@@ -230,7 +240,8 @@
 				}
 			}
 			//recalculate normals
-			for (j in 0...mesh.getMeshBufferCount())
+			var count:Int = mesh.getMeshBufferCount();
+			for (j in 0...count)
 			{
 				var buffer : MeshBuffer = mesh.getMeshBuffer(j);
 				buffer.recalculateBoundingBox ();

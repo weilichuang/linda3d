@@ -15,9 +15,10 @@
 	import linda.math.Dimension2D;
 	class VideoNull
 	{
-		private var primitivesDrawn : Int;
+		private var trianglesDrawn : Int;
 		private var screenSize :Dimension2D;
-
+        
+		private var _debugColor : UInt;
 		private var ambientColor : Color ;
 		
 		private var renderTarget : Sprite;
@@ -25,7 +26,7 @@
 		private var _lightCount:Int;
 		
 		
-		private var _debugColor : UInt;
+		
 		
 		private var persDistance:Float;
 		private var mipMapDistance:Float;
@@ -35,7 +36,7 @@
 
 		public function new ()
 		{
-			primitivesDrawn = 0;
+			trianglesDrawn = 0;
 			renderTarget    = new Sprite ();
 			screenSize      = new Dimension2D(300, 300);
 			_lights         = new Vector<Light>(8,true);
@@ -87,9 +88,9 @@
 		/**
 		* 场景中被渲染物体的多边形数量
 		*/
-		public function getPrimitiveCountDrawn () : Int
+		public function getTriangleCountDrawn () : Int
 		{
-			return primitivesDrawn;
+			return trianglesDrawn;
 		}
 		public function setMaterial (mat:Material) : Void
 		{

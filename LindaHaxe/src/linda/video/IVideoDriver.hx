@@ -41,7 +41,7 @@
 
 		function getScreenSize ():Dimension2D;
 		function setScreenSize (size:Dimension2D):Void;
-		function getPrimitiveCountDrawn () : Int;
+		function getTriangleCountDrawn () : Int;
 
 		//动态灯光相关
 		function setAmbient (color : UInt) : Void;

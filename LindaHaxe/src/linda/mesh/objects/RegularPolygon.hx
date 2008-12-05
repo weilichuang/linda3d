@@ -91,6 +91,7 @@
 				ang += radstep;
 				ang_inc += radstep;
 			}
+			tmpPoints.length = 0;
 			tmpPoints = null;
 			recalculateBoundingBox();
 			MeshManipulator.recalculateNormals (this, true);
