@@ -2,6 +2,7 @@
 
 	import flash.geom.Vector3D;
 	import flash.Vector;
+	import haxe.Log;
 	
 	import linda.math.Vector3;
 	import flash.utils.ByteArray;
@@ -26,6 +27,8 @@
 		override public function createAnimatedMesh(data : ByteArray) : IAnimateMesh
 		{
 			if (data == null) return null;
+			
+			var replace_pattern:EReg = ~/([0-9])/g; 
 			
 			var mesh:AnimatedMeshMD2 = new AnimatedMeshMD2();
 
@@ -53,14 +56,14 @@
 
 			if (header.magic != MD2_MAGIC_Float || header.version != MD2_VERSION)
 			{
+				Log.trace("不是正确的MD2文件");
 				return null;
 			}
 		    
 		    var frameCount:Int=header.numFrames;
 		    var triangleCount:Int=header.numTriangles;
 		    var verticesCount:Int=header.numVertices;
-			var i:Int;
-		
+
 			mesh.frameCount = frameCount;
 			for (i in 0...frameCount)
 			{
@@ -69,11 +72,9 @@
 
 			// read TextureCoords
 			data.position=header.offsetTexcoords;
-
-			// uv 
 			var invWidth:Float=1/header.skinWidth;
 			var invHeight:Float=1/header.skinHeight;
-			var uvList:Vector<Vector<Float>> = new Vector<Vector<Float>>(header.numTexcoords,true);
+			var uvList:Vector<Vector<Float>> = new Vector<Vector<Float>>(header.numTexcoords);
 			for(i in 0...header.numTexcoords)
 			{
 				var uv:Vector<Float> = new Vector<Float>(2,true);
@@ -84,44 +85,34 @@
 		
 			// read Triangles
 			data.position=header.offsetTriangles;
-		
-			//Triangle
-			var triangles:Vector<Vector<Int>> = new Vector<Vector<Int>>(triangleCount,true);
+			var triangles:Vector<Vector<Int>> = new Vector<Vector<Int>>(triangleCount);
 			for(i in 0...triangleCount)
 			{
 				var tri:Vector<Int> = new Vector<Int>(6,true);
-
 				tri[0] = data.readShort();
 				tri[1] = data.readShort();
 				tri[2] = data.readShort();
 				tri[3] = data.readShort();
 				tri[4] = data.readShort();
 				tri[5] = data.readShort();
-				
 				triangles[i] = tri;
 			}
 			
 			// read Vertices	
-		
 			var vertices:Vector<Vector<Vector3>> = new Vector<Vector<Vector3>>(frameCount);
-			var normals:Vector<Vector<Vector3>> = new Vector<Vector<Vector3>>(frameCount);
+
 			mesh.boxList = new Vector<AABBox3D>(frameCount);
 			
-			var transformation_matrix:Matrix4 = new Matrix4();
-			transformation_matrix.setRotation(new Vector3(0,-90.0,0));
+			var transMatrix:Matrix4 = new Matrix4();
+			transMatrix.setRotation(new Vector3(0,-90,0));
 		
-			// seek to start of frames
+			// read Frames
 			data.position=header.offsetFrames;
-			
 			for (i in 0...frameCount)
 			{
-				
 				var frame_vertices:Vector<Vector3> = new Vector<Vector3>();
 				vertices[i] = frame_vertices;
-				
-				var frame_normals:Vector<Vector3> = new Vector<Vector3>();
-				normals[i] = frame_normals;
-				
+
 				var box:AABBox3D=new AABBox3D();
 				mesh.boxList[i]=box;
 				
@@ -146,29 +137,13 @@
 					v.z = (data.readUnsignedByte() * sy) + ty;
 					v.y = (data.readUnsignedByte() * sz) + tz;
 
-					transformation_matrix.transformVector(v);
+					transMatrix.transformVector(v);
 		
 					frame_vertices.push(v);
 					
 					// read normal index
-					var normal_index:Int = data.readUnsignedByte();				
-					var nml:Vector3 = new Vector3();
-					
-					if (normal_index > -1 && normal_index < VERTEX_NORMAL_TABLE_SIZE)
-					{
-						nml.x = VERTEX_NORMAL_TABLE[((normal_index*3)+0)];
-						nml.z = VERTEX_NORMAL_TABLE[((normal_index*3)+1)];
-						nml.y = VERTEX_NORMAL_TABLE[((normal_index*3)+2)];
-						
-						transformation_matrix.transformVector(nml);
-					}
-					else
-					{
-						nml.x = v.x;
-						nml.y = v.y;
-						nml.z = v.z;
-						nml.normalize();
-					}
+					data.readUnsignedByte();				
+
 					if(j == 0)
 					{
 						box.resetVector(v);
@@ -176,7 +151,6 @@
 					{
 						box.addVector(v);
 					}
-					frame_normals.push(nml);
 				}
 				
 				// store frame data
@@ -185,12 +159,11 @@
 				frame_data.end = i;
 				frame_data.fps = 7;
 				frame_data.name = '';
-		        
+
 				// find the current frame's name
 				var sl:Int = name.length;
 				if (sl > 0)
 				{
-					var replace_pattern:EReg = new EReg("/([0-9])/g"); 
 					frame_data.name = replace_pattern.replace(name,"");
 
 					if (mesh.frameData.length == 0)
@@ -210,7 +183,6 @@
 						}
 					}
 				}
-
 			}  
 
 			// put triangles into frame list
@@ -219,20 +191,27 @@
 			for (i in 0...frameCount)
 			{
 				// get vertices for this frame
-				frame_vertices = vertices[i];
-				frame_normals = normals[i];
+				var frame_vertices:Vector<Vector3> = vertices[i];
 				var frame_list:Vector<Vertex> = mesh.frameList[i];
-				
+				var uv:Vector<Float>;
 				// get triangles for frame
 				for (j in 0...triangleCount)
 				{
 					
 					var triangle:Vector<Int>= triangles[j];
+					var vec:Vector3;
 
 					// 3 verts to a tri
 					var vertex0:Vertex = new Vertex();
-					vertex0.position = frame_vertices[triangle[0]];
-					vertex0.normal = frame_normals[triangle[0]];
+					vec = frame_vertices[triangle[0]];
+					vertex0.x = vec.x;
+					vertex0.y = vec.y;
+					vertex0.z = vec.z;
+					vertex0.normal.x = vertex0.x;
+					vertex0.normal.y = vertex0.y;
+					vertex0.normal.z = vertex0.z;
+					vertex0.normal.copy(vertex0.position);
+					//vertex0.normal.normalize();
 					vertex0.color =	color;
 					uv = uvList[triangle[3]];
 					vertex0.u = uv[0] ;
@@ -242,23 +221,33 @@
 					
 					
 					var vertex1:Vertex = new Vertex();
-					vertex1.position = frame_vertices[triangle[1]];
-					vertex1.normal = frame_normals[triangle[1]];
-					vertex1.color =	color;
-					uv = uvList[triangle[4]];
-					vertex1.u = uv[0];
-					vertex1.v = uv[1];
-
+					vec = frame_vertices[triangle[1]];
+					vertex1.x = vec.x;
+					vertex1.y = vec.y;
+					vertex1.z = vec.z;
+					vertex1.normal.x = vertex1.x;
+					vertex1.normal.y = vertex1.y;
+					vertex1.normal.z = vertex1.z;
+					vertex1.normal.copy(vertex1.position);
+					//vertex1.normal.normalize();
+					vertex1.color      =	color;
+					vertex1.u          = uvList[triangle[4]][0];
+					vertex1.v          = uvList[triangle[4]][1];
 					frame_list.push(vertex1);
 					
 					
 					var vertex2:Vertex = new Vertex();
-					vertex2.position = frame_vertices[triangle[2]];
-					vertex2.normal = frame_normals[triangle[2]];
-					vertex2.color = color;
-					uv = uvList[triangle[5]];
-					vertex2.u = uv[0];
-					vertex2.v = uv[1];
+					vec = frame_vertices[triangle[2]];
+					vertex2.x = vec.x;
+					vertex2.y = vec.y;
+					vertex2.z = vec.z;
+					vertex2.normal.x = vertex2.x;
+					vertex2.normal.y = vertex2.y;
+					vertex2.normal.z = vertex2.z;
+					//vertex2.normal.normalize();
+					vertex2.color      = color;
+					vertex2.u          = uvList[triangle[5]][0];
+					vertex2.v          = uvList[triangle[5]][1];
 					
 					frame_list.push(vertex2);
 				} 
@@ -275,6 +264,8 @@
 				indices.push(n + 2);
 				n += 3;
 			}
+			
+			
 			// reallocate interpolate buffer
 			var bufferVertices:Vector<Vertex>=interpolateBuffer.vertices;
 			if (frameCount!=0)
@@ -292,181 +283,18 @@
 				interpolateBuffer.boundingBox=mesh.boxList[0];
 			}
 		
-            transformation_matrix=null;
-			normals = null;
+            transMatrix = null;
+			vertices.length = 0;
+			triangles.length = 0;
+			uvList.length = 0;
 			vertices = null;
 			triangles= null;	
             uvList=null;
-            header=null;
+            header = null;
+			replace_pattern = null;
 
 			return mesh;
 		}
-	// normal array
-	public static inline var  VERTEX_NORMAL_TABLE_SIZE:Int = 162;
-	public static inline var VERTEX_NORMAL_TABLE:Array<Float> = [
-			-0.525731, 0.000000, 0.850651, 
-			-0.442863, 0.238856, 0.864188, 
-			-0.295242, 0.000000, 0.955423, 
-			-0.309017, 0.500000, 0.809017, 
-			-0.162460, 0.262866, 0.951056, 
-			0.000000, 0.000000, 1.000000, 
-			0.000000, 0.850651, 0.525731, 
-			-0.147621, 0.716567, 0.681718, 
-			0.147621, 0.716567, 0.681718, 
-			0.000000, 0.525731, 0.850651, 
-			0.309017, 0.500000, 0.809017, 
-			0.525731, 0.000000, 0.850651, 
-			0.295242, 0.000000, 0.955423, 
-			0.442863, 0.238856, 0.864188, 
-			0.162460, 0.262866, 0.951056, 
-			-0.681718, 0.147621, 0.716567, 
-			-0.809017, 0.309017, 0.500000, 
-			-0.587785, 0.425325, 0.688191, 
-			-0.850651, 0.525731, 0.000000, 
-			-0.864188, 0.442863, 0.238856, 
-			-0.716567, 0.681718, 0.147621, 
-			-0.688191, 0.587785, 0.425325, 
-			-0.500000, 0.809017, 0.309017, 
-			-0.238856, 0.864188, 0.442863, 
-			-0.425325, 0.688191, 0.587785, 
-			-0.716567, 0.681718, -0.147621, 
-			-0.500000, 0.809017, -0.309017, 
-			-0.525731, 0.850651, 0.000000, 
-			0.000000, 0.850651, -0.525731, 
-			-0.238856, 0.864188, -0.442863, 
-			0.000000, 0.955423, -0.295242, 
-			-0.262866, 0.951056, -0.162460, 
-			0.000000, 1.000000, 0.000000, 
-			0.000000, 0.955423, 0.295242, 
-			-0.262866, 0.951056, 0.162460, 
-			0.238856, 0.864188, 0.442863, 
-			0.262866, 0.951056, 0.162460, 
-			0.500000, 0.809017, 0.309017, 
-			0.238856, 0.864188, -0.442863, 
-			0.262866, 0.951056, -0.162460, 
-			0.500000, 0.809017, -0.309017, 
-			0.850651, 0.525731, 0.000000, 
-			0.716567, 0.681718, 0.147621, 
-			0.716567, 0.681718, -0.147621, 
-			0.525731, 0.850651, 0.000000, 
-			0.425325, 0.688191, 0.587785, 
-			0.864188, 0.442863, 0.238856, 
-			0.688191, 0.587785, 0.425325, 
-			0.809017, 0.309017, 0.500000, 
-			0.681718, 0.147621, 0.716567, 
-			0.587785, 0.425325, 0.688191, 
-			0.955423, 0.295242, 0.000000, 
-			1.000000, 0.000000, 0.000000, 
-			0.951056, 0.162460, 0.262866, 
-			0.850651, -0.525731, 0.000000, 
-			0.955423, -0.295242, 0.000000, 
-			0.864188, -0.442863, 0.238856, 
-			0.951056, -0.162460, 0.262866, 
-			0.809017, -0.309017, 0.500000, 
-			0.681718, -0.147621, 0.716567, 
-			0.850651, 0.000000, 0.525731, 
-			0.864188, 0.442863, -0.238856, 
-			0.809017, 0.309017, -0.500000, 
-			0.951056, 0.162460, -0.262866, 
-			0.525731, 0.000000, -0.850651, 
-			0.681718, 0.147621, -0.716567, 
-			0.681718, -0.147621, -0.716567, 
-			0.850651, 0.000000, -0.525731, 
-			0.809017, -0.309017, -0.500000, 
-			0.864188, -0.442863, -0.238856, 
-			0.951056, -0.162460, -0.262866, 
-			0.147621, 0.716567, -0.681718, 
-			0.309017, 0.500000, -0.809017, 
-			0.425325, 0.688191, -0.587785, 
-			0.442863, 0.238856, -0.864188, 
-			0.587785, 0.425325, -0.688191, 
-			0.688191, 0.587785, -0.425325, 
-			-0.147621, 0.716567, -0.681718, 
-			-0.309017, 0.500000, -0.809017, 
-			0.000000, 0.525731, -0.850651, 
-			-0.525731, 0.000000, -0.850651, 
-			-0.442863, 0.238856, -0.864188, 
-			-0.295242, 0.000000, -0.955423, 
-			-0.162460, 0.262866, -0.951056, 
-			0.000000, 0.000000, -1.000000, 
-			0.295242, 0.000000, -0.955423, 
-			0.162460, 0.262866, -0.951056, 
-			-0.442863, -0.238856, -0.864188, 
-			-0.309017, -0.500000, -0.809017, 
-			-0.162460, -0.262866, -0.951056, 
-			0.000000, -0.850651, -0.525731, 
-			-0.147621, -0.716567, -0.681718, 
-			0.147621, -0.716567, -0.681718, 
-			0.000000, -0.525731, -0.850651, 
-			0.309017, -0.500000, -0.809017, 
-			0.442863, -0.238856, -0.864188, 
-			0.162460, -0.262866, -0.951056, 
-			0.238856, -0.864188, -0.442863, 
-			0.500000, -0.809017, -0.309017, 
-			0.425325, -0.688191, -0.587785, 
-			0.716567, -0.681718, -0.147621, 
-			0.688191, -0.587785, -0.425325, 
-			0.587785, -0.425325, -0.688191, 
-			0.000000, -0.955423, -0.295242, 
-			0.000000, -1.000000, 0.000000, 
-			0.262866, -0.951056, -0.162460, 
-			0.000000, -0.850651, 0.525731, 
-			0.000000, -0.955423, 0.295242, 
-			0.238856, -0.864188, 0.442863, 
-			0.262866, -0.951056, 0.162460, 
-			0.500000, -0.809017, 0.309017, 
-			0.716567, -0.681718, 0.147621, 
-			0.525731, -0.850651, 0.000000, 
-			-0.238856, -0.864188, -0.442863, 
-			-0.500000, -0.809017, -0.309017, 
-			-0.262866, -0.951056, -0.162460, 
-			-0.850651, -0.525731, 0.000000, 
-			-0.716567, -0.681718, -0.147621, 
-			-0.716567, -0.681718, 0.147621, 
-			-0.525731, -0.850651, 0.000000, 
-			-0.500000, -0.809017, 0.309017, 
-			-0.238856, -0.864188, 0.442863, 
-			-0.262866, -0.951056, 0.162460, 
-			-0.864188, -0.442863, 0.238856, 
-			-0.809017, -0.309017, 0.500000, 
-			-0.688191, -0.587785, 0.425325, 
-			-0.681718, -0.147621, 0.716567, 
-			-0.442863, -0.238856, 0.864188, 
-			-0.587785, -0.425325, 0.688191, 
-			-0.309017, -0.500000, 0.809017, 
-			-0.147621, -0.716567, 0.681718, 
-			-0.425325, -0.688191, 0.587785, 
-			-0.162460, -0.262866, 0.951056, 
-			0.442863, -0.238856, 0.864188, 
-			0.162460, -0.262866, 0.951056, 
-			0.309017, -0.500000, 0.809017, 
-			0.147621, -0.716567, 0.681718, 
-			0.000000, -0.525731, 0.850651, 
-			0.425325, -0.688191, 0.587785, 
-			0.587785, -0.425325, 0.688191, 
-			0.688191, -0.587785, 0.425325, 
-			-0.955423, 0.295242, 0.000000, 
-			-0.951056, 0.162460, 0.262866, 
-			-1.000000, 0.000000, 0.000000, 
-			-0.850651, 0.000000, 0.525731, 
-			-0.955423, -0.295242, 0.000000, 
-			-0.951056, -0.162460, 0.262866, 
-			-0.864188, 0.442863, -0.238856, 
-			-0.951056, 0.162460, -0.262866, 
-			-0.809017, 0.309017, -0.500000, 
-			-0.864188, -0.442863, -0.238856, 
-			-0.951056, -0.162460, -0.262866, 
-			-0.809017, -0.309017, -0.500000, 
-			-0.681718, 0.147621, -0.716567, 
-			-0.681718, -0.147621, -0.716567, 
-			-0.850651, 0.000000, -0.525731, 
-			-0.688191, 0.587785, -0.425325, 
-			-0.587785, 0.425325, -0.688191, 
-			-0.425325, 0.688191, -0.587785, 
-			-0.425325, -0.688191, -0.587785, 
-			-0.587785, -0.425325, -0.688191, 
-			-0.688191, -0.587785, -0.425325
-			];
 	}
 
 class MD2Header

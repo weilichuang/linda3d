@@ -50,6 +50,7 @@
 						var position : Int = data.position;
 						var _version : Int = data.readUnsignedShort ();
 						data.position = position + length - 6;
+						Log.trace("Version=" + _version);
 					}
 					//light
 					case Max3DSChunk.LIGHT :
@@ -239,6 +240,7 @@
 					}
 				}
 			}
+			
 			//recalculate normals
 			var count:Int = mesh.getMeshBufferCount();
 			for (j in 0...count)
@@ -250,7 +252,7 @@
 			mesh.recalculateBoundingBox ();
 			return mesh;
 		}
-		private function readString (data : ByteArray) : String
+		private inline function readString (data : ByteArray) : String
 		{
 			var n : Int;
 			var str : String = '';

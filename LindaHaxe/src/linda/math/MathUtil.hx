@@ -49,7 +49,21 @@
 				return 1 / invSqrt(x);
 			}
 	    }
-		
+		/**
+		 * 
+		 * @param	val1
+		 * @param	val2 must be >=0;
+		 * @return  Math.pow(val1,val2)
+		 */
+		public static inline function powInt(val1:Float, val2:Int):Float
+		{
+			var value:Float = 1.0;
+			for ( i in 0...val2)
+			{
+				value *= val1;
+			}
+			return value;
+		}
 		public static inline function abs( x : Float):Float
 		{
 			return (x < 0) ? -x : x;

@@ -39,7 +39,7 @@
 			kc=0;
 			kl=0.002;
 			kq=0;
-			powerFactor=1;
+			powerFactor=2;
 			type=0;
 			radius = 1000;
 			

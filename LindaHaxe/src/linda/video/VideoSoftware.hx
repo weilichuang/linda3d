@@ -648,7 +648,7 @@
 										dpsl = l.dotProduct(dir)/ dist;
 										if (dpsl > 0 )
 										{
-											dpsl = Math.pow (dpsl, pf);
+											dpsl = MathUtil.powInt(dpsl, pf);
 											k = dp * dpsl * atten;
 											amb_r_sum0 += (ambient.r * atten);
 											amb_g_sum0 += (ambient.g * atten);
@@ -801,7 +801,7 @@
 										dpsl = (l.x * dir.x + l.y * dir.y + l.z * dir.z) / dist;
 										if (dpsl > 0 )
 										{
-											dpsl = Math.pow (dpsl, pf);
+											dpsl = MathUtil.powInt(dpsl, pf);
 											k = dp * dpsl * atten;
 											amb_r_sum0 += (ambient.r * atten);
 											amb_g_sum0 += (ambient.g * atten);
@@ -824,7 +824,7 @@
 										dpsl = (l.x * dir.x + l.y * dir.y + l.z * dir.z) / dist;
 										if (dpsl > 0 )
 										{
-											dpsl = Math.pow (dpsl, pf);
+											dpsl = MathUtil.powInt(dpsl, pf);
 											k = dp * dpsl * atten;
 											amb_r_sum1 += (ambient.r * atten);
 											amb_g_sum1 += (ambient.g * atten);
@@ -847,7 +847,7 @@
 										dpsl = (l.x * dir.x + l.y * dir.y + l.z * dir.z) / dist;
 										if (dpsl > 0 )
 										{
-											dpsl = Math.pow (dpsl, pf);
+											dpsl = MathUtil.powInt(dpsl, pf);
 											k = dp * dpsl * atten;
 											amb_r_sum2 += (ambient.r * atten);
 											amb_g_sum2 += (ambient.g * atten);

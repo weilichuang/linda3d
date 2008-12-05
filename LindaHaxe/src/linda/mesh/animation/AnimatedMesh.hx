@@ -25,7 +25,7 @@
 		}
 		public function getMesh (frame : Int, ?detailLevel : Int = 255, ?startFrameLoop : Int = - 1, ?endFrameLoop : Int = - 1) : IMesh
 		{
-			if (meshes.length == 0 || frame < 0) return null;
+			if (frame < 0 || frame >= meshes.length) return null;
 			return meshes [frame];
 		}
 		public function addMesh (mesh : IMesh) : Void
@@ -39,10 +39,10 @@
 		{
 			if (meshes.length > 0)
 			{
-				var mesh:IMesh=meshes [0];
+				var mesh:IMesh=meshes[0];
 				var len:Int=meshes.length;
 				boundingBox.resetAABBox(mesh.getBoundingBox());
-				for (i in 0...len)
+				for (i in 1...len)
 				{
 					mesh=meshes[i];
 					boundingBox.addAABBox(mesh.getBoundingBox ());
@@ -82,9 +82,5 @@
 		}
 		public function appendMesh(m:IMesh):Void
 		{
-		}
-		public function getName():String
-		{
-			return name;
 		}
 	}
