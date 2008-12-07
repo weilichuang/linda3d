@@ -1,6 +1,7 @@
 ﻿package linda.mesh.objects;
 
 	import flash.Vector;
+	import linda.math.MathUtil;
 	
 	import flash.geom.Point;
 	import linda.math.Vector3;
@@ -13,6 +14,7 @@
 		public function new (?radius : Float = 100., ?sides : Int = 5, ?subdivision : Int = 1, ?backface : Bool = false)
 		{
 			super ();
+			this.material.backfaceCulling = backface;
 			build (radius, sides, subdivision);
 		}
 		public inline function build (radius : Float, sides : Int, subdivision : Int) : Void
@@ -45,46 +47,54 @@
 			{
 				for (j in 0...(tmpPoints.length - 1))
 				{
-					uva.x = (Math.cos ( - ang_inc / 180 * Math.PI) / ((subdivision * 2) / j)) +.5;
-					uva.y = (Math.sin (ang_inc / 180 * Math.PI) / ((subdivision * 2) / j)) +.5 ;
-					uvb.x = (Math.cos ( - ang / 180 * Math.PI) / ((subdivision * 2) / (j + 1))) +.5;
-					uvb.y = (Math.sin (ang / 180 * Math.PI) / ((subdivision * 2) / (j + 1))) +.5;
-					uvc.x = (Math.cos ( - ang_inc / 180 * Math.PI) / ((subdivision * 2) / (j + 1))) +.5;
-					uvc.y = (Math.sin (ang_inc / 180 * Math.PI) / ((subdivision * 2) / (j + 1))) +.5;
-					uvd.x = (Math.cos ( - ang / 180 * Math.PI) / ((subdivision * 2) / j)) +.5;
-					uvd.y = (Math.sin (ang / 180 * Math.PI) / ((subdivision * 2) / j)) +.5;
+					uva.x = (MathUtil.cos ( - ang_inc * MathUtil.PI_OVER_ONE_EIGHTY) / ((subdivision * 2) / j)) +.5;
+					uva.y = (MathUtil.sin (ang_inc    * MathUtil.PI_OVER_ONE_EIGHTY) / ((subdivision * 2) / j)) +.5;
+					uvb.x = (MathUtil.cos ( - ang     * MathUtil.PI_OVER_ONE_EIGHTY) / ((subdivision * 2) / (j + 1))) +.5;
+					uvb.y = (MathUtil.sin (ang        * MathUtil.PI_OVER_ONE_EIGHTY) / ((subdivision * 2) / (j + 1))) +.5;
+					uvc.x = (MathUtil.cos ( - ang_inc * MathUtil.PI_OVER_ONE_EIGHTY) / ((subdivision * 2) / (j + 1))) +.5;
+					uvc.y = (MathUtil.sin (ang_inc    * MathUtil.PI_OVER_ONE_EIGHTY) / ((subdivision * 2) / (j + 1))) +.5;
+					uvd.x = (MathUtil.cos ( - ang     * MathUtil.PI_OVER_ONE_EIGHTY) / ((subdivision * 2) / j)) +.5;
+					uvd.y = (MathUtil.sin (ang        * MathUtil.PI_OVER_ONE_EIGHTY) / ((subdivision * 2) / j)) +.5;
 					if (j == 0)
 					{
 						va = new Vertex (0, 0, 0);
 						va.u = va.v = 0.5;
-						vb = new Vertex (Math.cos ( - ang / 180 * Math.PI) * tmpPoints [1].x, Math.sin(ang/180*Math.PI) * tmpPoints[1].x, base.z);
+						vb = new Vertex (MathUtil.cos ( - ang     * MathUtil.PI_OVER_ONE_EIGHTY ) * tmpPoints [1].x, MathUtil.sin(ang     * MathUtil.PI_OVER_ONE_EIGHTY) * tmpPoints[1].x, base.z);
 						vb.u = uvb.x;
 						vb.v = uvb.y;
-						vc = new Vertex (Math.cos ( - ang_inc / 180 * Math.PI) * tmpPoints [1].x, Math.sin(ang_inc/180*Math.PI) * tmpPoints[1].x,base.z);
+						vc = new Vertex (MathUtil.cos ( - ang_inc * MathUtil.PI_OVER_ONE_EIGHTY ) * tmpPoints [1].x, MathUtil.sin(ang_inc * MathUtil.PI_OVER_ONE_EIGHTY) * tmpPoints[1].x, base.z);
 						vc.u = uvc.x;
 						vc.v = uvc.y;
 						vertices.push(va);
 						vertices.push(vb);
 						vertices.push(vc);
-						indices.push (indexCount ++);
-						indices.push (indexCount ++);
-						indices.push (indexCount ++);
+						indices.push (indexCount+2);
+						indices.push (indexCount+1);
+						indices.push (indexCount+0);
+						indexCount += 3;
 					} else 
 					{
-						va = new Vertex (Math.cos ( - ang_inc / 180 * Math.PI) * tmpPoints [j].x, Math.sin(ang_inc/180*Math.PI) * tmpPoints[j].x, base.z);
+						va = new Vertex (MathUtil.cos ( - ang_inc * MathUtil.PI_OVER_ONE_EIGHTY) * tmpPoints [j].x    , MathUtil.sin(ang_inc * MathUtil.PI_OVER_ONE_EIGHTY) * tmpPoints[j].x  , base.z);
 						va.u = uva.x; va.v = uva.y;
-						vb = new Vertex (Math.cos ( - ang_inc / 180 * Math.PI) * tmpPoints [j + 1].x, Math.sin(ang_inc/180*Math.PI) * tmpPoints[j+1].x, base.z);
+						vb = new Vertex (MathUtil.cos ( - ang_inc * MathUtil.PI_OVER_ONE_EIGHTY) * tmpPoints [j + 1].x, MathUtil.sin(ang_inc * MathUtil.PI_OVER_ONE_EIGHTY) * tmpPoints[j+1].x, base.z);
 						vb.u = uvc.x; vb.v = uvc.y;
-						vc = new Vertex (Math.cos ( - ang / 180 * Math.PI) * tmpPoints [j + 1].x, Math.sin(ang/180*Math.PI) * tmpPoints[j+1].x, base.z);
+						vc = new Vertex (MathUtil.cos ( - ang     * MathUtil.PI_OVER_ONE_EIGHTY) * tmpPoints [j + 1].x, MathUtil.sin(ang     * MathUtil.PI_OVER_ONE_EIGHTY) * tmpPoints[j+1].x, base.z);
 						vc.u = uvb.x; vc.v = uvb.y;
-						vd = new Vertex (Math.cos ( - ang / 180 * Math.PI) * tmpPoints [j].x, Math.sin(ang/180*Math.PI) * tmpPoints[j].x, base.z);
+						vd = new Vertex (MathUtil.cos ( - ang     * MathUtil.PI_OVER_ONE_EIGHTY) * tmpPoints [j].x    , MathUtil.sin(ang     * MathUtil.PI_OVER_ONE_EIGHTY) * tmpPoints[j].x  , base.z);
 						vd.u = uvd.x; vd.v = uvd.y;
+						
 						vertices.push(va);
 						vertices.push(vb);
 						vertices.push(vc);
 						vertices.push(vd);
-						indices.push(indexCount); indices.push(indexCount + 1); indices.push(indexCount + 2);
-						indices.push(indexCount + 3);indices.push(indexCount);indices.push(indexCount + 2);
+						
+						indices.push(indexCount); 
+						indices.push(indexCount + 1); 
+						indices.push(indexCount + 2);
+
+						indices.push(indexCount);
+						indices.push(indexCount + 2);
+						indices.push(indexCount + 3);
 						indexCount += 4;
 					}
 				}

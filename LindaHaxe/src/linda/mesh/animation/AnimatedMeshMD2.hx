@@ -16,7 +16,8 @@
 		public var vertexList        : Vector<Vector<Vertex>>;
 		public var boxList           : Vector<AABBox3D>;
 		public var frameList         : Vector<MD2Frame>;
-		public var frameCount        : Int;
+		public var numFrames         : Int;
+		public var numTriangles      : Int;
 		public var name              : String;
 		
 		public function new ()
@@ -85,7 +86,7 @@
 		}
 		public function getFrameCount() : Int
 		{
-			return frameCount << FRAME_SHIFT;
+			return numFrames << FRAME_SHIFT;
 		}
 		public function getAnimationName (i : Int) : String
 		{
@@ -134,8 +135,8 @@
 				
 				var div : Float = frame * FRAME_SHIFT_RECIPROCAL;
 				
-				var targetVertexs :Vector<Vertex> = interpolateBuffer.vertices;
-				var firstVertexs : Vector<Vertex> = vertexList [firstFrame];
+				var targetVertexs :Vector<Vertex>  = interpolateBuffer.vertices;
+				var firstVertexs  : Vector<Vertex> = vertexList [firstFrame];
 				var secondVertexs : Vector<Vertex> = vertexList [secondFrame];
 			
 				var count : Int = vertexList[firstFrame].length;

@@ -15,19 +15,23 @@ import linda.video.ITriangleRenderer;
 		//uv
 		public var u : Float ;
 		public var v : Float ;
+		
+		public var iy:Int;
 		public function new ()
 		{
-			x=0.;
-			y=0.;
-			z=0.;
-			w=0.;
+			x = 0.;
+			y = 0.;
+			z = 0.;
+			w = 0.;
 			
-			u=0.;
-			v=0.;
+			u = 0.;
+			v = 0.;
 			
-			r=0;
-			g=0;
-			b=0;
+			r = 0;
+			g = 0;
+			b = 0;
+			
+			iy = 0;
 		}
 		public inline function copy (c : Vertex4D) : Void
 		{

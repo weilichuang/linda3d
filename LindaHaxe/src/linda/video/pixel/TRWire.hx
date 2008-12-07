@@ -38,11 +38,11 @@
 					i += 3;
 
 					color = (vt0.r << 16 | vt0.g << 8 | vt0.b );
-					bresenham (Std.int(vt0.x), Std.int(vt0.y),vt0.z, Std.int(vt1.x), Std.int(vt1.y),vt1.z, color);
+					bresenham (Std.int(vt0.x), vt0.iy,vt0.z, Std.int(vt1.x), vt1.iy,vt1.z, color);
 					color = (vt1.r << 16 | vt1.g << 8 | vt1.b );
-					bresenham (Std.int(vt1.x), Std.int(vt1.y),vt1.z, Std.int(vt2.x), Std.int(vt2.y),vt2.z, color);
+					bresenham (Std.int(vt1.x), vt1.iy,vt1.z, Std.int(vt2.x), vt2.iy,vt2.z, color);
 					color = (vt2.r << 16 | vt2.g << 8 | vt2.b );
-					bresenham (Std.int(vt2.x), Std.int(vt2.y),vt2.z, Std.int(vt0.x), Std.int(vt0.y),vt0.z, color);
+					bresenham (Std.int(vt2.x), vt2.iy,vt2.z, Std.int(vt0.x), vt0.iy,vt0.z, color);
 				}
 			} else
 			{
@@ -58,9 +58,9 @@
 					
 					i += 3;
 
-					bresenhamAlpha (Std.int(vt0.x), Std.int(vt0.y),vt0.z, Std.int(vt1.x), Std.int(vt1.y),vt1.z, vt0.r, vt0.g, vt0.b);
-					bresenhamAlpha (Std.int(vt1.x), Std.int(vt1.y),vt1.z, Std.int(vt2.x), Std.int(vt2.y),vt2.z, vt1.r, vt1.g, vt1.b);
-					bresenhamAlpha (Std.int(vt2.x), Std.int(vt2.y),vt2.z, Std.int(vt0.x), Std.int(vt0.y),vt0.z, vt2.r, vt2.g, vt2.b);
+					bresenhamAlpha (Std.int(vt0.x), vt0.iy,vt0.z, Std.int(vt1.x), vt1.iy,vt1.z, vt0.r, vt0.g, vt0.b);
+					bresenhamAlpha (Std.int(vt1.x), vt1.iy,vt1.z, Std.int(vt2.x), vt2.iy,vt2.z, vt1.r, vt1.g, vt1.b);
+					bresenhamAlpha (Std.int(vt2.x), vt2.iy,vt2.z, Std.int(vt0.x), vt0.iy,vt0.z, vt2.r, vt2.g, vt2.b);
 				}
 			}
 		}
@@ -184,7 +184,7 @@
 					{
 						bgColor = target[pos];
 						target[pos] = (
-						               ((alpha * r + invAlpha * (bgColor >> 16)) >> 8) << 16 | 
+						               ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
 						  			   ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
 						  			   ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
 						              );			 
@@ -209,7 +209,7 @@
 					{
 						bgColor = target[pos];
 						target[pos] = (
-						               ((alpha * r + invAlpha * (bgColor >> 16)) >> 8) << 16 | 
+						               ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
 						  			   ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
 						  			   ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
 						              );

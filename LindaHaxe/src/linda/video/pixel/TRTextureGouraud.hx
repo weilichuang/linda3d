@@ -72,67 +72,56 @@
 		 	var ys : Int;
 		 	var type : Int;
             var pos:Int;
-			var n0:Int;
-		 	var n1:Int;
-		 	var n2:Int;
-		 	var tmp:Int;
+			var tmp:Vertex4D;
 			var i:Int = 0;
 			while( i < indexCount)
 			{
-				n0  = indexList[i];
-				n1  = indexList[i+1];
-				n2  = indexList[i + 2];
+				vt0 = vertices[indexList[i]];
+				vt1 = vertices[indexList[i+1]];
+				vt2 = vertices[indexList[i + 2]];
 				
 				i += 3;
-
-				y0 = Std.int(vertices[n0].y+0.5) ;
-				y1 = Std.int(vertices[n1].y+0.5) ;
-				y2 = Std.int(vertices[n2].y+0.5) ;
 				
-				if (y0 == y1 && y1 == y2) continue;
-				if (y1 < y0)
+				if (vt1.iy < vt0.iy)
 				{
-					tmp = y1; y1 = y0; y0 = tmp;
-					tmp = n1; n1 = n0; n0 = tmp;
+					tmp = vt1; vt1 = vt0; vt0 = tmp;
 				}
-				if (y2 < y0)
+				if (vt2.iy < vt0.iy)
 				{
-					tmp = y2; y2 = y0; y0 = tmp;
-					tmp = n2; n2 = n0; n0 = tmp;
+					tmp = vt2; vt2 = vt0; vt0 = tmp;
 				}
-				if (y2 < y1)
+				if (vt2.iy < vt1.iy)
 				{
-					tmp = y1; y1 = y2; y2 = tmp;
-					tmp = n1; n1 = n2; n2 = tmp;
+					tmp = vt2; vt2 = vt1; vt1 = tmp;
 				}
-				if(y0 == y1)
+				if(vt0.iy == vt1.iy)
 				{
 					type = 1;
-					if(vertices[n1].x < vertices[n0].x)
+					if(vt1.x < vt0.x)
 					{
-						tmp = n1; n1 = n0; n0 = tmp;
+						tmp = vt1; vt1 = vt0; vt0 = tmp;
 					}
-				}else if( y1 == y2)
+				}else if( vt1.iy == vt2.iy)
 				{
 					type = 2;
-					if(vertices[n2].x < vertices[n1].x)
+					if(vt2.x < vt1.x)
 					{
-						tmp = n1; n1 = n2; n2 = tmp;
+						tmp = vt1; vt1 = vt2; vt2 = tmp;
 					}
 				}else
 				{
 					type = 0;
 				}
-
-				vt0 = vertices[n0];
-				vt1 = vertices[n1];
-				vt2 = vertices[n2];
 				
-				x0 = Std.int(vt0.x+0.5) ;
-				x1 = Std.int(vt1.x+0.5) ;
-				x2 = Std.int(vt2.x+0.5) ;
+				x0 = Std.int(vt0.x + 0.5);
+				x1 = Std.int(vt1.x + 0.5);
+				x2 = Std.int(vt2.x + 0.5);
 				
-				if ((x0 == x1) && (x1 == x2)) continue;
+				y0 = vt0.iy ;
+				y1 = vt1.iy ;
+				y2 = vt2.iy ;
+				
+				if ((y0 == y1 && y1 == y2) || (x0 == x1 && x1 == x2)) continue;
 				
 				z0 = vt0.z;
 				z1 = vt1.z;

@@ -19,20 +19,18 @@
 	import linda.mesh.animation.MD2Frame;
 	
 
-	class MD2MeshFileLoader extends MeshLoader
-	{
-		public static inline var MD2_MAGIC_Float:Int = 844121161;
+class MD2MeshFileLoader extends MeshLoader
+{
+		public static inline var MD2_MAGIC_NUMBER:Int = 844121161;
 		public static inline var MD2_VERSION     :Int = 8;
 		public static inline var MD2_MAX_VERTS   :Int = 2048;
 		public static inline var MD2_FRAME_SHIFT :Int = 3;
 		public static inline var Normal_Table_Size:Int = 162;
-		public static var normalTable:flash.Vector<Float>;
+		public var normalTable:flash.Vector<Float>;
 		public function new()
 		{
 			super();
-			if (normalTable == null || normalTable.length == 0)
-			{
-				var table:Array<Float> = [
+			var table:Array<Float> = [
 			-0.525731, 0.000000, 0.850651, 
 			-0.442863, 0.238856, 0.864188, 
 			-0.295242, 0.000000, 0.955423, 
@@ -198,60 +196,55 @@
 			];
 			normalTable = Lib.vectorOfArray(table);
 			table = null;
-			}
 		}
 		override public function createAnimatedMesh(data : ByteArray) : IAnimateMesh
 		{
 			if (data == null) return null;
 			
 			var regexp:EReg = ~/([0-9])/g; 
-			
+
 			var mesh:AnimatedMeshMD2 = new AnimatedMeshMD2();
 
 			// read file header
 			data.endian = Endian.LITTLE_ENDIAN;
-			data.position=0;
-			var header:MD2Header = new MD2Header();
-			header.magic = data.readInt();
-			header.version = data.readInt();
-			header.skinWidth = data.readInt();
-			header.skinHeight = data.readInt();
-			header.frameSize = data.readInt();
-			header.numSkins = data.readInt();
-			header.numVertices = data.readInt();
-			header.numTexcoords = data.readInt();
-			header.numTriangles = data.readInt();
-			header.numGlCommands = data.readInt();
-			header.numFrames = data.readInt();
-			header.offsetSkins = data.readInt();
-			header.offsetTexcoords = data.readInt();
-			header.offsetTriangles = data.readInt();
-			header.offsetFrames = data.readInt();
-			header.offsetGlCommands = data.readInt();
-			header.offsetEnd = data.readInt();
+			data.position = 0;
+			
+			var magic:Int            = data.readInt();
+			var version:Int          = data.readInt();
+			var skinWidth:Int        = data.readInt();
+			var skinHeight:Int       = data.readInt();
+			var frameSize:Int        = data.readInt();
+			var numSkins:Int         = data.readInt();
+			var numVertices:Int      = data.readInt();
+			var numTexcoords:Int     = data.readInt();
+			var numTriangles:Int     = data.readInt();
+			var numGlCommands:Int    = data.readInt();
+			var numFrames:Int        = data.readInt();
+			var offsetSkins:Int      = data.readInt();
+			var offsetTexcoords:Int  = data.readInt();
+			var offsetTriangles:Int  = data.readInt();
+			var offsetFrames:Int     = data.readInt();
+			var offsetGlCommands:Int = data.readInt();
+			var offsetEnd:Int        = data.readInt();
 
-			if (header.magic != MD2_MAGIC_Float || header.version != MD2_VERSION)
+			if (magic != MD2_MAGIC_NUMBER || version != MD2_VERSION)
 			{
 				Log.trace("不是正确的MD2文件");
 				return null;
 			}
-		    
-		    var frameCount:Int=header.numFrames;
-		    var triangleCount:Int=header.numTriangles;
-		    var verticesCount:Int=header.numVertices;
 
-			mesh.frameCount = frameCount;
-			for (i in 0...frameCount)
+			mesh.numFrames = numFrames;
+			for (i in 0...numFrames)
 			{
 				mesh.vertexList[i] = new Vector<Vertex>();
 			}
 
 			// read TextureCoords
-			data.position=header.offsetTexcoords;
-			var invWidth:Float=1/header.skinWidth;
-			var invHeight:Float=1/header.skinHeight;
-			var uvList:Vector<Point> = new Vector<Point>(header.numTexcoords);
-			for(i in 0...header.numTexcoords)
+			data.position=offsetTexcoords;
+			var invWidth:Float=1/skinWidth;
+			var invHeight:Float=1/skinHeight;
+			var uvList:Vector<Point> = new Vector<Point>(numTexcoords);
+			for(i in 0...numTexcoords)
 			{
 				var uv:Point = new Point();
 				uv.x = data.readShort()*invWidth;
@@ -260,11 +253,11 @@
 			}
 		
 			// read Triangles
-			data.position=header.offsetTriangles;
-			var triangles:Vector<Vector<Int>> = new Vector<Vector<Int>>(triangleCount);
-			for(i in 0...triangleCount)
+			data.position=offsetTriangles;
+			var triangles:Vector<Vector<Int>> = new Vector<Vector<Int>>(numTriangles);
+			for(i in 0...numTriangles)
 			{
-				var tri:Vector<Int> = new Vector<Int>(6);
+				var tri:Vector<Int> = new Vector<Int>(6,true);
 				tri[0] = data.readShort();
 				tri[1] = data.readShort();
 				tri[2] = data.readShort();
@@ -275,24 +268,18 @@
 			}
 			
 			// read Vertices	
-			var vertices:Vector<Vector<Vector3>> = new Vector<Vector<Vector3>>(frameCount);
-			var normals:Vector<Vector<Vector3>> = new Vector<Vector<Vector3>>(frameCount);
-			mesh.boxList = new Vector<AABBox3D>(frameCount);
+			var total:Int = numFrames * numVertices;
+			var vertices:Vector<Vector3> = new Vector<Vector3>(total);
+			var normals:Vector<Vector3> = new Vector<Vector3>(total);
+			mesh.boxList = new Vector<AABBox3D>(numFrames);
 			
 			var transMatrix:Matrix4 = new Matrix4();
 			transMatrix.setRotation(new Vector3(0,-90,0));
 		
 			// read Frames
-			data.position=header.offsetFrames;
-			for (i in 0...frameCount)
+			data.position=offsetFrames;
+			for (i in 0...numFrames)
 			{
-				var vts:Vector<Vector3> = new Vector<Vector3>();
-				vertices[i] = vts;
-				
-				var nmls:Vector<Vector3> = new Vector<Vector3>();
- 
- 				normals[i] = nmls;
-
 				var box:AABBox3D=new AABBox3D();
 				mesh.boxList[i]=box;
 				
@@ -307,19 +294,18 @@
 				
 				var name:String = data.readUTFBytes(16);
 				
-				// vertices are after frame data, there are header.numVertices total vertices
-				// vertices are encoded - x,y,z,normalIndex
-				for(  j in 0...verticesCount)
+				//x,y,z,normalIndex
+				for( j in 0...numVertices)
 				{
 					// read vertex
 					var v:Vector3 = new Vector3();
-					v.x = (data.readUnsignedByte() * sx) + tx;
-					v.z = (data.readUnsignedByte() * sy) + ty;
-					v.y = (data.readUnsignedByte() * sz) + tz;
-
+					v.x = data.readUnsignedByte() * sx + tx;
+					v.z = data.readUnsignedByte() * sy + ty;
+					v.y = data.readUnsignedByte() * sz + tz;
+					
 					transMatrix.transformVector(v);
-		
-					vts.push(v);
+					
+					vertices[i * numVertices + j] = v;
 
 					// read normal index
 					var index:Int = data.readUnsignedByte();
@@ -328,7 +314,8 @@
 					{
 					 	nml.x = normalTable[(index*3)];
 					 	nml.z = normalTable[(index*3+1)];
-					 	nml.y = normalTable[(index*3+2)];
+					 	nml.y = normalTable[(index * 3 + 2)];
+						
 					 	transMatrix.transformVector(nml);
 					}else{
     					 nml.x = v.x;
@@ -336,7 +323,7 @@
    						 nml.z = v.z;
    						 nml.normalize();
 					}
-					nmls.push(nml);
+					normals[i * numVertices + j] = nml;
 
 					if(j == 0)
 					{
@@ -350,10 +337,9 @@
 				// store frame data
 				var frame:MD2Frame = new MD2Frame();
 				frame.begin = i;
-				frame.end = i;
-				frame.fps = 7;
-				frame.name = '';
-
+				frame.end   = i;
+				frame.fps   = 7;
+				frame.name  = '';
 				// find the current frame's name
 				var sl:Int = name.length;
 				if (sl > 0)
@@ -370,82 +356,103 @@
 						if(last.name == last.name)
 						{
 							last.end++;
-						}
-						else
+						} else
 						{
 							mesh.frameList.push(frame);
 						}
 					}
 				}
-			}  
-
+			}
+            
+			mesh.vertexList = new Vector < Vector < Vertex >> (numFrames,true);
+            var t:Int = Lib.getTimer();
 			// put triangles into frame list
-			for (i in 0...frameCount)
+			for (i in 0...numFrames)
 			{
-				// get vertices for this frame
-				var vers:Vector<Vector3> = vertices[i];
-				var nmls:flash.Vector<Vector3> = normals[i];
-				var vts:Vector<Vertex> = mesh.vertexList[i];
+				var vts:Vector<Vertex> = new Vector<Vertex>(numTriangles*3,true);
+				mesh.vertexList[i] = vts;
+				
 				var uv:Point;
 				var tri:Vector<Int>;
 				var vertex:Vertex;
 				var vec:Vector3;
 				var nor:Vector3;
 				// get triangles for frame
-				for (j in 0...triangleCount)
+				for (j in 0...numTriangles)
 				{
 					tri= triangles[j];
-					// 3 verts to a tri
 					vertex = new Vertex();
-					vec = vers[tri[0]];
+					var id:Int = tri[0]+i*numVertices;
+					vec = vertices[id];
+					nor = normals[id];
+					
 					vertex.x = vec.x;
 					vertex.y = vec.y;
 					vertex.z = vec.z;
-					nor=nmls[tri[0]];
+					
 					vertex.nx = nor.x;
 					vertex.ny = nor.y;
 					vertex.nz = nor.z;
-					uv = uvList[tri[3]];
-					vertex.u = uv.x ;
-					vertex.v = uv.y ;
-					vts.push(vertex);
+					
+					if (i == 0)
+					{
+						uv = uvList[tri[3]];
+						vertex.u = uv.x ;
+						vertex.v = uv.y ;
+					}
+					vts[j * 3] = vertex;
 					
 					vertex = new Vertex();
-					vec = vers[tri[1]];
+					id = tri[1]+i*numVertices;
+					vec = vertices[id];
+					nor = normals[id];
+					
 					vertex.x = vec.x;
 					vertex.y = vec.y;
 					vertex.z = vec.z;
-					nor=nmls[tri[1]];
+					
 					vertex.nx = nor.x;
 					vertex.ny = nor.y;
 					vertex.nz = nor.z;
-					uv = uvList[tri[4]];
-					vertex.u = uv.x ;
-					vertex.v = uv.y ;
-					vts.push(vertex);
+					
+					if (i == 0)
+					{
+						uv = uvList[tri[4]];
+						vertex.u = uv.x ;
+						vertex.v = uv.y ;
+					}
+					vts[j * 3 + 1] = vertex;
 					
 					vertex = new Vertex();
-					vec = vers[tri[2]];
+					id  = tri[2]+i*numVertices;
+					vec = vertices[id];
+					nor = normals[id];
+					
 					vertex.x = vec.x;
 					vertex.y = vec.y;
 					vertex.z = vec.z;
-					nor=nmls[tri[2]];
+					
 					vertex.nx = nor.x;
 					vertex.ny = nor.y;
 					vertex.nz = nor.z;
-					uv = uvList[tri[5]];
-					vertex.u = uv.x ;
-					vertex.v = uv.y ;
-					vts.push(vertex);
+					
+					if (i == 0)
+					{
+						uv = uvList[tri[5]];
+						vertex.u = uv.x ;
+						vertex.v = uv.y ;
+					}
+					vts[j * 3 + 2] = vertex;
 				} 
 			} 
 			
+			Log.trace("put triangles into frame list time:"+(Lib.getTimer() - t));
 			
 		    var interpolateBuffer:MeshBuffer=mesh.interpolateBuffer;
 		    var indices:Vector<Int>=interpolateBuffer.indices;
 			indices.length = 0;
 			var n:Int = 0;
-			while ( n < triangleCount * 3)
+			while ( n < numTriangles * 3)
 			{
 				indices.push(n);
 				indices.push(n+1);
@@ -456,7 +463,7 @@
 			
 			// reallocate interpolate buffer
 			var bufferVts:Vector<Vertex>=interpolateBuffer.vertices;
-			if (frameCount!=0)
+			if (numFrames!=0)
 			{
 				var vertexs:Vector<Vertex> = mesh.vertexList[0];
 				var len:Int = vertexs.length;
@@ -475,40 +482,15 @@
 		 
             transMatrix = null;
 			vertices.length = 0;
+			normals.length = 0;
 			triangles.length = 0;
 			uvList.length = 0;
 			vertices = null;
 			triangles= null;	
-            uvList=null;
-            header = null;
+            uvList = null;
+			normals = null;
 			regexp = null;
-
+            
 			return mesh;
 		}
-	}
-
-class MD2Header
-{
-	public var magic : Int;
-	public var version : Int;
-	public var skinWidth : Int;
-	public var skinHeight : Int;
-	public var frameSize : Int;
-	public var numSkins : Int;
-	public var numVertices : Int;
-	public var numTexcoords : Int;
-	public var numTriangles : Int;
-	public var numGlCommands : Int;
-	//opengl commands
-	public var numFrames : Int;
-	public var offsetSkins : Int;
-	public var offsetTexcoords : Int;
-	public var offsetTriangles : Int;
-	public var offsetFrames : Int;
-	public var offsetGlCommands : Int;
-	public var offsetEnd : Int;
-	public function new()
-	{
-		
-	}
 }

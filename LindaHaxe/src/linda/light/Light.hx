@@ -8,8 +8,7 @@
 		public static inline var DIRECTIONAL : Int = 0;
 		public static inline var POINT : Int = 1;
 		public static inline var SPOT : Int = 2;
-		
-		public var ambientColor : Color;//散射光
+
 		public var diffuseColor : Color;//反射光
 		public var specularColor : Color;//高光
 		
@@ -30,7 +29,6 @@
 		
 		public function new ()
 		{
-			ambientColor = new Color (0,0,0);//散射光
 			diffuseColor = new Color (0,0,0);//反射光
 			specularColor = new Color (0,0,0);//高光
 		
@@ -49,7 +47,6 @@
 		public inline function copy(l:Light):Void
 		{
 			diffuseColor.copy(l.diffuseColor);
-			ambientColor.copy(l.ambientColor);
 			specularColor.copy(l.specularColor);
             
 			position.copy(l.position);
@@ -70,7 +67,6 @@
 			var l:Light = new Light();
 			
 			l.diffuseColor.copy(diffuseColor);
-			l.ambientColor.copy(ambientColor);
 			l.specularColor.copy(specularColor);
             
 			l.position.copy(position);

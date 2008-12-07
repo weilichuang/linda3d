@@ -21,7 +21,6 @@
             var ssin:Int = sin >> 15;
             return (((ssin * (sin < 0?-ssin:ssin)) >> 9) * 467 + sin) / 441009855.21060102566599663103894;
 		}
-		
 		public static inline function cos(angle:Float):Float
 		{
 			var f:Int = (Std.int(angle * 683565275.57643158978229477811035) + 1073741824) >> 16;

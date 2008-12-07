@@ -444,9 +444,9 @@
 			var memi : Color = material.emissiveColor;
 			var mamb : Color = material.ambientColor;
 			var mdif : Color = material.diffuseColor;
-			var globalR : Int = ambientColor.r + memi.r;
-			var globalG : Int = ambientColor.g + memi.g;
-			var globalB : Int = ambientColor.b + memi.b;
+			var globalR : Int = (ambientColor.r*mamb.r >> 8) + memi.r;
+			var globalG : Int = (ambientColor.g*mamb.g >> 8) + memi.g;
+			var globalB : Int = (ambientColor.b*mamb.b >> 8) + memi.b;
 
 			var ii:Int = 0;
 			while( ii < triangleCount )
@@ -529,46 +529,18 @@
 				//lighting 在物体自身坐标计算
 				if (lighting)
 				{
-					//初始化总体环境光照颜色
-					var amb_r_sum0 : Float = 0.;
-					var amb_r_sum1 : Float = 0.;
-					var amb_r_sum2 : Float = 0.;
-					var amb_g_sum0 : Float = 0.;
-					var amb_g_sum1 : Float = 0.;
-					var amb_g_sum2 : Float = 0.;
-					var amb_b_sum0 : Float = 0.;
-					var amb_b_sum1 : Float = 0.;
-					var amb_b_sum2 : Float = 0.;
 					//初始化总体反射光照颜色
 					var dif_r_sum0 : Float = 0.;
 					var dif_g_sum0 : Float = 0.;
 					var dif_b_sum0 : Float = 0.;
-					var dif_r_sum1 : Float = 0.;
-					var dif_g_sum1 : Float = 0.;
-					var dif_b_sum1 : Float = 0.;
-					var dif_r_sum2 : Float = 0.;
-					var dif_g_sum2 : Float = 0.;
-					var dif_b_sum2 : Float = 0.;
-					//高光部分
-					//var spe_r_sum0 : Float = 0;var spe_g_sum0 : Float = 0;var spe_b_sum0 : Float = 0;
-					//var spe_r_sum1 : Float = 0;var spe_g_sum1 : Float = 0;var spe_b_sum1 : Float = 0;
-					//var spe_r_sum2 : Float = 0;var spe_g_sum2 : Float = 0;var spe_b_sum2 : Float = 0;
+					
 					var diffuse : Color;
-					var ambient : Color;
-					var specular : Color;
-					var kc : Float;
-					var kl : Float;
-					var kq : Float;
 					var dist : Float;
 					var dist2 : Float;
-					var nlen : Float;
-					var atten : Float;
 					var dpsl : Float;
 					var dp : Float;
 					var radius : Float;
-					var pf : Int;
 					var k : Float;
-
 					if (lightLen > 0)
 					{
 						if ( ! gouraudShading) //flat Light
@@ -576,16 +548,7 @@
 							for (j in 0...lightLen)
 							{
 								light = _lights [j];
-								var type:Int = light.type;
-								pos  = _lightsPos [j];
-								dir  = _lightDirs [j];
 								diffuse = light.diffuseColor;
-								ambient = light.ambientColor;
-								//specular = light.specularColor;
-								kc = light.kc;
-								kl = light.kl;
-								kq = light.kq;
-								pf = light.powerFactor;
 								
 								//l=v1.subtractE(v0);
 								l.x = v1.x - v0.x;
@@ -601,22 +564,21 @@
 								n.y = l.z * v.x - l.x * v.z;
 								n.z = l.x * v.y - l.y * v.x;
 								//法线长度
-								nlen = MathUtil.sqrt(n.getLengthSquared());
-								
-								if (type == 0) //DIRECTIONAL
+								var nlenSquared:Float = n.getLengthSquared();
+								var dp:Float;
+								if (light.type == 0) //DIRECTIONAL
 								{
-									dp = (n.x * dir.x + n.y * dir.y + n.z * dir.z) / nlen;
+								    dir  = _lightDirs [j];
+									dp = (n.x * dir.x + n.y * dir.y + n.z * dir.z) * MathUtil.invSqrt(nlenSquared);
 									if (dp > 0)
 									{
-										amb_r_sum0 += ambient.r / nlen;
-										amb_g_sum0 += ambient.g / nlen;
-										amb_b_sum0 += ambient.b / nlen;
 										dif_r_sum0 += (diffuse.r * dp);
 										dif_g_sum0 += (diffuse.g * dp);
 										dif_b_sum0 += (diffuse.b * dp);
 									}
-								} else if (type == 1) //POINT
+								} else if (light.type == 1) //POINT
 								{
+									pos  = _lightsPos[j];
 									l.x = pos.x - v0.x;
 									l.y = pos.y - v0.y;
 									l.z = pos.z - v0.z;
@@ -625,17 +587,15 @@
 									{
 										dist2 = l.getLengthSquared();
 										dist = MathUtil.sqrt(dist2);
-										atten = 1 / ((kc + kl * dist + kq * dist2) * nlen);
-										k = dp * atten / dist;
-										amb_r_sum0 += (ambient.r * atten);
-										amb_g_sum0 += (ambient.g * atten);
-										amb_b_sum0 += (ambient.b * atten);
+										k = dp * MathUtil.invSqrt(nlenSquared)/((light.kc + light.kl * dist + light.kq * dist2) * dist);
 										dif_r_sum0 += (diffuse.r * k);
 										dif_g_sum0 += (diffuse.g * k);
 										dif_b_sum0 += (diffuse.b * k);
 									}
 								} //SPOT
 								{
+									pos  = _lightsPos [j];
+									dir  = _lightDirs [j];
 									l.x = pos.x - v0.x;
 									l.y = pos.y - v0.y;
 									l.z = pos.z - v0.z;
@@ -644,15 +604,10 @@
 									{
 										dist2 = l.getLengthSquared();
 										dist = MathUtil.sqrt(dist2);
-										atten = 1 / ((kc + kl * dist + kq * dist2) * nlen);
 										dpsl = l.dotProduct(dir)/ dist;
 										if (dpsl > 0 )
 										{
-											dpsl = MathUtil.powInt(dpsl, pf);
-											k = dp * dpsl * atten;
-											amb_r_sum0 += (ambient.r * atten);
-											amb_g_sum0 += (ambient.g * atten);
-											amb_b_sum0 += (ambient.b * atten);
+											k = dp * MathUtil.powInt(dpsl, light.powerFactor) * MathUtil.invSqrt(nlenSquared)/(light.kc + light.kl * dist + light.kq * dist2);
 											dif_r_sum0 += (diffuse.r * k);
 											dif_g_sum0 += (diffuse.g * k);
 											dif_b_sum0 += (diffuse.b * k);
@@ -660,9 +615,9 @@
 									}
 								}
 							}
-							tv0.r = globalR + (Std.int (amb_r_sum0 * mamb.r + dif_r_sum0 * mdif.r) >> 8);
-							tv0.g = globalG + (Std.int (amb_g_sum0 * mamb.g + dif_g_sum0 * mdif.g) >> 8);
-							tv0.b = globalB + (Std.int (amb_b_sum0 * mamb.b + dif_b_sum0 * mdif.b) >> 8);
+							tv0.r = globalR + (Std.int(dif_r_sum0 * mdif.r) >> 8);
+							tv0.g = globalG + (Std.int(dif_g_sum0 * mdif.g) >> 8);
+							tv0.b = globalB + (Std.int(dif_b_sum0 * mdif.b) >> 8);
 							tv1.r = tv0.r;
 							tv1.g = tv0.g;
 							tv1.b = tv0.b;
@@ -671,29 +626,25 @@
 							tv2.b = tv0.b;
 						} else
 						{
+							var dif_r_sum1 : Float = 0.;
+							var dif_g_sum1 : Float = 0.;
+							var dif_b_sum1 : Float = 0.;
+							var dif_r_sum2 : Float = 0.;
+							var dif_g_sum2 : Float = 0.;
+							var dif_b_sum2 : Float = 0.;
+							
 							for (j in 0...lightLen)
 							{
 								light = _lights [j];
-								var type:Int = light.type;
-								pos = _lightsPos [j];
-								dir = _lightDirs [j];
 								diffuse = light.diffuseColor;
-								ambient = light.ambientColor;
-								//specular = light.specularColor;
-								kc = light.kc;
-								kl = light.kl;
-								kq = light.kq;
 								//radius = light.radius;
-								pf = light.powerFactor;
-								if (type == 0) //DIRECTIONAL
+								if (light.type == 0) //DIRECTIONAL
 								{
+									dir = _lightDirs [j];
 									//tv0
 									dp = (v0.nx * dir.x + v0.ny * dir.y + v0.nz * dir.z);
 									if (dp > 0)
 									{
-										amb_r_sum0 += ambient.r;
-										amb_g_sum0 += ambient.g;
-										amb_b_sum0 += ambient.b;
 										dif_r_sum0 += (diffuse.r * dp);
 										dif_g_sum0 += (diffuse.g * dp);
 										dif_b_sum0 += (diffuse.b * dp);
@@ -702,9 +653,6 @@
 									dp = (v1.nx * dir.x + v1.ny * dir.y + v1.nz * dir.z);
 									if (dp > 0)
 									{
-										amb_r_sum1 += ambient.r ;
-										amb_g_sum1 += ambient.g ;
-										amb_b_sum1 += ambient.b ;
 										dif_r_sum1 += (diffuse.r * dp);
 										dif_g_sum1 += (diffuse.g * dp);
 										dif_b_sum1 += (diffuse.b * dp);
@@ -713,145 +661,135 @@
 									dp = (v2.nx * dir.x + v2.ny * dir.y + v2.nz * dir.z);
 									if (dp > 0)
 									{
-										amb_r_sum2 += ambient.r ;
-										amb_g_sum2 += ambient.g ;
-										amb_b_sum2 += ambient.b ;
 										dif_r_sum2 += (diffuse.r * dp);
 										dif_g_sum2 += (diffuse.g * dp);
 										dif_b_sum2 += (diffuse.b * dp);
 									}
 								} 
-								else if (type == 1) //POINT
+								else if (light.type == 1) //POINT
 								{
+									var kc : Float = light.kc;
+									var kl : Float = light.kl;
+									var kq : Float = light.kq;
+									pos = _lightsPos [j];
+									
+									
 									//              I0point * Clpoint
 									//  I(d)point = ___________________
 									//              kc +  kl*d + kq*d2
 									//
 									//  Where d = |p - s|
-									l.x = - v0.x + pos.x;
-									l.y = - v0.y + pos.y;
-									l.z = - v0.z + pos.z;
+									
+									
+									
+									l.x = pos.x - v0.x;
+									l.y = pos.y - v0.y;
+									l.z = pos.z - v0.z;
 									//tv0
 									dp = (v0.nx * l.x + v0.ny * l.y + v0.nz * l.z);
 									if (dp > 0)
 									{
 										dist2 = l.getLengthSquared();
 										dist = MathUtil.sqrt(dist2);
-										atten = 1 / (kc + kl * dist + kq * dist2);
-										k = dp * atten / dist;
-										amb_r_sum0 += (ambient.r * atten);
-										amb_g_sum0 += (ambient.g * atten);
-										amb_b_sum0 += (ambient.b * atten);
+										k = dp / (dist*(kc + kl * dist + kq * dist2));
 										dif_r_sum0 += (diffuse.r * k);
 										dif_g_sum0 += (diffuse.g * k);
 										dif_b_sum0 += (diffuse.b * k);
 									}
 									//tv1
-									l.x = - v1.x + pos.x;
-									l.y = - v1.y + pos.y;
-									l.z = - v1.z + pos.z;
+									l.x = pos.x - v1.x;
+									l.y = pos.y - v1.y;
+									l.z = pos.z - v1.z;
 									dp = (v1.nx * l.x + v1.ny * l.y + v1.nz * l.z);
 									if (dp > 0)
 									{
 										dist2 = l.getLengthSquared();
 										dist = MathUtil.sqrt (dist2);
-										atten = 1 / (kc + kl * dist + kq * dist2);
-										k = dp * atten / dist;
-										amb_r_sum1 += (ambient.r * atten);
-										amb_g_sum1 += (ambient.g * atten);
-										amb_b_sum1 += (ambient.b * atten);
+										k = dp / (dist*(kc + kl * dist + kq * dist2));
 										dif_r_sum1 += (diffuse.r * k);
 										dif_g_sum1 += (diffuse.g * k);
 										dif_b_sum1 += (diffuse.b * k);
 									}
 									//tv2
-									l.x = - v2.x + pos.x;
-									l.y = - v2.y + pos.y;
-									l.z = - v2.z + pos.z;
+									l.x = pos.x - v2.x;
+									l.y = pos.y - v2.y;
+									l.z = pos.z - v2.z;
 									dp = (v2.nx * l.x + v2.ny * l.y + v2.nz * l.z);
 									if (dp > 0)
 									{
 										dist2 = l.getLengthSquared();
-										dist = MathUtil.sqrt (dist2);
-										atten = 1 / (kc + kl * dist + kq * dist2);
-										k = dp * atten / dist;
-										amb_r_sum2 += (ambient.r * atten);
-										amb_g_sum2 += (ambient.g * atten);
-										amb_b_sum2 += (ambient.b * atten);
+										dist = MathUtil.sqrt(dist2);
+										k = dp /(dist*(kc + kl * dist + kq * dist2));
 										dif_r_sum2 += (diffuse.r * k);
 										dif_g_sum2 += (diffuse.g * k);
 										dif_b_sum2 += (diffuse.b * k);
 									}
 								} //SPOT
 								{
+									var kc : Float = light.kc;
+									var kl : Float = light.kl;
+									var kq : Float = light.kq;
+									var pf : Int = light.powerFactor;
+									dir = _lightDirs [j];
+									pos = _lightsPos [j];
+									
+									
+									
 									//         	     I0spotlight * Clspotlight * MAX( (l . s), 0)^pf
 									// I(d)spotlight = __________________________________________
 									//               		 kc + kl*d + kq*d2
 									// Where d = |p - s|, and pf = power factor
+									
+									
 									//tv0
-									l.x = - v0.x + pos.x;
-									l.y = - v0.y + pos.y;
-									l.z = - v0.z + pos.z;
+									l.x = pos.x - v0.x;
+									l.y = pos.y - v0.y;
+									l.z = pos.z - v0.z;
 									dp = (v0.nx * dir.x + v0.ny * dir.y + v0.nz * dir.z);
 									if (dp > 0)
 									{
 										dist2 = l.getLengthSquared();
-										dist = MathUtil.sqrt (dist2);
-										atten = 1 / (kc + kl * dist + kq * dist2);
+										dist = MathUtil.sqrt(dist2);
 										dpsl = (l.x * dir.x + l.y * dir.y + l.z * dir.z) / dist;
 										if (dpsl > 0 )
 										{
-											dpsl = MathUtil.powInt(dpsl, pf);
-											k = dp * dpsl * atten;
-											amb_r_sum0 += (ambient.r * atten);
-											amb_g_sum0 += (ambient.g * atten);
-											amb_b_sum0 += (ambient.b * atten);
+											k = dp * MathUtil.powInt(dpsl, pf) / (kc + kl * dist + kq * dist2);
 											dif_r_sum0 += (diffuse.r * k);
 											dif_g_sum0 += (diffuse.g * k);
 											dif_b_sum0 += (diffuse.b * k);
 										}
 									}
 									//tv1
-									l.x = - v1.x + pos.x;
-									l.y = - v1.y + pos.y;
-									l.z = - v1.z + pos.z;
+									l.x = pos.x - v1.x;
+									l.y = pos.y - v1.y;
+									l.z = pos.z - v1.z;
 									dp = (v1.nx * dir.x + v1.ny * dir.y + v1.nz * dir.z);
 									if (dp > 0)
 									{
 										dist2 = l.getLengthSquared();
 										dist = MathUtil.sqrt (dist2);
-										atten = 1 / (kc + kl * dist + kq * dist2);
 										dpsl = (l.x * dir.x + l.y * dir.y + l.z * dir.z) / dist;
 										if (dpsl > 0 )
 										{
-											dpsl = MathUtil.powInt(dpsl, pf);
-											k = dp * dpsl * atten;
-											amb_r_sum1 += (ambient.r * atten);
-											amb_g_sum1 += (ambient.g * atten);
-											amb_b_sum1 += (ambient.b * atten);
+											k = dp * MathUtil.powInt(dpsl, pf) / (kc + kl * dist + kq * dist2);
 											dif_r_sum1 += (diffuse.r * k);
 											dif_g_sum1 += (diffuse.g * k);
 											dif_b_sum1 += (diffuse.b * k);
 										}
 									}
 									//tv2
-									l.x = - v2.x + pos.x;
-									l.y = - v2.y + pos.y;
-									l.z = - v2.z + pos.z;
+									l.x = pos.x - v2.x;
+									l.y = pos.y - v2.y;
+									l.z = pos.z - v2.z;
 									dp = (v2.nx * dir.x + v2.ny * dir.y + v2.nz * dir.z);
 									if (dp > 0)
 									{
 										dist2 = l.getLengthSquared();
 										dist = MathUtil.sqrt (dist2);
-										atten = 1 / (kc + kl * dist + kq * dist2);
 										dpsl = (l.x * dir.x + l.y * dir.y + l.z * dir.z) / dist;
 										if (dpsl > 0 )
 										{
-											dpsl = MathUtil.powInt(dpsl, pf);
-											k = dp * dpsl * atten;
-											amb_r_sum2 += (ambient.r * atten);
-											amb_g_sum2 += (ambient.g * atten);
-											amb_b_sum2 += (ambient.b * atten);
+											k = dp * MathUtil.powInt(dpsl, pf) / (kc + kl * dist + kq * dist2);
 											dif_r_sum2 += (diffuse.r * k);
 											dif_g_sum2 += (diffuse.g * k);
 											dif_b_sum2 += (diffuse.b * k);
@@ -859,15 +797,15 @@
 									}
 								}
 							}
-							tv0.r = globalR + (Std.int(amb_r_sum0 * mamb.r + dif_r_sum0 * mdif.r) >> 8);
-							tv0.g = globalG + (Std.int(amb_g_sum0 * mamb.g + dif_g_sum0 * mdif.g) >> 8);
-							tv0.b = globalB + (Std.int(amb_b_sum0 * mamb.b + dif_b_sum0 * mdif.b) >> 8);
-							tv1.r = globalR + (Std.int(amb_r_sum1 * mamb.r + dif_r_sum1 * mdif.r) >> 8);
-							tv1.g = globalG + (Std.int(amb_g_sum1 * mamb.g + dif_g_sum1 * mdif.g) >> 8);
-							tv1.b = globalB + (Std.int(amb_b_sum1 * mamb.b + dif_b_sum1 * mdif.b) >> 8);
-							tv2.r = globalR + (Std.int(amb_r_sum2 * mamb.r + dif_r_sum2 * mdif.r) >> 8);
-							tv2.g = globalG + (Std.int(amb_g_sum2 * mamb.g + dif_g_sum2 * mdif.g) >> 8);
-							tv2.b = globalB + (Std.int(amb_b_sum2 * mamb.b + dif_b_sum2 * mdif.b) >> 8);
+							tv0.r = globalR + (Std.int(dif_r_sum0 * mdif.r) >> 8);
+							tv0.g = globalG + (Std.int(dif_g_sum0 * mdif.g) >> 8);
+							tv0.b = globalB + (Std.int(dif_b_sum0 * mdif.b) >> 8);
+							tv1.r = globalR + (Std.int(dif_r_sum1 * mdif.r) >> 8);
+							tv1.g = globalG + (Std.int(dif_g_sum1 * mdif.g) >> 8);
+							tv1.b = globalB + (Std.int(dif_b_sum1 * mdif.b) >> 8);
+							tv2.r = globalR + (Std.int(dif_r_sum2 * mdif.r) >> 8);
+							tv2.g = globalG + (Std.int(dif_g_sum2 * mdif.g) >> 8);
+							tv2.b = globalB + (Std.int(dif_b_sum2 * mdif.b) >> 8);
 						}
 						tv0.r = tv0.r > 0xFF ? 0xFF : tv0.r;
 						tv0.g = tv0.g > 0xFF ? 0xFF : tv0.g;
@@ -924,16 +862,19 @@
 					tv0.x = (tv0.x * csm00) * tmp + csm30;
 					tv0.y = (tv0.y * csm11) * tmp + csm31;
 					tv0.z = tmp;
+					tv0.iy = Std.int(tv0.y+0.5);
 					//tv1
 					tmp = 1 / tv1.w ;
 					tv1.x = (tv1.x * csm00) * tmp + csm30;
 					tv1.y = (tv1.y * csm11) * tmp + csm31;
 					tv1.z = tmp;
+					tv1.iy = Std.int(tv1.y+0.5);
 					//tv2
 					tmp = 1 / tv2.w ;
 					tv2.x = (tv2.x * csm00) * tmp + csm30;
 					tv2.y = (tv2.y * csm11) * tmp + csm31;
 					tv2.z = tmp;
+					tv2.iy = Std.int(tv2.y+0.5);
 					
 					// add to _clippedIndices
 					_clippedIndices  [iCount++] = vCount;
@@ -1195,6 +1136,7 @@
 					tv0.x = tv0.x * csm00 * tmp + csm30;
 					tv0.y = tv0.y * csm11 * tmp + csm31;
 					tv0.z = tmp;
+					tv0.iy = Std.int(tv0.y+0.5);
 					_clippedVertices [vCount++] = tv0;
 				}
 				// re-tesselate ( triangle-fan, 0-1-2,0-2-3.. )
