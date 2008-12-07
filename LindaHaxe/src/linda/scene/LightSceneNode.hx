@@ -35,10 +35,6 @@
 		{
 			light.diffuseColor.color = color;
 		}
-		//public inline function setAmbientColor(color : UInt) : Void
-		//{
-		//	light.ambientColor.color = color;
-		//}
 		public inline function setSpecularColor(color : UInt) : Void
 		{
 			light.specularColor.color = color;
