@@ -91,6 +91,6 @@ package linda.math;
 		}
 		public function toString () : String
 		{
-			return "[Vector3(" + x + "," + y + "," + z + ")";
+			return "[Vector3(" + x + "," + y + "," + z + ")]";
 		}
 	}

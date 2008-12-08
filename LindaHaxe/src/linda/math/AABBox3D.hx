@@ -32,6 +32,15 @@
 				maxZ = max.z;
 			}
 		}
+		public inline function identity():Void 
+		{
+			minX = 0.;
+			minY = 0.;
+			minZ = 0.;
+			maxX = 0.;
+			maxY = 0.;
+			maxZ = 0.;
+		}
 		public inline function reset (x : Float, y : Float, z : Float) : Void
 		{
 			minX = x;

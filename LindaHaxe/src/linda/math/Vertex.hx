@@ -120,7 +120,7 @@ import flash.geom.Point;
 		}
 		public function toString () : String
 		{
-			return "Vertex(x=" + x + ',y=' + y + ',z=' + z + ',r=' + r + ',g=' + g + ',b=' + b + ',u=' + u + ',v=' + v + ')';
+			return "[Vertex(" + x + ',' + y + ',' + z + ',r=' + r + ',g=' + g + ',b=' + b + ',u=' + u + ',v=' + v + ')]';
 		}
 		public inline function equals (other : Vertex) : Bool
 		{

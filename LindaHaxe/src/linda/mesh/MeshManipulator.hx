@@ -1,6 +1,7 @@
 ﻿package linda.mesh;
 
 	import flash.Vector;
+	import linda.video.ILineRenderer;
 	
 	import flash.geom.Rectangle;
 	
@@ -16,68 +17,40 @@
 		{
 			
 		}
+		
 		public static inline function scale(mesh:IMesh, value:Vector3):Void 
 		{
 			var count : Int = mesh.getMeshBufferCount();
 			for (j in 0...count)
 			{
-				scaleMeshBuffer(mesh.getMeshBuffer(j), value);
-			}
-		}
-
-		public static inline function scaleMeshBuffer(buffer:MeshBuffer, value:Vector3):Void 
-		{
-			var vertices : Vector<Vertex> = buffer.vertices;
-			var len : Int = vertices.length;
-			var i : Int = 0;
-			while (i < len)
-			{
-				var vertex:Vertex = vertices[i];
-				vertex.x *= value.x;
-				vertex.y *= value.y;
-				vertex.z *= value.z;
-					
-				i++;
+				mesh.getMeshBuffer(j).scale(value);
 			}
 		}
 		
+		public static inline function translate(mesh:IMesh, value:Vector3):Void 
+		{
+			var count : Int = mesh.getMeshBufferCount();
+			for (j in 0...count)
+			{
+				mesh.getMeshBuffer(j).translate(value);
+			}
+		}
+		
+		public static inline function setColor(mesh : IMesh, color : UInt) : Void
+		{
+			var count : Int = mesh.getMeshBufferCount ();
+			for ( i in 0...count)
+			{
+				mesh.getMeshBuffer(i).setColor(color);
+			}
+		}
+
 		public static inline function flipSurfaces (mesh : IMesh) : Void
 		{
 			var count : Int = mesh.getMeshBufferCount ();
 			for (j in 0...count)
 			{
-				var buffer : MeshBuffer = mesh.getMeshBuffer(j);
-				var idxcnt : Int = buffer.indices.length;
-				var idx : Vector<Int> = buffer.indices;
-				var tmp : Int;
-				var i : Int = 0;
-				while (i < idxcnt)
-				{
-					tmp = idx [i + 1];
-					idx [i + 1] = idx [i + 2];
-					idx [i + 2] = tmp;
-					i += 3;
-				}
-			}
-		}
-		public static inline function setColor(mesh : IMesh, color : UInt) : Void
-		{
-			var r : Int = color >> 16 & 0xFF;
-			var g : Int = color >> 8 & 0xFF;
-			var b : Int = color & 0xFF;
-			var bcount : Int = mesh.getMeshBufferCount ();
-			for ( i in 0...bcount)
-			{
-				var buffer : MeshBuffer = mesh.getMeshBuffer (i);
-				var v : Vector<Vertex> = buffer.vertices;
-				var vdxcnt : Int = v.length;
-				for ( j in 0...vdxcnt)
-				{
-					var vx:Vertex = v[j];
-					vx.r = r;
-					vx.g = g;
-					vx.b = b;
-				}
+				mesh.getMeshBuffer(j).flipSurfaces();
 			}
 		}
 		public static inline function recalculateNormals (buffer : MeshBuffer, smooth : Bool) : Void

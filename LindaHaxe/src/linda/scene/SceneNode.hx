@@ -116,15 +116,15 @@
 		{
 			if (child!=null && (child != this))
 			{
-				//FixMe
+				child.remove(); // remove from old parent
+				child._parent = this;
+				_children.push(child);
+
 				// change scene manager?
 				//if (sceneManager != child.sceneManager)
 				//{
 				//	child.setSceneManager(sceneManager);
 				//}
-				child.remove(); // remove from old parent
-				child._parent = this;
-				_children.push(child);
 			}
 		}
 		public function removeChild (child : SceneNode) : Bool
@@ -271,7 +271,7 @@
 					material.diffuseColor.color = diffuse;
 					material.ambientColor.color = ambient;
 					material.emissiveColor.color = emissive;
-					//material.specularColor.color = specular;
+					material.specularColor.color = specular;
 				}
 			}
 		}
@@ -323,7 +323,7 @@
 				material=getMaterial (i);
 				if(material!=null)
 				{
-					//material.specularColor.color = color;
+					material.specularColor.color = color;
 				}
 			}
 		}
@@ -365,9 +365,12 @@
 			_relativeMatrix.setRotation(_relativeRotation);
 
 			_relativeMatrix.setTranslation(_relativeTranslation);
-
-			_relativeMatrix.scale(_relativeScale);
-
+            
+			if ( _relativeScale.x != 1 || _relativeScale.y != 1 || _relativeScale.z != 1)
+			{
+				_relativeMatrix.scale(_relativeScale);
+			}
+			
 			if (_parent!=null)
 			{
 				var absolute:Matrix4 = _parent.getAbsoluteMatrix ();
