@@ -9,18 +9,44 @@
 	import linda.math.AABBox3D;
 	import linda.math.Plane3D;
 	import linda.math.Vertex;
+	
 	class MeshManipulator
 	{
 		public function new()
 		{
 			
 		}
+		public static inline function scale(mesh:IMesh, value:Vector3):Void 
+		{
+			var count : Int = mesh.getMeshBufferCount();
+			for (j in 0...count)
+			{
+				scaleMeshBuffer(mesh.getMeshBuffer(j), value);
+			}
+		}
+
+		public static inline function scaleMeshBuffer(buffer:MeshBuffer, value:Vector3):Void 
+		{
+			var vertices : Vector<Vertex> = buffer.vertices;
+			var len : Int = vertices.length;
+			var i : Int = 0;
+			while (i < len)
+			{
+				var vertex:Vertex = vertices[i];
+				vertex.x *= value.x;
+				vertex.y *= value.y;
+				vertex.z *= value.z;
+					
+				i++;
+			}
+		}
+		
 		public static inline function flipSurfaces (mesh : IMesh) : Void
 		{
-			var bcount : Int = mesh.getMeshBufferCount ();
-			for (b in 0...bcount)
+			var count : Int = mesh.getMeshBufferCount ();
+			for (j in 0...count)
 			{
-				var buffer : MeshBuffer = mesh.getMeshBuffer(b);
+				var buffer : MeshBuffer = mesh.getMeshBuffer(j);
 				var idxcnt : Int = buffer.indices.length;
 				var idx : Vector<Int> = buffer.indices;
 				var tmp : Int;
@@ -34,7 +60,7 @@
 				}
 			}
 		}
-		public static inline function setVertexColorRGB (mesh : IMesh, color : UInt) : Void
+		public static inline function setColor(mesh : IMesh, color : UInt) : Void
 		{
 			var r : Int = color >> 16 & 0xFF;
 			var g : Int = color >> 8 & 0xFF;
@@ -127,54 +153,25 @@
 			}
 			plane=null;
 		}
-		//首先确保MeshBuffer的包围盒已经计算
-		public static inline function unwrapUV (mesh : IMesh) : Void
+        /**
+         * 
+         * @param	buffer buffer应该已经计算过boundingbox,否则可能出错。
+         */
+		public static inline function unwrapUV(buffer : MeshBuffer) : Void
 		{
-			mesh.recalculateBoundingBox ();
-			var box : AABBox3D = mesh.getBoundingBox ();
-			box.repair ();
-			if (box.isEmpty())
-			{
-				return;
-			}else
-			{
-				var rect : Rectangle = new Rectangle (box.minX, box.minY, (box.maxX - box.minX) , (box.maxY - box.minY));
-				var bcount : Int = mesh.getMeshBufferCount ();
-				for ( i in 0...bcount)
-				{
-					var buffer : MeshBuffer = mesh.getMeshBuffer (i);
-				
-					var vertices : Vector<Vertex> = buffer.vertices;
-					var vtx_cnt : Int = vertices.length;
-				
-					for ( j in 0...vtx_cnt)
-					{
-						var v : Vertex = vertices[j];
-						v.u = (v.x - rect.x) / rect.width;
-						v.v = (v.y - rect.y) / rect.height;
-					}
-				}
-				rect = null;
-			}
-		}
-		public static inline function unwrapUVMeshBuffer (buffer : MeshBuffer) : Void
-		{
-			buffer.recalculateBoundingBox ();
 			var box : AABBox3D = buffer.boundingBox;
-			box.repair ();
-			if (box.isEmpty())
-			{
-				return;
-			}else
+			if (!box.isEmpty())
 			{
 			    var rect : Rectangle = new Rectangle (box.minX, box.minY, (box.maxX - box.minX) , (box.maxY - box.minY));
-			    var vtx_cnt : Int = buffer.vertices.length;
+			    var length : Int = buffer.vertices.length;
 			    var vertices : Vector<Vertex> = buffer.vertices;
-			    for (j in 0...vtx_cnt)
+				var invW:Float = 1 / rect.width;
+				var invH:Float = 1 / rect.height;
+			    for (j in 0...length)
 			    {
-				    var v : Vertex = vertices [j];
-				    v.u = (v.x - rect.x) / rect.width;
-				    v.v = (v.y - rect.y) / rect.height;
+				    var v : Vertex = vertices[j];
+				    v.u = (v.x - rect.x) * invW;
+				    v.v = (v.y - rect.y) * invH;
 			    }
 				rect = null;
 			}
@@ -318,8 +315,7 @@
 				vertices = _tmpBuffer.vertices;
 				for (j in 0...vtxCnt)
 				{
-					var vertex : Vertex = vertices[j];
-					buffer.vertices[j] = vertex.clone();
+					buffer.vertices[j] = vertices[j].clone();
 				}
 				for (j in 0...idxCnt)
 				{
@@ -331,38 +327,5 @@
 			clone.recalculateBoundingBox ();
 			return clone;
 		}
-		public static inline function cloneMeshWithoutMaterial (mesh : IMesh) : Mesh
-		{
-			var clone : Mesh = new Mesh ();
-			var count : Int = mesh.getMeshBufferCount ();
-			var _tmpBuffer : MeshBuffer;
-			var vtxCnt : Int;
-			var idxCnt : Int;
-			var idx : Vector<Int>;
-			var vertices : Vector<Vertex>;
-			var buffer : MeshBuffer;
-			for (i in 0...count)
-			{
-				_tmpBuffer = mesh.getMeshBuffer(i);
-				vtxCnt = _tmpBuffer.vertices.length;
-				idxCnt = _tmpBuffer.indices.length;
-				idx = _tmpBuffer.indices;
-				buffer = new MeshBuffer ();
-				vertices = _tmpBuffer.vertices;
-				for (j in 0...vtxCnt)
-				{
-					var vertex : Vertex = vertices[j];
-					buffer.vertices[j] = vertex.clone();
-				}
-				for (j in 0...idxCnt)
-				{
-					buffer.indices[j] = idx[j];
-				}
-				buffer.recalculateBoundingBox();
-				clone.addMeshBuffer(buffer);
-			}
-			clone.recalculateBoundingBox();
-			return clone;
-		}
-	}
+}
 

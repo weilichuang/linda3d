@@ -108,8 +108,8 @@
 					vertices [n ++] = new Vertex (posx, posy, posz,
 					                              normal.x, normal.y, normal.z,
 					                              clr,
-					                              Math.asin (normal.x) / (Math.PI * 2) * 2 + 0.5,
-					                              Math.acos (normal.y) / (Math.PI * 2) * 2);
+					                              Math.asin (normal.x) / Math.PI  + 0.5,
+					                              Math.acos (normal.y) / Math.PI);
 				}
 			}
 			// the vertex at the top of the sphere

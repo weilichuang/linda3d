@@ -9,6 +9,7 @@
        寻找计算颜色分量最快的方法.                             
        减少浮点数到整数的转换.
 	   MeshManipulator.recalculateNormals()不完美
+	   MeshManipulator 需要添加一些操作Mesh内部变形的工具
 
 已完成部分：
 

@@ -22,6 +22,7 @@
 
 		//纹理图
 		public var texture : Texture;
+		//光照图
 		public var texture1 : Texture;
 		
 		public var shininess:Int;//指数，用于高光部分

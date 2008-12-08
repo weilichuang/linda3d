@@ -564,16 +564,15 @@
 							n.z = l.x * v.y - l.y * v.x;
 							//法线长度
 							var nlenSquared:Float = n.getLengthSquared();
-							var dp:Float;
 							if (light.type == 0) //DIRECTIONAL
 							{
 								dir  = _lightDirs [j];
 								dp = (n.x * dir.x + n.y * dir.y + n.z * dir.z) * MathUtil.invSqrt(nlenSquared);
 								if (dp > 0)
 								{
-									dif_r_sum0 += (diffuse.r * dp);
-									dif_g_sum0 += (diffuse.g * dp);
-									dif_b_sum0 += (diffuse.b * dp);
+									dif_r_sum0 += diffuse.r * dp;
+									dif_g_sum0 += diffuse.g * dp;
+									dif_b_sum0 += diffuse.b * dp;
 								}
 							} else if (light.type == 1) //POINT
 							{
@@ -587,9 +586,9 @@
 									dist2 = l.getLengthSquared();
 									dist = MathUtil.sqrt(dist2);
 									k = dp * MathUtil.invSqrt(nlenSquared)/((light.kc + light.kl * dist + light.kq * dist2) * dist);
-									dif_r_sum0 += (diffuse.r * k);
-									dif_g_sum0 += (diffuse.g * k);
-									dif_b_sum0 += (diffuse.b * k);
+									dif_r_sum0 += diffuse.r * k;
+									dif_g_sum0 += diffuse.g * k;
+									dif_b_sum0 += diffuse.b * k;
 								}
 							} //SPOT
 							{
@@ -607,9 +606,9 @@
 									if (dpsl > 0 )
 									{
 										k = dp * MathUtil.powInt(dpsl, light.powerFactor) * MathUtil.invSqrt(nlenSquared)/(light.kc + light.kl * dist + light.kq * dist2);
-										dif_r_sum0 += (diffuse.r * k);
-										dif_g_sum0 += (diffuse.g * k);
-										dif_b_sum0 += (diffuse.b * k);
+										dif_r_sum0 += diffuse.r * k;
+										dif_g_sum0 += diffuse.g * k;
+										dif_b_sum0 += diffuse.b * k;
 									}
 								}
 							}
@@ -649,25 +648,25 @@
 								dp = (v0.nx * dir.x + v0.ny * dir.y + v0.nz * dir.z);
 								if (dp > 0)
 								{
-										dif_r_sum0 += (diffuse.r * dp);
-										dif_g_sum0 += (diffuse.g * dp);
-										dif_b_sum0 += (diffuse.b * dp);
+										dif_r_sum0 += diffuse.r * dp;
+										dif_g_sum0 += diffuse.g * dp;
+										dif_b_sum0 += diffuse.b * dp;
 								}
 								//tv1
 								dp = (v1.nx * dir.x + v1.ny * dir.y + v1.nz * dir.z);
 								if (dp > 0)
 								{
-									dif_r_sum1 += (diffuse.r * dp);
-									dif_g_sum1 += (diffuse.g * dp);
-									dif_b_sum1 += (diffuse.b * dp);
+									dif_r_sum1 += diffuse.r * dp;
+									dif_g_sum1 += diffuse.g * dp;
+									dif_b_sum1 += diffuse.b * dp;
 								}
 								//tv2
 								dp = (v2.nx * dir.x + v2.ny * dir.y + v2.nz * dir.z);
 								if (dp > 0)
 								{
-									dif_r_sum2 += (diffuse.r * dp);
-									dif_g_sum2 += (diffuse.g * dp);
-									dif_b_sum2 += (diffuse.b * dp);
+									dif_r_sum2 += diffuse.r * dp;
+									dif_g_sum2 += diffuse.g * dp;
+									dif_b_sum2 += diffuse.b * dp;
 								}
 							} 
 							else if (light.type == 1) //POINT
@@ -696,9 +695,9 @@
 									dist2 = l.getLengthSquared();
 									dist = MathUtil.sqrt(dist2);
 									k = dp / (dist*(kc + kl * dist + kq * dist2));
-									dif_r_sum0 += (diffuse.r * k);
-									dif_g_sum0 += (diffuse.g * k);
-									dif_b_sum0 += (diffuse.b * k);
+									dif_r_sum0 += diffuse.r * k;
+									dif_g_sum0 += diffuse.g * k;
+									dif_b_sum0 += diffuse.b * k;
 								}
 								//tv1
 								l.x = pos.x - v1.x;
@@ -710,9 +709,9 @@
 									dist2 = l.getLengthSquared();
 									dist = MathUtil.sqrt (dist2);
 									k = dp / (dist*(kc + kl * dist + kq * dist2));
-									dif_r_sum1 += (diffuse.r * k);
-									dif_g_sum1 += (diffuse.g * k);
-									dif_b_sum1 += (diffuse.b * k);
+									dif_r_sum1 += diffuse.r * k;
+									dif_g_sum1 += diffuse.g * k;
+									dif_b_sum1 += diffuse.b * k;
 								}
 								//tv2
 								l.x = pos.x - v2.x;
@@ -724,9 +723,9 @@
 									dist2 = l.getLengthSquared();
 									dist = MathUtil.sqrt(dist2);
 									k = dp /(dist*(kc + kl * dist + kq * dist2));
-									dif_r_sum2 += (diffuse.r * k);
-									dif_g_sum2 += (diffuse.g * k);
-									dif_b_sum2 += (diffuse.b * k);
+									dif_r_sum2 += diffuse.r * k;
+									dif_g_sum2 += diffuse.g * k;
+									dif_b_sum2 += diffuse.b * k;
 								}
 							} //SPOT
 							{
@@ -758,9 +757,9 @@
 									if (dpsl > 0 )
 									{
 										k = dp * MathUtil.powInt(dpsl, pf) / (kc + kl * dist + kq * dist2);
-										dif_r_sum0 += (diffuse.r * k);
-										dif_g_sum0 += (diffuse.g * k);
-										dif_b_sum0 += (diffuse.b * k);
+										dif_r_sum0 += diffuse.r * k;
+										dif_g_sum0 += diffuse.g * k;
+										dif_b_sum0 += diffuse.b * k;
 									}
 								}
 								//tv1
@@ -776,9 +775,9 @@
 									if (dpsl > 0 )
 									{
 										k = dp * MathUtil.powInt(dpsl, pf) / (kc + kl * dist + kq * dist2);
-										dif_r_sum1 += (diffuse.r * k);
-										dif_g_sum1 += (diffuse.g * k);
-										dif_b_sum1 += (diffuse.b * k);
+										dif_r_sum1 += diffuse.r * k;
+										dif_g_sum1 += diffuse.g * k;
+										dif_b_sum1 += diffuse.b * k;
 									}
 								}
 								//tv2
@@ -794,9 +793,9 @@
 									if (dpsl > 0 )
 									{
 										k = dp * MathUtil.powInt(dpsl, pf) / (kc + kl * dist + kq * dist2);
-										dif_r_sum2 += (diffuse.r * k);
-										dif_g_sum2 += (diffuse.g * k);
-										dif_b_sum2 += (diffuse.b * k);
+										dif_r_sum2 += diffuse.r * k;
+										dif_g_sum2 += diffuse.g * k;
+										dif_b_sum2 += diffuse.b * k;
 									}
 								}
 							}
@@ -830,9 +829,9 @@
 						tv2.r = v2.r; tv2.g = v2.g; tv2.b = v2.b;
 					} else //flat
 					{
-						tv0.r = memi.r; tv0.g = memi.g; tv0.b = memi.b;
-						tv1.r = memi.r; tv1.g = memi.g; tv1.b = memi.b;
-						tv2.r = memi.r; tv2.g = memi.g; tv2.b = memi.b;
+						tv0.r = mdif.r; tv0.g = mdif.g; tv0.b = mdif.b;
+						tv1.r = mdif.r; tv1.g = mdif.g; tv1.b = mdif.b;
+						tv2.r = mdif.r; tv2.g = mdif.g; tv2.b = mdif.b;
 					}
 				}
 				
@@ -851,20 +850,20 @@
 				{
 					//tv0
 					var tmp : Float = 1 / tv0.w ;
-					tv0.x = (tv0.x * csm00) * tmp + csm30;
-					tv0.y = (tv0.y * csm11) * tmp + csm31;
+					tv0.x = tv0.x * csm00 * tmp + csm30;
+					tv0.y = tv0.y * csm11 * tmp + csm31;
 					tv0.z = tmp;
 					tv0.iy = Std.int(tv0.y+0.5);
 					//tv1
 					tmp = 1 / tv1.w ;
-					tv1.x = (tv1.x * csm00) * tmp + csm30;
-					tv1.y = (tv1.y * csm11) * tmp + csm31;
+					tv1.x = tv1.x * csm00 * tmp + csm30;
+					tv1.y = tv1.y * csm11 * tmp + csm31;
 					tv1.z = tmp;
 					tv1.iy = Std.int(tv1.y+0.5);
 					//tv2
 					tmp = 1 / tv2.w ;
-					tv2.x = (tv2.x * csm00) * tmp + csm30;
-					tv2.y = (tv2.y * csm11) * tmp + csm31;
+					tv2.x = tv2.x * csm00 * tmp + csm30;
+					tv2.y = tv2.y * csm11 * tmp + csm31;
 					tv2.z = tmp;
 					tv2.iy = Std.int(tv2.y+0.5);
 					
