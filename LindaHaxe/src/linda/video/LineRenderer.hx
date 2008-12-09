@@ -66,7 +66,7 @@ class LineRenderer implements ILineRenderer
 				i += 2;
 
 				color = (vt0.r << 16 | vt0.g << 8 | vt0.b );
-				bresenham (Std.int(vt0.x), Std.int(vt0.y),vt0.z, Std.int(vt1.x), Std.int(vt1.y),vt1.z, color);
+				bresenham (Std.int(vt0.x), vt0.iy,vt0.z, Std.int(vt1.x), vt1.iy,vt1.z, color);
 			} 
 		}else
 		{
@@ -80,7 +80,7 @@ class LineRenderer implements ILineRenderer
 
 				i += 2;
 
-				bresenhamAlpha (Std.int(vt0.x), Std.int(vt0.y),vt0.z, Std.int(vt1.x), Std.int(vt1.y),vt1.z, vt0.r, vt0.g, vt0.b);
+				bresenhamAlpha (Std.int(vt0.x), vt0.iy,vt0.z, Std.int(vt1.x), vt1.iy,vt1.z, vt0.r, vt0.g, vt0.b);
 			}
 		}
 	}		

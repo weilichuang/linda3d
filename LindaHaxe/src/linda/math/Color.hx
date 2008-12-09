@@ -5,7 +5,14 @@ class Color
 	public var r : Int ;
 	public var g : Int ;
 	public var b : Int ;
+	
 	public inline var color(getColor, setColor):UInt;
+	
+	public static inline var RED:Color   = new Color(255, 0, 0);
+	public static inline var GREEN:Color = new Color(0, 255, 0);
+	public static inline var BLUE:Color  = new Color(0, 0, 255);
+	public static inline var WHITE:Color = new Color(255, 255, 255);
+	public static inline var BLACK:Color = new Color(0, 0, 0);
 	
 	public function new (r : Int = 0, g : Int = 0, b : Int = 0)
 	{

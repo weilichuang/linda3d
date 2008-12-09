@@ -1,6 +1,5 @@
 ﻿package linda.video;
 
-	import flash.geom.Vector3D;
 	import flash.Vector;
 	import flash.display.Bitmap;
 	import flash.display.BitmapData;
@@ -43,10 +42,9 @@
 		private var targetVector : Vector<UInt>;
 		private var bufferVector : Vector<Float>;
 		
-		private var _scaleMatrix : Matrix4;
 
-		private var texture : Texture;
 		private var material : Material;
+		private var hasTexture:Bool;
 		
 		private var _lightDirs : Vector<Vector3>;
 		private var _lightsPos : Vector<Vector3>;
@@ -58,7 +56,8 @@
 		private var _projection : Matrix4;
 		private var _current : Matrix4 ;
 		private var _view_project : Matrix4;
-		private var _world_inv : Matrix4;
+		private var _world_inv : Matrix4;		
+		private var _scaleMatrix : Matrix4;
 		
 		private var _oppcam_pos : Vector3;
 		private var _cam_pos : Vector3;
@@ -151,8 +150,6 @@
 			}
 			
 			_oppcam_pos = new Vector3();
-			_cam_pos    = new Vector3();
-			
 			
 			/*
 			generic plane clipping in homogenous coordinates
@@ -160,8 +157,8 @@
 			can be rewritten with compares e.q near plane, a.z < -a.w and b.z < -b.w
 			*/
 			_clipPlanes = new Vector<Vector4>(6,true);
-			_clipPlanes[0]=new Vector4(0.0 , 0.0 , 1.0, -1.0 ); // far
-			_clipPlanes[1]=new Vector4(0.0 , 0.0 , -1.0 , -1.0 ); // near
+			_clipPlanes[0]=new Vector4(0.0 , 0.0 , 1.0 , -1.0 ); // far
+			_clipPlanes[1]=new Vector4(0.0 , 0.0 , -1.0, -1.0 ); // near
 			_clipPlanes[2]=new Vector4(1.0 , 0.0 , 0.0 , -1.0 ); // left
 			_clipPlanes[3]=new Vector4(-1.0, 0.0 , 0.0 , -1.0 ); // right
 			_clipPlanes[4]=new Vector4(0.0 , 1.0 , 0.0 , -1.0 ); // bottom
@@ -209,7 +206,7 @@
 			
 				if (material.transparenting)
 				{
-					if (texture!=null)
+					if (hasTexture)
 					{
 						if(lighting)
 						{
@@ -230,7 +227,7 @@
 					}
 				} else
 				{
-					if (texture!=null)
+					if (hasTexture)
 					{
 						if(lighting)
 						{
@@ -300,7 +297,7 @@
 		override public function setMaterial (mat : Material) : Void
 		{
 			material = mat;
-			texture = material.texture;
+			hasTexture = (material.texture != null);
 			curRender = renderers[getTRIndex()];
 			curRender.setMaterial(material);
 		}
@@ -387,7 +384,6 @@
 			//material var
 			var lighting        : Bool = material.lighting;
 			var backfaceCulling : Bool = material.backfaceCulling;
-			var hasTexture      : Bool = (texture!=null);
 			var gouraudShading  : Bool = material.gouraudShading;
 			if(lighting)
 			{
@@ -396,7 +392,7 @@
 			    {
 				    dir   =  _lightDirs[i];
 				    pos   =  _lightsPos[i];
-				    light =  _lights[i];
+				    light =  lights[i];
 					var type:Int = light.type;
 				    if ((type == Light.SPOT) || (type == Light.DIRECTIONAL))
 				    {
@@ -546,7 +542,7 @@
 					{
 						for (j in 0...lightLen)
 						{
-							light = _lights [j];
+							light = lights [j];
 							diffuse = light.diffuseColor;
 								
 							//l=v1.subtractE(v0);
@@ -638,7 +634,7 @@
 							
 						for (j in 0...lightLen)
 						{
-							light = _lights [j];
+							light = lights [j];
 							diffuse = light.diffuseColor;
 							//radius = light.radius;
 							if (light.type == 0) //DIRECTIONAL
@@ -1432,8 +1428,7 @@
 			persDistance = (distance < 10) ? 10 : distance;
 			for ( i in 0...TRType.COUNT)
 			{
-				var render : ITriangleRenderer = renderers [i];
-				render.setPerspectiveCorrectDistance (distance);
+				renderers[i].setPerspectiveCorrectDistance (distance);
 			}
 		}
 		public function setMipMapDistance (?distance : Float = 500.) : Void
@@ -1441,16 +1436,14 @@
 			mipMapDistance = (distance < 10) ? 10 : distance;
 			for ( i in 0...TRType.COUNT)
 			{
-				var render : ITriangleRenderer = renderers [i];
-				render.setMipMapDistance (distance);
+				renderers[i].setMipMapDistance (distance);
 			}
 		}
 		public function setWidth(width:Int) : Void
 		{
 			for ( i in 0...TRType.COUNT)
 			{
-				var render : ITriangleRenderer = renderers [i];
-				render.setWidth(width);
+				renderers[i].setWidth(width);
 			}
 			lineRender.setWidth(width);
 		}
@@ -1458,8 +1451,7 @@
 		{
 			for ( i in 0...TRType.COUNT)
 			{
-				var render : ITriangleRenderer = renderers[i];
-				render.setVector(tv,bv);
+				renderers[i].setVector(tv,bv);
 			}
 			lineRender.setVector(tv,bv);
 		}

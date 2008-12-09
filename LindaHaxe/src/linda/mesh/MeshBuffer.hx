@@ -156,11 +156,10 @@
 			vertices.concat(other.vertices);
 			
 			var vertexCount : Int = vertices.length;
-			var otherindexC:Int=other.indices.length;
-			var otherIndices:Vector<Int>=other.indices;
-			for (i in 0...otherindexC)
+			var indexLen:Int=other.indices.length;
+			for (i in 0...indexLen)
 			{
-				indices.push (otherIndices[i] + vertexCount);
+				indices.push (other.indices[i] + vertexCount);
 			}
 			boundingBox.addAABBox (other.boundingBox);
 		}

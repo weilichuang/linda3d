@@ -18,12 +18,12 @@
 		private var trianglesDrawn : Int;
 		private var screenSize :Dimension2D;
         
-		private var _debugColor : UInt;
+		private var debugColor : UInt;
 		private var ambientColor : Color ;
 		
 		private var renderTarget : Sprite;
-		private var _lights : Vector<Light>;
-		private var _lightCount:Int;
+		private var lights : Vector<Light>;
+		private var lightCount:Int;
 		
 		
 		
@@ -39,13 +39,13 @@
 			trianglesDrawn = 0;
 			renderTarget    = new Sprite ();
 			screenSize      = new Dimension2D(300, 300);
-			_lights         = new Vector<Light>(8,true);
-			_lightCount     = 0;
+			lights         = new Vector<Light>(8,true);
+			lightCount     = 0;
 			
 			persDistance   = 400.;
 			mipMapDistance = 500.;
 			
-			_debugColor = 0xff0000;
+			debugColor = 0xff0000;
 			ambientColor = new Color (0, 0, 0);
 			
 			_tmp_lines = new Vector<Vertex>(3,true);
@@ -97,16 +97,16 @@
 		}
 		public function setDebugColor (color : UInt) : Void
 		{
-			_debugColor = color;
+			debugColor = color;
 		}
 		public function getDebugColor () : UInt
 		{
-			return _debugColor;
+			return debugColor;
 		}
 		//--------------------------------light--------------------------------//
 		public function removeAllLights () : Void
 		{
-			_lightCount=0;
+			lightCount=0;
 		}
 		/**
 		 * 如果灯光数量大于最大数量，则新加入的会替换最后一个
@@ -114,13 +114,13 @@
 		public function addLight (light : Light) : Void
 		{
 			if ( light==null) return;
-			if (_lightCount >= getMaxLightAmount ())
+			if (lightCount >= getMaxLightAmount ())
 			{
-				_lights[getMaxLightAmount()-1]=light;
+				lights[getMaxLightAmount()-1]=light;
 			}else
 			{
-				_lights[_lightCount]=light;
-				_lightCount++;
+				lights[lightCount]=light;
+				lightCount++;
 			}
 		}
 		public function getMaxLightAmount () : Int
@@ -129,12 +129,12 @@
 		}
 		public function getLightCount () : Int
 		{
-			return _lightCount;
+			return lightCount;
 		}
 		public function getLight (index : Int) : Light
 		{
 			if (index < 0 || index >= getLightCount()) return null;
-			return _lights[index];
+			return lights[index];
 		}
 		
 		public function draw3DBox (box : AABBox3D, color : UInt) : Void

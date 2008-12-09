@@ -14,6 +14,11 @@
 			return (a + ROUNDING_ERROR > b) && (a - ROUNDING_ERROR < b);
 		}
 		
+		public static inline function clamp(value:Float,low:Float,high:Float):Float
+		{
+			return min(max(value, low), high);
+		}
+		
 		public static inline function sin(angle:Float):Float
 		{
 			var f:Int = Std.int(angle * 683565275.57643158978229477811035) >> 16;

@@ -1,6 +1,7 @@
 ﻿package linda.mesh.objects;
 
 	import flash.geom.Vector3D;
+	import flash.Lib;
 	import flash.Vector;
 
 	import linda.math.AABBox3D;
@@ -31,11 +32,8 @@
 			indices.length  = 0;
 			var arr:Array<Int>=[0, 2, 1, 0, 3, 2, 1, 5, 4, 1, 2, 5, 4, 6, 7, 4, 5, 6,
 			                    7, 3, 0, 7, 6, 3, 9, 5, 2, 9, 8, 5, 0, 11, 10, 0, 10, 7];
-			var len:Int = arr.length;
-			for (i in 0...len)
-			{
-				indices[i]=arr[i];
-			}
+								
+			indices = Lib.vectorOfArray(arr);
 			arr = null;
        
 			var color : UInt = 0xffffff;
@@ -64,7 +62,8 @@
 				if (i == 0)
 				{
 					boundingBox.resetVertex(vertex);
-				}else {
+				}else 
+				{
 					boundingBox.addVertex(vertex);
 				}
 			}

@@ -192,14 +192,14 @@
 			var dx : Float = - 0.5 + rect.width * 0.5;
 			var dy : Float = - 0.5 + rect.height * 0.5;
 			
-			identity ();
+			makeIdentity();
 			m00 = scaleX;
 			m11 = scaleY;
 			m22 = scale;
 			m30 = dx;
 			m31 = dy;
 		}
-		public inline function identity() : Void
+		public inline function makeIdentity() : Void
 		{
 			m00 = 1.;
 			m01 = 0.;

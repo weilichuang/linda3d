@@ -25,7 +25,7 @@ class LineRender32 extends LineRenderer
 				i += 2;
 
 				color = (0xFF000000 | vt0.r << 16 | vt0.g << 8 | vt0.b );
-				bresenham (Std.int(vt0.x), Std.int(vt0.y),vt0.z, Std.int(vt1.x), Std.int(vt1.y),vt1.z, color);
+				bresenham (Std.int(vt0.x), vt0.iy,vt0.z, Std.int(vt1.x), vt1.iy,vt1.z, color);
 			} 
 		}else
 		{
@@ -39,7 +39,7 @@ class LineRender32 extends LineRenderer
 
 				i += 2;
 
-				bresenhamAlpha32 (Std.int(vt0.x), Std.int(vt0.y),vt0.z, Std.int(vt1.x), Std.int(vt1.y),vt1.z, vt0.r, vt0.g, vt0.b);
+				bresenhamAlpha32 (Std.int(vt0.x), vt0.iy,vt0.z, Std.int(vt1.x), vt1.iy,vt1.z, vt0.r, vt0.g, vt0.b);
 			}
 		}
 	}

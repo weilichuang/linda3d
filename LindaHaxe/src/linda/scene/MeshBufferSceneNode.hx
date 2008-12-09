@@ -12,9 +12,7 @@
 	import linda.mesh.Mesh;
 	import linda.mesh.MeshManipulator;
 	import linda.video.IVideoDriver;
-	/**
-	 * only one MeshBuffer
-	 */
+
 	class MeshBufferSceneNode extends SceneNode
 	{
 		private var meshBuffer:MeshBuffer;
