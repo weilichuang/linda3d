@@ -1,244 +1,249 @@
 ﻿package linda.video.pixel32;
-
-	import flash.Vector;
+    import flash.Vector;
+	import linda.math.MathUtil;
 	
-	import linda.video.ITriangleRenderer;
 	import linda.math.Vertex4D;
+	import linda.video.ITriangleRenderer;
 	import linda.video.TriangleRenderer;
-    class TRFlatAlpha32 extends TriangleRenderer,implements ITriangleRenderer
+class TRFlatAlpha32 extends TriangleRenderer,implements ITriangleRenderer
+{
+    private var dzdx: Float;
+	private var dzdy: Float;
+
+	private var xa: Float;
+	private var xb: Float;
+	private var za: Float;
+	
+	private var r:Int;
+	private var b:Int;
+	private var g:Int;
+
+	private var dxdya: Float;
+	private var dxdyb: Float;
+	private var dzdya: Float;
+
+	private var side:Bool;
+	
+	private var tmp:Vertex4D;
+	
+	private var v1:Vertex4D;
+	private var v2:Vertex4D;
+	private var v3:Vertex4D;
+	
+	private var x1:Float;
+	private var y1:Float;
+	private var z1:Float;
+	private var x2:Float;
+	private var y2:Float;
+	private var z2:Float;
+	private var x3:Float;
+	private var y3:Float;
+	private var z3:Float;
+	
+	private var x2x1:Float;
+	private var x3x1:Float;
+	private var y2y1:Float;
+	private var y3y1:Float;
+	private var z2z1:Float;
+	private var z3z1:Float;
+	
+	private var y1i:Int;
+	private var y2i:Int;
+	private var y3i:Int;
+	
+	private var zi:Float;
+
+	private var xs:Int;
+	private var xe:Int;
+	private var pos:Int;
+	
+	private var dxdy1:Float;
+	private var dxdy2:Float;
+	private var dxdy3:Float;
+	
+	private var bga:Int;
+	private var bgColor:UInt;
+	
+	public function new() 
 	{
-		public function new()
+		super();
+	}
+	public function drawIndexedTriangleList (vertices : Vector<Vertex4D>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int): Void
+	{
+		var dy: Float;
+		var i:Int = 0;
+		while( i < indexCount)
 		{
-			super();
-		}
-		public function drawIndexedTriangleList (vertices : Vector<Vertex4D>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int) : Void
-		{
-			var xstart : Int,xend : Int;
-			var ystart : Int,yend : Int;
-			var dyr : Float,dyl : Float;
-			var dxdyl : Float,dxdyr : Float;
-			var dzdyl : Float,dzdyr : Float;
-			var x0 : Int,x1 : Int,x2 : Int; 
-			var y0 : Int,y1 : Int,y2 : Int;
-			var z0 : Float,z1 : Float,z2 : Float;
-			var zi : Float;
-			var xl : Float,xr : Float;
-			var zl : Float,zr : Float;
-			var dx : Float,dy : Float,dz : Float;
-			
-			var bga : Int;
-		    var bgColor : UInt;
-			var r:Int,b:Int,g:Int;
-
-			var vt0:Vertex4D;
-		    var vt1:Vertex4D;
-		    var vt2:Vertex4D;
-			var temp : Float;
-			var side : Int;
-		 	var ys : Int;
-		 	var type : Int;
-            var pos:Int;
-			var tmp:Vertex4D;
-			var i:Int = 0;
-			while( i < indexCount)
+			v1 = vertices[indexList[i]];
+			v2 = vertices[indexList[i+1]];
+			v3 = vertices[indexList[i + 2]];
+				
+			i += 3;
+				
+			if (v2.y < v1.y)
 			{
-				vt0 = vertices[indexList[i]];
-				vt1 = vertices[indexList[i+1]];
-				vt2 = vertices[indexList[i + 2]];
-				
-				i += 3;
-				
-				if (vt1.iy < vt0.iy)
-				{
-					tmp = vt1; vt1 = vt0; vt0 = tmp;
-				}
-				if (vt2.iy < vt0.iy)
-				{
-					tmp = vt2; vt2 = vt0; vt0 = tmp;
-				}
-				if (vt2.iy < vt1.iy)
-				{
-					tmp = vt2; vt2 = vt1; vt1 = tmp;
-				}
-				if(vt0.iy == vt1.iy)
-				{
-					type = 1;
-					if(vt1.x < vt0.x)
-					{
-						tmp = vt1; vt1 = vt0; vt0 = tmp;
-					}
-				}else if( vt1.iy == vt2.iy)
-				{
-					type = 2;
-					if(vt2.x < vt1.x)
-					{
-						tmp = vt1; vt1 = vt2; vt2 = tmp;
-					}
-				}else
-				{
-					type = 0;
-				}
-				
-				x0 = Std.int(vt0.x + 0.5);
-				x1 = Std.int(vt1.x + 0.5);
-				x2 = Std.int(vt2.x + 0.5);
-				
-				y0 = vt0.iy ;
-				y1 = vt1.iy ;
-				y2 = vt2.iy ;
-				
-				if ((y0 == y1 && y1 == y2) || (x0 == x1 && x1 == x2)) continue;
-				
-				z0 = vt0.z;
-				z1 = vt1.z;
-				z2 = vt2.z;
-				
-				r = vt0.r;g = vt0.g;b = vt0.b;
-				
-				side = 0;
-				yend = y2;
-				ys = y1;
-				ystart = y0;
-				if(type==0)
-				{
-						dyl = 1 / (y1 - y0);
-						dxdyl = (x1 - x0) * dyl;
-						dzdyl = (z1 - z0) * dyl;
-						dyr = 1 / (y2 - y0);
-						dxdyr = (x2 - x0) * dyr;
-						dzdyr = (z2 - z0) * dyr;
-						xl = x0;
-						zl = z0;
-						xr = x0;
-						zr = z0;
-						if (dxdyr < dxdyl)
-						{
-							temp = dxdyl; dxdyl = dxdyr; dxdyr = temp;
-							temp = dzdyl; dzdyl = dzdyr; dzdyr = temp;
-							
-							temp = xl; xl = xr; xr = temp;
-							temp = zl; zl = zr; zr = temp;
-							
-							temp = z1; z1 = z2; z2 = temp;
-							
-							x1 ^= x2; x2 ^= x1; x1 ^= x2;
-							y1 ^= y2; y2 ^= y1; y1 ^= y2;
-							
-							side = 1;
-						}
-						for (yi in ystart...yend)
-						{
-							zi = zl;
-							xstart = Std.int(xl);
-							xend = Std.int(xr);
-							dx = (xend - xstart);
-							if (dx > 0)
-							{
-								dz = (zr - zl) / dx;
-							} else
-							{
-								dz = (zr - zl);
-							}
-							for (xi in xstart...xend)
-							{
-								pos=xi+yi*width;
-								bgColor = target[pos];
-								bga = bgColor >> 24 & 0xFF ;
-								if (bga < 0xFF)
-								{
-									target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                   << 24 |
-		                  					       ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
-						  					       ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
-						  					       ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
-						                          );
-								}else if (zi > buffer[pos])
-								{ //bgAlpha=255
-									target[pos] = ( 0xFF000000                                                  |
-		                  					       ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
-						  					       ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
-						  					       ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
-								                  );
-								}
-								zi += dz;
-							}
-							xl += dxdyl; zl += dzdyl;
-							xr += dxdyr; zr += dzdyr;
-							if (yi == ys)
-							{
-								if (side == 0)
-								{
-									dyl = 1 / (y2 - y1);
-									dxdyl = (x2 - x1) * dyl; dzdyl = (z2 - z1) * dyl;
-									xl = x1+dxdyl; zl = z1+dzdyl;
-								} else
-								{
-									dyr = 1 / (y1 - y2);
-									dxdyr = (x1 - x2) * dyr; dzdyr = (z1 - z2) * dyr;
-									xr = x2+dxdyr; zr = z2+dzdyr;
-								}
-							}
-						}
-				}
-				else
-				{
-					if (type == 1)
-					{
-						dy = 1 / (y2 - y0);
-						dxdyl = (x2 - x0) * dy; dxdyr = (x2 - x1) * dy;
-						dzdyl = (z2 - z0) * dy; dzdyr = (z2 - z1) * dy;
+				tmp = v1; v1 = v2; v2 = tmp;
+			}
+			if (v3.y < v1.y)
+			{
+				tmp = v1; v1 = v3; v3 = tmp;
+			}
+			if (v3.y < v2.y)
+			{
+				tmp = v2; v2 = v3; v3 = tmp;
+			}
+			
+			x1  = v1.x + .5;
+			y1  = v1.y + .5;
+			x2  = v2.x + .5;
+			y2  = v2.y + .5;
+			x3  = v3.x + .5;
+			y3  = v3.y + .5;
+			
+			z1  = v1.z;
+			z2  = v2.z;
+			z3  = v3.z;
 
-						xl = x0; zl = z0;
-						xr = x1; zr = z1;
-					} 
-					else
-					{
-						dy = 1 / (y1 - y0);
-						dxdyl = (x1 - x0) * dy; dxdyr = (x2 - x0) * dy;
-						dzdyl = (z1 - z0) * dy; dzdyr = (z2 - z0) * dy;
+			r = v1.r;
+			g = v1.g;
+			b = v1.b;
+			
+			y1i = Std.int(y1);
+			y2i = Std.int(y2);
+			y3i = Std.int(y3);
+			
+			x2x1 = x2 - x1;
+			x3x1 = x3 - x1;
+			y2y1 = y2 - y1;
+			y3y1 = y3 - y1;
+			z2z1 = z2 - z1;
+			z3z1 = z3 - z1;
 
-						xl = x0; zl = z0;
-						xr = x0; zr = z0;
-					}
-					for (yi in ystart...yend)
-					{
-							zi = zl;
-							xstart = Std.int(xl);
-							xend = Std.int(xr);
-							dx = (xend - xstart);
-							if (dx > 0)
-							{
-								dz = (zr - zl) / dx;
-							} else
-							{
-								dz = (zr - zl);
-							}
-							for (xi in xstart...xend)
-							{
-								pos=xi+yi*width;
-								bgColor = target[pos];
-								bga = bgColor >> 24 & 0xFF ;
-								if (bga < 0xFF)
-								{
-									target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                   << 24 |
-		                  					       ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
-						  					       ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
-						  					       ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
-						                          );
-								}else if (zi > buffer[pos])
-								{ //bgAlpha=255
-									target[pos] = ( 0xFF000000                                                  |
-		                  					       ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
-						  					       ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
-						  					       ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
-								                  );
-								}
-								zi += dz;
-							}
-							xl += dxdyl; zl += dzdyl;
-							xr += dxdyr; zr += dzdyr;
-					}
+			var denom: Float = (x3x1 * y2y1 - x2x1 * y3y1);
+			
+			if (denom == 0) continue;
+			
+			denom = 1 / denom;
+
+			dzdx = (z3z1 * y2y1 - z2z1 * y3y1) * denom;
+			dzdy = (z2z1 * x3x1 - z3z1 * x2x1) * denom;
+
+			// Calculate X-slopes along the edges
+			dxdy1 = x2x1 / y2y1;
+			dxdy2 = x3x1 / y3y1;
+			dxdy3 = (x3 - x2) / (y3 - y2);
+		
+			// Determine which side of the poly the longer edge is on
+			side = dxdy2 > dxdy1;
+
+			if( y1 == y2 )
+			{
+				side = x1 > x2;
+			}
+			if( y2 == y3 )
+			{
+				side = x3 > x2;
+			}
+			
+			if( !side )	// Longer edge is on the left side
+			{
+				// Calculate slopes along left edge
+				dxdya = dxdy2;
+				dzdya = dxdya * dzdx + dzdy;
+				// Perform subpixel pre-stepping along left edge
+				dy = 1 - ( y1 - y1i );
+				xa = x1 + dy * dxdya;
+				za = z1 + dy * dzdya;
+				
+				if (y1i < y2i)	// Draw upper segment if possibly visible
+				{
+					// Set right edge X-slope and perform subpixel pre-stepping
+					xb = x1 + dy * dxdy1;
+					dxdyb = dxdy1;
+					drawSubTri( y1i, y2i );
+				}	
+				
+				if (y2i < y3i)	// Draw lower segment if possibly visible
+				{
+					// Set right edge X-slope and perform subpixel pre-stepping
+					xb = x2 + (1 - (y2 - y2i)) * dxdy3;
+					dxdyb = dxdy3;
+					drawSubTri( y2i, y3i );
+				}
+			}
+			else	// Longer edge is on the right side
+			{
+				// Set right edge X-slope and perform subpixel pre-stepping
+				dxdyb = dxdy2;
+				dy = 1 - (y1 - y1i);
+				xb = x1 + dy * dxdyb;
+				
+				if( y1i < y2i )	// Draw upper segment if possibly visible
+				{
+					// Set slopes along left edge and perform subpixel pre-stepping
+					dxdya = dxdy1;
+					dzdya = dxdy1 * dzdx + dzdy;
+					xa = x1 + dy * dxdya;
+					za = z1 + dy * dzdya;
+					drawSubTri( y1i, y2i );
+				}
+				
+				if( y2i < y3i )	// Draw lower segment if possibly visible
+				{
+					// Set slopes along left edge and perform subpixel pre-stepping
+					dxdya = dxdy3;
+					dzdya = dxdy3 * dzdx + dzdy;
+					dy = 1 - ( y2 - y2i );
+					xa = x2 + dy * dxdya;
+					za = z2 + dy * dzdya;
+					drawSubTri( y2i, y3i );
 				}
 			}
 		}
 	}
+	/**
+	 * 
+	 * @param	ys start
+	 * @param	ye end
+	 */
+	private function drawSubTri( ys: Int, ye: Int ): Void
+	{
+		var dx: Float;
+		while ( ys < ye )
+		{
+			xs = Std.int(xa);
+			xe = Std.int(xb);
 
+			//dx = 1 - ( xa - xs );
+			zi = za + (1-(xa-xs)) * dzdx;
+				
+			while( xs < xe )
+			{
+				pos = xs + ys * width;
+				bgColor = target[pos];
+				bga = bgColor >> 24 & 0xFF ;
+				if (bga < 0xFF)
+				{
+					target[pos] = ( ((alpha*alpha + invAlpha* bga) >> 8)                   << 24 |
+		                  			((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+						  			((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
+						  			((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
+						           );
+				}else if (zi > buffer[pos])
+				{ 
+					target[pos] = (  0xFF000000                                                  |
+		                  			((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+						  			((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
+						  			((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
+								   );
+				}
+				zi += dzdx;
+				xs++;
+			}
+			xa += dxdya;
+			xb += dxdyb;
+			za += dzdya;
+			ys++;
+		}
+	}
+}

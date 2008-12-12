@@ -24,10 +24,9 @@ package linda.scene;
                         material = new Material ();
                         vertices=new Vector<Vertex>();
                         box = new AABBox3D ();
-
-                        createPlane (width,height,segsW,segsH);
+                        build (width,height,segsW,segsH);
                 }
-                private function createPlane (width : Float,height : Float,segsW : Int, segsH : Int) : Void
+                private function build (width : Float,height : Float,segsW : Int, segsH : Int) : Void
 		        {
 			        if (segsW < 1) segsW = 1;
 			        if (segsH < 1) segsH = 1;

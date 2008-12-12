@@ -1,307 +1,310 @@
 ﻿package linda.video.pixel32;
-
-	import flash.Vector;
+    import flash.Vector;
+	import haxe.Log;
+	import linda.math.MathUtil;
 	
 	import linda.math.Vertex4D;
 	import linda.video.ITriangleRenderer;
 	import linda.video.TriangleRenderer;
-	class TRGouraud32 extends TriangleRenderer,implements ITriangleRenderer
+class TRGouraud32 extends TriangleRenderer,implements ITriangleRenderer
+{
+    private var dzdx: Float;
+	private var dzdy: Float;
+	private var drdx:Float;
+	private var drdy:Float;
+	private var dgdx:Float;
+	private var dgdy:Float;
+	private var dbdx:Float;
+	private var dbdy:Float;
+
+	private var xa: Float;
+	private var xb: Float;
+	private var za: Float;
+	private var ra:Float;
+	private var ga:Float;
+	private var ba:Float;
+
+	private var dxdya: Float;
+	private var dxdyb: Float;
+	private var dzdya: Float;
+	private var drdya:Float;
+	private var dgdya:Float;
+	private var dbdya:Float;
+
+	private var side:Bool;
+	
+	private var tmp:Vertex4D;
+	
+	private var v1:Vertex4D;
+	private var v2:Vertex4D;
+	private var v3:Vertex4D;
+	
+	private var x1:Float;
+	private var y1:Float;
+	private var z1:Float;
+	private var x2:Float;
+	private var y2:Float;
+	private var z2:Float;
+	private var x3:Float;
+	private var y3:Float;
+	private var z3:Float;
+	
+	private var r1:Int;
+	private var g1:Int;
+	private var b1:Int;
+	private var r2:Int;
+	private var g2:Int;
+	private var b2:Int;
+	private var r3:Int;
+	private var g3:Int;
+	private var b3:Int;
+	
+	private var x2x1:Float;
+	private var x3x1:Float;
+	private var y2y1:Float;
+	private var y3y1:Float;
+	private var z2z1:Float;
+	private var z3z1:Float;
+	private var r2r1:Int;
+	private var r3r1:Int;
+	private var g2g1:Int;
+	private var g3g1:Int;
+	private var b2b1:Int;
+	private var b3b1:Int;
+	
+	private var y1i:Int;
+	private var y2i:Int;
+	private var y3i:Int;
+	
+	private var zi:Float;
+	private var ri:Float;
+	private var gi:Float;
+	private var bi:Float;
+	
+	private var xs:Int;
+	private var xe:Int;
+	private var pos:Int;
+	
+	private var dxdy1:Float;
+	private var dxdy2:Float;
+	private var dxdy3:Float;
+
+	public function new() 
 	{
-		public function new()
+		super();
+	}
+	public function drawIndexedTriangleList (vertices : Vector<Vertex4D>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int): Void
+	{
+		var dy: Float;
+		var i:Int = 0;
+		while( i < indexCount)
 		{
-			super();
-		}
-		public function drawIndexedTriangleList (vertices : Vector<Vertex4D>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int): Void
-		{
-			var xstart : Int,xend : Int;
-			var ystart : Int,yend : Int;
-			var dyr : Float,dyl : Float;
-			var dxdyl : Float,dxdyr : Float;
-			var dzdyl : Float,dzdyr : Float;
-			var x0 : Int,x1 : Int,x2 : Int; 
-			var y0 : Int,y1 : Int,y2 : Int;
-			var z0 : Float,z1 : Float,z2 : Float;
-
-			var zi : Float;
-			var xl : Float,xr : Float;
-			var zl : Float,zr : Float;
-			var dx : Float,dy : Float,dz : Float;
-			
-			var drdyl : Float,drdyr : Float;
-			var dgdyl : Float,dgdyr : Float;
-			var dbdyl : Float,dbdyr : Float;
-
-			var r0 : Int,g0 : Int,b0 : Int;
-			var r1 : Int,g1 : Int,b1 : Int;
-			var r2 : Int,g2 : Int,b2 : Int;
-		
-			var ri : Float,bi : Float,gi : Float;
-
-			var rl : Float,gl : Float,bl : Float;
-			var rr : Float,gr : Float,br : Float;
-
-			var dr : Float,dg : Float,db : Float;
-			
-			var vt0:Vertex4D;
-		    var vt1:Vertex4D;
-		    var vt2:Vertex4D;
-			var temp : Float;
-			var side : Int;
-		 	var ys : Int;
-		 	var type : Int;
-            var pos:Int;
-			var tmp:Vertex4D;
-			var i:Int = 0;
-			while( i < indexCount)
+			v1 = vertices[indexList[i]];
+			v2 = vertices[indexList[i+1]];
+			v3 = vertices[indexList[i + 2]];
+				
+			i += 3;
+				
+			if (v2.y < v1.y)
 			{
-				vt0 = vertices[indexList[i]];
-				vt1 = vertices[indexList[i+1]];
-				vt2 = vertices[indexList[i + 2]];
-				
-				i += 3;
-				
-				if (vt1.iy < vt0.iy)
-				{
-					tmp = vt1; vt1 = vt0; vt0 = tmp;
-				}
-				if (vt2.iy < vt0.iy)
-				{
-					tmp = vt2; vt2 = vt0; vt0 = tmp;
-				}
-				if (vt2.iy < vt1.iy)
-				{
-					tmp = vt2; vt2 = vt1; vt1 = tmp;
-				}
-				if(vt0.iy == vt1.iy)
-				{
-					type = 1;
-					if(vt1.x < vt0.x)
-					{
-						tmp = vt1; vt1 = vt0; vt0 = tmp;
-					}
-				}else if( vt1.iy == vt2.iy)
-				{
-					type = 2;
-					if(vt2.x < vt1.x)
-					{
-						tmp = vt1; vt1 = vt2; vt2 = tmp;
-					}
-				}else
-				{
-					type = 0;
-				}
-				
-				x0 = Std.int(vt0.x + 0.5);
-				x1 = Std.int(vt1.x + 0.5);
-				x2 = Std.int(vt2.x + 0.5);
-				
-				y0 = vt0.iy ;
-				y1 = vt1.iy ;
-				y2 = vt2.iy ;
-				
-				if ((y0 == y1 && y1 == y2) || (x0 == x1 && x1 == x2)) continue;
-				
-				z0 = vt0.z;
-				z1 = vt1.z;
-				z2 = vt2.z;
-				
-				r0 = vt0.r; g0 = vt0.g; b0 = vt0.b;
-				r1 = vt1.r; g1 = vt1.g; b1 = vt1.b;
-				r2 = vt2.r; g2 = vt2.g; b2 = vt2.b;
-				
-				ystart = y0;
-				ys     = y1;
-                yend   = y2;
-				side = 0;
-				if(type==0)
-				{
-						dyl = 1 / (y1 - y0);
-						dxdyl = (x1 - x0) * dyl;
-						dzdyl = (z1 - z0) * dyl;
-						drdyl = (r1 - r0) * dyl;
-						dgdyl = (g1 - g0) * dyl;
-						dbdyl = (b1 - b0) * dyl;
-						dyr = 1 / (y2 - y0);
-						dxdyr = (x2 - x0) * dyr;
-						dzdyr = (z2 - z0) * dyr;
-						drdyr = (r2 - r0) * dyr;
-						dgdyr = (g2 - g0) * dyr;
-						dbdyr = (b2 - b0) * dyr;
-						xl = x0 ; xr = x0 ;
-						zl = z0 ; zr = z0 ;
-						rl = r0 ; gl = g0 ; bl = b0 ;
-						rr = r0 ; gr = g0 ; br = b0 ;
+				tmp = v1; v1 = v2; v2 = tmp;
+			}
+			if (v3.y < v1.y)
+			{
+				tmp = v1; v1 = v3; v3 = tmp;
+			}
+			if (v3.y < v2.y)
+			{
+				tmp = v2; v2 = v3; v3 = tmp;
+			}
+			
+			x1 = v1.x + .5;
+			y1 = v1.y + .5;
+			x2 = v2.x + .5;
+			y2 = v2.y + .5;
+			x3 = v3.x + .5;
+			y3 = v3.y + .5;
+			
+			r1 = v1.r;
+			g1 = v1.g;
+			b1 = v1.b;
+			
+			r2 = v2.r;
+			g2 = v2.g;
+			b2 = v2.b;
+			
+			r3 = v3.r;
+			g3 = v3.g;
+			b3 = v3.b;
 
-						if (dxdyr < dxdyl)
-						{
-							temp = dxdyl; dxdyl = dxdyr; dxdyr = temp;
-							temp = drdyl; drdyl = drdyr; drdyr = temp;
-							temp = dgdyl; dgdyl = dgdyr; dgdyr = temp;
-							temp = dbdyl; dbdyl = dbdyr; dbdyr = temp;
-							temp = dzdyl; dzdyl = dzdyr; dzdyr = temp;
-							temp = xl; xl = xr; xr = temp;
-							temp = zl; zl = zr; zr = temp;
-							
-							temp = z1; z1 = z2; z2 = temp;
-							
-							x1 ^= x2; x2 ^= x1; x1 ^= x2;
-							y1 ^= y2; y2 ^= y1; y1 ^= y2;
-							r1 ^= r2; r2 ^= r1; r1 ^= r2;
-							g1 ^= g2; g2 ^= g1; g1 ^= g2;
-							b1 ^= b2; b2 ^= b1; b1 ^= b2;
-							
-							side = 1;
-						}
-					
-						for (yi in ystart...yend)
-						{
-							ri = rl; gi = gl; bi = bl;
-							zi = zl;
-							xstart = Std.int(xl);
-							xend = Std.int(xr);
-							dx = (xend - xstart);
-							if (dx > 0)
-							{
-								dx = 1 / dx;
-								dr = (rr - rl) * dx;
-								dg = (gr - gl) * dx;
-								db = (br - bl) * dx;
-								dz = (zr - zl) * dx;
-							} else
-							{
-								dr = (rr - rl);
-								dg = (gr - gl);
-								db = (br - bl);
-								dz = (zr - zl);
-							}
-							for (xi in xstart...xend)
-							{
-								pos=xi+yi*width;
-								if (zi > buffer[pos])
-								{
-									target[pos]=(0xFF000000 | Std.int(ri) << 16 | Std.int(gi) << 8 | Std.int(bi) );
-									buffer[pos]=zi;
-								}
-								zi += dz;
-								ri += dr; gi += dg; bi += db;
-							}
-							xl += dxdyl;
-							rl += drdyl; gl += dgdyl; bl += dbdyl;
-							zl += dzdyl;
-							xr += dxdyr;
-							rr += drdyr; gr += dgdyr; br += dbdyr;
-							zr += dzdyr;
-							if (yi == ys)
-							{
-								if (side == 0)
-								{
-									dyl = 1 / (y2 - y1);
-									dxdyl = (x2 - x1) * dyl;
-									dzdyl = (z2 - z1) * dyl;
-									drdyl = (r2 - r1) * dyl;
-									dgdyl = (g2 - g1) * dyl;
-									dbdyl = (b2 - b1) * dyl;
-									xl = x1+dxdyl;
-									zl = z1+dzdyl;
-									rl = r1+drdyl;
-									gl = g1+dgdyl;
-									bl = b1+dbdyl;
-								} else
-								{
-									dyr = 1 / (y1 - y2);
-									dxdyr = (x1 - x2) * dyr;
-									dzdyr = (z1 - z2) * dyr;
-									drdyr = (r1 - r2) * dyr;
-									dgdyr = (g1 - g2) * dyr;
-									dbdyr = (b1 - b2) * dyr;
-									xr = x2+dxdyr;
-									zr = z2+dzdyr;
-									rr = r2+drdyr;
-									gr = g2+dgdyr;
-									br = b2+dbdyr;
-								}
-							}
-						}
-				}
-				else
+			z1 = v1.z;
+			z2 = v2.z;
+			z3 = v3.z;
+
+			y1i = Std.int(y1);
+			y2i = Std.int(y2);
+			y3i = Std.int(y3);
+			
+			x2x1 = x2 - x1;
+			x3x1 = x3 - x1;
+			y2y1 = y2 - y1;
+			y3y1 = y3 - y1;
+			z2z1 = z2 - z1;
+			z3z1 = z3 - z1;
+			
+			r2r1 = r2 - r1;
+			r3r1 = r3 - r1;
+			g2g1 = g2 - g1;
+			g3g1 = g3 - g1;
+			b2b1 = b2 - b1;
+			b3b1 = b3 - b1;
+
+			var denom: Float = (x3x1 * y2y1 - x2x1 * y3y1);
+
+			if (denom == 0) continue;
+			
+			denom = 1 / denom;
+
+			dzdx = (z3z1 * y2y1 - z2z1 * y3y1) * denom;
+			drdx = (r3r1 * y2y1 - r2r1 * y3y1) * denom;
+			dgdx = (g3g1 * y2y1 - g2g1 * y3y1) * denom;
+			dbdx = (b3b1 * y2y1 - b2b1 * y3y1) * denom;
+
+			dzdy = (z2z1 * x3x1 - z3z1 * x2x1) * denom;
+			drdy = (r2r1 * x3x1 - r3r1 * x2x1) * denom;
+			dgdy = (g2g1 * x3x1 - g3g1 * x2x1) * denom;
+			dbdy = (b2b1 * x3x1 - b3b1 * x2x1) * denom;
+
+			// Calculate X-slopes along the edges
+			dxdy1 = x2x1 / y2y1;
+			dxdy2 = x3x1 / y3y1;
+			dxdy3 = (x3-x2) / (y3-y2);
+		
+			// Determine which side of the poly the longer edge is on
+			side = dxdy2 > dxdy1;
+
+			if( y1 == y2 )
+			{
+				side = x1 > x2;
+			}
+			if( y2 == y3 )
+			{
+				side = x3 > x2;
+			}
+			
+			if( side==false )	// Longer edge is on the left side
+			{
+				// Calculate slopes along left edge
+				dxdya = dxdy2;
+				dzdya = dxdya * dzdx + dzdy;
+				drdya = dxdya * drdx + drdy;
+				dgdya = dxdya * dgdx + dgdy;
+				dbdya = dxdya * dbdx + dbdy;
+				// Perform subpixel pre-stepping along left edge
+				dy = 1 - ( y1 - y1i );
+				xa = x1 + dy * dxdya;
+				za = z1 + dy * dzdya;
+				ra = r1 + dy * drdya;
+				ga = g1 + dy * dgdya;
+				ba = b1 + dy * dbdya;
+				
+				if (y1i < y2i)	// Draw upper segment if possibly visible
 				{
-					if (type == 1)
-					{
-						dy = 1 / (y2 - y0);
-						dxdyl = (x2 - x0) * dy;
-						dzdyl = (z2 - z0) * dy;
-						drdyl = (r2 - r0) * dy;
-						dgdyl = (g2 - g0) * dy;
-						dbdyl = (b2 - b0) * dy;
-						dxdyr = (x2 - x1) * dy;
-						dzdyr = (z2 - z1) * dy;
-						drdyr = (r2 - r1) * dy;
-						dgdyr = (g2 - g1) * dy;
-						dbdyr = (b2 - b1) * dy;
-
-						xl = x0; xr = x1; zl = z0; zr = z1;
-						rl = r0; gl = g0; bl = b0;
-						rr = r1; gr = g1; br = b1;
-					} 
-					else
-					{
-						dy = 1 / (y1 - y0);
-						dxdyl = (x1 - x0) * dy;
-						dzdyl = (z1 - z0) * dy;
-						drdyl = (r1 - r0) * dy;
-						dgdyl = (g1 - g0) * dy;
-						dbdyl = (b1 - b0) * dy;
-						dxdyr = (x2 - x0) * dy;
-						dzdyr = (z2 - z0) * dy;
-						drdyr = (r2 - r0) * dy;
-						dgdyr = (g2 - g0) * dy;
-						dbdyr = (b2 - b0) * dy;
-
-						xl = x0; xr = x0; zl = z0; zr = z0;
-						rl = r0; gl = g0; bl = b0;
-						rr = r0; gr = g0; br = b0;
-					}
-						for (yi in ystart...yend)
-						{
-							zi = zl;
-							ri = rl; gi = gl; bi = bl;
-							xstart = Std.int(xl);
-							xend = Std.int(xr);
-							dx = (xend - xstart);
-							if (dx > 0)
-							{
-								dx = 1 / dx;
-								dz = (zr - zl) * dx;
-								dr = (rr - rl) * dx;
-								dg = (gr - gl) * dx;
-								db = (br - bl) * dx;
-							} else
-							{
-								dz = (zr - zl);
-								dr = (rr - rl);
-								dg = (gr - gl);
-								db = (br - bl);
-							}
-							for (xi in xstart...xend)
-							{
-								pos=xi+yi*width;
-								if (zi > buffer[pos])
-								{
-									target[pos]=(0xFF000000 | Std.int(ri) << 16 | Std.int(gi) << 8 | Std.int(bi) );
-									buffer[pos]=zi;
-								}
-								zi += dz;
-								ri += dr; gi += dg; bi += db;
-							}
-							xl += dxdyl;
-							rl += drdyl; gl += dgdyl; bl += dbdyl;
-							zl += dzdyl;
-							xr += dxdyr;
-							rr += drdyr; gr += dgdyr; br += dbdyr;
-							zr += dzdyr;
-						}
+					// Set right edge X-slope and perform subpixel pre-stepping
+					xb = x1 + dy * dxdy1;
+					dxdyb = dxdy1;
+					drawSubTri( y1i, y2i );
+				}	
+				
+				if (y2i < y3i)	// Draw lower segment if possibly visible
+				{
+					// Set right edge X-slope and perform subpixel pre-stepping
+					xb = x2 + (1 - (y2 - y2i)) * dxdy3;
+					dxdyb = dxdy3;
+					drawSubTri( y2i, y3i );
+				}
+			}
+			else	// Longer edge is on the right side
+			{
+				// Set right edge X-slope and perform subpixel pre-stepping
+				dxdyb = dxdy2;
+				dy = 1 - (y1 - y1i);
+				xb = x1 + dy * dxdyb;
+				
+				if( y1i < y2i )	// Draw upper segment if possibly visible
+				{
+					// Set slopes along left edge and perform subpixel pre-stepping
+					dxdya = dxdy1;
+					dzdya = dxdy1 * dzdx + dzdy;
+					drdya = dxdy1 * drdx + drdy;
+					dgdya = dxdy1 * dgdx + dgdy;
+					dbdya = dxdy1 * dbdx + dbdy;
+					xa = x1 + dy * dxdya;
+					za = z1 + dy * dzdya;
+					ra = r1 + dy * drdya;
+					ga = g1 + dy * dgdya;
+					ba = b1 + dy * dbdya;
+					drawSubTri( y1i, y2i );
+				}
+				
+				if( y2i < y3i )	// Draw lower segment if possibly visible
+				{
+					// Set slopes along left edge and perform subpixel pre-stepping
+					dxdya = dxdy3;
+					dzdya = dxdy3 * dzdx + dzdy;
+					drdya = dxdy3 * drdx + drdy;
+					dgdya = dxdy3 * dgdx + dgdy;
+					dbdya = dxdy3 * dbdx + dbdy;
+					dy = 1 - ( y2 - y2i );
+					xa = x2 + dy * dxdya;
+					za = z2 + dy * dzdya;
+					ra = r2 + dy * drdya;
+					ga = g2 + dy * dgdya;
+					ba = b2 + dy * dbdya;
+					drawSubTri( y2i, y3i );
 				}
 			}
 		}
 	}
+	/**
+	 * 
+	 * @param	ys start
+	 * @param	ye end
+	 */
+	private function drawSubTri( ys: Int, ye: Int ): Void
+	{
+		var dx: Float;
+		while ( ys < ye )
+		{
+			xs = Std.int(xa);
+			xe = Std.int(xb);
 
+			dx = 1 - ( xa - xs );
+			zi = za + dx * dzdx;
+			ri = ra + dx * drdx;
+			gi = ga + dx * dgdx;
+			bi = ba + dx * dbdx;
+			while( xs < xe )
+			{
+				pos = xs + ys * width;
+				if( zi > buffer[pos] )
+				{
+					target[pos]=(0xFF000000 | Std.int(ri) << 16 | Std.int(gi) << 8 | Std.int(bi) );
+					buffer[pos]=zi;
+				}
+				zi += dzdx;
+				ri += drdx;
+				gi += dgdx;
+				bi += dbdx;
+				xs++;
+			}
+			xa += dxdya;
+			xb += dxdyb;
+			za += dzdya;
+			ra += drdya;
+			ga += dgdya;
+			ba += dbdya;
+			ys++;
+		}
+	}
+}

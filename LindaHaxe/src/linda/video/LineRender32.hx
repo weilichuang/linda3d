@@ -9,37 +9,30 @@ class LineRender32 extends LineRenderer
 	}
 	override public function drawIndexedLineList (vertices :Vector<Vertex4D>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int) : Void
 	{
-		var color:UInt;
-		var vt0:Vertex4D;
-		var vt1:Vertex4D;
 		if ( alpha >= 0xFF)
 		{
 			var i:Int = 0;
 			while ( i < indexCount)
 			{
-				var ii:Int = indexList [i];
-				vt0 = vertices [ii];
-				ii  = indexList [i+ 1];
-				vt1 = vertices [ii];
+				v0 = vertices [indexList [i]];
+				v1 = vertices [indexList [i+1]];
 					
 				i += 2;
 
-				color = (0xFF000000 | vt0.r << 16 | vt0.g << 8 | vt0.b );
-				bresenham (Std.int(vt0.x), vt0.iy,vt0.z, Std.int(vt1.x), vt1.iy,vt1.z, color);
+				color = (0xFF000000 | v0.r << 16 | v0.g << 8 | v0.b );
+				bresenham (Std.int(v0.x), Std.int(v0.y),v0.z, Std.int(v1.x), Std.int(v1.y),v1.z, color);
 			} 
 		}else
 		{
 			var i:Int = 0;
 			while ( i < indexCount)
 			{
-				var ii:Int = indexList [i];
-				vt0 = vertices [ii];
-				ii  = indexList [i+ 1];
-				vt1 = vertices [ii];
+				v0 = vertices [indexList [i]];
+				v1 = vertices [indexList [i+1]];
 
 				i += 2;
 
-				bresenhamAlpha32 (Std.int(vt0.x), vt0.iy,vt0.z, Std.int(vt1.x), vt1.iy,vt1.z, vt0.r, vt0.g, vt0.b);
+				bresenhamAlpha32 (Std.int(v0.x), Std.int(v0.y),v0.z, Std.int(v1.x), Std.int(v1.y),v1.z, v0.r, v0.g, v0.b);
 			}
 		}
 	}

@@ -13,6 +13,10 @@ class LineRenderer implements ILineRenderer
 	private var alpha:Int;
 	private var invAlpha:Int;
 	
+	private var v0:Vertex4D;
+	private var v1:Vertex4D;
+	private var color:UInt;
+	
 	public function new() 
 	{
 		width = 0;
@@ -51,36 +55,31 @@ class LineRenderer implements ILineRenderer
 	public function drawIndexedLineList (vertices :Vector<Vertex4D>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int) : Void
 	{
 		var color:UInt;
-		var vt0:Vertex4D;
-		var vt1:Vertex4D;
+		var v0:Vertex4D;
+		var v1:Vertex4D;
 		if ( alpha >= 0xFF)
 		{
 			var i:Int = 0;
 			while ( i < indexCount)
 			{
-				var ii:Int = indexList [i];
-				vt0 = vertices [ii];
-				ii  = indexList [i+ 1];
-				vt1 = vertices [ii];
+				v0 = vertices [indexList [i]];
+				v1 = vertices [indexList [i+1]];
 					
 				i += 2;
 
-				color = (vt0.r << 16 | vt0.g << 8 | vt0.b );
-				bresenham (Std.int(vt0.x), vt0.iy,vt0.z, Std.int(vt1.x), vt1.iy,vt1.z, color);
+				color = (v0.r << 16 | v0.g << 8 | v0.b );
+				bresenham (Std.int(v0.x), Std.int(v0.y),v0.z, Std.int(v1.x), Std.int(v1.y),v1.z, color);
 			} 
 		}else
 		{
 			var i:Int = 0;
 			while ( i < indexCount)
 			{
-				var ii:Int = indexList [i];
-				vt0 = vertices [ii];
-				ii  = indexList [i+ 1];
-				vt1 = vertices [ii];
-
+				v0 = vertices [indexList [i]];
+				v1 = vertices [indexList [i + 1]];
 				i += 2;
 
-				bresenhamAlpha (Std.int(vt0.x), vt0.iy,vt0.z, Std.int(vt1.x), vt1.iy,vt1.z, vt0.r, vt0.g, vt0.b);
+				bresenhamAlpha (Std.int(v0.x), Std.int(v0.y),v0.z, Std.int(v1.x), Std.int(v1.y),v1.z, v0.r, v0.g, v0.b);
 			}
 		}
 	}		
