@@ -22,7 +22,7 @@ package linda.animator;
 		{
 			if(node==null) return;
 			
-			var t:Number=(timeMs-time)*speed*0.001;
+			var t:Float=(timeMs-time)*speed*0.001;
 			node.x=center.x+radius*MathUtil.cos(t);
 			node.z=center.z+radius*MathUtil.sin(t);
 		}

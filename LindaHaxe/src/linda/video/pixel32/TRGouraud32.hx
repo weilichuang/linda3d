@@ -266,12 +266,7 @@ class TRGouraud32 extends TriangleRenderer,implements ITriangleRenderer
 			}
 		}
 	}
-	/**
-	 * 
-	 * @param	ys start
-	 * @param	ye end
-	 */
-	private function drawSubTri( ys: Int, ye: Int ): Void
+	private inline function drawSubTri( ys: Int, ye: Int ): Void
 	{
 		var dx: Float;
 		while ( ys < ye )

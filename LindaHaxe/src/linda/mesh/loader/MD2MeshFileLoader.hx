@@ -365,7 +365,6 @@ class MD2MeshFileLoader extends MeshLoader
 			}
             
 			mesh.vertexList = new Vector < Vector < Vertex >> (numFrames,true);
-            var t:Int = Lib.getTimer();
 			// put triangles into frame list
 			for (i in 0...numFrames)
 			{
@@ -445,9 +444,7 @@ class MD2MeshFileLoader extends MeshLoader
 					vts[j * 3 + 2] = vertex;
 				} 
 			} 
-			
-			Log.trace("put triangles into frame list time:"+(Lib.getTimer() - t));
-			
+
 		    var interpolateBuffer:MeshBuffer=mesh.interpolateBuffer;
 		    var indices:Vector<Int>=interpolateBuffer.indices;
 			indices.length = 0;

@@ -50,7 +50,6 @@
 						var position : Int = data.position;
 						var _version : Int = data.readUnsignedShort ();
 						data.position = position + length - 6;
-						Log.trace("Version=" + _version);
 					}
 					//light
 					case Max3DSChunk.LIGHT :
