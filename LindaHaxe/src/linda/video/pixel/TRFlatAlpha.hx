@@ -61,6 +61,8 @@ class TRFlatAlpha extends TriangleRenderer,implements ITriangleRenderer
 	private var dxdy2:Float;
 	private var dxdy3:Float;
 	
+	private var bgColor:UInt;
+	
 	public function new() 
 	{
 		super();
@@ -206,15 +208,13 @@ class TRFlatAlpha extends TriangleRenderer,implements ITriangleRenderer
 			xs = Std.int(xa);
 			xe = Std.int(xb);
 
-			//dx = 1 - ( xa - xs );
-			zi = za + (1-(xa-xs)) * dzdx;
-				
+			zi = za + (1-(xa-xs)) * dzdx;	
 			while( xs < xe )
 			{
 				pos = xs + ys * width;
 				if( zi > buffer[pos] )
 				{
-					var bgColor:UInt = target[pos];
+					bgColor = target[pos];
 					target[pos]=(
 		                  			((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
 						  			((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 

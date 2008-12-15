@@ -172,7 +172,6 @@
 		}
 		public function setBoundingBox (box : AABBox3D) : Void
 		{
-			interpolateBuffer.boundingBox=box;
 		}
 		public function getBoundingBox () : AABBox3D
 		{

@@ -79,6 +79,68 @@ package linda.math;
 			var vz : Float = v0.z - v1.z;
 			return MathUtil.sqrt(vx * vx + vy * vy + vz * vz);
 		}
+		public inline function getHorizontalAngle():Vector3
+		{
+			var angle:Vector3=new Vector3();
+
+			angle.y = Math.atan2(x, z) * MathUtil.ONE_EIGHTY_OVER_PI;
+
+			if (angle.y < 0.0)
+				angle.y += 360.0;
+			if (angle.y >= 360.0)
+				angle.y -= 360.0;
+
+			var z1:Float = MathUtil.sqrt(x*x + z*z);
+
+			angle.x = Math.atan2(z1, y) * MathUtil.ONE_EIGHTY_OVER_PI - 90.0;
+
+			if (angle.x < 0.0)
+				angle.x += 360.0;
+			if (angle.x >= 360.0)
+				angle.x -= 360.0;
+
+			return angle;
+		}
+
+		/**
+		 * 
+		 * Builds a direction vector from (this) rotation vector.
+		 * This vector is assumed to be a rotation vector composed of 3 Euler angle rotations, in degrees.
+		 * The implementation performs the same calculations as using a matrix to do the rotation.
+
+		 * @param[in] forwards  The direction representing "forwards" which will be rotated by this vector. 
+		 * If you do not provide a direction, then the +Z axis (0, 0, 1) will be assumed to be forwards.
+		 * @return A direction vector calculated by rotating the forwards direction by the 3 Euler angles 
+		 * (in degrees) represented by this vector. 
+		 */
+		public inline function rotationToDirection(?forwards:Vector3=null):Vector3
+		{
+			if (forwards == null)
+			{
+				forwards = new Vector3(0, 0, 1);
+			}
+			var cr:Float = MathUtil.cos( MathUtil.PI_OVER_ONE_EIGHTY * x );
+			var sr:Float = MathUtil.sin( MathUtil.PI_OVER_ONE_EIGHTY * x );
+			var cp:Float = MathUtil.cos( MathUtil.PI_OVER_ONE_EIGHTY * y );
+			var sp:Float = MathUtil.sin( MathUtil.PI_OVER_ONE_EIGHTY * y );
+			var cy:Float = MathUtil.cos( MathUtil.PI_OVER_ONE_EIGHTY * z );
+			var sy:Float = MathUtil.sin( MathUtil.PI_OVER_ONE_EIGHTY * z );
+
+			var srsp:Float = sr*sp;
+			var crsp:Float = cr * sp;
+			
+			return new Vector3(
+				    (forwards.x * (cp*cy) +
+					forwards.y * (srsp*cy-cr*sy) +
+					forwards.z * (crsp*cy+sr*sy)),
+				    (forwards.x * (cp*sy) +
+					forwards.y * (srsp*sy+cr*cy) +
+					forwards.z * (crsp*sy-sr*cy)),
+				    (forwards.x * (-sp) +
+					forwards.y * (sr*cp) +
+					forwards.z * (cr * cp))
+					);
+		}
 		public inline function copy(other:Vector3):Void
 		{
 			this.x = other.x;

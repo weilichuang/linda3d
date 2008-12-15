@@ -104,6 +104,6 @@
 			tmpPoints.length = 0;
 			tmpPoints = null;
 			recalculateBoundingBox();
-			MeshManipulator.recalculateNormals (this, true);
+			this.recalculateNormals(true);
 		}
 	}

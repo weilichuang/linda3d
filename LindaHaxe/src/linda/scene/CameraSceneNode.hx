@@ -23,6 +23,8 @@
 
 		private var box:AABBox3D;
 		
+		private var targetAndRotationAreBound:Bool;
+		
 		private var tgtv : Vector3 ;
 		private var tmp_up : Vector3 ;
 		private var _tmp_position : Vector3 ;
@@ -62,6 +64,8 @@
 			box = new AABBox3D ();
 			box.addXYZ (-5., -5., -5.);
 			box.addXYZ (5., 5., 5.);
+			
+			targetAndRotationAreBound = false;
 		}
 		override public function destroy():Void
 		{
@@ -97,8 +101,6 @@
 
 				tmp_up.copy(upVector);
 				tmp_up.normalize();
-				
-				
 
 				var dp : Float = tgtv.dotProduct(tmp_up);
 				if (dp < 0) dp = -dp;
@@ -131,7 +133,41 @@
 		}
 		public function setTarget(t : Vector3) : Void
 		{
-			  target = t;
+			target = t;
+			  
+			if(targetAndRotationAreBound)
+			{
+				var toTarget:Vector3 = target.subtract(getAbsolutePosition());
+				this.setRotation(toTarget.getHorizontalAngle());
+			}
+		}
+		override public function setRotation(rotation:Vector3)
+		{
+			if(targetAndRotationAreBound)
+				target = getAbsolutePosition().add(rotation.rotationToDirection());
+
+			super.setRotation(rotation);
+		}
+		override public function setRotationX (rx : Float) : Float
+		{
+			_relativeRotation.x = rx;
+			if(targetAndRotationAreBound)
+				target = getAbsolutePosition().add(_relativeRotation.rotationToDirection());
+			return rx;
+		}
+		override public function setRotationY (ry : Float) : Float
+		{
+			_relativeRotation.y = ry;
+			if(targetAndRotationAreBound)
+				target = getAbsolutePosition().add(_relativeRotation.rotationToDirection());
+			return ry;
+		}
+		override public function setRotationZ (rz : Float) : Float
+		{
+			_relativeRotation.z = rz;
+			if(targetAndRotationAreBound)
+				target = getAbsolutePosition().add(_relativeRotation.rotationToDirection());
+			return rz;
 		}
 		public function getTarget() : Vector3
 		{
@@ -203,6 +239,18 @@
 		override public function getBoundingBox():AABBox3D
 		{
 			return box;
+		}
+		
+		// Set the binding between the camera's rotation adn target.
+		public function bindTargetAndRotation(bound:Bool):Void
+		{
+			targetAndRotationAreBound = bound;
+		}
+
+		// Gets the binding between the camera's rotation and target.
+		public function getTargetAndRotationBinding():Bool
+		{
+			return targetAndRotationAreBound;
 		}
 	}
 

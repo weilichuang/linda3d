@@ -136,7 +136,7 @@
 			tmpVertices.length = 0;
 			tmpVertices = null;
 			recalculateBoundingBox();
-			MeshManipulator.recalculateNormals (this, true);
+			this.recalculateNormals(true);
 		}
 	}
 

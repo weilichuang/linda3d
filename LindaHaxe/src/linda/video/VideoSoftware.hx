@@ -612,11 +612,6 @@
 						tv0.r = globalR + (Std.int(dif_r_sum0 * mdif.r) >> 8);
 						tv0.g = globalG + (Std.int(dif_g_sum0 * mdif.g) >> 8);
 						tv0.b = globalB + (Std.int(dif_b_sum0 * mdif.b) >> 8);
-						
-						tv0.r = tv0.r > 0xFF ? 0xFF : tv0.r;
-					    tv0.g = tv0.g > 0xFF ? 0xFF : tv0.g;
-					    tv0.b = tv0.b > 0xFF ? 0xFF : tv0.b;
-						
 						tv1.r = tv0.r;
 						tv1.g = tv0.g;
 						tv1.b = tv0.b;
@@ -805,31 +800,23 @@
 						tv2.r = globalR + (Std.int(dif_r_sum2 * mdif.r) >> 8);
 						tv2.g = globalG + (Std.int(dif_g_sum2 * mdif.g) >> 8);
 						tv2.b = globalB + (Std.int(dif_b_sum2 * mdif.b) >> 8);
-							
-						tv0.r = tv0.r > 0xFF ? 0xFF : tv0.r;
-						tv0.g = tv0.g > 0xFF ? 0xFF : tv0.g;
-						tv0.b = tv0.b > 0xFF ? 0xFF : tv0.b;
-						tv1.r = tv1.r > 0xFF ? 0xFF : tv1.r;
-						tv1.g = tv1.g > 0xFF ? 0xFF : tv1.g;
-						tv1.b = tv1.b > 0xFF ? 0xFF : tv1.b;
-						tv2.r = tv2.r > 0xFF ? 0xFF : tv2.r;
-						tv2.g = tv2.g > 0xFF ? 0xFF : tv2.g;
-						tv2.b = tv2.b > 0xFF ? 0xFF : tv2.b;
 					}
 				} else //no lighting
 				{
-					if (gouraudShading)
-					{
-						tv0.r = v0.r; tv0.g = v0.g; tv0.b = v0.b;
-						tv1.r = v1.r; tv1.g = v1.g; tv1.b = v1.b;
-						tv2.r = v2.r; tv2.g = v2.g; tv2.b = v2.b;
-					} else //flat
-					{
-						tv0.r = mdif.r; tv0.g = mdif.g; tv0.b = mdif.b;
-						tv1.r = mdif.r; tv1.g = mdif.g; tv1.b = mdif.b;
-						tv2.r = mdif.r; tv2.g = mdif.g; tv2.b = mdif.b;
-					}
+					tv0.r = v0.r+memi.r; tv0.g = v0.g+memi.g; tv0.b = v0.b+memi.b;
+					tv1.r = v1.r+memi.r; tv1.g = v1.g+memi.g; tv1.b = v1.b+memi.b;
+					tv2.r = v2.r+memi.r; tv2.g = v2.g+memi.g; tv2.b = v2.b+memi.b;
 				}
+				
+				tv0.r = tv0.r > 0xFF ? 0xFF : tv0.r;
+				tv0.g = tv0.g > 0xFF ? 0xFF : tv0.g;
+				tv0.b = tv0.b > 0xFF ? 0xFF : tv0.b;
+				tv1.r = tv1.r > 0xFF ? 0xFF : tv1.r;
+				tv1.g = tv1.g > 0xFF ? 0xFF : tv1.g;
+				tv1.b = tv1.b > 0xFF ? 0xFF : tv1.b;
+				tv2.r = tv2.r > 0xFF ? 0xFF : tv2.r;
+				tv2.g = tv2.g > 0xFF ? 0xFF : tv2.g;
+				tv2.b = tv2.b > 0xFF ? 0xFF : tv2.b;
 				
 				// texture coords
 				if (hasTexture)
@@ -1422,7 +1409,8 @@
 		public function setPerspectiveCorrectDistance (?distance : Float = 400.) : Void
 		{
 			persDistance = (distance < 10) ? 10 : distance;
-			for ( i in 0...TRType.COUNT)
+			var count:Int = TRType.COUNT;
+			for ( i in 0...count)
 			{
 				renderers[i].setPerspectiveCorrectDistance (distance);
 			}
@@ -1430,14 +1418,16 @@
 		public function setMipMapDistance (?distance : Float = 500.) : Void
 		{
 			mipMapDistance = (distance < 10) ? 10 : distance;
-			for ( i in 0...TRType.COUNT)
+			var count:Int = TRType.COUNT;
+			for ( i in 0...count)
 			{
 				renderers[i].setMipMapDistance (distance);
 			}
 		}
 		public function setWidth(width:Int) : Void
 		{
-			for ( i in 0...TRType.COUNT)
+			var count:Int = TRType.COUNT;
+			for ( i in 0...count)
 			{
 				renderers[i].setWidth(width);
 			}
@@ -1445,7 +1435,8 @@
 		}
 		public function setVector(tv : Vector<UInt>, bv : Vector<Float>) : Void
 		{
-			for ( i in 0...TRType.COUNT)
+			var count:Int = TRType.COUNT;
+			for ( i in 0...count)
 			{
 				renderers[i].setVector(tv,bv);
 			}

@@ -17,6 +17,7 @@
 		private var _lightList       : Vector<SceneNode>;
 		private var _solidList       : Vector<SceneNode> ;
 		private var _transparentList : Vector<SceneNode>;
+		private var _skyboxList      : Vector<SceneNode>;
 		
 		private var _ambient         : UInt;
 		
@@ -28,6 +29,7 @@
 			_solidList       = new Vector<SceneNode>();
 			_transparentList = new Vector<SceneNode>();
 			_lightList       = new Vector<SceneNode>();
+			_skyboxList      = new Vector<SceneNode>();
 			
 			_ambient = 0x0;
 			
@@ -38,11 +40,12 @@
 		override public function destroy():Void
 		{
 			super.destroy();
-			_driver=null;
-			_viewFrustum=null;
-			_activeCamera=null;
-			_lightList=null;
-			_solidList=null;
+			_driver = null;
+			_viewFrustum = null;
+			_activeCamera = null;
+			_lightList = null;
+			_solidList = null;
+			_skyboxList = null;
 			_transparentList=null;
 		}
 		public function getRootSceneNode () : SceneNode
@@ -67,6 +70,10 @@
 				case SceneNode.LIGHT :
 				{
 					_lightList.push(node);
+				}
+				case SceneNode.SKYBOX:
+				{
+					_skyboxList.push(node);
 				}
 				case SceneNode.SOLID :
 				{
@@ -93,6 +100,12 @@
 				_lightList[i].render ();
 			}
 			
+			len = _skyboxList.length;
+			for (i in 0...len)
+			{
+				_skyboxList[i].render();
+			}
+			
             //render solidList
 			_solidList.sort(sortSceneNode);
 			len = _solidList.length;
@@ -114,6 +127,7 @@
 			_lightList.length = 0;
 			_solidList.length = 0;
 			_transparentList.length = 0;
+			_skyboxList.length = 0;
 		}
 		private inline function sortSceneNode(a:SceneNode, b:SceneNode):Int 
 		{

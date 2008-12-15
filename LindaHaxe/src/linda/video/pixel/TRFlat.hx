@@ -202,9 +202,7 @@ class TRFlat extends TriangleRenderer,implements ITriangleRenderer
 			xs = Std.int(xa);
 			xe = Std.int(xb);
 
-			//dx = 1 - ( xa - xs );
-			zi = za + (1-(xa-xs)) * dzdx;
-				
+			zi = za + (1-(xa-xs)) * dzdx;			
 			while( xs < xe )
 			{
 				pos = xs + ys * width;

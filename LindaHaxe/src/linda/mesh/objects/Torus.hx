@@ -65,7 +65,7 @@
 			gridVertices.length = 0;
 			gridVertices = null;
 			recalculateBoundingBox();
-			MeshManipulator.recalculateNormals (this, true);
+			this.recalculateNormals(true);
 		}
 	}
 

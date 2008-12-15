@@ -1,4 +1,5 @@
 ﻿package linda.math;
+	import flash.geom.Vector3D;
 	import haxe.Log;
     import linda.math.Vector3;
 	class Matrix4
@@ -50,6 +51,50 @@
 			m31 = 0.;
 			m32 = 0.;
 			m33 = 1.;
+		}
+		/**
+		 * 
+		 * @param	vec vec.length==16;
+		 */
+		public inline function setVector(v:Vector<Float>):Void 
+		{
+			m00 = v[0];
+			m01 = v[1];
+			m02 = v[2];
+			m03 = v[3];
+			m10 = v[4];
+			m11 = v[5];
+			m12 = v[6];
+			m13 = v[7];
+			m20 = v[8];
+			m21 = v[9];
+			m22 = v[10];
+			m23 = v[11];
+			m30 = v[12];
+			m31 = v[13];
+			m32 = v[14];
+			m33 = v[15];
+		}
+		public inline function getVector():Vector<Float>
+		{
+			var v:flash.Vector = new Vector<Float>(16);
+			v[0]  = m00;
+			v[1]  = m01;
+			v[2]  = m02;
+			v[3]  = m03;
+			v[4]  = m10;
+			v[5]  = m11;
+			v[6]  = m12;
+			v[7]  = m13;
+			v[8]  = m20;
+			v[9]  = m21;
+			v[10] = m22;
+			v[11] = m23;
+			v[12] = m30;
+			v[13] = m31;
+			v[14] = m32;
+			v[15] = m33;
+			return v;
 		}
 		public inline function pointAt (position : Vector3, target : Vector3, upVector : Vector3) : Void
 		{
@@ -220,9 +265,10 @@
 		}
 		public inline function setRotation (rotation : Vector3) : Void
 		{
-			var rx : Float = rotation.x * MathUtil.PI_OVER_ONE_EIGHTY;
-			var ry : Float = rotation.y * MathUtil.PI_OVER_ONE_EIGHTY;
-			var rz : Float = rotation.z * MathUtil.PI_OVER_ONE_EIGHTY;
+			var invPI:Float = MathUtil.PI_OVER_ONE_EIGHTY;
+			var rx : Float = rotation.x * invPI;
+			var ry : Float = rotation.y * invPI;
+			var rz : Float = rotation.z * invPI;
 
 			var cr : Float = MathUtil.cos(rx);
 			var sr : Float = MathUtil.sin(rx);
@@ -512,7 +558,7 @@
 			vect.y = x * m01 + y * m11 + z * m21;
 			vect.z = x * m02 + y * m12 + z * m22;
 		}
-		public inline function rotateVertex (vect : Vertex ) : Void
+		public inline function rotateVertex (vect : Vertex,?normal:Bool=false) : Void
 		{
 			var x : Float = vect.x;
 			var y : Float = vect.y;
@@ -520,6 +566,16 @@
 			vect.x = x * m00 + y * m10 + z * m20;
 			vect.y = x * m01 + y * m11 + z * m21;
 			vect.z = x * m02 + y * m12 + z * m22;
+			if (normal)
+			{
+				x  = vect.nx;
+		    	y  = vect.ny;
+		    	z  = vect.nz;
+				vect.nx = (m00 * x + m10 * y + m20 * z);
+				vect.ny = (m00 * x + m10 * y + m20 * z);
+				vect.nz = (m00 * x + m10 * y + m20 * z);
+				vect.normalize();
+			} 
 		}
 
 		public inline function transformPlane (plane : Plane3D) : Void
@@ -547,14 +603,25 @@
 			vector.y = (m01 * x + m11 * y + m21 * z + m31);
 			vector.z = (m02 * x + m12 * y + m22 * z + m32);
 		}
-		public inline function transformVertex (vector : Vertex) : Void
+		public inline function transformVertex (vect : Vertex,?normal:Bool=false) : Void
 		{
-			var x : Float = vector.x;
-			var y : Float = vector.y;
-			var z : Float = vector.z;
-			vector.x = (m00 * x + m10 * y + m20 * z + m30);
-			vector.y = (m01 * x + m11 * y + m21 * z + m31);
-			vector.z = (m02 * x + m12 * y + m22 * z + m32);
+			var x : Float = vect.x;
+			var y : Float = vect.y;
+			var z : Float = vect.z;
+			vect.x = (m00 * x + m10 * y + m20 * z + m30);
+			vect.y = (m01 * x + m11 * y + m21 * z + m31);
+			vect.z = (m02 * x + m12 * y + m22 * z + m32);
+			if (normal)
+			{
+				//rotate normal and normalize;
+				x  = vect.nx;
+		    	y  = vect.ny;
+		    	z  = vect.nz;
+				vect.nx = (m00 * x + m10 * y + m20 * z);
+				vect.ny = (m00 * x + m10 * y + m20 * z);
+				vect.nz = (m00 * x + m10 * y + m20 * z);
+				vect.normalize();
+			}
 		}
 
 		public inline function transformBox (box : AABBox3D) : Void
