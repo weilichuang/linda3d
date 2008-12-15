@@ -22,7 +22,7 @@ package linda.animator;
 			endTime=startTime+(timePerFrame*textures.length);
 		}
 
-		public function animateNode(node:SceneNode, timeMs:Float):Void
+		public function animateNode(node:SceneNode, timeMs:Int):Void
 		{
 			if(textures && textures.length > 0)
 			{

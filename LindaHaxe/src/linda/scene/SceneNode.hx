@@ -492,27 +492,27 @@
 		}
 		public function getPosition () : Vector3
 		{
-			return _relativeTranslation;
+			return _relativeTranslation.clone();
 		}
 		public function getRotation () : Vector3
 		{
-			return _relativeRotation;
+			return _relativeRotation.clone();
 		}
 		public function getScale () : Vector3
 		{
-			return _relativeScale;
+			return _relativeScale.clone();
 		}
 		public function setPosition (pos : Vector3) : Void
 		{
-			_relativeTranslation = pos;
+			_relativeTranslation.copy(pos);
 		}
 		public function setRotation (rot : Vector3) : Void
 		{
-			_relativeRotation = rot;
+			_relativeRotation.copy(rot);
 		}
 		public function setScale (s : Vector3) : Void
 		{
-			_relativeScale = s;
+			_relativeScale.copy(s);
 		}
 		public function getAbsolutePosition () : Vector3
 		{
@@ -529,9 +529,6 @@
 		public function clone () : SceneNode
 		{
 			return null;
-		}
-		public function copy (node : SceneNode) : Void
-		{
 		}
 		override public function toString () : String
 		{

@@ -3,5 +3,5 @@
 	import linda.scene.SceneNode;
 	interface IAnimator
 	{
-		function animateNode (node : SceneNode, timeMs : Float) : Void;
+		function animateNode (node : SceneNode, timeMs : Int) : Void;
 	}
