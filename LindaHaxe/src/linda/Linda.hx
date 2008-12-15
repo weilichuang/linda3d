@@ -3,7 +3,7 @@ import haxe.Log;
 
 	class Linda
 	{
-		public static inline var VERSION:String="0.0.8.1212";
+		public static inline var VERSION:String="0.0.8.1215";
 		public function new()
 		{
 		}

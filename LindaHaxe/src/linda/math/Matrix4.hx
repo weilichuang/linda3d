@@ -1,5 +1,5 @@
 ﻿package linda.math;
-	import flash.geom.Vector3D;
+	import flash.Vector;
 	import haxe.Log;
     import linda.math.Vector3;
 	class Matrix4
@@ -77,7 +77,7 @@
 		}
 		public inline function getVector():Vector<Float>
 		{
-			var v:flash.Vector = new Vector<Float>(16);
+			var v:Vector<Float> = new Vector<Float>(16);
 			v[0]  = m00;
 			v[1]  = m01;
 			v[2]  = m02;

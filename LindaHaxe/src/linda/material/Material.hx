@@ -4,16 +4,20 @@
 	class Material
 	{
 		public static inline var WIREFRAME:Int=0;
-		public static inline var BACKFACE:Int=2;
-		public static inline var LIGHT:Int=4;
-		public static inline var TRANSPARTENT:Int=8;
-		public static inline var GOURAUD_SHADE:Int=16;
+		public static inline var BACKFACE:Int=1;
+		public static inline var LIGHT:Int=2;
+		public static inline var TRANSPARTENT:Int=3;
+		public static inline var GOURAUD_SHADE:Int = 4;
+		public static inline var FRONTFACE:Int = 5;
+		public static inline var ZBUFFER:Int=6;
 
-		public var backfaceCulling : Bool ;//背面裁剪
+		public var backfaceCulling : Bool ;//背面剔除
+		public var frontfaceCulling:Bool;//正面剔除
 		public var transparenting : Bool ;//透明
 		public var gouraudShading : Bool ;//平滑着色
 		public var lighting : Bool ;//灯光
 		public var wireframe : Bool ;//网格
+		public var zBuffer:Bool;
         
 		public var ambientColor:Color;
 		public var diffuseColor:Color;
@@ -41,10 +45,12 @@
 			
 			lighting=false;
 			backfaceCulling = true;
+			frontfaceCulling = false;
 			transparenting  = false;
 			gouraudShading  = false;
 			lighting  = false;
 			wireframe  = false;
+			zBuffer = true;
 			
 			ambientColor=new Color(255,255,255);
 			diffuseColor=new Color(255,255,255);
@@ -94,7 +100,11 @@
 				case TRANSPARTENT:
 				     transparenting=value;
 				case WIREFRAME:
-				     wireframe=value;
+				     wireframe = value;
+				case FRONTFACE:
+				     frontfaceCulling = value;	
+				case ZBUFFER:
+				     zBuffer = value;
 			}
 		}
 		public inline function clone():Material
@@ -102,10 +112,12 @@
 			var mat:Material = new Material();
 			
 			mat.backfaceCulling = backfaceCulling;
+			mat.frontfaceCulling = frontfaceCulling;
 			mat.transparenting = transparenting;
 			mat.gouraudShading = gouraudShading;
 			mat.wireframe = wireframe;
 			mat.lighting = lighting;
+			mat.zBuffer = zBuffer;
 			
 			mat.ambientColor.copy(ambientColor);
 			mat.diffuseColor.copy(diffuseColor);
@@ -121,11 +133,13 @@
 		}
 		public inline function copy(mat:Material):Void
 		{
+			frontfaceCulling = mat.frontfaceCulling;
 			backfaceCulling = mat.backfaceCulling;
 			transparenting = mat.transparenting;
 			gouraudShading = mat.gouraudShading;
 			wireframe = mat.wireframe;
 			lighting = mat.lighting;
+			zBuffer = mat.zBuffer;
 			
 			ambientColor.copy(mat.ambientColor);
 		    diffuseColor.copy(mat.diffuseColor);

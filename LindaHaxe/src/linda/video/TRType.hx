@@ -11,5 +11,6 @@ class TRType
 	public static inline var GOURAUD_ALPHA : Int = 6;
 	public static inline var TEXTURE_FLAT_ALPHA : Int = 7;
 	public static inline var TEXTURE_GOURAUD_ALPHA : Int = 8;
-	public static inline var COUNT : Int = 9;
+	public static inline var TEXTURE_FLAT_NoZ : Int = 9;
+	public static inline var COUNT : Int = 10;
 }

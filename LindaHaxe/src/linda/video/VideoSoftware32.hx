@@ -15,6 +15,7 @@
 	import linda.video.pixel32.TRFlat32;
 	import linda.video.pixel32.TRGouraud32;
 	import linda.video.pixel32.TRTextureFlat32;
+	import linda.video.pixel32.TRTextureFlatNoZ32;
 	import linda.video.pixel32.TRTextureGouraud32;
 	/**
 	 * 用于需要背景透明的时候，如果不需要背景透明，强烈建议使用VideoSoftware,那个会快许多。
@@ -36,6 +37,7 @@
 			renderers [TRType.GOURAUD_ALPHA]         = new TRGouraudAlpha32 ();
 			renderers [TRType.TEXTURE_FLAT_ALPHA]    = new TRTextureFlatAlpha32 ();
 			renderers [TRType.TEXTURE_GOURAUD_ALPHA] = new TRTextureGouraudAlpha32 ();
+			renderers [TRType.TEXTURE_FLAT_NoZ] = new TRTextureFlatNoZ32 ();
 			
 			lineRender = new LineRender32();
 			

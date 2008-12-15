@@ -25,6 +25,7 @@
 	import linda.video.pixel.TRGouraud;
 	import linda.video.pixel.TRGouraudAlpha;
 	import linda.video.pixel.TRTextureFlat;
+	import linda.video.pixel.TRTextureFlatNoZ;
 	import linda.video.pixel.TRTextureFlatAlpha;
 	import linda.video.pixel.TRTextureGouraud;
 	import linda.video.pixel.TRTextureGouraudAlpha;
@@ -116,6 +117,7 @@
 			renderers [TRType.GOURAUD_ALPHA]         = new TRGouraudAlpha ();
 			renderers [TRType.TEXTURE_FLAT_ALPHA]    = new TRTextureFlatAlpha ();
 			renderers [TRType.TEXTURE_GOURAUD_ALPHA] = new TRTextureGouraudAlpha ();
+			renderers [TRType.TEXTURE_FLAT_NoZ] = new TRTextureFlatNoZ ();
 			
 			lineRender = new LineRenderer();
 			
@@ -234,7 +236,13 @@
 							return TRType.TEXTURE_GOURAUD;
 						}else
 						{
-							return TRType.TEXTURE_FLAT;
+							if (material.zBuffer)
+							{
+								return TRType.TEXTURE_FLAT;
+							}else
+							{
+								return TRType.TEXTURE_FLAT_NoZ;
+							}
 						}
 					} else
 					{
@@ -384,6 +392,7 @@
 			//material var
 			var lighting        : Bool = material.lighting;
 			var backfaceCulling : Bool = material.backfaceCulling;
+			var frontfaceCulling:Bool = material.frontfaceCulling;
 			var gouraudShading  : Bool = material.gouraudShading;
 			if(lighting)
 			{
@@ -452,11 +461,12 @@
 				v2 = vertices [indexList[ii + 2]];
 				ii += 3;
 				
-				if (backfaceCulling)
+				if (backfaceCulling || frontfaceCulling)
 				{
-					if (((v1.y - v0.y) * (v2.z - v0.z) - (v1.z - v0.z) * (v2.y - v0.y)) * (_oppcam_pos.x - v0.x) +
-					    ((v1.z - v0.z) * (v2.x - v0.x) - (v1.x - v0.x) * (v2.z - v0.z)) * (_oppcam_pos.y - v0.y) +
-					    ((v1.x - v0.x) * (v2.y - v0.y) - (v1.y - v0.y) * (v2.x - v0.x)) * (_oppcam_pos.z - v0.z) <= 0)
+					var t:Float=((v1.y - v0.y) * (v2.z - v0.z) - (v1.z - v0.z) * (v2.y - v0.y)) * (_oppcam_pos.x - v0.x) +
+					            ((v1.z - v0.z) * (v2.x - v0.x) - (v1.x - v0.x) * (v2.z - v0.z)) * (_oppcam_pos.y - v0.y) +
+					            ((v1.x - v0.x) * (v2.y - v0.y) - (v1.y - v0.y) * (v2.x - v0.x)) * (_oppcam_pos.z - v0.z);
+					if ((backfaceCulling && t<=0) || (frontfaceCulling && t > 0))
 					{
 						continue;
 					}
