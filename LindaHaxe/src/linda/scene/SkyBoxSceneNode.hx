@@ -65,12 +65,13 @@ class SkyBoxSceneNode extends SceneNode
 
 	        // create front side
 	        
-	        var l:Float=3999.;
+	        var l:Float=999.;
 
 	        frontMaterial = new Material();
 	        frontMaterial.wireframe=false;
 	        frontMaterial.gouraudShading=false;
-	        frontMaterial.lighting=false;
+	        frontMaterial.lighting = false;
+			frontMaterial.zBuffer = false;
 	        frontMaterial.texture=front;
 	        materials[0]=frontMaterial;
 	         
@@ -87,7 +88,8 @@ class SkyBoxSceneNode extends SceneNode
 	        leftMaterial = new Material();
 	        leftMaterial.wireframe=false;
 	        leftMaterial.gouraudShading=false;
-	        leftMaterial.lighting=false;
+	        leftMaterial.lighting = false;
+			leftMaterial.zBuffer = false;
 	        leftMaterial.texture=left;
 	        materials[1]=leftMaterial;
 	        
@@ -102,8 +104,10 @@ class SkyBoxSceneNode extends SceneNode
 	        backMaterial = new Material();
 	        backMaterial.wireframe=false;
 	        backMaterial.gouraudShading=false;
-	        backMaterial.lighting=false;
-	        backMaterial.texture=back;
+	        backMaterial.lighting = false;
+			backMaterial.zBuffer = false;
+	        backMaterial.texture = back;
+			
 	        materials[2]=backMaterial;
 	        backVertices=new Vector<Vertex>(4,true);
 	        backVertices[0]  = new Vertex( l,-l, l, 0,0,-1, color, 1, 1);
@@ -116,7 +120,8 @@ class SkyBoxSceneNode extends SceneNode
 	        rightMaterial = new Material();
 	        rightMaterial.wireframe=false;
 	        rightMaterial.gouraudShading=false;
-	        rightMaterial.lighting=false;
+	        rightMaterial.lighting = false;
+			rightMaterial.zBuffer = false;
 	        rightMaterial.texture=right;
 	        materials[3]=rightMaterial;
 	        rightVertices=new Vector<Vertex>(4,true);
@@ -130,7 +135,8 @@ class SkyBoxSceneNode extends SceneNode
 	        topMaterial = new Material();
 	        topMaterial.wireframe=false;
 	        topMaterial.gouraudShading=false;
-	        topMaterial.lighting=false;
+	        topMaterial.lighting = false;
+			topMaterial.zBuffer = false;
 	        topMaterial.texture=top;
 	        materials[4]=topMaterial;
 	        topVertices=new Vector<Vertex>(4,true);
@@ -144,7 +150,8 @@ class SkyBoxSceneNode extends SceneNode
 	        bottomMaterial = new Material();
 	        bottomMaterial.wireframe=false;
 	        bottomMaterial.gouraudShading=false;
-	        bottomMaterial.lighting=false;
+	        bottomMaterial.lighting = false;
+			bottomMaterial.zBuffer = false;
 	        bottomMaterial.texture=bottom;
 	        materials[5]=bottomMaterial;
 	        bottomVertices=new Vector<Vertex>(4,true);

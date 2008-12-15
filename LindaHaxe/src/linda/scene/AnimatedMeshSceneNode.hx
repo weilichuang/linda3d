@@ -9,18 +9,18 @@
 	import linda.math.AABBox3D;
 	import linda.mesh.IMesh;
 	import linda.mesh.MeshBuffer;
-	import linda.mesh.animation.AnimatedMeshMD2;
-	import linda.mesh.animation.AnimatedMeshType;
-	import linda.mesh.animation.IAnimateMesh;
-	import linda.mesh.animation.MD2Frame;
+	import linda.mesh.md2.AnimatedMeshMD2;
+	import linda.mesh.AnimatedMeshType;
+	import linda.mesh.IAnimatedMesh;
+	import linda.mesh.md2.MD2Frame;
 	import linda.video.IVideoDriver;
 
-	class AnimateMeshSceneNode extends SceneNode
+	class AnimatedMeshSceneNode extends SceneNode
 	{
 		private var materials : Vector<Material>;
 		private var useDefaultMaterial:Bool ;
 		
-		private var animateMesh : IAnimateMesh;
+		private var animateMesh : IAnimatedMesh;
 		
 		private var beginFrameTime : Int;
 		private var startFrame : Int;
@@ -28,7 +28,7 @@
 		private var framesPerSecond : Float;
 		private var currentFrameNr : Int;
 		private var looping : Bool;
-		public function new (mgr:SceneManager,?mesh : IAnimateMesh = null,?useDefaultMaterial:Bool=true)
+		public function new (mgr:SceneManager,?mesh : IAnimatedMesh = null,?useDefaultMaterial:Bool=true)
 		{
 			super (mgr);
 			beginFrameTime = Lib.getTimer ();
@@ -204,7 +204,7 @@
 		{
 			looping = looped;
 		}
-		public function setAnimateMesh (mesh : IAnimateMesh) : Void
+		public function setAnimateMesh (mesh : IAnimatedMesh) : Void
 		{
 			animateMesh = mesh;
 			
