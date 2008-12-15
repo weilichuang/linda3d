@@ -14,9 +14,9 @@
 	import linda.math.Matrix4;
 	import linda.math.Vertex;
 	import linda.mesh.MeshBuffer;
-	import linda.mesh.animation.AnimatedMeshMD2;
-	import linda.mesh.animation.IAnimateMesh;
-	import linda.mesh.animation.MD2Frame;
+	import linda.mesh.md2.AnimatedMeshMD2;
+	import linda.mesh.IAnimatedMesh;
+	import linda.mesh.md2.MD2Frame;
 	
 
 class MD2MeshFileLoader extends MeshLoader
@@ -197,7 +197,7 @@ class MD2MeshFileLoader extends MeshLoader
 			normalTable = Lib.vectorOfArray(table);
 			table = null;
 		}
-		override public function createAnimatedMesh(data : ByteArray) : IAnimateMesh
+		override public function createAnimatedMesh(data : ByteArray) : IAnimatedMesh
 		{
 			if (data == null) return null;
 			

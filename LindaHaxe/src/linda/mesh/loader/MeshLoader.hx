@@ -2,7 +2,7 @@ package linda.mesh.loader;
 
 import flash.utils.ByteArray;
 import linda.mesh.IMesh;
-import linda.mesh.animation.IAnimateMesh;
+import linda.mesh.IAnimatedMesh;
 	
 class MeshLoader implements IMeshLoader
 {
@@ -13,7 +13,7 @@ class MeshLoader implements IMeshLoader
 	{
 		return null;
 	}
-	public function createAnimatedMesh(data:ByteArray):IAnimateMesh
+	public function createAnimatedMesh(data:ByteArray):IAnimatedMesh
 	{
 		return null;
 	}

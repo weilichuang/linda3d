@@ -2,10 +2,10 @@
 
 import flash.utils.ByteArray;
 import linda.mesh.IMesh;
-import linda.mesh.animation.IAnimateMesh;
+import linda.mesh.IAnimatedMesh;
 interface IMeshLoader
 {
 	function createMesh(data:ByteArray):IMesh;
-	function createAnimatedMesh(data:ByteArray):IAnimateMesh;
-	//function createSkinnedMesh(data:ByteArray):ISkinMesh;
+	function createAnimatedMesh(data:ByteArray):IAnimatedMesh;
+	//function createSkinnedMesh(data:ByteArray):ISkinnedMesh;
 }

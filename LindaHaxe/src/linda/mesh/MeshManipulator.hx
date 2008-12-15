@@ -2,6 +2,7 @@
 
 	import flash.Vector;
 	import linda.math.Matrix4;
+	import linda.mesh.IAnimatedMesh;
 	import linda.video.ILineRenderer;
 	
 	import flash.geom.Rectangle;
@@ -91,6 +92,33 @@ class MeshManipulator
 			}
 			newMesh.recalculateBoundingBox ();
 			return newMesh;
+		}
+		public static inline function getPolyCount(mesh:IMesh):Int
+		{
+			if (mesh == null)
+			{
+				return 0;
+			}else
+			{
+				var trianglecount:Int = 0;
+            
+				var count:Int = mesh.getMeshBufferCount();
+				for (i in 0...count)
+					trianglecount += Std.int(mesh.getMeshBuffer(i).indices.length/3);
+
+				return trianglecount;
+			}
+		}
+		public static inline function getAnimateMeshPolyCount(mesh:IAnimatedMesh):Int
+		{
+			if (mesh != null && mesh.getFrameCount() != 0)
+			{
+			    return getPolyCount(mesh.getMesh(0));
+			}else
+			{
+				return 0;
+			}
+			
 		}
 }
 
