@@ -54,12 +54,12 @@ class MeshManipulator
 				mesh.getMeshBuffer(j).flipSurfaces();
 			}
 		}
-		public static inline function recalculateNormals (mesh : IMesh,?smooth=false) : Void
+		public static inline function recalculateNormals (mesh : IMesh,?smooth=false,?angleWeighted:Bool=true) : Void
 		{
 			var count : Int = mesh.getMeshBufferCount ();
 			for (j in 0...count)
 			{
-				mesh.getMeshBuffer(j).recalculateNormals(smooth);
+				mesh.getMeshBuffer(j).recalculateNormals(smooth,angleWeighted);
 			}
 		}
 		
