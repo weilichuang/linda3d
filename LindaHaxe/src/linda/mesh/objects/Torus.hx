@@ -65,7 +65,7 @@
 			gridVertices.length = 0;
 			gridVertices = null;
 			recalculateBoundingBox();
-			this.recalculateNormals(true);
+			this.recalculateNormals(true,true);
 		}
 	}
 

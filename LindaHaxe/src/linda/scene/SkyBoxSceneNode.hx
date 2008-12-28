@@ -75,13 +75,13 @@ class SkyBoxSceneNode extends SceneNode
 	        frontMaterial.texture=front;
 	        materials[0]=frontMaterial;
 	         
-	        var color:UInt=0xFFFFFF;
+	        var clr:UInt=0xFFFFFF;
 
 	        frontVertices=new Vector<Vertex>(4,true);
-	        frontVertices[0] = new Vertex(-l,-l,-l, 0,0,1, color, 1, 1);
-	        frontVertices[1] = new Vertex( l,-l,-l, 0,0,1, color, 0, 1);
-	        frontVertices[2] = new Vertex( l, l,-l, 0,0,1, color, 0, 0);
-	        frontVertices[3] = new Vertex(-l, l,-l, 0,0,1, color, 1, 0);
+	        frontVertices[0] = new Vertex(-l,-l,-l, 0,0,1, clr, 1, 1);
+	        frontVertices[1] = new Vertex( l,-l,-l, 0,0,1, clr, 0, 1);
+	        frontVertices[2] = new Vertex( l, l,-l, 0,0,1, clr, 0, 0);
+	        frontVertices[3] = new Vertex(-l, l,-l, 0,0,1, clr, 1, 0);
 
 	        // create left side
 
@@ -94,10 +94,10 @@ class SkyBoxSceneNode extends SceneNode
 	        materials[1]=leftMaterial;
 	        
 	        leftVertices=new Vector<Vertex>(4,true);
-	        leftVertices[0] = new Vertex( l,-l,-l, -1,0,0, color, 1, 1);
-	        leftVertices[1] = new Vertex( l,-l, l, -1,0,0, color, 0, 1);
-	        leftVertices[2] = new Vertex( l, l, l, -1,0,0, color, 0, 0);
-	        leftVertices[3] = new Vertex( l, l,-l, -1,0,0, color, 1, 0);
+	        leftVertices[0] = new Vertex( l,-l,-l, -1,0,0, clr, 1, 1);
+	        leftVertices[1] = new Vertex( l,-l, l, -1,0,0, clr, 0, 1);
+	        leftVertices[2] = new Vertex( l, l, l, -1,0,0, clr, 0, 0);
+	        leftVertices[3] = new Vertex( l, l,-l, -1,0,0, clr, 1, 0);
 
 	        // create back side
 
@@ -110,10 +110,10 @@ class SkyBoxSceneNode extends SceneNode
 			
 	        materials[2]=backMaterial;
 	        backVertices=new Vector<Vertex>(4,true);
-	        backVertices[0]  = new Vertex( l,-l, l, 0,0,-1, color, 1, 1);
-	        backVertices[1]  = new Vertex(-l,-l, l, 0,0,-1, color, 0, 1);
-	        backVertices[2]  = new Vertex(-l, l, l, 0,0,-1, color, 0, 0);
-	        backVertices[3]  = new Vertex( l, l, l, 0,0,-1, color, 1, 0);
+	        backVertices[0]  = new Vertex( l,-l, l, 0,0,-1, clr, 1, 1);
+	        backVertices[1]  = new Vertex(-l,-l, l, 0,0,-1, clr, 0, 1);
+	        backVertices[2]  = new Vertex(-l, l, l, 0,0,-1, clr, 0, 0);
+	        backVertices[3]  = new Vertex( l, l, l, 0,0,-1, clr, 1, 0);
 
 	        // create right side
 
@@ -125,10 +125,10 @@ class SkyBoxSceneNode extends SceneNode
 	        rightMaterial.texture=right;
 	        materials[3]=rightMaterial;
 	        rightVertices=new Vector<Vertex>(4,true);
-	        rightVertices[0] = new Vertex(-l,-l, l, 1,0,0, color, 1, 1);
-	        rightVertices[1] = new Vertex(-l,-l,-l, 1,0,0, color, 0, 1);
-	        rightVertices[2] = new Vertex(-l, l,-l, 1,0,0, color, 0, 0);
-	        rightVertices[3] = new Vertex(-l, l, l, 1,0,0, color, 1, 0);
+	        rightVertices[0] = new Vertex(-l,-l, l, 1,0,0, clr, 1, 1);
+	        rightVertices[1] = new Vertex(-l,-l,-l, 1,0,0, clr, 0, 1);
+	        rightVertices[2] = new Vertex(-l, l,-l, 1,0,0, clr, 0, 0);
+	        rightVertices[3] = new Vertex(-l, l, l, 1,0,0, clr, 1, 0);
 
 	        // create top side
 
@@ -140,10 +140,10 @@ class SkyBoxSceneNode extends SceneNode
 	        topMaterial.texture=top;
 	        materials[4]=topMaterial;
 	        topVertices=new Vector<Vertex>(4,true);
-	        topVertices[0] = new Vertex( l, l,-l, 0,-1,0, color, 1, 1);
-	        topVertices[1] = new Vertex( l, l, l, 0,-1,0, color, 0, 1);
-	        topVertices[2] = new Vertex(-l, l, l, 0,-1,0, color, 0, 0);
-	        topVertices[3] = new Vertex(-l, l,-l, 0,-1,0, color, 1, 0);
+	        topVertices[0] = new Vertex( l, l,-l, 0,-1,0, clr, 1, 1);
+	        topVertices[1] = new Vertex( l, l, l, 0,-1,0, clr, 0, 1);
+	        topVertices[2] = new Vertex(-l, l, l, 0,-1,0, clr, 0, 0);
+	        topVertices[3] = new Vertex(-l, l,-l, 0,-1,0, clr, 1, 0);
 
 	        // create bottom side
 
@@ -155,10 +155,10 @@ class SkyBoxSceneNode extends SceneNode
 	        bottomMaterial.texture=bottom;
 	        materials[5]=bottomMaterial;
 	        bottomVertices=new Vector<Vertex>(4,true);
-	        bottomVertices[0] = new Vertex( l,-l, l, 0,1,0, color, 0, 0);
-	        bottomVertices[1] = new Vertex( l,-l,-l, 0,1,0, color, 1, 0);
-	        bottomVertices[2] = new Vertex(-l,-l,-l, 0,1,0, color, 1, 1);
-	        bottomVertices[3] = new Vertex(-l,-l, l, 0,1,0, color, 0, 1);
+	        bottomVertices[0] = new Vertex( l,-l, l, 0,1,0, clr, 0, 0);
+	        bottomVertices[1] = new Vertex( l,-l,-l, 0,1,0, clr, 1, 0);
+	        bottomVertices[2] = new Vertex(-l,-l,-l, 0,1,0, clr, 1, 1);
+	        bottomVertices[3] = new Vertex(-l,-l, l, 0,1,0, clr, 0, 1);
 		}
 		override public function destroy():Void
 		{

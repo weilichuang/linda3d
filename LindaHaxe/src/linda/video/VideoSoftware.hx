@@ -6,6 +6,8 @@
 	import flash.display.Sprite;
 	import flash.geom.Rectangle;
 	import haxe.Log;
+	import linda.mesh.objects.RegularPolygon;
+	import linda.scene.ShadowVolume;
 	
 
 	import linda.light.Light;
@@ -547,7 +549,7 @@
 					var dp : Float;
 					var radius : Float;
 					var k : Float;
-
+                    
 					if ( ! gouraudShading) //flat Light
 					{
 						for (j in 0...lightLen)
@@ -587,10 +589,10 @@
 								l.y = pos.y - v0.y;
 								l.z = pos.z - v0.z;
 								dp = (n.x * l.x + n.y * l.y + n.z * l.z);
-								if (dp > 0)
+								dist2 = l.getLengthSquared();
+								dist = MathUtil.sqrt(dist2);
+								if (dp > 0 && dist<light.radius)
 								{
-									dist2 = l.getLengthSquared();
-									dist = MathUtil.sqrt(dist2);
 									k = dp * MathUtil.invSqrt(nlenSquared)/((light.kc + light.kl * dist + light.kq * dist2) * dist);
 									dif_r_sum0 += diffuse.r * k;
 									dif_g_sum0 += diffuse.g * k;
@@ -604,10 +606,10 @@
 								l.y = pos.y - v0.y;
 								l.z = pos.z - v0.z;
 								dp = n.dotProduct(dir);
-								if (dp > 0)
+								dist2 = l.getLengthSquared();
+								dist = MathUtil.sqrt(dist2);
+								if (dp > 0 && dist<light.radius)
 								{
-									dist2 = l.getLengthSquared();
-									dist = MathUtil.sqrt(dist2);
 									dpsl = l.dotProduct(dir)/ dist;
 									if (dpsl > 0 )
 									{
@@ -641,7 +643,8 @@
 						{
 							light = lights [j];
 							diffuse = light.diffuseColor;
-							//radius = light.radius;
+							
+							radius = light.radius;
 							if (light.type == 0) //DIRECTIONAL
 							{
 								dir = _lightDirs [j];
@@ -691,10 +694,10 @@
 								l.z = pos.z - v0.z;
 								//tv0
 								dp = (v0.nx * l.x + v0.ny * l.y + v0.nz * l.z);
-								if (dp > 0)
+								dist2 = l.getLengthSquared();
+								dist = MathUtil.sqrt(dist2);
+								if (dp > 0 && dist<radius)
 								{
-									dist2 = l.getLengthSquared();
-									dist = MathUtil.sqrt(dist2);
 									k = dp / (dist*(kc + kl * dist + kq * dist2));
 									dif_r_sum0 += diffuse.r * k;
 									dif_g_sum0 += diffuse.g * k;
@@ -705,10 +708,10 @@
 								l.y = pos.y - v1.y;
 								l.z = pos.z - v1.z;
 								dp = (v1.nx * l.x + v1.ny * l.y + v1.nz * l.z);
-								if (dp > 0)
+								dist2 = l.getLengthSquared();
+								dist = MathUtil.sqrt(dist2);
+								if (dp > 0 && dist<radius)
 								{
-									dist2 = l.getLengthSquared();
-									dist = MathUtil.sqrt (dist2);
 									k = dp / (dist*(kc + kl * dist + kq * dist2));
 									dif_r_sum1 += diffuse.r * k;
 									dif_g_sum1 += diffuse.g * k;
@@ -719,10 +722,10 @@
 								l.y = pos.y - v2.y;
 								l.z = pos.z - v2.z;
 								dp = (v2.nx * l.x + v2.ny * l.y + v2.nz * l.z);
-								if (dp > 0)
+								dist2 = l.getLengthSquared();
+								dist = MathUtil.sqrt(dist2);
+								if (dp > 0 && dist<radius)
 								{
-									dist2 = l.getLengthSquared();
-									dist = MathUtil.sqrt(dist2);
 									k = dp /(dist*(kc + kl * dist + kq * dist2));
 									dif_r_sum2 += diffuse.r * k;
 									dif_g_sum2 += diffuse.g * k;
@@ -750,10 +753,10 @@
 								l.y = pos.y - v0.y;
 								l.z = pos.z - v0.z;
 								dp = (v0.nx * dir.x + v0.ny * dir.y + v0.nz * dir.z);
-								if (dp > 0)
+								dist2 = l.getLengthSquared();
+								dist = MathUtil.sqrt(dist2);
+								if (dp > 0 && dist<radius)
 								{
-									dist2 = l.getLengthSquared();
-									dist = MathUtil.sqrt(dist2);
 									dpsl = (l.x * dir.x + l.y * dir.y + l.z * dir.z) / dist;
 									if (dpsl > 0 )
 									{
@@ -768,10 +771,10 @@
 								l.y = pos.y - v1.y;
 								l.z = pos.z - v1.z;
 								dp = (v1.nx * dir.x + v1.ny * dir.y + v1.nz * dir.z);
-								if (dp > 0)
+								dist2 = l.getLengthSquared();
+								dist = MathUtil.sqrt(dist2);
+								if (dp > 0 && dist<radius)
 								{
-									dist2 = l.getLengthSquared();
-									dist = MathUtil.sqrt (dist2);
 									dpsl = (l.x * dir.x + l.y * dir.y + l.z * dir.z) / dist;
 									if (dpsl > 0 )
 									{
@@ -786,10 +789,10 @@
 								l.y = pos.y - v2.y;
 								l.z = pos.z - v2.z;
 								dp = (v2.nx * dir.x + v2.ny * dir.y + v2.nz * dir.z);
-								if (dp > 0)
+								dist2 = l.getLengthSquared();
+								dist = MathUtil.sqrt(dist2);
+								if (dp > 0 && dist<radius)
 								{
-									dist2 = l.getLengthSquared();
-									dist = MathUtil.sqrt (dist2);
 									dpsl = (l.x * dir.x + l.y * dir.y + l.z * dir.z) / dist;
 									if (dpsl > 0 )
 									{
@@ -1407,6 +1410,19 @@
 				_clippedLineVertices[vCount++]  = tv1;
 			}
 			lineRender.drawIndexedLineList (_clippedLineVertices, vCount, _clippedLineIndices, iCount);
+		}
+		/**
+		 *  Draws a shadow volume into the stencil buffer. To draw a stencil shadow, do
+		 *  this: First, draw all geometry. Then use this method, to draw the shadow
+		 *  volume. Then, use drawStencilShadow() to visualize the shadow.
+		 */		
+        public function drawStencilShadowVolume(shadowVolume:ShadowVolume,zfail:Bool):Void
+		{
+			
+		}
+		public function drawStencilShadow(?clearStencilBuffer:Bool=true):Void 
+		{
+			
 		}
 		public function getDriverType () : String
 		{

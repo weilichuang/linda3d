@@ -18,6 +18,7 @@
 		private var _solidList       : Vector<SceneNode> ;
 		private var _transparentList : Vector<SceneNode>;
 		private var _skyboxList      : Vector<SceneNode>;
+		private var _shadowList      : Vector<SceneNode>;
 		
 		private var _ambient         : UInt;
 		
@@ -30,8 +31,10 @@
 			_transparentList = new Vector<SceneNode>();
 			_lightList       = new Vector<SceneNode>();
 			_skyboxList      = new Vector<SceneNode>();
-			
+			_shadowList      = new Vector<SceneNode>();
 			_ambient = 0x0;
+			
+			sceneManager = this;
 			
 			tmpBox = new AABBox3D();
 			
@@ -46,8 +49,10 @@
 			_lightList = null;
 			_solidList = null;
 			_skyboxList = null;
-			_transparentList=null;
+			_transparentList = null;
+			_shadowList = null;
 		}
+
 		public function getRootSceneNode () : SceneNode
 		{
 			return this;
@@ -83,6 +88,10 @@
 				{
 					if (!isCulled(node)) _transparentList.push(node);
 				}
+				case SceneNode.SHADOW:
+				{
+				    _shadowList.push(node); 
+				}
 			}
 		}
 		public function drawAll () : Void
@@ -114,6 +123,12 @@
 				_solidList[i].render();
 			}
 
+			len = _shadowList.length;
+			for (i in 0...len)
+			{
+				_shadowList[i].render();
+			}
+
 			//render transparentList
 			_transparentList.sort(sortSceneNode);
 			len = _transparentList.length;
@@ -128,12 +143,20 @@
 			_solidList.length = 0;
 			_transparentList.length = 0;
 			_skyboxList.length = 0;
+			_shadowList.length = 0;
 		}
 		private inline function sortSceneNode(a:SceneNode, b:SceneNode):Int 
 		{
-			if (a.distance == b.distance) return 0;
-			if (a.distance > b.distance) return 1;
-			return -1;
+			if (a.distance > b.distance)
+			{
+				return 1;
+			}else if (a.distance < b.distance)
+			{
+				return -1;
+			}else
+			{
+				return 0;
+			}
 		}
 		public function getActiveCamera () : CameraSceneNode
 		{

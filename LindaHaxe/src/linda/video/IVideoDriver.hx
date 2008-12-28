@@ -5,6 +5,7 @@
 	import flash.display.Sprite;
 	import flash.Vector;
 	import linda.math.Vector3;
+	import linda.scene.ShadowVolume;
 	
 	import linda.light.Light;
 	import linda.material.Material;
@@ -38,7 +39,9 @@
 		function drawIndexedLineList (vertices : Vector<Vertex>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int) : Void;
 		function drawIndexedTriangleList (vertices : Vector<Vertex>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int) : Void;
 		function drawMeshBuffer(mb:MeshBuffer):Void;
-
+		function drawStencilShadowVolume(shadowVolume:ShadowVolume,useZFailMethod:Bool):Void;
+        function drawStencilShadow(?clearStencilBuffer:Bool=true):Void;
+		
 		function getScreenSize ():Dimension2D;
 		function setScreenSize (size:Dimension2D):Void;
 		function getTriangleCountDrawn () : Int;

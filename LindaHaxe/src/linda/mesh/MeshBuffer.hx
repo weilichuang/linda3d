@@ -59,7 +59,7 @@ class MeshBuffer
 				}
 			}
 		}
-		public inline function recalculateNormals (?smooth : Bool=false) : Void
+		public inline function recalculateNormals (?smooth : Bool=true,?angleWeighted:Bool=true) : Void
 		{
 			var normal:Vector3;
 			var v0 : Vertex;
@@ -67,6 +67,9 @@ class MeshBuffer
 			var v2 : Vertex;
 			var vtx_cnt : Int = vertices.length;
 			var idx_cnt : Int = indices.length;
+			var vp0:Vector3=new Vector3();
+			var vp1:Vector3=new Vector3();
+			var vp2:Vector3=new Vector3();
 			var plane:Plane3D=new Plane3D();
 			if ( ! smooth)
 			{
@@ -77,7 +80,10 @@ class MeshBuffer
 					v0 = vertices [indices [i]];
 					v1 = vertices [indices [i + 1]];
 					v2 = vertices [indices [i + 2]];
-					plane.setPlane3 (v0.position , v1.position , v2.position);
+					vp0.x = v0.x; vp0.y = v0.y; vp0.z = v0.z;
+					vp1.x = v1.x; vp1.y = v1.y; vp1.z = v1.z;
+					vp2.x = v2.x; vp2.y = v2.y; vp2.z = v2.z;
+					plane.setPlane3 (vp0 , vp1 , vp2);
 					normal = plane.normal;
 					v0.nx = normal.x;
 					v0.ny = normal.y;
@@ -108,8 +114,18 @@ class MeshBuffer
 					v0 = vertices [indices [i]];
 					v1 = vertices [indices [i + 1]];
 					v2 = vertices [indices [i + 2]];
-					plane.setPlane3 (v0.position , v1.position , v2.position);
+					vp0.x = v0.x; vp0.y = v0.y; vp0.z = v0.z;
+					vp1.x = v1.x; vp1.y = v1.y; vp1.z = v1.z;
+					vp2.x = v2.x; vp2.y = v2.y; vp2.z = v2.z;
+					plane.setPlane3 (vp0 , vp1 , vp2);
 					normal = plane.normal;
+					if (angleWeighted)
+					{
+						var angle:Vector3 = MathUtil.getAngleWeight(vp0 , vp1 , vp2);
+						normal.x *= angle.x;
+						normal.y *= angle.y;
+						normal.z *= angle.z;
+					}
 					v0.nx = v0.nx + normal.x;
 					v0.ny = v0.ny + normal.y;
 					v0.nz = v0.nz + normal.z;
@@ -128,7 +144,10 @@ class MeshBuffer
 					v0.normalize();
 				}
 			}
-			plane=null;
+			vp0 = null;
+			vp1 = null;
+			vp2 = null;
+			plane = null;
 		}
 		public inline function scaleTCoords(factor:Point):Void 
 		{

@@ -121,10 +121,10 @@
 				_children.push(child);
 
 				// change scene manager?
-				//if (sceneManager != child.sceneManager)
-				//{
-				//	child.setSceneManager(sceneManager);
-				//}
+				if (sceneManager != child.sceneManager)
+				{
+					child.setSceneManager(sceneManager);
+				}
 			}
 		}
 		public function removeChild (child : SceneNode) : Bool
@@ -526,7 +526,7 @@
 		{
 			return _absoluteMatrix.getRotation ();
 		}
-		public function clone () : SceneNode
+		public function clone (newParent:SceneNode,newManager:SceneManager) : SceneNode
 		{
 			return null;
 		}

@@ -1,7 +1,7 @@
 package linda.math;
 
-	class Vector3
-	{
+class Vector3
+{
 		public var x:Float;
 		public var y:Float;
 		public var z:Float;
@@ -37,6 +37,10 @@ package linda.math;
 			x = -x;
 			y = -y;
 			z = -z;
+		}
+		public inline function equals(other:Vector3):Bool 
+		{
+			return x == other.x && y == other.y && z == other.z;
 		}
 		public inline function scale(s:Float):Vector3
 		{
@@ -78,6 +82,13 @@ package linda.math;
 			var vy : Float = v0.y - v1.y;
 			var vz : Float = v0.z - v1.z;
 			return MathUtil.sqrt(vx * vx + vy * vy + vz * vz);
+		}
+		public static inline function distanceSquared(v0:Vector3,v1:Vector3):Float
+		{
+			var vx : Float = v0.x - v1.x;
+			var vy : Float = v0.y - v1.y;
+			var vz : Float = v0.z - v1.z;
+			return (vx * vx + vy * vy + vz * vz);
 		}
 		public inline function getHorizontalAngle():Vector3
 		{
@@ -155,4 +166,4 @@ package linda.math;
 		{
 			return "[Vector3(" + x + "," + y + "," + z + ")]";
 		}
-	}
+}

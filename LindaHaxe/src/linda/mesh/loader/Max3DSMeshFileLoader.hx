@@ -106,6 +106,7 @@
 							for (i in 0...count)
 							{
 								var vertex : Vertex = new Vertex ();
+								vertex.color = Std.int(Math.random() * 0xffffff);
 								vertex.x = data.readFloat ();
 								vertex.z = data.readFloat ();
 								vertex.y = data.readFloat ();
@@ -246,7 +247,7 @@
 			{
 				var buffer : MeshBuffer = mesh.getMeshBuffer(j);
 				buffer.recalculateBoundingBox ();
-				buffer.recalculateNormals(true);
+				buffer.recalculateNormals(true,true);
 			}
 			mesh.recalculateBoundingBox ();
 			return mesh;

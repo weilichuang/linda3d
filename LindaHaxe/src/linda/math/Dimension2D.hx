@@ -19,5 +19,9 @@ package linda.math;
 		{
 			return "[Dimension2D(" + width + "," + height + ")";
 		}
+		public inline function clone():Dimension2D
+		{
+			return new Dimension2D(width, height);
+		}
 
 	}

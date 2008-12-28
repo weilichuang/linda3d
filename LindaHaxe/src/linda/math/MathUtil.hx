@@ -93,4 +93,20 @@
 		{
 			return (a > b) ? a : b;
 		}
+		public static inline function getAngleWeight(v1:Vector3,v2:Vector3,v3:Vector3):Vector3
+		{
+			// Calculate this triangle's weight for each of its three vertices
+			// start by calculating the lengths of its sides
+			var a:Float = Vector3.distanceSquared(v2,v3);
+			var asqrt:Float = sqrt(a);
+			var b:Float = Vector3.distanceSquared(v1,v3);
+			var bsqrt:Float = sqrt(b);
+			var c:Float = Vector3.distanceSquared(v1,v2);
+			var csqrt:Float = sqrt(c);
+
+			// use them to find the angle at each vertex
+			return new Vector3( cos((b + c - a) / (2. * bsqrt * csqrt)),
+				                cos((-b + c + a) / (2. * asqrt * csqrt)),
+				                cos((b - c + a) / (2. * bsqrt * asqrt)));
+		}
 	}
