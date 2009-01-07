@@ -28,7 +28,7 @@
 		private var tgtv : Vector3 ;
 		private var tmp_up : Vector3 ;
 		private var _tmp_position : Vector3 ;
-		public function new (mgr:SceneManager,?target:Vector3=null)
+		public function new (mgr:SceneManager,target:Vector3=null)
 		{
 			super (mgr);
 			

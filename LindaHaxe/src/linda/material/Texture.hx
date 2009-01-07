@@ -24,7 +24,7 @@
 		 * @param	?useMipMap
 		 * @param	?level when useMipMap true,this active
 		 */
-		public function new (?drawable:IBitmapDrawable=null,?useMipMap:Bool=false,?level:Int=16)
+		public function new (drawable:IBitmapDrawable=null,useMipMap:Bool=false,level:Int=16)
 		{
 			name = "";
 			vectors = new Vector < Vector < UInt >> ();
@@ -67,25 +67,25 @@
 				image.dispose();
 			}
 		}
-		public function getVector (?i:Int = 0) : Vector<UInt>
+		public function getVector (i:Int = 0) : Vector<UInt>
 		{
 			if (i < 0) return vectors[0];
 			if (i >= vectorCount) return vectors[vectorCount - 1];
 			return vectors[i];
 		}
-		public function getWidth(?i:Int = 0):Int
+		public function getWidth(i:Int = 0):Int
 		{
 			if (i < 0) return dimensions[0].width;
 			if (i >= vectorCount) return dimensions[vectorCount - 1].width;
 			return dimensions[i].width;
 		}
-		public function getHeight(?i:Int = 0):Int
+		public function getHeight(i:Int = 0):Int
 		{
 			if (i < 0) return dimensions[0].height;
 			if (i >= vectorCount) return dimensions[vectorCount - 1].height;
 			return dimensions[i].height;
 		}
-		public function getDimension(?i:Int = 0):Dimension2D
+		public function getDimension(i:Int = 0):Dimension2D
 		{
 			if (i < 0) return dimensions[0];
 			if (i >= vectorCount) return dimensions[vectorCount - 1];

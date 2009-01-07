@@ -229,7 +229,7 @@
 			
 		}
 
-		public inline function buildNDCToDCMatrix (rect :Dimension2D, ?scale : Float = 1.) : Void
+		public inline function buildNDCToDCMatrix (rect :Dimension2D, scale : Float = 1.) : Void
 		{
 			var scaleX : Float =   (rect.width - 0.75) * 0.5;
 			var scaleY : Float = - (rect.height- 0.75) * 0.5;
@@ -558,7 +558,7 @@
 			vect.y = x * m01 + y * m11 + z * m21;
 			vect.z = x * m02 + y * m12 + z * m22;
 		}
-		public inline function rotateVertex (vect : Vertex,?normal:Bool=false) : Void
+		public inline function rotateVertex (vect : Vertex,normal:Bool=false) : Void
 		{
 			var x : Float = vect.x;
 			var y : Float = vect.y;
@@ -603,7 +603,7 @@
 			vector.y = (m01 * x + m11 * y + m21 * z + m31);
 			vector.z = (m02 * x + m12 * y + m22 * z + m32);
 		}
-		public inline function transformVertex (vect : Vertex,?normal:Bool=false) : Void
+		public inline function transformVertex (vect : Vertex,normal:Bool=false) : Void
 		{
 			var x : Float = vect.x;
 			var y : Float = vect.y;

@@ -5,7 +5,7 @@ class Line3D
 {
 		public var start : Vector3;
 		public var end : Vector3;
-		public function new (?s : Vector3 = null, ?e : Vector3 = null)
+		public function new (s : Vector3 = null, e : Vector3 = null)
 		{
 			if (s!=null)
 			{

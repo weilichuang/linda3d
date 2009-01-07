@@ -6,7 +6,7 @@ package linda.math;
 	{
 		public var width:Int;
 		public var height:Int;
-		public function new(?width:Int=0,?height:Int=0)
+		public function new(width:Int=0,height:Int=0)
 		{
 			this.width=width;
 			this.height=height;

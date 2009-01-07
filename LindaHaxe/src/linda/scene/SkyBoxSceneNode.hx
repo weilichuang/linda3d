@@ -36,12 +36,12 @@ class SkyBoxSceneNode extends SceneNode
 		
 		private var _tmpMatrix:Matrix4;
 		public function new(mgr:SceneManager,
-		                                top:Texture, 
-			                            bottom:Texture,
-			                            left:Texture,
-			                            right:Texture, 
-			                            front:Texture, 
-			                            back:Texture)
+		                    top:Texture, 
+			                bottom:Texture,
+			                left:Texture,
+			                right:Texture, 
+			                front:Texture, 
+			                back:Texture)
 		{
 			super(mgr);
 			

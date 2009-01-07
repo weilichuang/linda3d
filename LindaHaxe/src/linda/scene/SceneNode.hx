@@ -207,7 +207,7 @@
 		{
 			_animators.length = 0;
 		}
-		public function getMaterial (?i : Int = 0) : Material
+		public function getMaterial (i : Int = 0) : Material
 		{
 			return null;
 		}
@@ -229,7 +229,7 @@
 			}
 		}
 		//现在一个Material只使用一个texture
-		public function setMaterialTexture (texture : Texture, ?textureLayer : Int = 1) : Void
+		public function setMaterialTexture (texture : Texture, textureLayer : Int = 1) : Void
 		{
 			if (textureLayer < 1 || textureLayer > 2) return;
 			var count:Int=this.getMaterialCount();
@@ -259,7 +259,7 @@
 				}
 			}
 		}
-		public function setMaterialColor (?diffuse : UInt = 0xFFFFFF, ?ambient : UInt = 0xFFFFFF, ?emissive : UInt = 0x0000FF, ?specular : UInt = 0x0000FF) : Void
+		public function setMaterialColor (diffuse : UInt = 0xFFFFFF, ambient : UInt = 0xFFFFFF, emissive : UInt = 0x0000FF, specular : UInt = 0x0000FF) : Void
 		{
 			var count:Int=this.getMaterialCount();
 			var material:Material;

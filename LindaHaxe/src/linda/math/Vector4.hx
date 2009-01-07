@@ -7,7 +7,7 @@ class Vector4
 	public var y:Float;
 	public var z:Float;
 	public var w:Float;
-	public function new(?x:Float=0.,?y:Float=0.,?z:Float=0.,?w:Float=0.) 
+	public function new(x:Float=0.,y:Float=0.,z:Float=0.,w:Float=0.) 
 	{
 		this.x = x;
 		this.y = y;
@@ -135,7 +135,7 @@ class Vector4
 		normalize();
 	}
 	
-	public inline function getMatrix(?matrix:Matrix4=null):Matrix4
+	public inline function getMatrix(matrix:Matrix4=null):Matrix4
 	{
 		if (matrix == null)
 		{
@@ -164,7 +164,7 @@ class Vector4
 		return matrix;
 	}
 	
-	public inline function getTransposedMatrix(?matrix:Matrix4=null):Matrix4
+	public inline function getTransposedMatrix(matrix:Matrix4=null):Matrix4
 	{
 		if (matrix == null)
 		{

@@ -10,7 +10,7 @@
 		public static inline var IS_PLANAR   : Int = 2;
 		public static inline var IS_SPANNING : Int = 3;
 		public static inline var IS_CLIPPED  : Int = 4;
-		public function new (?n : Vector3 = null, ?d : Float = 0.)
+		public function new (n : Vector3 = null, d : Float = 0.)
 		{
 			if (n!=null)
 			{

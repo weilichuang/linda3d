@@ -42,7 +42,7 @@ import linda.video.ITriangleRenderer;
 			v = c.v;
 		}
 		
-		public inline function interpolate(v0:Vertex4D, v1:Vertex4D, t:Float,useUV:Bool):Void 
+		public inline function interpolate(v0:Vertex4D, v1:Vertex4D, t:Float,useUV:Bool=true):Void 
 		{
 			x = v1.x + (v0.x - v1.x) * t ;
 			y = v1.y + (v0.y - v1.y) * t ;

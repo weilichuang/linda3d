@@ -1420,7 +1420,7 @@
 		{
 			
 		}
-		public function drawStencilShadow(?clearStencilBuffer:Bool=true):Void 
+		public function drawStencilShadow(clearStencilBuffer:Bool=true):Void 
 		{
 			
 		}
@@ -1432,7 +1432,7 @@
 		{
 			return target.bitmapData.clone ();
 		}
-		public function setPerspectiveCorrectDistance (?distance : Float = 400.) : Void
+		public function setPerspectiveCorrectDistance (distance : Float = 400.) : Void
 		{
 			persDistance = (distance < 10) ? 10 : distance;
 			var count:Int = TRType.COUNT;
@@ -1441,7 +1441,7 @@
 				renderers[i].setPerspectiveCorrectDistance (distance);
 			}
 		}
-		public function setMipMapDistance (?distance : Float = 500.) : Void
+		public function setMipMapDistance (distance : Float = 500.) : Void
 		{
 			mipMapDistance = (distance < 10) ? 10 : distance;
 			var count:Int = TRType.COUNT;

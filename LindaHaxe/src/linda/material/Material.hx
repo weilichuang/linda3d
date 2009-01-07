@@ -73,8 +73,9 @@
 		{
 			if(layer == 1)
 			{
-				this.texture=texture;
-			}else if(layer == 2)
+				this.texture = texture;
+				return;
+			}else 
 			{
 				texture1=texture;
 			}

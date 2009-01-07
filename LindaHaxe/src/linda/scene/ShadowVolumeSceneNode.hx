@@ -47,7 +47,7 @@ class ShadowVolumeSceneNode extends SceneNode
 	 * @param	?zfailMethod
 	 * @param	?infinity
 	 */
-	public function new(mgr:SceneManager,shadowMesh:IMesh,?zfailMethod:Bool=false,?infinity:Float=10000.0) 
+	public function new(mgr:SceneManager,shadowMesh:IMesh,zfailMethod:Bool=false,infinity:Float=10000.0) 
 	{
 		super(mgr);
 		
@@ -435,7 +435,7 @@ class ShadowVolumeSceneNode extends SceneNode
 
 
     // Generates adjacency information based on mesh indices.
-	public inline function calculateAdjacency(?epsilon:Float=0.0001):Void
+	public inline function calculateAdjacency(epsilon:Float=0.0001):Void
     {
 	    adjacency.length = 0;
 		adjacency.length = indexCount;

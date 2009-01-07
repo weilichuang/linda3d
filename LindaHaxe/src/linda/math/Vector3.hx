@@ -6,7 +6,7 @@ class Vector3
 		public var y:Float;
 		public var z:Float;
 
-		public function new(?x:Float=0.,?y:Float=0.,?z:Float=0.)
+		public function new(x:Float=0.,y:Float=0.,z:Float=0.)
 		{
 			this.x=x;
 			this.y=y;
@@ -124,7 +124,7 @@ class Vector3
 		 * @return A direction vector calculated by rotating the forwards direction by the 3 Euler angles 
 		 * (in degrees) represented by this vector. 
 		 */
-		public inline function rotationToDirection(?forwards:Vector3=null):Vector3
+		public inline function rotationToDirection(forwards:Vector3=null):Vector3
 		{
 			if (forwards == null)
 			{

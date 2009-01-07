@@ -12,22 +12,22 @@ package linda.scene;
 		
         class PlaneSceneNode extends SceneNode
         {
-                private var box      : AABBox3D;
-                private var indices  : Vector<Int>;
-                private var vertices : Vector<Vertex>;
-                private var material : Material;
-                public function new (mgr:SceneManager,width : Float,height : Float,?segsW : Int=2, ?segsH : Int=2)
-                {
-                        super (mgr);
+            private var box      : AABBox3D;
+            private var indices  : Vector<Int>;
+            private var vertices : Vector<Vertex>;
+            private var material : Material;
+            public function new (mgr:SceneManager,width : Float,height : Float,segsW : Int=2, segsH : Int=2)
+            {
+                super (mgr);
                         
-                        indices = new Vector<Int>();
-                        material = new Material ();
-                        vertices=new Vector<Vertex>();
-                        box = new AABBox3D ();
-                        build (width,height,segsW,segsH);
-                }
-                private function build (width : Float,height : Float,segsW : Int, segsH : Int) : Void
-		        {
+                indices = new Vector<Int>();
+                material = new Material ();
+                vertices=new Vector<Vertex>();
+                box = new AABBox3D ();
+                build (width,height,segsW,segsH);
+            }
+            private function build (width : Float,height : Float,segsW : Int, segsH : Int) : Void
+		    {
 			        if (segsW < 1) segsW = 1;
 			        if (segsH < 1) segsH = 1;
 					
@@ -73,48 +73,48 @@ package linda.scene;
 							indices.push((i + 1) * segsW1 + j);
 				        }
 			        }
-		        }
-                override public function destroy():Void
-		        {
-		        	vertices=null;
-			        indices=null;
-			        material=null;
-			        box=null;
-			        super.destroy();
-		        }
-                override public function render () : Void
+		    }
+            override public function destroy():Void
+		    {
+		        vertices=null;
+			    indices=null;
+			    material=null;
+			    box=null;
+			    super.destroy();
+		    }
+            override public function render () : Void
+            {
+                var driver : IVideoDriver = sceneManager.getVideoDriver ();
+                driver.setMaterial (material);
+				driver.setDistance(distance);
+                driver.setTransformWorld(_absoluteMatrix);
+                driver.drawIndexedTriangleList (vertices, vertices.length, indices, indices.length);
+            }
+            override public function getBoundingBox () : AABBox3D
+            {
+                return box;
+            }
+            override  public function onRegisterSceneNode () : Void
+            { 
+                if (visible)
                 {
-                    var driver : IVideoDriver = sceneManager.getVideoDriver ();
-                    driver.setMaterial (material);
-					driver.setDistance(distance);
-                    driver.setTransformWorld(_absoluteMatrix);
-                    driver.drawIndexedTriangleList (vertices, vertices.length, indices, indices.length);
+                    if(material.transparenting)
+                    {
+                        sceneManager.registerNodeForRendering (this, SceneNode.TRANSPARENT);
+                    }else
+                    {
+                        sceneManager.registerNodeForRendering(this,SceneNode.SOLID);
+                    }
+                    super.onRegisterSceneNode ();
                 }
-                override public function getBoundingBox () : AABBox3D
-                {
-                    return box;
-                }
-                override  public function onRegisterSceneNode () : Void
-                { 
-                   if (visible)
-                   {
-                       if(material.transparenting)
-                       {
-                          sceneManager.registerNodeForRendering (this, SceneNode.TRANSPARENT);
-                       }else
-                       {
-                          sceneManager.registerNodeForRendering(this,SceneNode.SOLID);
-                       }
-                       super.onRegisterSceneNode ();
-                   }
                         
-                }
-                override  public function getMaterial (?i : Int=0) : Material
-                {
-                   return material;
-                }
-                override public function getMaterialCount () : Int
-                {
-                   return 1;
-                }
-        }
+            }
+            override  public function getMaterial (i : Int=0) : Material
+            {
+                return material;
+            }
+            override public function getMaterialCount () : Int
+            {
+               return 1;
+            }
+    }

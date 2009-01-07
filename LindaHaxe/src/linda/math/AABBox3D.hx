@@ -11,7 +11,7 @@
 		public var maxX : Float;
 		public var maxY : Float;
 		public var maxZ : Float;
-		public function new (?min : Vector3 = null, ?max : Vector3 = null)
+		public function new (min : Vector3 = null, max : Vector3 = null)
 		{
 			if (min == null || max == null)
 			{
