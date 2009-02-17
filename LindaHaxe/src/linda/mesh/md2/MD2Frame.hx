@@ -6,7 +6,7 @@ class MD2Frame
 	public var begin : Int;
 	public var end   : Int;
 	public var fps   : Int;
-	public function new (begin:Int=0,end:Int=1,fps:Int=1)
+	public function new (?begin:Int=0,?end:Int=1,?fps:Int=1)
 	{
 			this.begin=begin;
 			this.end=end;

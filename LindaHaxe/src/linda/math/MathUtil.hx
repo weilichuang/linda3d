@@ -1,17 +1,33 @@
 ﻿package linda.math;
-    import flash.Memory;
-	class MathUtil
-	{
-		public static inline var ROUNDING_ERROR : Float = 0.0001;
+import flash.Memory;
+class MathUtil
+{
+		public static inline var RADTODEG : Float = 180/Math.PI;		
+		public static inline var DEGTORAD : Float = Math.PI / 180;
+		public static inline var TWO_PI : Float = Math.PI * 2.0;
 		public static inline var ONE_EIGHTY_OVER_PI : Float = 180. / Math.PI;
 		public static inline var PI_OVER_ONE_EIGHTY : Float = Math.PI / 180.;
-		public static inline var TWO_PI : Float = Math.PI * 2.0;
-		/**
-		* 近似相等
-		*/
+		
+		public static inline var ROUNDING_ERROR : Float = 0.0000001;
+        
+		public static inline var MAX_VALUE:Float = untyped __global__["Number"].MAX_VALUE;
+		
+		public static inline var MIN_VALUE:Float = untyped __global__["Number"].MIN_VALUE;
+		
+		public static inline var NaN:Float       = untyped __global__["NaN"];
+		
+		public static inline var POSITIVE_INFINITY:Float = untyped __global__["Number"].POSITIVE_INFINITY;
+		
+		public static inline var NEGATIVE_INFINITY:Float = untyped __global__["Number"].NEGATIVE_INFINITY;
+
 		public static inline function equals (a : Float, b : Float) : Bool
 		{
 			return (a + ROUNDING_ERROR > b) && (a - ROUNDING_ERROR < b);
+		}
+		
+		public static inline function isNaN(c:Dynamic):Bool 
+		{
+			return untyped __global__["isNaN"](c);
 		}
 		
 		public static inline function clamp(value:Float,low:Float,high:Float):Float
@@ -109,4 +125,4 @@
 				                cos((-b + c + a) / (2. * asqrt * csqrt)),
 				                cos((b - c + a) / (2. * bsqrt * asqrt)));
 		}
-	}
+}

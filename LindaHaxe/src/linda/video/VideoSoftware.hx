@@ -5,8 +5,6 @@
 	import flash.display.BitmapData;
 	import flash.display.Sprite;
 	import flash.geom.Rectangle;
-	import haxe.Log;
-	import linda.mesh.objects.RegularPolygon;
 	import linda.scene.ShadowVolume;
 	
 
@@ -346,6 +344,7 @@
 			renderTarget = target;
 			renderTarget.addChild (target);
 		}
+		//试一试把变量提出来，看看速度怎么样
 		public function drawIndexedTriangleList (vertices : Vector<Vertex>, vertexCount : Int, indexList : Vector<Int>, triangleCount : Int) : Void
 		{
 			var v0      : Vertex;
@@ -821,16 +820,16 @@
 					tv2.r = v2.r+memi.r; tv2.g = v2.g+memi.g; tv2.b = v2.b+memi.b;
 				}
 				
-				tv0.r = tv0.r > 0xFF ? 0xFF : tv0.r;
-				tv0.g = tv0.g > 0xFF ? 0xFF : tv0.g;
-				tv0.b = tv0.b > 0xFF ? 0xFF : tv0.b;
-				tv1.r = tv1.r > 0xFF ? 0xFF : tv1.r;
-				tv1.g = tv1.g > 0xFF ? 0xFF : tv1.g;
-				tv1.b = tv1.b > 0xFF ? 0xFF : tv1.b;
-				tv2.r = tv2.r > 0xFF ? 0xFF : tv2.r;
-				tv2.g = tv2.g > 0xFF ? 0xFF : tv2.g;
-				tv2.b = tv2.b > 0xFF ? 0xFF : tv2.b;
-				
+				if (tv0.r > 0xFF) tv0.r = 0xFF;
+				if (tv0.g > 0xFF) tv0.g = 0xFF;
+				if (tv0.b > 0xFF) tv0.b = 0xFF;
+				if (tv1.r > 0xFF) tv1.r = 0xFF;
+				if (tv1.g > 0xFF) tv1.g = 0xFF;
+				if (tv1.b > 0xFF) tv1.b = 0xFF;
+				if (tv2.r > 0xFF) tv2.r = 0xFF;
+				if (tv2.g > 0xFF) tv2.g = 0xFF;
+				if (tv2.b > 0xFF) tv2.b = 0xFF;
+
 				// texture coords
 				if (hasTexture)
 				{
@@ -1420,7 +1419,7 @@
 		{
 			
 		}
-		public function drawStencilShadow(clearStencilBuffer:Bool=true):Void 
+		public function drawStencilShadow(?clearStencilBuffer:Bool=true):Void 
 		{
 			
 		}
@@ -1432,7 +1431,7 @@
 		{
 			return target.bitmapData.clone ();
 		}
-		public function setPerspectiveCorrectDistance (distance : Float = 400.) : Void
+		public function setPerspectiveCorrectDistance (?distance : Float = 400.) : Void
 		{
 			persDistance = (distance < 10) ? 10 : distance;
 			var count:Int = TRType.COUNT;
@@ -1441,7 +1440,7 @@
 				renderers[i].setPerspectiveCorrectDistance (distance);
 			}
 		}
-		public function setMipMapDistance (distance : Float = 500.) : Void
+		public function setMipMapDistance (?distance : Float = 500.) : Void
 		{
 			mipMapDistance = (distance < 10) ? 10 : distance;
 			var count:Int = TRType.COUNT;

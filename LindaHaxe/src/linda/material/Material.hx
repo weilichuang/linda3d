@@ -69,7 +69,7 @@
 		{
 			return _alpha;
 		}
-		public inline function setTexture(texture:Texture,layer:Int=1):Void
+		public inline function setTexture(texture:Texture,?layer:Int=1):Void
 		{
 			if(layer == 1)
 			{

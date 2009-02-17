@@ -1,8 +1,6 @@
 ﻿package linda.scene;
 
 	import flash.Vector;
-	import haxe.Log;
-	
 	import flash.events.EventDispatcher;
 	
 	import linda.animator.IAnimator;
@@ -48,18 +46,18 @@
 		public var hasShadow : Bool ;
 		
 		public var id:Int;
-
-		public inline var x(getX, setX):Float;
-		public inline var y(getY, setY):Float;
-		public inline var z(getZ, setZ):Float;
 		
-		public inline var scaleX(getScaleX, setScaleX):Float;
-		public inline var scaleY(getScaleX, setScaleX):Float;
-		public inline var scaleZ(getScaleX, setScaleX):Float;
+		public var x(getX, setX):Float;
+		public var y(getY, setY):Float;
+		public var z(getZ, setZ):Float;
 		
-		public inline var rotationX(getRotationX, setRotationX):Float;
-		public inline var rotationY(getRotationY, setRotationY):Float;
-		public inline var rotationZ(getRotationZ, setRotationZ):Float;
+		public var scaleX(getScaleX, setScaleX):Float;
+		public var scaleY(getScaleX, setScaleX):Float;
+		public var scaleZ(getScaleX, setScaleX):Float;
+		
+		public var rotationX(getRotationX, setRotationX):Float;
+		public var rotationY(getRotationY, setRotationY):Float;
+		public var rotationZ(getRotationZ, setRotationZ):Float;
 		
 		public var parent(getParent, setParent):SceneNode;
 		
@@ -207,7 +205,7 @@
 		{
 			_animators.length = 0;
 		}
-		public function getMaterial (i : Int = 0) : Material
+		public function getMaterial (?i : Int = 0) : Material
 		{
 			return null;
 		}
@@ -229,7 +227,7 @@
 			}
 		}
 		//现在一个Material只使用一个texture
-		public function setMaterialTexture (texture : Texture, textureLayer : Int = 1) : Void
+		public function setMaterialTexture (texture : Texture, ?textureLayer : Int = 1) : Void
 		{
 			if (textureLayer < 1 || textureLayer > 2) return;
 			var count:Int=this.getMaterialCount();
@@ -259,7 +257,7 @@
 				}
 			}
 		}
-		public function setMaterialColor (diffuse : UInt = 0xFFFFFF, ambient : UInt = 0xFFFFFF, emissive : UInt = 0x0000FF, specular : UInt = 0x0000FF) : Void
+		public function setMaterialColor (?diffuse : UInt = 0xFFFFFF, ?ambient : UInt = 0xFFFFFF, ?emissive : UInt = 0x0000FF, ?specular : UInt = 0x0000FF) : Void
 		{
 			var count:Int=this.getMaterialCount();
 			var material:Material;

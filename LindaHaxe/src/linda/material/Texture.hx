@@ -1,6 +1,7 @@
 ﻿package linda.material;
 
 	import flash.display.DisplayObject;
+	import flash.display.StageQuality;
 	import flash.Lib;
 	import flash.Vector;
 	import flash.display.BitmapData;
@@ -24,7 +25,7 @@
 		 * @param	?useMipMap
 		 * @param	?level when useMipMap true,this active
 		 */
-		public function new (drawable:IBitmapDrawable=null,useMipMap:Bool=false,level:Int=16)
+		public function new (?drawable:IBitmapDrawable=null,?useMipMap:Bool=false,?level:Int=16)
 		{
 			name = "";
 			vectors = new Vector < Vector < UInt >> ();
@@ -45,11 +46,10 @@
 				var image:BitmapData;
 				if (Std.is(drawable, BitmapData))
 				{
-					image = Lib.as(drawable, BitmapData);
-					image = image.clone();
+					image = cast(drawable, BitmapData).clone();
 				}else
 				{
-					var display:DisplayObject=Lib.as(drawable, DisplayObject);
+					var display:DisplayObject=cast(drawable, DisplayObject);
 					image = new BitmapData(Std.int(display.width), Std.int(display.height), true, 0x0);
 					image.draw(display);
 					display = null;
@@ -67,25 +67,25 @@
 				image.dispose();
 			}
 		}
-		public function getVector (i:Int = 0) : Vector<UInt>
+		public function getVector (?i:Int = 0) : Vector<UInt>
 		{
 			if (i < 0) return vectors[0];
 			if (i >= vectorCount) return vectors[vectorCount - 1];
 			return vectors[i];
 		}
-		public function getWidth(i:Int = 0):Int
+		public function getWidth(?i:Int = 0):Int
 		{
 			if (i < 0) return dimensions[0].width;
 			if (i >= vectorCount) return dimensions[vectorCount - 1].width;
 			return dimensions[i].width;
 		}
-		public function getHeight(i:Int = 0):Int
+		public function getHeight(?i:Int = 0):Int
 		{
 			if (i < 0) return dimensions[0].height;
 			if (i >= vectorCount) return dimensions[vectorCount - 1].height;
 			return dimensions[i].height;
 		}
-		public function getDimension(i:Int = 0):Dimension2D
+		public function getDimension(?i:Int = 0):Dimension2D
 		{
 			if (i < 0) return dimensions[0];
 			if (i >= vectorCount) return dimensions[vectorCount - 1];
@@ -122,13 +122,15 @@
 		/**
 		 * 对source执行缩放
 		 */
+		private static var matrix:Matrix = new Matrix();
 		private inline function scale (image:BitmapData,value:Float):BitmapData
 		{
 			var data:BitmapData=new BitmapData(Std.int(image.width*value),Std.int(image.height*value),true,0x0);
-			var matrix:Matrix=new Matrix();
 			matrix.a = value;
 			matrix.d = value;
+			//Lib.current.stage.quality = StageQuality.LOW;
 			data.draw(image, matrix);
+			//Lib.current.stage.quality = StageQuality.HIGH;
 			matrix = null;
             return data;
 		}

@@ -59,7 +59,7 @@ class MeshBuffer
 				}
 			}
 		}
-		public inline function recalculateNormals (smooth : Bool=true,angleWeighted:Bool=true) : Void
+		public inline function recalculateNormals (?smooth : Bool=true,?angleWeighted:Bool=true) : Void
 		{
 			var normal:Vector3;
 			var v0 : Vertex;
@@ -159,7 +159,7 @@ class MeshBuffer
 				vertex.v *= factor.y;
 			}
 		}
-		public inline function makePlanarTextureMapping (resolution : Float = 0.01) : Void
+		public inline function makePlanarTextureMapping (?resolution : Float = 0.01) : Void
 		{
 			var vtx_cnt : Int = vertices.length;
 			var idx_cnt : Int = indices.length;

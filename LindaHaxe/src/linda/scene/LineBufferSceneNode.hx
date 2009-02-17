@@ -16,7 +16,7 @@ class LineBufferSceneNode extends SceneNode
 {
 	private var lineBuffer:LineBuffer;
 	private var alpha:Float;
-	public function new(mgr:SceneManager,buffer : LineBuffer = null)
+	public function new(mgr:SceneManager,?buffer : LineBuffer = null)
 	{
 		super (mgr);
 		alpha = 1.0;

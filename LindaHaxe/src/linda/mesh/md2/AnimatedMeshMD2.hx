@@ -15,7 +15,7 @@
 		private static inline var FRAME_SHIFT_RECIPROCAL : Float = 1 / (1 << FRAME_SHIFT );
 		
 		public var interpolateBuffer : MeshBuffer;
-		public var vertexList        : Vector<Vector<Vertex>>;
+		public var vertexList        : Vector<Vector<Vertex>>;//Todo 这里试试用Dictionary怎么样
 		public var boxList           : Vector<AABBox3D>;
 		public var frameList         : Vector<MD2Frame>;
 		public var numFrames         : Int;
@@ -161,7 +161,7 @@
 			}
 		}
 		// returns the animated mesh based on a detail level. 0 is the lowest, 255 the highest detail. Note, that some Meshes will ignore the detail level.
-		public function getMesh (frame : Int, detailLevel : Int = 255, startFrameLoop : Int = - 1, endFrameLoop : Int = - 1) : IMesh
+		public function getMesh (frame : Int, ?detailLevel : Int = 255, ?startFrameLoop : Int = - 1, ?endFrameLoop : Int = - 1) : IMesh
 		{
 			if (frame >= getFrameCount () - 1) frame = (frame % getFrameCount ());
 			if (startFrameLoop == - 1 && endFrameLoop == - 1)

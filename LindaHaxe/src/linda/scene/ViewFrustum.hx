@@ -27,7 +27,7 @@
 		private var _farRightDownVector:Vector3;
 		
 		
-		public function new (matrix : Matrix4 = null)
+		public function new (?matrix : Matrix4 = null)
 		{
 			// camera position
 			cameraPosition = new Vector3 ();

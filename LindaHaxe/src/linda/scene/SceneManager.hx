@@ -24,7 +24,7 @@
 		
 		private var tmpBox           : AABBox3D;
 		
-		public function new (driver : IVideoDriver = null)
+		public function new (?driver : IVideoDriver = null)
 		{
 			super(null);
 			_solidList       = new Vector<SceneNode>();

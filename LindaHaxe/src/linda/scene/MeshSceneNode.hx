@@ -17,7 +17,7 @@
 		private var materials : Vector<Material>;
 		private var mesh : IMesh;
 		private var useDefaultMaterial:Bool ;
-		public function new (mgr:SceneManager,mesh : IMesh = null,useDefaultMaterial:Bool=true)
+		public function new (mgr:SceneManager,?mesh : IMesh = null,?useDefaultMaterial:Bool=true)
 		{
 			super (mgr);
 			materials = new Vector<Material> ();
@@ -135,7 +135,7 @@
 			}
 			return null;
 		}
-		override  public function getMaterial (i : Int = 0) : Material
+		override  public function getMaterial (?i : Int = 0) : Material
 		{
 			if (i < 0 || i >= materials.length) return null;
 			return materials[i];

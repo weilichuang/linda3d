@@ -6,7 +6,7 @@ class Vector3
 		public var y:Float;
 		public var z:Float;
 
-		public function new(x:Float=0.,y:Float=0.,z:Float=0.)
+		public function new(?x:Float=0.,?y:Float=0.,?z:Float=0.)
 		{
 			this.x=x;
 			this.y=y;
@@ -94,21 +94,21 @@ class Vector3
 		{
 			var angle:Vector3=new Vector3();
 
-			angle.y = Math.atan2(x, z) * MathUtil.ONE_EIGHTY_OVER_PI;
+			angle.y = Math.atan2(x, z);
 
 			if (angle.y < 0.0)
-				angle.y += 360.0;
-			if (angle.y >= 360.0)
-				angle.y -= 360.0;
+				angle.y += MathUtil.TWO_PI;
+			if (angle.y >= MathUtil.TWO_PI)
+				angle.y -= MathUtil.TWO_PI;
 
 			var z1:Float = MathUtil.sqrt(x*x + z*z);
 
-			angle.x = Math.atan2(z1, y) * MathUtil.ONE_EIGHTY_OVER_PI - 90.0;
+			angle.x = Math.atan2(z1, y)  - Math.PI/2;
 
 			if (angle.x < 0.0)
-				angle.x += 360.0;
-			if (angle.x >= 360.0)
-				angle.x -= 360.0;
+				angle.x += MathUtil.TWO_PI;
+			if (angle.x >= MathUtil.TWO_PI)
+				angle.x -= MathUtil.TWO_PI;
 
 			return angle;
 		}
@@ -124,18 +124,18 @@ class Vector3
 		 * @return A direction vector calculated by rotating the forwards direction by the 3 Euler angles 
 		 * (in degrees) represented by this vector. 
 		 */
-		public inline function rotationToDirection(forwards:Vector3=null):Vector3
+		public inline function rotationToDirection(?forwards:Vector3=null):Vector3
 		{
 			if (forwards == null)
 			{
 				forwards = new Vector3(0, 0, 1);
 			}
-			var cr:Float = MathUtil.cos( MathUtil.PI_OVER_ONE_EIGHTY * x );
-			var sr:Float = MathUtil.sin( MathUtil.PI_OVER_ONE_EIGHTY * x );
-			var cp:Float = MathUtil.cos( MathUtil.PI_OVER_ONE_EIGHTY * y );
-			var sp:Float = MathUtil.sin( MathUtil.PI_OVER_ONE_EIGHTY * y );
-			var cy:Float = MathUtil.cos( MathUtil.PI_OVER_ONE_EIGHTY * z );
-			var sy:Float = MathUtil.sin( MathUtil.PI_OVER_ONE_EIGHTY * z );
+			var cr:Float = MathUtil.cos( MathUtil.DEGTORAD * x );
+			var sr:Float = MathUtil.sin( MathUtil.DEGTORAD * x );
+			var cp:Float = MathUtil.cos( MathUtil.DEGTORAD * y );
+			var sp:Float = MathUtil.sin( MathUtil.DEGTORAD * y );
+			var cy:Float = MathUtil.cos( MathUtil.DEGTORAD * z );
+			var sy:Float = MathUtil.sin( MathUtil.DEGTORAD * z );
 
 			var srsp:Float = sr*sp;
 			var crsp:Float = cr * sp;

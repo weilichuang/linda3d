@@ -3,7 +3,6 @@
 	import flash.Vector;
 	import linda.math.Matrix4;
 	import linda.mesh.IAnimatedMesh;
-	import linda.video.ILineRenderer;
 	
 	import flash.geom.Rectangle;
 	
@@ -54,7 +53,7 @@ class MeshManipulator
 				mesh.getMeshBuffer(j).flipSurfaces();
 			}
 		}
-		public static inline function recalculateNormals (mesh : IMesh,smooth=false,angleWeighted:Bool=true) : Void
+		public static inline function recalculateNormals (mesh : IMesh,?smooth=false,?angleWeighted:Bool=true) : Void
 		{
 			var count : Int = mesh.getMeshBufferCount ();
 			for (j in 0...count)
@@ -63,7 +62,7 @@ class MeshManipulator
 			}
 		}
 		
-		public static inline function makePlanarTextureMapping (mesh : IMesh, resolution : Float = 0.01) : Void
+		public static inline function makePlanarTextureMapping (mesh : IMesh, ?resolution : Float = 0.01) : Void
 		{
 			var count : Int = mesh.getMeshBufferCount ();
 			for (j in 0...count)

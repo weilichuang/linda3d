@@ -127,7 +127,7 @@
 		}
 		public inline function projectionPerspective(fov : Float, aspect : Float, zNear : Float, zFar : Float) : Void
 		{
-			var halffov : Float = fov * 0.5 * MathUtil.PI_OVER_ONE_EIGHTY;
+			var halffov : Float = fov * 0.5 ;
 			var h : Float = Math.tan(halffov);
 			var w : Float = h / aspect;
 			m00 = 2. * zNear / w;
@@ -153,6 +153,7 @@
 			var d : Float = (m00 * m11 - m01 * m10) * (m22 * m33 - m23 * m32) - (m00 * m12 - m02 * m10) * (m21 * m33 - m23 * m31)
 			+ (m00 * m13 - m03 * m10) * (m21 * m32 - m22 * m31) + (m01 * m12 - m02 * m11) * (m20 * m33 - m23 * m30)
 			- (m01 * m13 - m03 * m11) * (m20 * m32 - m22 * m30) + (m02 * m13 - m03 * m12) * (m20 * m31 - m21 * m30);
+			
 			if (d == 0.0) d = 0 else d = 1.0 / d;
 
 			var n00 : Float = d * (m11 * (m22 * m33 - m23 * m32) + m12 * (m23 * m31 - m21 * m33) + m13 * (m21 * m32 - m22 * m31));
@@ -229,7 +230,7 @@
 			
 		}
 
-		public inline function buildNDCToDCMatrix (rect :Dimension2D, scale : Float = 1.) : Void
+		public inline function buildNDCToDCMatrix (rect :Dimension2D, ?scale : Float = 1.) : Void
 		{
 			var scaleX : Float =   (rect.width - 0.75) * 0.5;
 			var scaleY : Float = - (rect.height- 0.75) * 0.5;
@@ -265,10 +266,9 @@
 		}
 		public inline function setRotation (rotation : Vector3) : Void
 		{
-			var invPI:Float = MathUtil.PI_OVER_ONE_EIGHTY;
-			var rx : Float = rotation.x * invPI;
-			var ry : Float = rotation.y * invPI;
-			var rz : Float = rotation.z * invPI;
+			var rx : Float = rotation.x;
+			var ry : Float = rotation.y;
+			var rz : Float = rotation.z;
 
 			var cr : Float = MathUtil.cos(rx);
 			var sr : Float = MathUtil.sin(rx);
@@ -354,9 +354,6 @@
 			{
 				z += MathUtil.TWO_PI;
 			}
-			x *= MathUtil.ONE_EIGHTY_OVER_PI;
-			y *= MathUtil.ONE_EIGHTY_OVER_PI;
-			z *= MathUtil.ONE_EIGHTY_OVER_PI;
 			return new Vector3 (x, y, z);
 		}
 		public inline function getTranslation () : Vector3
@@ -558,7 +555,7 @@
 			vect.y = x * m01 + y * m11 + z * m21;
 			vect.z = x * m02 + y * m12 + z * m22;
 		}
-		public inline function rotateVertex (vect : Vertex,normal:Bool=false) : Void
+		public inline function rotateVertex (vect : Vertex,?normal:Bool=false) : Void
 		{
 			var x : Float = vect.x;
 			var y : Float = vect.y;
@@ -603,7 +600,7 @@
 			vector.y = (m01 * x + m11 * y + m21 * z + m31);
 			vector.z = (m02 * x + m12 * y + m22 * z + m32);
 		}
-		public inline function transformVertex (vect : Vertex,normal:Bool=false) : Void
+		public inline function transformVertex (vect : Vertex,?normal:Bool=false) : Void
 		{
 			var x : Float = vect.x;
 			var y : Float = vect.y;

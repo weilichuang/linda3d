@@ -24,7 +24,7 @@ import flash.geom.Point;
 		public inline var normal(getNormal, setNormal):Vector3;
 		public inline var uv(getUV, setUV):Point;
 
-		public function new (x : Float = 0., y : Float = 0., z : Float = 0., nx : Float = 0., ny : Float = 0., nz : Float = 0., c : UInt = 0xFFFFFF, u : Float = 0., v : Float = 0.)
+		public function new (?x : Float = 0., ?y : Float = 0., ?z : Float = 0., ?nx : Float = 0., ?ny : Float = 0., ?nz : Float = 0., ?c : UInt = 0xFFFFFF, ?u : Float = 0., ?v : Float = 0.)
 		{
 			this.x = x;
 			this.y = y;

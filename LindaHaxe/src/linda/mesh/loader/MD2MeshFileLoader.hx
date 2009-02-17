@@ -4,7 +4,6 @@
 	import flash.geom.Vector3D;
 	import flash.Lib;
 	import flash.Vector;
-	import haxe.Log;
 	
 	import linda.math.Vector3;
 	import flash.utils.ByteArray;
@@ -26,7 +25,7 @@ class MD2MeshFileLoader extends MeshLoader
 		public static inline var MD2_MAX_VERTS   :Int = 2048;
 		public static inline var MD2_FRAME_SHIFT :Int = 3;
 		public static inline var Normal_Table_Size:Int = 162;
-		public var normalTable:flash.Vector<Float>;
+		public var normalTable:Vector<Float>;
 		public function new()
 		{
 			super();
@@ -229,7 +228,7 @@ class MD2MeshFileLoader extends MeshLoader
 
 			if (magic != MD2_MAGIC_NUMBER || version != MD2_VERSION)
 			{
-				Log.trace("不是正确的MD2文件");
+				trace("不是正确的MD2文件");
 				return null;
 			}
 

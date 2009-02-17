@@ -225,7 +225,7 @@ class SkyBoxSceneNode extends SceneNode
 	    		super.onRegisterSceneNode();
 	    	}
 	    }
-	    override public function getMaterial(i:Int=0):Material
+	    override public function getMaterial(?i:Int=0):Material
 	    {
 	    	if(i<0 || i>=6) return null;
 	    	return materials[i];

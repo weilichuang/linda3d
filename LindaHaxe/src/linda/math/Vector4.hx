@@ -7,7 +7,7 @@ class Vector4
 	public var y:Float;
 	public var z:Float;
 	public var w:Float;
-	public function new(x:Float=0.,y:Float=0.,z:Float=0.,w:Float=0.) 
+	public function new(?x:Float=0.,?y:Float=0.,?z:Float=0.,?w:Float=1.) 
 	{
 		this.x = x;
 		this.y = y;
@@ -204,15 +204,15 @@ class Vector4
 	{
 		var angle:Float;
 
-		angle = vec.x * MathUtil.PI_OVER_ONE_EIGHTY * 0.5;
+		angle = vec.x * 0.5;
 		var sr:Float = MathUtil.sin(angle);
 		var cr:Float = MathUtil.cos(angle);
 
-		angle = vec.y * MathUtil.PI_OVER_ONE_EIGHTY * 0.5;
+		angle = vec.y * 0.5;
 		var sp:Float = MathUtil.sin(angle);
 		var cp:Float = MathUtil.cos(angle);
 
-		angle = vec.z * MathUtil.PI_OVER_ONE_EIGHTY * 0.5;
+		angle = vec.z * 0.5;
 		var sy:Float = MathUtil.sin(angle);
 		var cy:Float = MathUtil.cos(angle);
 

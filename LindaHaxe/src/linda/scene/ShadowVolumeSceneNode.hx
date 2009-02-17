@@ -47,7 +47,7 @@ class ShadowVolumeSceneNode extends SceneNode
 	 * @param	?zfailMethod
 	 * @param	?infinity
 	 */
-	public function new(mgr:SceneManager,shadowMesh:IMesh,zfailMethod:Bool=false,infinity:Float=10000.0) 
+	public function new(mgr:SceneManager,shadowMesh:IMesh,?zfailMethod:Bool=false,?infinity:Float=10000.0) 
 	{
 		super(mgr);
 		

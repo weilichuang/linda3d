@@ -24,7 +24,7 @@
 		 * @param	?buffer MeshBuffer
 		 * @param	?useDefaultMaterial
 		 */
-		public function new (mgr:SceneManager,buffer : MeshBuffer = null,useDefaultMaterial:Bool=true)
+		public function new (mgr:SceneManager,?buffer : MeshBuffer = null,?useDefaultMaterial:Bool=true)
 		{
 			super (mgr);
 			this.useDefaultMaterial = useDefaultMaterial;
@@ -105,7 +105,7 @@
 		{
 			return meshBuffer.boundingBox;
 		}
-		override  public function getMaterial (i : Int = 0) : Material
+		override  public function getMaterial (?i : Int = 0) : Material
 		{
 			return material;
 		}

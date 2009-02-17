@@ -16,7 +16,7 @@ package linda.scene;
             private var indices  : Vector<Int>;
             private var vertices : Vector<Vertex>;
             private var material : Material;
-            public function new (mgr:SceneManager,width : Float,height : Float,segsW : Int=2, segsH : Int=2)
+            public function new (mgr:SceneManager,?width : Float=100.,?height : Float=100.,?segsW : Int=2,?segsH : Int=2)
             {
                 super (mgr);
                         
@@ -109,7 +109,7 @@ package linda.scene;
                 }
                         
             }
-            override  public function getMaterial (i : Int=0) : Material
+            override  public function getMaterial (?i : Int=0) : Material
             {
                 return material;
             }

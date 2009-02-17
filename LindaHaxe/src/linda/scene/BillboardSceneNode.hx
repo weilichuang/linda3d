@@ -14,7 +14,7 @@
 
 	class BillboardSceneNode extends SceneNode
 	{
-		public function new (mgr:SceneManager,size :Dimension2D = null)
+		public function new (mgr:SceneManager,?size :Dimension2D = null)
 		{
 			super (mgr);
 			//indices and vertices

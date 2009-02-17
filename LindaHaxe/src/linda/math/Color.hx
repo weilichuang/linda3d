@@ -14,7 +14,7 @@ class Color
 	public static inline var WHITE:Color = new Color(255, 255, 255);
 	public static inline var BLACK:Color = new Color(0, 0, 0);
 	
-	public function new (r : Int = 0, g : Int = 0, b : Int = 0)
+	public function new (?r : Int = 0, ?g : Int = 0, ?b : Int = 0)
 	{
 		this.r = r;
 		this.g = g;

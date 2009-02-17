@@ -28,7 +28,7 @@
 		private var framesPerSecond : Float;
 		private var currentFrameNr : Int;
 		private var looping : Bool;
-		public function new (mgr:SceneManager,mesh : IAnimatedMesh = null,useDefaultMaterial:Bool=true)
+		public function new (mgr:SceneManager,?mesh : IAnimatedMesh = null,?useDefaultMaterial:Bool=true)
 		{
 			super (mgr);
 			beginFrameTime = Lib.getTimer ();

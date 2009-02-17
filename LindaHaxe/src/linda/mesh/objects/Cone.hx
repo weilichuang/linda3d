@@ -5,7 +5,7 @@ import linda.mesh.MeshBuffer;
 
 class Cone extends MeshBuffer
 {
-	public function new (radius:Float,length:Float,tesselation:Int,colorTop:UInt,colorBottom:UInt,oblique:Float)
+	public function new (?radius:Float=100.,?length:Float=100.,?tesselation:Int=5,?colorTop:UInt=0xff0000,?colorBottom:UInt=0x00ff00,?oblique:Float=0.)
 	{
 		super();
 		build(radius, length, tesselation, colorTop, colorBottom, oblique);

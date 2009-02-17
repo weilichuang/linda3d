@@ -47,22 +47,22 @@
 			{
 				for (j in 0...(tmpPoints.length - 1))
 				{
-					uva.x = (MathUtil.cos ( - ang_inc * MathUtil.PI_OVER_ONE_EIGHTY) / ((subdivision * 2) / j)) +.5;
-					uva.y = (MathUtil.sin (ang_inc    * MathUtil.PI_OVER_ONE_EIGHTY) / ((subdivision * 2) / j)) +.5;
-					uvb.x = (MathUtil.cos ( - ang     * MathUtil.PI_OVER_ONE_EIGHTY) / ((subdivision * 2) / (j + 1))) +.5;
-					uvb.y = (MathUtil.sin (ang        * MathUtil.PI_OVER_ONE_EIGHTY) / ((subdivision * 2) / (j + 1))) +.5;
-					uvc.x = (MathUtil.cos ( - ang_inc * MathUtil.PI_OVER_ONE_EIGHTY) / ((subdivision * 2) / (j + 1))) +.5;
-					uvc.y = (MathUtil.sin (ang_inc    * MathUtil.PI_OVER_ONE_EIGHTY) / ((subdivision * 2) / (j + 1))) +.5;
-					uvd.x = (MathUtil.cos ( - ang     * MathUtil.PI_OVER_ONE_EIGHTY) / ((subdivision * 2) / j)) +.5;
-					uvd.y = (MathUtil.sin (ang        * MathUtil.PI_OVER_ONE_EIGHTY) / ((subdivision * 2) / j)) +.5;
+					uva.x = (MathUtil.cos ( - ang_inc * MathUtil.DEGTORAD) / ((subdivision * 2) / j)) +.5;
+					uva.y = (MathUtil.sin (ang_inc    * MathUtil.DEGTORAD) / ((subdivision * 2) / j)) +.5;
+					uvb.x = (MathUtil.cos ( - ang     * MathUtil.DEGTORAD) / ((subdivision * 2) / (j + 1))) +.5;
+					uvb.y = (MathUtil.sin (ang        * MathUtil.DEGTORAD) / ((subdivision * 2) / (j + 1))) +.5;
+					uvc.x = (MathUtil.cos ( - ang_inc * MathUtil.DEGTORAD) / ((subdivision * 2) / (j + 1))) +.5;
+					uvc.y = (MathUtil.sin (ang_inc    * MathUtil.DEGTORAD) / ((subdivision * 2) / (j + 1))) +.5;
+					uvd.x = (MathUtil.cos ( - ang     * MathUtil.DEGTORAD) / ((subdivision * 2) / j)) +.5;
+					uvd.y = (MathUtil.sin (ang        * MathUtil.DEGTORAD) / ((subdivision * 2) / j)) +.5;
 					if (j == 0)
 					{
 						va = new Vertex (0, 0, 0);
 						va.u = va.v = 0.5;
-						vb = new Vertex (MathUtil.cos ( - ang     * MathUtil.PI_OVER_ONE_EIGHTY ) * tmpPoints [1].x, MathUtil.sin(ang     * MathUtil.PI_OVER_ONE_EIGHTY) * tmpPoints[1].x, base.z);
+						vb = new Vertex (MathUtil.cos ( - ang     * MathUtil.DEGTORAD ) * tmpPoints [1].x, MathUtil.sin(ang     * MathUtil.DEGTORAD) * tmpPoints[1].x, base.z);
 						vb.u = uvb.x;
 						vb.v = uvb.y;
-						vc = new Vertex (MathUtil.cos ( - ang_inc * MathUtil.PI_OVER_ONE_EIGHTY ) * tmpPoints [1].x, MathUtil.sin(ang_inc * MathUtil.PI_OVER_ONE_EIGHTY) * tmpPoints[1].x, base.z);
+						vc = new Vertex (MathUtil.cos ( - ang_inc * MathUtil.DEGTORAD ) * tmpPoints [1].x, MathUtil.sin(ang_inc * MathUtil.DEGTORAD) * tmpPoints[1].x, base.z);
 						vc.u = uvc.x;
 						vc.v = uvc.y;
 						vertices.push(va);
@@ -74,13 +74,13 @@
 						indexCount += 3;
 					} else 
 					{
-						va = new Vertex (MathUtil.cos ( - ang_inc * MathUtil.PI_OVER_ONE_EIGHTY) * tmpPoints [j].x    , MathUtil.sin(ang_inc * MathUtil.PI_OVER_ONE_EIGHTY) * tmpPoints[j].x  , base.z);
+						va = new Vertex (MathUtil.cos ( - ang_inc * MathUtil.DEGTORAD) * tmpPoints [j].x    , MathUtil.sin(ang_inc * MathUtil.DEGTORAD) * tmpPoints[j].x  , base.z);
 						va.u = uva.x; va.v = uva.y;
-						vb = new Vertex (MathUtil.cos ( - ang_inc * MathUtil.PI_OVER_ONE_EIGHTY) * tmpPoints [j + 1].x, MathUtil.sin(ang_inc * MathUtil.PI_OVER_ONE_EIGHTY) * tmpPoints[j+1].x, base.z);
+						vb = new Vertex (MathUtil.cos ( - ang_inc * MathUtil.DEGTORAD) * tmpPoints [j + 1].x, MathUtil.sin(ang_inc * MathUtil.DEGTORAD) * tmpPoints[j+1].x, base.z);
 						vb.u = uvc.x; vb.v = uvc.y;
-						vc = new Vertex (MathUtil.cos ( - ang     * MathUtil.PI_OVER_ONE_EIGHTY) * tmpPoints [j + 1].x, MathUtil.sin(ang     * MathUtil.PI_OVER_ONE_EIGHTY) * tmpPoints[j+1].x, base.z);
+						vc = new Vertex (MathUtil.cos ( - ang     * MathUtil.DEGTORAD) * tmpPoints [j + 1].x, MathUtil.sin(ang     * MathUtil.DEGTORAD) * tmpPoints[j+1].x, base.z);
 						vc.u = uvb.x; vc.v = uvb.y;
-						vd = new Vertex (MathUtil.cos ( - ang     * MathUtil.PI_OVER_ONE_EIGHTY) * tmpPoints [j].x    , MathUtil.sin(ang     * MathUtil.PI_OVER_ONE_EIGHTY) * tmpPoints[j].x  , base.z);
+						vd = new Vertex (MathUtil.cos ( - ang     * MathUtil.DEGTORAD) * tmpPoints [j].x    , MathUtil.sin(ang     * MathUtil.DEGTORAD) * tmpPoints[j].x  , base.z);
 						vd.u = uvd.x; vd.v = uvd.y;
 						
 						vertices.push(va);

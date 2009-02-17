@@ -1,6 +1,7 @@
 ﻿package linda.scene;
 
 	import haxe.Log;
+	import linda.math.MathUtil;
 	import linda.math.Vector3;
 	
 	import linda.math.AABBox3D;
@@ -28,7 +29,7 @@
 		private var tgtv : Vector3 ;
 		private var tmp_up : Vector3 ;
 		private var _tmp_position : Vector3 ;
-		public function new (mgr:SceneManager,target:Vector3=null)
+		public function new (mgr:SceneManager,?target:Vector3=null)
 		{
 			super (mgr);
 			
@@ -54,7 +55,7 @@
 			tmp_up          = new Vector3 ();
 			_tmp_position   = new Vector3 ();
 			
-			fovy = 120.;
+			fovy = 120.*MathUtil.DEGTORAD;
 			aspect = 4./3.;
 			near = 1.;
 			far = 2000.;

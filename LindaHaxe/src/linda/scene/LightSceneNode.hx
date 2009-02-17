@@ -11,7 +11,7 @@
 		public var light : Light ;
 		
 		private var box : AABBox3D;
-		public function new (mgr:SceneManager, color : UInt = 0xFFFFFF,radius:Float=200., type : Int = 0)
+		public function new (mgr:SceneManager, ?color : UInt = 0xFFFFFF,?radius:Float=200., ?type : Int = 0)
 		{
 			super (mgr);
 			

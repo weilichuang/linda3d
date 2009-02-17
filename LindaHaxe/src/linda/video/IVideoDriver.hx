@@ -28,9 +28,9 @@
 		
 		function setMaterial (material : Material) : Void;
 		function setDistance(distance:Float):Void ;//根据物体的深度来判断是否使用MipMap和PerspectiveCorrect
-		function setPerspectiveCorrectDistance(distance:Float=400.):Void;
+		function setPerspectiveCorrectDistance(?distance:Float=400.):Void;
 		function getPerspectiveCorrectDistance():Float;
-		function setMipMapDistance(distance:Float=500.):Void;
+		function setMipMapDistance(?distance:Float=500.):Void;
 		function getMipMapDistance():Float;
 
 		function setRenderTarget (target : Sprite) : Void;
@@ -40,7 +40,7 @@
 		function drawIndexedTriangleList (vertices : Vector<Vertex>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int) : Void;
 		function drawMeshBuffer(mb:MeshBuffer):Void;
 		function drawStencilShadowVolume(shadowVolume:ShadowVolume,useZFailMethod:Bool):Void;
-        function drawStencilShadow(clearStencilBuffer:Bool=true):Void;
+        function drawStencilShadow(?clearStencilBuffer:Bool=true):Void;
 		
 		function getScreenSize ():Dimension2D;
 		function setScreenSize (size:Dimension2D):Void;
