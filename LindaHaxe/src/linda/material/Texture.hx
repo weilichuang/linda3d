@@ -67,31 +67,31 @@
 				image.dispose();
 			}
 		}
-		public function getVector (?i:Int = 0) : Vector<UInt>
+		public inline function getVector (?i:Int = 0) : Vector<UInt>
 		{
-			if (i < 0) return vectors[0];
-			if (i >= vectorCount) return vectors[vectorCount - 1];
+			if (i < 0) i = 0;
+			if (i >= vectorCount) i = vectorCount - 1;
 			return vectors[i];
 		}
-		public function getWidth(?i:Int = 0):Int
+		public inline function getWidth(?i:Int = 0):Int
 		{
-			if (i < 0) return dimensions[0].width;
-			if (i >= vectorCount) return dimensions[vectorCount - 1].width;
+			if (i < 0) i = 0;
+			if (i >= vectorCount) i = vectorCount - 1;
 			return dimensions[i].width;
 		}
-		public function getHeight(?i:Int = 0):Int
+		public inline function getHeight(?i:Int = 0):Int
 		{
-			if (i < 0) return dimensions[0].height;
-			if (i >= vectorCount) return dimensions[vectorCount - 1].height;
+			if (i < 0) i = 0;
+			if (i >= vectorCount) i = vectorCount - 1;
 			return dimensions[i].height;
 		}
-		public function getDimension(?i:Int = 0):Dimension2D
+		public inline function getDimension(?i:Int = 0):Dimension2D
 		{
-			if (i < 0) return dimensions[0];
-			if (i >= vectorCount) return dimensions[vectorCount - 1];
+			if (i < 0) i = 0;
+			if (i >= vectorCount) i = vectorCount - 1;
 			return dimensions[i];
 		}
-		public function getVectorCount () : Int
+		public inline function getVectorCount () : Int
 		{
 			return vectorCount;
 		}
@@ -113,6 +113,8 @@
 				
 				data.dispose();
 				
+				data = null;
+				
 				vectorCount++;
 				
 				i >>= 1;
@@ -128,9 +130,9 @@
 			var data:BitmapData=new BitmapData(Std.int(image.width*value),Std.int(image.height*value),true,0x0);
 			matrix.a = value;
 			matrix.d = value;
-			//Lib.current.stage.quality = StageQuality.LOW;
+			Lib.current.stage.quality = StageQuality.LOW;
 			data.draw(image, matrix);
-			//Lib.current.stage.quality = StageQuality.HIGH;
+			Lib.current.stage.quality = StageQuality.HIGH;
 			matrix = null;
             return data;
 		}

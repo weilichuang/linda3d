@@ -69,7 +69,7 @@
 			}
 		}
 		/**
-		 * @param	colors Vector<UInt> colors.length ==12
+		 * @param	colors Vector<UInt> colors.length >=12
 		 */
 		public inline function setColors(colors:Vector<UInt>):Void 
 		{

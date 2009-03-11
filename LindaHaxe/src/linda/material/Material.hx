@@ -33,7 +33,7 @@
 		
 		private var _alpha:Float;
 		
-		public inline var alpha(getAlpha, setAlpha):Float;
+		public var alpha(getAlpha, setAlpha):Float;
 		
 		public var name:String;
 
@@ -58,18 +58,18 @@
 			specularColor=new Color(0,0,0);
 			
 		}
-		public inline function setAlpha(value:Float):Float
+		public function setAlpha(value:Float):Float
 		{
 			if (value > 1.0) value = 1.0;
 			if (value < 0.0) value = 0.0;
 			_alpha = value;
 			return _alpha;
 		}
-		public inline function getAlpha():Float
+		public function getAlpha():Float
 		{
 			return _alpha;
 		}
-		public inline function setTexture(texture:Texture,?layer:Int=1):Void
+		public function setTexture(texture:Texture,?layer:Int=1):Void
 		{
 			if(layer == 1)
 			{
@@ -80,15 +80,15 @@
 				texture1=texture;
 			}
 		}
-		public inline function getTexture():Texture
+		public function getTexture():Texture
 		{
 			return texture;
 		}
-		public inline function getTexture1():Texture
+		public function getTexture1():Texture
 		{
 			return texture1;
 		}
-		public inline function setFlag(flag:Int,value:Bool):Void
+		public function setFlag(flag:Int,value:Bool):Void
 		{
 			switch(flag)
 			{
@@ -108,7 +108,7 @@
 				     zBuffer = value;
 			}
 		}
-		public inline function clone():Material
+		public function clone():Material
 		{
 			var mat:Material = new Material();
 			
@@ -132,7 +132,7 @@
 			
 			return mat;
 		}
-		public inline function copy(mat:Material):Void
+		public function copy(mat:Material):Void
 		{
 			frontfaceCulling = mat.frontfaceCulling;
 			backfaceCulling = mat.backfaceCulling;

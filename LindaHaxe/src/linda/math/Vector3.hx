@@ -1,5 +1,10 @@
 package linda.math;
 
+/** The vector3d class is used for three main purposes: 
+ *	1) As a direction vector (most of the methods assume this).
+ *	2) As a position in 3d space (which is synonymous with a direction vector from the origin to this position).
+ *	3) To hold three Euler rotations, where X is pitch, Y is yaw and Z is roll.
+ */
 class Vector3
 {
 		public var x:Float;
@@ -52,26 +57,42 @@ class Vector3
 			y *= s;
 			z *= s;
 		}
-		public inline function normalize():Void
+		/**Normalizes the vector.
+		 * In case of the 0 vector the result is still 0, otherwise
+		 * the length of the vector will be 1.
+		 * @return Reference to this vector after normalization. 
+		 */
+		public inline function normalize():Vector3
 		{
 			var sq:Float = getLengthSquared();
 			if ( sq < MathUtil.ROUNDING_ERROR ) sq = 0 else sq = MathUtil.invSqrt(sq);
 			x *= sq;
 			y *= sq;
 			z *= sq;
+			return this;
 		}
+		//Get the dot product with another vector.
 		public inline function dotProduct(other : Vector3) : Float
 		{
 			return (x * other.x + y * other.y + z * other.z);
 		}
+		// Calculates the cross product with another vector.
 		public inline function crossProduct (other : Vector3) : Vector3
 		{
 			return new Vector3 (y * other.z - z * other.y, z * other.x - x * other.z, x * other.y - y * other.x);
 		}
+		// Get length of the vector.
 		public inline function getLength() : Float
 		{
 			return MathUtil.sqrt (x * x + y * y + z * z);
 		}
+		// Sets the length of the vector to a new value
+		public inline function setLength(newlength:Float):Void 
+		{
+			normalize();
+			scale(newlength);
+		}
+		// Get squared length of the vector.
 		public inline function getLengthSquared() : Float
 		{
 			return (x * x + y * y + z * z);

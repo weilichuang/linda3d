@@ -16,9 +16,6 @@
 		}
 		public inline function build (radius : Float,polyCountX:Int,polyCountY:Int) : Void
 		{
-			// thanks to Alfaz93 who made his code available for Irrlicht on which
-			// this one is based!
-			// we are creating the sphere mesh here.
 			vertices.length = 0;
 			indices.length  = 0;
 			

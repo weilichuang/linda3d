@@ -25,10 +25,13 @@ class MD2MeshFileLoader extends MeshLoader
 		public static inline var MD2_MAX_VERTS   :Int = 2048;
 		public static inline var MD2_FRAME_SHIFT :Int = 3;
 		public static inline var Normal_Table_Size:Int = 162;
-		public var normalTable:Vector<Float>;
+		public static var normalTable:Vector<Float>;
 		public function new()
 		{
 			super();
+			
+			if (normalTable == null)
+			{
 			var table:Array<Float> = [
 			-0.525731, 0.000000, 0.850651, 
 			-0.442863, 0.238856, 0.864188, 
@@ -195,6 +198,7 @@ class MD2MeshFileLoader extends MeshLoader
 			];
 			normalTable = Lib.vectorOfArray(table);
 			table = null;
+			}
 		}
 		override public function createAnimatedMesh(data : ByteArray) : IAnimatedMesh
 		{
