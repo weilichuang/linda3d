@@ -71,7 +71,7 @@ class TRFlat extends TriangleRenderer,implements ITriangleRenderer
 		{
 			v1 = vertices[indexList[i]];
 			v2 = vertices[indexList[i+1]];
-			v3 = vertices[indexList[i + 2]];
+			v3 = vertices[indexList[i+2]];
 				
 			i += 3;
 				

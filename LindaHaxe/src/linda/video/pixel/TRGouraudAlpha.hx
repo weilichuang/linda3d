@@ -102,7 +102,7 @@ class TRGouraudAlpha extends TriangleRenderer,implements ITriangleRenderer
 		{
 			v1 = vertices[indexList[i]];
 			v2 = vertices[indexList[i+1]];
-			v3 = vertices[indexList[i + 2]];
+			v3 = vertices[indexList[i+2]];
 				
 			i += 3;
 				
@@ -287,11 +287,9 @@ class TRGouraudAlpha extends TriangleRenderer,implements ITriangleRenderer
 				{
 					bgColor = target[pos];
 									
-					target[pos] = (
-		                  			((alpha * Std.int(ri) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
-						  			((alpha * Std.int(gi) + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
-						  			((alpha * Std.int(bi) + invAlpha * (bgColor & 0xFF)) >> 8)
-						           );
+					target[pos] = (((alpha * Std.int(ri) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+						  		   ((alpha * Std.int(gi) + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
+						  		   ((alpha * Std.int(bi) + invAlpha * (bgColor & 0xFF)) >> 8));
 				}
 				zi += dzdx;
 				ri += drdx;

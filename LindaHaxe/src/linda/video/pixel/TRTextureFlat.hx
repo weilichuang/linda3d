@@ -103,7 +103,7 @@ class TRTextureFlat extends TriangleRenderer,implements ITriangleRenderer
 		{
 			v1 = vertices[indexList[i]];
 			v2 = vertices[indexList[i+1]];
-			v3 = vertices[indexList[i + 2]];
+			v3 = vertices[indexList[i+2]];
 				
 			i += 3;
 				
@@ -209,7 +209,8 @@ class TRTextureFlat extends TriangleRenderer,implements ITriangleRenderer
 					// Set right edge X-slope and perform subpixel pre-stepping
 					xb = x1 + dy * dxdy1;
 					dxdyb = dxdy1;
-					drawSubTri( y1i, y2i );
+
+					drawSubTri( y1i, y2i);
 				}	
 				
 				if (y2i < y3i)	// Draw lower segment if possibly visible
@@ -217,7 +218,9 @@ class TRTextureFlat extends TriangleRenderer,implements ITriangleRenderer
 					// Set right edge X-slope and perform subpixel pre-stepping
 					xb = x2 + (1 - (y2 - y2i)) * dxdy3;
 					dxdyb = dxdy3;
-					drawSubTri( y2i, y3i );
+
+					drawSubTri( y2i, y3i);
+					
 				}
 			}
 			else	// Longer edge is on the right side
@@ -239,7 +242,8 @@ class TRTextureFlat extends TriangleRenderer,implements ITriangleRenderer
 					za = z1 + dy * dzdya;
 					ua = tu1 + dy * dudya;
 					va = tv1 + dy * dvdya;
-					drawSubTri( y1i, y2i );
+
+					drawSubTri(y1i, y2i);
 				}
 				
 				if( y2i < y3i )	// Draw lower segment if possibly visible
@@ -254,14 +258,16 @@ class TRTextureFlat extends TriangleRenderer,implements ITriangleRenderer
 					za = z2 + dy * dzdya;
 					ua = tu2 + dy * dudya;
 					va = tv2 + dy * dvdya;
-					drawSubTri( y2i, y3i );
+
+					drawSubTri(y2i, y3i);
 				}
 			}
 		}
 	}
-	private inline function drawSubTri( ys: Int, ye: Int ): Void
+	private inline function drawSubTri( ys: Int, ye: Int): Void
 	{
 		var dx: Float;
+
 		while ( ys < ye )
 		{
 			xs = Std.int(xa);
@@ -276,13 +282,14 @@ class TRTextureFlat extends TriangleRenderer,implements ITriangleRenderer
 				pos = xs + ys * width;
 				if( zi > buffer[pos] )
 				{
-					if(perspectiveCorrect)
+					if (perspectiveCorrect)
 					{
 						target[pos] = texVector[Std.int(ui/zi) + Std.int(vi/zi) * texWidth];
 					}else
 					{
 						target[pos] = texVector[Std.int(ui) + Std.int(vi) * texWidth];
 					}
+					
 					buffer[pos] = zi;
 				}
 				zi += dzdx;

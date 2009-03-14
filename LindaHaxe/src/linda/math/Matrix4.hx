@@ -100,8 +100,6 @@
 		{
 			var zaxis:Vector3 = target.subtract(position);
 			zaxis.normalize();
-			
-			//Log.trace(position);
 
 			var xaxis:Vector3 = upVector.crossProduct(zaxis);
 			xaxis.normalize();
@@ -124,6 +122,10 @@
 			m31 = -yaxis.dotProduct(position);
 			m32 = -zaxis.dotProduct(position);
 			m33 = 1.0;
+			
+			zaxis = null;
+			xaxis = null;
+			yaxis = null;
 		}
 		public inline function projectionPerspective(fov : Float, aspect : Float, zNear : Float, zFar : Float) : Void
 		{
@@ -322,7 +324,7 @@
 		{
 			var y : Float = - Math.asin (m02);
 			var d : Float = y;
-			var c : Float = Math.cos (y);
+			var c : Float = MathUtil.cos (y);
 			var rotx : Float, roty : Float, x : Float, z : Float;
 			c = MathUtil.abs(c);
 			if (c > 0.0005)

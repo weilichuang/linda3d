@@ -612,7 +612,7 @@
 									dpsl = l.dotProduct(dir)/ dist;
 									if (dpsl > 0 )
 									{
-										k = dp * MathUtil.powInt(dpsl, light.powerFactor) * MathUtil.invSqrt(nlenSquared)/(light.kc + light.kl * dist + light.kq * dist2);
+										k = dp * MathUtil.pow(dpsl, light.powerFactor) * MathUtil.invSqrt(nlenSquared)/(light.kc + light.kl * dist + light.kq * dist2);
 										dif_r_sum0 += diffuse.r * k;
 										dif_g_sum0 += diffuse.g * k;
 										dif_b_sum0 += diffuse.b * k;
@@ -759,7 +759,7 @@
 									dpsl = (l.x * dir.x + l.y * dir.y + l.z * dir.z) / dist;
 									if (dpsl > 0 )
 									{
-										k = dp * MathUtil.powInt(dpsl, pf) / (kc + kl * dist + kq * dist2);
+										k = dp * MathUtil.pow(dpsl, pf) / (kc + kl * dist + kq * dist2);
 										dif_r_sum0 += diffuse.r * k;
 										dif_g_sum0 += diffuse.g * k;
 										dif_b_sum0 += diffuse.b * k;
@@ -777,7 +777,7 @@
 									dpsl = (l.x * dir.x + l.y * dir.y + l.z * dir.z) / dist;
 									if (dpsl > 0 )
 									{
-										k = dp * MathUtil.powInt(dpsl, pf) / (kc + kl * dist + kq * dist2);
+										k = dp * MathUtil.pow(dpsl, pf) / (kc + kl * dist + kq * dist2);
 										dif_r_sum1 += diffuse.r * k;
 										dif_g_sum1 += diffuse.g * k;
 										dif_b_sum1 += diffuse.b * k;
@@ -795,7 +795,7 @@
 									dpsl = (l.x * dir.x + l.y * dir.y + l.z * dir.z) / dist;
 									if (dpsl > 0 )
 									{
-										k = dp * MathUtil.powInt(dpsl, pf) / (kc + kl * dist + kq * dist2);
+										k = dp * MathUtil.pow(dpsl, pf) / (kc + kl * dist + kq * dist2);
 										dif_r_sum2 += diffuse.r * k;
 										dif_g_sum2 += diffuse.g * k;
 										dif_b_sum2 += diffuse.b * k;
