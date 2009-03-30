@@ -20,6 +20,12 @@
 		private var _skyboxList      : Vector<SceneNode>;
 		private var _shadowList      : Vector<SceneNode>;
 		
+		private var _lightCount:Int;
+		private var _solidCount:Int;
+		private var _transparentCount:Int;
+		private var _skyboxCount:Int;
+		private var _shadowCount:Int;
+		
 		private var _ambient         : UInt;
 		
 		private var tmpBox           : AABBox3D;
@@ -32,6 +38,13 @@
 			_lightList       = new Vector<SceneNode>();
 			_skyboxList      = new Vector<SceneNode>();
 			_shadowList      = new Vector<SceneNode>();
+			
+			_lightCount = 0;
+			_solidCount = 0;
+			_transparentCount = 0;
+			_skyboxCount = 0;
+			_shadowCount = 0;
+			
 			_ambient = 0x0;
 			
 			sceneManager = this;
@@ -46,6 +59,13 @@
 			_driver = null;
 			_viewFrustum = null;
 			_activeCamera = null;
+			
+			_lightList.length = 0;
+			_solidList.length = 0;
+			_skyboxList.length = 0;
+			_transparentList.length = 0;
+			_shadowList.length = 0;
+			
 			_lightList = null;
 			_solidList = null;
 			_skyboxList = null;
@@ -75,22 +95,33 @@
 				case SceneNode.LIGHT :
 				{
 					_lightList.push(node);
+					_lightCount++;
 				}
 				case SceneNode.SKYBOX:
 				{
 					_skyboxList.push(node);
+					_skyboxCount++;
 				}
 				case SceneNode.SOLID :
 				{
-					if (!isCulled(node)) _solidList.push(node);
+					if (!isCulled(node))
+					{
+						_solidList.push(node);
+						_solidCount++;
+					}
 				}
 				case SceneNode.TRANSPARENT :
 				{
-					if (!isCulled(node)) _transparentList.push(node);
+					if (!isCulled(node))
+					{
+						_transparentList.push(node);
+						_transparentCount++;
+					}
 				}
 				case SceneNode.SHADOW:
 				{
 				    _shadowList.push(node); 
+					_shadowCount++;
 				}
 			}
 		}
@@ -103,36 +134,31 @@
 			//render lights
 			_driver.removeAllLights();
 			
-			var len : Int = _lightList.length;
-			for (i in 0...len)
+			for (i in 0..._lightCount)
 			{
 				_lightList[i].render ();
 			}
 			
-			len = _skyboxList.length;
-			for (i in 0...len)
+			for (i in 0..._skyboxCount)
 			{
 				_skyboxList[i].render();
 			}
 			
             //render solidList
 			_solidList.sort(sortSceneNode);
-			len = _solidList.length;
-			for (i in 0...len)
+			for (i in 0..._solidCount)
 			{
 				_solidList[i].render();
 			}
-
-			len = _shadowList.length;
-			for (i in 0...len)
+			
+			for (i in 0..._shadowCount)
 			{
 				_shadowList[i].render();
 			}
 
 			//render transparentList
 			_transparentList.sort(sortSceneNode);
-			len = _transparentList.length;
-			for (i in 0...len)
+			for (i in 0..._transparentCount)
 			{
 				_transparentList[i].render();
 			}
@@ -144,6 +170,12 @@
 			_transparentList.length = 0;
 			_skyboxList.length = 0;
 			_shadowList.length = 0;
+			
+			_lightCount = 0;
+			_solidCount = 0;
+			_transparentCount = 0;
+			_skyboxCount = 0;
+			_shadowCount = 0;
 		}
 		private inline function sortSceneNode(a:SceneNode, b:SceneNode):Int 
 		{

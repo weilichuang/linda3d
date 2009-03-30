@@ -183,12 +183,13 @@
 				_transformedLineVertexes[i] = new Vertex4D();
 			}
 			_clippedLineVertices = new Vector<Vertex4D>();
-			_clippedLineIndices      = new Vector<Int>();
+			_clippedLineIndices  = new Vector<Int>();
 			
 			setScreenSize(size);
 		}
 		private inline function reset():Void
 		{
+			trianglesDrawn = 0;
 			//Todo 不知道有没有更好的方法了:)
 			targetVector.length = 0;
 			bufferVector.length = 0;
@@ -260,7 +261,6 @@
 
 		public function beginScene ():Void
 		{
-			trianglesDrawn = 0;
 			reset();
 		}
 		public function endScene():Void
@@ -331,17 +331,17 @@
 			
 			_scaleMatrix.buildNDCToDCMatrix(screenSize,1);
 			
-			var len:Int=screenSize.width*screenSize.height;
+			var len:Int = screenSize.width * screenSize.height;
 			targetVector.length=len;
 			bufferVector.length=len;
 			
 			setWidth(screenSize.width);
 		}
-		public override function setRenderTarget (target : Sprite) : Void
+		public override function setRenderTarget (sp : Sprite) : Void
 		{
-			if ( target==null) return;
-			if (renderTarget!=null) renderTarget.removeChild (target);
-			renderTarget = target;
+			if ( sp == null) return;
+			if (renderTarget != null) renderTarget.removeChild (target);
+			renderTarget = sp;
 			renderTarget.addChild (target);
 		}
 		//试一试把变量提出来，看看速度怎么样
@@ -442,10 +442,10 @@
 			var m13 : Float = _current.m13;
 			var m23 : Float = _current.m23;
 			var m33 : Float = _current.m33;
-			var csm00 : Float = _scaleMatrix.m00;
-			var csm30 : Float = _scaleMatrix.m30;
-			var csm11 : Float = _scaleMatrix.m11;
-			var csm31 : Float = _scaleMatrix.m31;
+			var sm00 : Float = _scaleMatrix.m00;
+			var sm30 : Float = _scaleMatrix.m30;
+			var sm11 : Float = _scaleMatrix.m11;
+			var sm31 : Float = _scaleMatrix.m31;
 			
 			var memi : Color = material.emissiveColor;
 			var mamb : Color = material.ambientColor;
@@ -815,9 +815,9 @@
 					}
 				} else //no lighting
 				{
-					tv0.r = v0.r+memi.r; tv0.g = v0.g+memi.g; tv0.b = v0.b+memi.b;
-					tv1.r = v1.r+memi.r; tv1.g = v1.g+memi.g; tv1.b = v1.b+memi.b;
-					tv2.r = v2.r+memi.r; tv2.g = v2.g+memi.g; tv2.b = v2.b+memi.b;
+					tv0.r = v0.r + memi.r; tv0.g = v0.g + memi.g; tv0.b = v0.b + memi.b;
+					tv1.r = v1.r + memi.r; tv1.g = v1.g + memi.g; tv1.b = v1.b + memi.b;
+					tv2.r = v2.r + memi.r; tv2.g = v2.g + memi.g; tv2.b = v2.b + memi.b;
 				}
 				
 				if (tv0.r > 0xFF) tv0.r = 0xFF;
@@ -845,18 +845,18 @@
 				{
 					//tv0
 					var tmp : Float = 1 / tv0.w ;
-					tv0.x = tv0.x * csm00 * tmp + csm30;
-					tv0.y = tv0.y * csm11 * tmp + csm31;
+					tv0.x = tv0.x * sm00 * tmp + sm30;
+					tv0.y = tv0.y * sm11 * tmp + sm31;
 					tv0.z = tmp;
 					//tv1
 					tmp = 1 / tv1.w ;
-					tv1.x = tv1.x * csm00 * tmp + csm30;
-					tv1.y = tv1.y * csm11 * tmp + csm31;
+					tv1.x = tv1.x * sm00 * tmp + sm30;
+					tv1.y = tv1.y * sm11 * tmp + sm31;
 					tv1.z = tmp;
 					//tv2
 					tmp = 1 / tv2.w ;
-					tv2.x = tv2.x * csm00 * tmp + csm30;
-					tv2.y = tv2.y * csm11 * tmp + csm31;
+					tv2.x = tv2.x * sm00 * tmp + sm30;
+					tv2.y = tv2.y * sm11 * tmp + sm31;
 					tv2.z = tmp;
 					
 					// add to _clippedIndices
@@ -1116,8 +1116,8 @@
 				{
 					tv0 = source [g];
 					var tmp:Float = 1 / tv0.w ;
-					tv0.x = tv0.x * csm00 * tmp + csm30;
-					tv0.y = tv0.y * csm11 * tmp + csm31;
+					tv0.x = tv0.x * sm00 * tmp + sm30;
+					tv0.y = tv0.y * sm11 * tmp + sm31;
 					tv0.z = tmp;
 					_clippedVertices [vCount++] = tv0;
 				}
@@ -1434,8 +1434,7 @@
 		public function setPerspectiveCorrectDistance (?distance : Float = 400.) : Void
 		{
 			persDistance = (distance < 10) ? 10 : distance;
-			var count:Int = TRType.COUNT;
-			for ( i in 0...count)
+			for ( i in 0...TRType.COUNT)
 			{
 				renderers[i].setPerspectiveCorrectDistance (distance);
 			}
@@ -1443,16 +1442,14 @@
 		public function setMipMapDistance (?distance : Float = 500.) : Void
 		{
 			mipMapDistance = (distance < 10) ? 10 : distance;
-			var count:Int = TRType.COUNT;
-			for ( i in 0...count)
+			for ( i in 0...TRType.COUNT)
 			{
 				renderers[i].setMipMapDistance (distance);
 			}
 		}
 		public function setWidth(width:Int) : Void
 		{
-			var count:Int = TRType.COUNT;
-			for ( i in 0...count)
+			for ( i in 0...TRType.COUNT)
 			{
 				renderers[i].setWidth(width);
 			}
@@ -1460,8 +1457,7 @@
 		}
 		public function setVector(tv : Vector<UInt>, bv : Vector<Float>) : Void
 		{
-			var count:Int = TRType.COUNT;
-			for ( i in 0...count)
+			for ( i in 0...TRType.COUNT)
 			{
 				renderers[i].setVector(tv,bv);
 			}

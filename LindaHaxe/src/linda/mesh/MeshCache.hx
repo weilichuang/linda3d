@@ -13,26 +13,21 @@
 		}
 		public function addMesh (mesh : IMesh) : Void
 		{
-			meshes.push(mesh);
+			meshes[meshCount] = mesh;
+			//.push(mesh);
 			meshCount++;
 		}
 		public inline function removeMesh (mesh : IMesh) :Bool
 		{
-			if (!mesh)
+			var i:Int=meshes.indexOf(mesh);			
+			if (i == -1)
 			{
 				return false;
 			}else
 			{
-				var i:Int=untyped meshes.indexOf(mesh);			
-				if (i == -1)
-				{
-					return false;
-				}else
-				{
-					meshes.splice (i, 1);
-					meshCount--;
-					return true;
-				}
+				meshes.splice (i, 1);
+				meshCount--;
+				return true;
 			}
 		}
 		public function removeAll () : Void
@@ -45,14 +40,8 @@
 		}
 		public inline function getMesh(num : Int) : IMesh
 		{
-			if (num < 0 || num >= meshes.length)
-			{
-				return null;
-			}else
-			{
-				return meshes[num];
-			}
-			
+			if ( num<0 || num >=meshCount) return null;
+			return meshes[num];
 		}
 	}
 

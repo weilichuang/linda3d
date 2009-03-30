@@ -30,11 +30,8 @@
 		{
 			vertices.length = 0;
 			indices.length  = 0;
-			var arr:Array<Int>=[0, 2, 1, 0, 3, 2, 1, 5, 4, 1, 2, 5, 4, 6, 7, 4, 5, 6,
-			                    7, 3, 0, 7, 6, 3, 9, 5, 2, 9, 8, 5, 0, 11, 10, 0, 10, 7];
-								
-			indices = Lib.vectorOfArray(arr);
-			arr = null;
+			indices=Lib.vectorOfArray([0, 2, 1, 0, 3, 2, 1, 5, 4, 1, 2, 5, 4, 6, 7, 4, 5, 6,
+			                    7, 3, 0, 7, 6, 3, 9, 5, 2, 9, 8, 5, 0, 11, 10, 0, 10, 7]);
        
 			var color : UInt = 0xffffff;
 			vertices [0] = new Vertex (0, 0, 0, -1, -1, -1, color, 0, 1);

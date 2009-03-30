@@ -76,6 +76,8 @@ package linda.scene;
 		    }
             override public function destroy():Void
 		    {
+				vertices.length = 0;
+				indices.length = 0;
 		        vertices=null;
 			    indices=null;
 			    material=null;

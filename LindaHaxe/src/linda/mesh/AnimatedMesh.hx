@@ -37,15 +37,13 @@ class AnimatedMesh implements IAnimateMesh
 	}
 	public function recalculateBoundingBox () : Void
 	{
-		if (meshes.length > 0)
+		var len:Int=meshes.length;
+		if (len > 0)
 		{
-			var mesh:IMesh=meshes[0];
-			var len:Int=meshes.length;
-			boundingBox.resetAABBox(mesh.getBoundingBox());
+			boundingBox.resetAABBox(meshes[0].getBoundingBox());
 			for (i in 1...len)
 			{
-				mesh=meshes[i];
-				boundingBox.addAABBox(mesh.getBoundingBox ());
+				boundingBox.addAABBox(meshes[i].getBoundingBox ());
 			}
 		}
 	}

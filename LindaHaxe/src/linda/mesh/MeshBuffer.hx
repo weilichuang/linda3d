@@ -45,18 +45,15 @@ class MeshBuffer
 		}
 		public inline function transform(m:Matrix4):Void 
 		{
-			var vtxcnt:Int = vertices.length;
-			for (i in 0...vtxcnt)
+			var len:Int = vertices.length;
+			var vertex:Vertex = vertices[0];
+			m.transformVertex(vertex,true);
+			boundingBox.resetVertex(vertex);
+			for (i in 1...len)
 			{
-				var vertex:Vertex = vertices[i];
+				vertex = vertices[i];
 				m.transformVertex(vertex,true);
-				if (i == 0)
-				{
-					boundingBox.resetVertex(vertex);
-				}else 
-				{
-					boundingBox.addVertex(vertex);
-				}
+				boundingBox.addVertex(vertex);
 			}
 		}
 		public inline function recalculateNormals (?smooth : Bool=true,?angleWeighted:Bool=true) : Void
@@ -65,8 +62,8 @@ class MeshBuffer
 			var v0 : Vertex;
 			var v1 : Vertex;
 			var v2 : Vertex;
-			var vtx_cnt : Int = vertices.length;
-			var idx_cnt : Int = indices.length;
+			var vtx_count : Int = vertices.length;
+			var idx_count : Int = indices.length;
 			var vp0:Vector3=new Vector3();
 			var vp1:Vector3=new Vector3();
 			var vp2:Vector3=new Vector3();
@@ -75,7 +72,7 @@ class MeshBuffer
 			{
 				// flat normals
 				var i:Int = 0;
-				while ( i < idx_cnt)
+				while ( i < idx_count)
 				{
 					v0 = vertices [indices [i]];
 					v1 = vertices [indices [i + 1]];
@@ -101,7 +98,7 @@ class MeshBuffer
 			else
 			{
 				// smooth normals
-				for (i in 0...vtx_cnt)
+				for (i in 0...vtx_count)
 				{
 					v0 = vertices[i];
 					v0.nx = 0;
@@ -109,7 +106,7 @@ class MeshBuffer
 					v0.nz = 0;
 				}
 				var i:Int = 0;
-				while ( i < idx_cnt)
+				while ( i < idx_count)
 				{
 					v0 = vertices [indices [i]];
 					v1 = vertices [indices [i + 1]];
@@ -138,7 +135,7 @@ class MeshBuffer
 					
 					i += 3;
 				}
-				for (i in 0...vtx_cnt)
+				for (i in 0...vtx_count)
 				{
 					v0 = vertices[i];
 					v0.normalize();
@@ -151,8 +148,8 @@ class MeshBuffer
 		}
 		public inline function scaleTCoords(factor:Point):Void 
 		{
-			var vtxcnt:Int = this.vertices.length;
-			for (i in 0...vtxcnt)
+			var len:Int = vertices.length;
+			for (i in 0...len)
 			{
 				var vertex:Vertex = vertices[i];
 				vertex.u *= factor.x;
@@ -297,17 +294,12 @@ class MeshBuffer
 		}
 		public inline function recalculateBoundingBox () : Void
 		{
-			boundingBox.identity();
+			//boundingBox.identity();
+			boundingBox.resetVertex(vertices[0]);
 			var len : Int = vertices.length;
-			for (i in 0...len)
+			for (i in 1...len)
 			{
-				if (i == 0)
-				{
-					boundingBox.resetVertex(vertices[0]);
-				}else
-				{
-					boundingBox.addVertex(vertices[i]);
-				}
+				boundingBox.addVertex(vertices[i]);
 			}
 		}
 		public inline function append (verts : Vector<Vertex>, numVertices : Int, inds : Vector<Int>, numIndices : Int) : Void
@@ -348,7 +340,7 @@ class MeshBuffer
 			{
 				buffer.vertices[i].copy(vertices[i]);
 			}
-			buffer.boundingBox = this.boundingBox.clone();
+			buffer.boundingBox = boundingBox.clone();
 			return buffer;
 		}
 }

@@ -58,10 +58,16 @@ class Triangle3D
 		*/
 		public inline function getNormal () : Vector3
 		{
+			var p0x:Float = pointB.x - pointA.x;
+			var p0y:Float = pointB.y - pointA.y;
+			var p0z:Float = pointB.z - pointA.z;
+			var p1x:Float = pointC.x - pointA.x;
+			var p1y:Float = pointC.y - pointA.y;
+			var p1z:Float = pointC.z - pointA.z;
 			//var p0 : Vector3 = pointB.subtract(pointA);
 			//var p1 : Vector3 = pointC.subtract(pointA);
-			return pointB.subtract(pointA).crossProduct(pointC.subtract(pointA));
-			//return new Vector3 (p0.y * p1.z - p0.z * p1.y, p0.z * p1.x - p0.x * p1.z, p0.x * p1.y - p0.y * p1.x);
+			//return pointB.subtract(pointA).crossProduct(pointC.subtract(pointA));
+			return new Vector3 (p0y * p1z - p0z * p1y, p0z * p1x - p0x * p1z, p0x * p1y - p0y * p1x);
 		}
 		public inline function isOnSameSide (p1 : Vector3, p2 : Vector3, a : Vector3, b : Vector3) : Bool
 		{

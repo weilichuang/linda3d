@@ -46,10 +46,10 @@
 				var image:BitmapData;
 				if (Std.is(drawable, BitmapData))
 				{
-					image = cast(drawable, BitmapData).clone();
+					image = Lib.as(drawable, BitmapData).clone();
 				}else
 				{
-					var display:DisplayObject=cast(drawable, DisplayObject);
+					var display:DisplayObject=Lib.as(drawable, DisplayObject);
 					image = new BitmapData(Std.int(display.width), Std.int(display.height), true, 0x0);
 					image.draw(display);
 					display = null;
@@ -133,7 +133,7 @@
 			Lib.current.stage.quality = StageQuality.LOW;
 			data.draw(image, matrix);
 			Lib.current.stage.quality = StageQuality.HIGH;
-			matrix = null;
+			//matrix = null;
             return data;
 		}
 		

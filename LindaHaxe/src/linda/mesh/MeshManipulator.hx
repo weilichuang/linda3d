@@ -94,19 +94,15 @@ class MeshManipulator
 		}
 		public static inline function getPolyCount(mesh:IMesh):Int
 		{
-			if (mesh == null)
-			{
-				return 0;
-			}else
-			{
-				var trianglecount:Int = 0;
+			var trianglecount:Int = 0;
             
-				var count:Int = mesh.getMeshBufferCount();
-				for (i in 0...count)
-					trianglecount += Std.int(mesh.getMeshBuffer(i).indices.length/3);
-
-				return trianglecount;
+			var count:Int = mesh.getMeshBufferCount();
+			for (i in 0...count)
+			{
+				trianglecount += Std.int(mesh.getMeshBuffer(i).indices.length/3);
 			}
+
+			return trianglecount;
 		}
 		public static inline function getAnimateMeshPolyCount(mesh:IAnimatedMesh):Int
 		{
@@ -117,7 +113,6 @@ class MeshManipulator
 			{
 				return 0;
 			}
-			
 		}
 }
 

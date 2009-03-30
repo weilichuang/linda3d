@@ -3,6 +3,7 @@
 	import linda.math.Color;
 	class Material
 	{
+		//设置可以一次修改多个的方式，用 0x0001等等
 		public static inline var WIREFRAME:Int=0;
 		public static inline var BACKFACE:Int=1;
 		public static inline var LIGHT:Int=2;

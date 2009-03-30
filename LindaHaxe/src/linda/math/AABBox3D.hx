@@ -100,30 +100,12 @@
 		}
 		public inline function addXYZ (x : Float, y : Float, z : Float) : Void
 		{
-			if (x > maxX)
-			{
-				maxX = x;
-			}
-			if (y > maxY)
-			{
-				maxY = y;
-			}
-			if (z > maxZ)
-			{
-				maxZ = z;
-			}
-			if (x < minX)
-			{
-				minX = x;
-			}
-			if (y < minY)
-			{
-				minY = y;
-			}
-			if (z < minZ)
-			{
-				minZ = z;
-			}
+			if (x > maxX) maxX = x;
+			if (y > maxY) maxY = y;
+			if (z > maxZ) maxZ = z;
+			if (x < minX) minX = x;
+			if (y < minY) minY = y;
+			if (z < minZ) minZ = z;
 		}
 		public inline function addAABBox (box : AABBox3D) : Void
 		{
@@ -190,10 +172,10 @@
 		
 		public inline function getEdges () : Vector<Vector3>
 		{
-			var _edges:Vector<Vector3>=new Vector<Vector3>();
+			var _edges:Vector<Vector3>=new Vector<Vector3>(8,true);
 			for(i in 0...8)
 			{
-				_edges.push(new Vector3());
+				_edges[i] = new Vector3();
 			}
 			var centerX : Float = (maxX + minX) * 0.5;
 			var centerY : Float = (maxY + minY) * 0.5;
@@ -249,18 +231,11 @@
 			var dX : Float = maxX - minX;
 			var dY : Float = maxY - minY;
 			var dZ : Float = maxZ - minZ;
-			if (dX < 0)
-			{
-				dX = - dX;
-			}
-			if (dY < 0)
-			{
-				dY = - dY;
-			}
-			if (dZ < 0)
-			{
-				dZ = - dZ;
-			}
+			
+			if (dX < 0) dX = - dX;
+			if (dY < 0) dY = - dY;
+			if (dZ < 0) dZ = - dZ;
+
 			return (dX < MathUtil.ROUNDING_ERROR &&
 			        dY < MathUtil.ROUNDING_ERROR &&
 			        dZ < MathUtil.ROUNDING_ERROR);
@@ -270,21 +245,15 @@
 			var t : Float;
 			if (minX > maxX)
 			{
-				t = minX;
-				minX = maxX;
-				maxX = t;
+				t = minX; minX = maxX; maxX = t;
 			}
 			if (minY > maxY)
 			{
-				t = minY;
-				minY = maxY;
-				maxY = t;
+				t = minY; minY = maxY; maxY = t;
 			}
 			if (minZ > maxZ)
 			{
-				t = minZ;
-				minZ = maxZ;
-				maxZ = t;
+				t = minZ; minZ = maxZ; maxZ = t;
 			}
 		}
 		public inline function interpolate(a:AABBox3D, b:AABBox3D, div:Float):Void 

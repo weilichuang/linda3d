@@ -127,7 +127,7 @@
 		}
 		public function removeChild (child : SceneNode) : Bool
 		{
-			var i:Int=untyped _children.indexOf(child);
+			var i:Int=_children.indexOf(child);
 				
 			if(i == -1) return false;
 			
@@ -193,7 +193,7 @@
 		}
 		public function removeAnimator (animator : IAnimator) : Bool
 		{
-			var idx:Int = untyped _animators.indexOf(animator);
+			var idx:Int = _animators.indexOf(animator);
 			if(idx == -1) return false;
 			
 			_animators.splice(idx,1);
@@ -259,7 +259,7 @@
 		}
 		public function setMaterialColor (?diffuse : UInt = 0xFFFFFF, ?ambient : UInt = 0xFFFFFF, ?emissive : UInt = 0x0000FF, ?specular : UInt = 0x0000FF) : Void
 		{
-			var count:Int=this.getMaterialCount();
+			var count:Int=getMaterialCount();
 			var material:Material;
 			for (i in 0...count)
 			{
@@ -275,7 +275,7 @@
 		}
 		public function setMaterialDiffuseColor (color : UInt) : Void
 		{
-			var count:Int=this.getMaterialCount();
+			var count:Int=getMaterialCount();
 			var material:Material;
 			for (i in 0...count)
 			{
@@ -288,7 +288,7 @@
 		}
 		public function setMaterialAmbientColor (color : UInt) : Void
 		{
-			var count:Int=this.getMaterialCount();
+			var count:Int=getMaterialCount();
 			var material:Material;
 			for (i in 0...count)
 			{
@@ -301,7 +301,7 @@
 		}
 		public function setMaterialEmissiveColor (color : UInt) : Void
 		{
-			var count:Int=this.getMaterialCount();
+			var count:Int=getMaterialCount();
 			var material:Material;
 			for (i in 0...count)
 			{
@@ -363,11 +363,8 @@
 			_relativeMatrix.setRotation(_relativeRotation);
 
 			_relativeMatrix.setTranslation(_relativeTranslation);
-            
-			if ( _relativeScale.x != 1 || _relativeScale.y != 1 || _relativeScale.z != 1)
-			{
-				_relativeMatrix.scale(_relativeScale);
-			}
+
+			_relativeMatrix.scale(_relativeScale);
 			
 			if (_parent!=null)
 			{

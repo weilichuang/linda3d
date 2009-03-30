@@ -5,10 +5,12 @@
 	{
 		private var meshBuffers : Vector<MeshBuffer>;
 		private var boundingBox : AABBox3D;
+		private var bufferCount:Int;
 		public function new ()
 		{
 			meshBuffers = new Vector<MeshBuffer> ();
 			boundingBox = new AABBox3D ();
+			bufferCount = 0;
 		}
 		public function getMeshBufferCount () : Int
 		{
@@ -24,10 +26,15 @@
 		}
 		public function removeMeshBuffer (buffer : MeshBuffer) : MeshBuffer
 		{
-			if(buffer==null) return null;
-			var idx:Int = untyped meshBuffers.indexOf(buffer);
-			meshBuffers.splice(idx,1);
-			return buffer;
+			var idx:Int = meshBuffers.indexOf(buffer);
+			if (idx != -1)
+			{
+				meshBuffers.splice(idx,1);
+			    return buffer;
+			}else
+			{
+				return null;
+			}
 		}
 		public function removeMeshBufferByIndex (i : Int) : MeshBuffer
 		{
