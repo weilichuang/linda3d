@@ -5,18 +5,19 @@
 	class Matrix4
 	{
 		/**
-		* Matrix4 :
-		* x-axis   y-axis    z-axis
-		*   m00     m01       m02     m03
-		* 
-		*   m10     m11       m12     m13
-		* 
-		*   m20     m21       m22     m23
-		* 
-		*   m30     m31       m32     m33
-		* 
-		*   tx      ty        tz      tw
-		*/
+		 * The matrix is a D3D style matrix, row major with translations in the 4th row.
+		 * Matrix4 :
+		 * x-axis   y-axis    z-axis
+		 *   m00     m01       m02     m03
+		 * 
+		 *   m10     m11       m12     m13
+		 * 
+		 *   m20     m21       m22     m23
+		 * 
+		 *   m30     m31       m32     m33
+		 * 
+		 *   tx      ty        tz      tw
+		 */
 		public var m00 : Float;
 		public var m01 : Float;
 		public var m02 : Float;
@@ -33,24 +34,16 @@
 		public var m31 : Float;
 		public var m32 : Float;
 		public var m33 : Float;
-		public function new ()
+		
+		public function new (?v:Vector<Float>=null)
 		{
-			m00 = 1.;
-			m01 = 0.;
-			m02 = 0.;
-			m03 = 0.;
-			m10 = 0.;
-			m11 = 1.;
-			m12 = 0.;
-			m13 = 0.;
-			m20 = 0.;
-			m21 = 0.;
-			m22 = 1.;
-			m23 = 0.;
-			m30 = 0.;
-			m31 = 0.;
-			m32 = 0.;
-			m33 = 1.;
+			if (v == null || v.length<16)
+			{
+				makeIdentity();
+			}else
+			{
+				setVector(v);
+			}
 		}
 		/**
 		 * 
@@ -153,8 +146,8 @@
 		public inline function inverse () :Void
 		{
 			var d : Float = (m00 * m11 - m01 * m10) * (m22 * m33 - m23 * m32) - (m00 * m12 - m02 * m10) * (m21 * m33 - m23 * m31)
-			+ (m00 * m13 - m03 * m10) * (m21 * m32 - m22 * m31) + (m01 * m12 - m02 * m11) * (m20 * m33 - m23 * m30)
-			- (m01 * m13 - m03 * m11) * (m20 * m32 - m22 * m30) + (m02 * m13 - m03 * m12) * (m20 * m31 - m21 * m30);
+			              + (m00 * m13 - m03 * m10) * (m21 * m32 - m22 * m31) + (m01 * m12 - m02 * m11) * (m20 * m33 - m23 * m30)
+			              - (m01 * m13 - m03 * m11) * (m20 * m32 - m22 * m30) + (m02 * m13 - m03 * m12) * (m20 * m31 - m21 * m30);
 			
 			if (d == 0.0) d = 0 else d = 1.0 / d;
 
@@ -641,6 +634,11 @@
 			box.maxY = y;
 			box.maxZ = z;
 			box.repair ();
+		}
+		
+		public inline function isOrthogonal():Bool 
+		{
+			return false;
 		}
 
 		/**

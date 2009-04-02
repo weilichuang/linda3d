@@ -1,5 +1,6 @@
 ﻿package linda.math;
-
+import flash.geom.Vector3D;
+import flash.Vector;
 
 class Line3D
 {
@@ -52,7 +53,7 @@ class Line3D
 		//前提条件是该点已经在直线上
 		public inline function isPointBetweenStartAndEnd (point : Vector3) : Bool
 		{
-			return false;//point.isBetweenPoints (start, end);
+			return point.isBetweenPoints (start, end);
 		}
 		/**
 		* 返回到point最近的直线上的点
@@ -76,14 +77,35 @@ class Line3D
 				return start.add(v);
 			}
 		}
-		public inline function equals (other : Line3D) : Bool
+		
+		/** 
+		 * Check if the line intersects with a shpere
+		 * @param sorigin: Origin of the shpere.
+		 * @param sradius: Radius of the sphere.
+		 * @param outdistance: The distance to the first intersection point.
+		 * @return True if there is an intersection.
+		 * If there is one, the distance to the first intersection point
+		 * is stored in outdistance. 
+		 */
+		public function getIntersectionWithSphere(origin:Vector3,radius:Float,outdistances:Vector<Float>):Bool
 		{
-			if (start.equals (other.start) && end.equals (other.end))
-			{
-				return true;
-			}else
+			var q:Vector3 = origin.subtract(start);
+			var c:Float = q.getLength();
+			var v:Float = q.dotProduct(getVector().normalize());
+			var d:Float = radius * radius - (c*c - v*v);
+
+			if (d < 0.0) 
 			{
 				return false;
+			}else
+			{
+				outdistances[0] = v - Math.sqrt(d);
+				return true;
 			}
+		}
+		
+		public inline function equals (other : Line3D) : Bool
+		{
+			return (start.equals (other.start) && end.equals (other.end));
 		}
 	}

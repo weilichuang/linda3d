@@ -122,6 +122,14 @@
 			return (point.x > minX && point.x < maxX && point.y > minY &&
 			        point.y < maxY && point.z > minZ && point.z < maxZ);
 		} 
+
+		/** 
+		 * Tests if the box intersects with a line
+		 * @param linemiddle Center of the line.
+		 * @param linevect Vector of the line.
+		 * @param halflength Half length of the line.
+		 * @return True if there is an intersection, else false. 
+		 */
 		public inline function intersectsWithLine (linemiddle : Vector3, linevect : Vector3, halflength : Float) : Bool
 		{
 			var e : Vector3 = getExtent ();
@@ -153,6 +161,49 @@
 			return (minX >= box.minX && minY >= box.minY && minZ >= box.minZ &&
 			        maxX <= box.maxX && maxY <= box.maxY && maxZ <= box.maxZ);
 		}
+
+		/** 
+		 * Classifies a relation with a plane.
+		 * @param plane Plane to classify relation to.
+		 * @return Returns IS_FRONT if the box is in front of the plane,
+		 * IS_BACK if the box is behind the plane, and
+		 * IS_CLIPPED if it is on both sides of the plane. 
+		 */
+		public inline function classifyPlaneRelation(plane:Plane3D):Int
+		{
+			var nearPoint:Vector3 = new Vector3(maxX, maxY, maxZ);
+			var farPoint:Vector3 = new Vector3(minX, minY, minZ);
+
+			if (plane.normal.x > 0)
+			{
+				nearPoint.x = minX;
+				farPoint.x = maxX;
+			}
+
+			if (plane.normal.y > 0)
+			{
+				nearPoint.y = minY;
+				farPoint.y = maxY;
+			}
+
+			if (plane.normal.z > 0)
+			{
+				nearPoint.z = minZ;
+				farPoint.z = maxZ;
+			}
+
+			if (plane.normal.dotProduct(nearPoint) + plane.d > 0)
+			{
+				return IntersectionRelation3D.IS_FRONT;
+			}else if (plane.normal.dotProduct(farPoint) + plane.d > 0)
+			{
+				return IntersectionRelation3D.IS_CLIPPED;
+			}else
+			{
+				return IntersectionRelation3D.IS_BACK;
+			}
+		}
+		
 		public inline function getCenter () : Vector3
 		{
 			var center:Vector3 = new Vector3();
@@ -240,6 +291,21 @@
 			        dY < MathUtil.ROUNDING_ERROR &&
 			        dZ < MathUtil.ROUNDING_ERROR);
 		}
+		
+		// Get the volume enclosed by the box in cubed units
+		public inline function getVolume():Float
+		{
+			var e:Vector3 = getExtent();
+			return e.x * e.y * e.z;
+		}
+		
+		// Get the surface area of the box in squared units
+		public inline function getArea():Float
+		{
+			var e:Vector3 = getExtent();
+			return 2*(e.x*e.y + e.x*e.z + e.y*e.z);
+		}
+		
 		public inline function repair () : Void
 		{
 			var t : Float;

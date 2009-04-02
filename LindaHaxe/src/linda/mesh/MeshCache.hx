@@ -14,7 +14,6 @@
 		public function addMesh (mesh : IMesh) : Void
 		{
 			meshes[meshCount] = mesh;
-			//.push(mesh);
 			meshCount++;
 		}
 		public inline function removeMesh (mesh : IMesh) :Bool

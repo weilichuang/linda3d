@@ -19,8 +19,9 @@ class AnimatorRotation implements IAnimator
 		if (diffTime != 0)
 		{
 			var newRotation:Vector3 = node.getRotation();
-			newRotation.incrementBy(rotation.scale(diffTime * 0.1));
+			newRotation.addBy(rotation.scale(diffTime * 0.1));
 			node.setRotation(newRotation);
+	
 			startTime = timeMs;
 		}
 	}

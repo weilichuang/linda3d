@@ -41,10 +41,11 @@ package linda.animator;
 		public function animateNode(node:SceneNode, timeMs:Int):Void
 		{
 			if(node==null) return;
-			
-			var t:Float=(timeMs-time)*speed;
-			node.x = center.x + radius * (MathUtil.cos(t) * vecU.x + MathUtil.sin(t) * vecV.x);
-			node.y = center.y + radius * (MathUtil.cos(t) * vecU.y + MathUtil.sin(t) * vecV.y);
-			node.z = center.z + radius * (MathUtil.cos(t) * vecU.z + MathUtil.sin(t) * vecV.z);
+			var t:Float = (timeMs - time) * speed;
+			var cos:Float = MathUtil.cos(t);
+			var sin:Float = MathUtil.sin(t);
+			node.x = center.x + radius * (cos * vecU.x + sin * vecV.x);
+			node.y = center.y + radius * (cos * vecU.y + sin * vecV.y);
+			node.z = center.z + radius * (cos * vecU.z + sin * vecV.z);
 		}
 	}

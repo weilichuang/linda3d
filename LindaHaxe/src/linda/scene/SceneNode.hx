@@ -2,6 +2,7 @@
 
 	import flash.Vector;
 	import flash.events.EventDispatcher;
+	import linda.video.ILineRenderer;
 	
 	import linda.animator.IAnimator;
 	import linda.material.Material;
@@ -501,13 +502,31 @@
 		{
 			_relativeTranslation.copy(pos);
 		}
+		public function setPositionXYZ(x:Float, y:Float, z:Float):Void 
+		{
+			_relativeTranslation.x = x;
+			_relativeTranslation.y = y;
+			_relativeTranslation.z = z;
+		}
 		public function setRotation (rot : Vector3) : Void
 		{
 			_relativeRotation.copy(rot);
 		}
+		public function setRotationXYZ(x:Float, y:Float, z:Float):Void 
+		{
+			_relativeRotation.x = x;
+			_relativeRotation.y = y;
+			_relativeRotation.z = z;
+		}
 		public function setScale (s : Vector3) : Void
 		{
 			_relativeScale.copy(s);
+		}
+		public function setScaleXYZ(x:Float, y:Float, z:Float):Void 
+		{
+			_relativeScale.x = x;
+			_relativeScale.y = y;
+			_relativeScale.z = z;
 		}
 		public function getAbsolutePosition () : Vector3
 		{

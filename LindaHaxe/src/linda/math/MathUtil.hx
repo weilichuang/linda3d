@@ -9,6 +9,8 @@ class MathUtil
 		public static inline var ONE_EIGHTY_OVER_PI : Float = 180. / Math.PI;
 		public static inline var PI_OVER_ONE_EIGHTY : Float = Math.PI / 180.;
 		
+		private static inline var sincosParam:Float = 1 / 441009855.21060102566599663103894;
+		
 		public static inline var ROUNDING_ERROR : Float = 0.0000001;
         
 		public static inline var MAX_VALUE:Float = untyped __global__["Number"].MAX_VALUE;
@@ -31,6 +33,11 @@ class MathUtil
 			return untyped __global__["isNaN"](c);
 		}
 		
+		public static inline function uint(value:Float):UInt
+		{
+			return absInt(Std.int(value));
+		}
+		
 		public static inline function clamp(value:Float,low:Float,high:Float):Float
 		{
 			return min(max(value, low), high);
@@ -44,16 +51,16 @@ class MathUtil
 		public static inline function sin(angle:Float):Float
 		{
 			var f:Int = Std.int(angle * 683565275.57643158978229477811035) >> 16;
-            var sin:Int = (f - ((f * ((f < 0)?-f:f)) >> 15)) * 41721;
+            var sin:Int = (f - ((f * ((f < 0)? -f:f)) >> 15)) * 41721;
             var ssin:Int = sin >> 15;
-            return (((ssin * (sin < 0?-ssin:ssin)) >> 9) * 467 + sin) / 441009855.21060102566599663103894;
+            return (((ssin * (sin < 0? -ssin:ssin)) >> 9) * 467 + sin) * sincosParam;
 		}
 		public static inline function cos(angle:Float):Float
 		{
 			var f:Int = (Std.int(angle * 683565275.57643158978229477811035) + 1073741824) >> 16;
-            var sin:Int = (f - ((f * ((f < 0)?-f:f)) >> 15)) * 41721;
+            var sin:Int = (f - ((f * ((f < 0)? -f:f)) >> 15)) * 41721;
             var ssin:Int = sin >> 15;
-            return (((ssin * (sin < 0?-ssin:ssin)) >> 9) * 467 + sin) / 441009855.21060102566599663103894;
+            return (((ssin * (sin < 0? -ssin:ssin)) >> 9) * 467 + sin) * sincosParam;
 		}
 
 		public static inline function invSqrt( x : Float ) : Float {
@@ -80,6 +87,12 @@ class MathUtil
 		{
 			return (x < 0) ? -x : x;
 		}
+		
+		public static inline function absInt( x : Int):Int
+		{
+			return (x < 0) ? -x : x;
+		}
+		
 		public static inline function min(a:Float, b:Float):Float
 		{
 			return (a < b) ? a : b;
@@ -193,7 +206,7 @@ class MathUtil
         {
             if (d >= 1.0)
 		    {
-                return (0.5*PI-d/(d*d+0.28));
+                return (0.5 * PI - d / (d * d + 0.28));
             }else if (d <= -1.0)
 		    {
                 return ( -0.5 * PI - d / (d * d + 0.28));

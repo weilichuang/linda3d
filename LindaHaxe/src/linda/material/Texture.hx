@@ -130,9 +130,9 @@
 			var data:BitmapData=new BitmapData(Std.int(image.width*value),Std.int(image.height*value),true,0x0);
 			matrix.a = value;
 			matrix.d = value;
-			Lib.current.stage.quality = StageQuality.LOW;
+			//Lib.current.stage.quality = StageQuality.LOW;
 			data.draw(image, matrix);
-			Lib.current.stage.quality = StageQuality.HIGH;
+			//Lib.current.stage.quality = StageQuality.HIGH;
 			//matrix = null;
             return data;
 		}

@@ -3,14 +3,12 @@
 	import linda.math.AABBox3D;
 	class Mesh implements IMesh
 	{
-		private var meshBuffers : Vector<MeshBuffer>;
-		private var boundingBox : AABBox3D;
-		private var bufferCount:Int;
+		public var meshBuffers : Vector<MeshBuffer>;
+		public var boundingBox : AABBox3D;
 		public function new ()
 		{
 			meshBuffers = new Vector<MeshBuffer> ();
 			boundingBox = new AABBox3D ();
-			bufferCount = 0;
 		}
 		public function getMeshBufferCount () : Int
 		{

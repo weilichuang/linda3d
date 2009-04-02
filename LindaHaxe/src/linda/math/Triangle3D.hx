@@ -1,5 +1,7 @@
 ﻿package linda.math;
 
+
+//TODO 优化
 class Triangle3D
 {
 		public var pointA : Vector3;
@@ -17,45 +19,75 @@ class Triangle3D
 			pointB = b;
 			pointC = c;
 		}
+		
+		public inline function equals(other:Triangle3D):Bool 
+		{
+			return pointA.equals(other.pointA) && pointB.equals(other.pointB) && pointC.equals(other.pointC);
+		}
+		
 		public inline function getArea () : Float
 		{
 			return pointB.subtract (pointA).crossProduct (pointC.subtract (pointA)).getLength() * 0.5;
 		}
 		public inline function getPlane () : Plane3D
 		{
-			var _plane:Plane3D=new Plane3D();
-			_plane.setPlane3 (pointA, pointB, pointC);
-			return _plane;
+			var plane:Plane3D=new Plane3D();
+			plane.setPlane3 (pointA, pointB, pointC);
+			return plane;
 		}
-		//public inline function getIntersectionWithLimitedLine (line : Line3D, outIntersection : Vector3) : Bool
-		//{
-		//	return getIntersectionWithLine (line.start,
-		//	line.getVector () , outIntersection) &&
-		//	outIntersection.isBetweenPoints (line.start, line.end);
-		//}
-		//public inline function getIntersectionWithLine (linePoint : Vector3, lineVect : Vector3, outIntersection : Vector3) : Bool
-		//{
-		//	if (getIntersectionOfPlaneWithLine (linePoint, lineVect, outIntersection))
-		//	return isPointInside (outIntersection);
-		//	return false;
-		//}
-		/**
-		*
-		*/
+		
+		//! Get an intersection with a 3d line.
+		/** \param line Line to intersect with.
+		\param outIntersection Place to store the intersection point, if there is one.
+		\return True if there was an intersection, false if not. */
+		public inline function getIntersectionWithLimitedLine (line : Line3D, outIntersection : Vector3) : Bool
+		{
+			return getIntersectionWithLine (line.start, line.getVector () , outIntersection) &&
+			       outIntersection.isBetweenPoints (line.start, line.end);
+		}
+		
+		//! Get an intersection with a 3d line.
+		/** Please note that also points are returned as intersection which
+		are on the line, but not between the start and end point of the line.
+		If you want the returned point be between start and end
+		use getIntersectionWithLimitedLine().
+		\param linePoint Point of the line to intersect with.
+		\param lineVect Vector of the line to intersect with.
+		\param outIntersection Place to store the intersection point, if there is one.
+		\return True if there was an intersection, false if there was not. */
+		public inline function getIntersectionWithLine (linePoint : Vector3, lineVect : Vector3, outIntersection : Vector3) : Bool
+		{
+			if (getIntersectionOfPlaneWithLine (linePoint, lineVect, outIntersection))
+			{
+				return isPointInside (outIntersection);
+			}else
+			{
+				return false;
+			}
+		}
+		//! Calculates the intersection between a 3d line and the plane the triangle is on.
+		/** \param lineVect Vector of the line to intersect with.
+		\param linePoint Point of the line to intersect with.
+		\param outIntersection Place to store the intersection point, if there is one.
+		\return True if there was an intersection, else false. */
 		public inline function getIntersectionOfPlaneWithLine (linePoint : Vector3, lineVect : Vector3, outIntersection : Vector3) : Bool
 		{
 			var normal : Vector3 = getNormal ();
 			normal.normalize ();
 			var t2 : Float = normal.dotProduct (lineVect);
-			if (t2 == 0 ) return false;
-			var d : Float = pointA.dotProduct (normal);
-			var t : Float = - (normal.dotProduct (linePoint) - d) / t2;
-			outIntersection = linePoint.add (lineVect.scale (t));
-			return true;
+			if (t2 == 0 )
+			{
+				return false;
+			}else
+			{
+				var d : Float = pointA.dotProduct (normal);
+				var t : Float = - (normal.dotProduct (linePoint) - d) / t2;
+				outIntersection = linePoint.add (lineVect.scale (t));
+				return true;
+			}
 		}
-		/**
-		* @return 返回该三角形的法向量，该法向量没有归一化
-		*/
+		//! Get the normal of the triangle.
+		/** Please note: The normal is not always normalized. */
 		public inline function getNormal () : Vector3
 		{
 			var p0x:Float = pointB.x - pointA.x;
@@ -102,9 +134,16 @@ class Triangle3D
 		public inline function isPointInside (p : Vector3) : Bool
 		{
 			return (isOnSameSide (p, pointA, pointB, pointC) &&
-			isOnSameSide (p, pointB, pointA, pointC) &&
-			isOnSameSide (p, pointC, pointA, pointB));
+			        isOnSameSide (p, pointB, pointA, pointC) &&
+			        isOnSameSide (p, pointC, pointA, pointB));
 		}
+		
+		//! Test if the triangle would be front or backfacing from any point.
+		/** Thus, this method assumes a camera position from which the
+		triangle is definitely visible when looking at the given direction.
+		Do not use this method with points as it will give wrong results!
+		\param lookDirection Look direction.
+		\return True if the plane is front facing and false if it is backfacing. */
 		public inline function isFrontFacing (direction : Vector3) : Bool
 		{
 			var n : Vector3 = getNormal();

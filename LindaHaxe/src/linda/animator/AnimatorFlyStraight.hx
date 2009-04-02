@@ -32,16 +32,37 @@ class AnimatorFlyStraight implements IAnimator
 		
 		var t:Int = (timeMs - startTime);
 		
-		var pos:Vector3 = start.clone();
+		//var pos:Vector3 = start.clone();
+		
+		//if (!loop && t >= timeForWay)
+		//{
+		//	pos = end.clone();
+		//}else
+		//{
+		//	pos.incrementBy(vector.scale((t % timeForWay) * timeFactor));
+		//}
+		//node.setPosition(pos);
+		
+		var px:Float = start.x;
+		var py:Float = start.y;
+		var pz:Float = start.z;
 		
 		if (!loop && t >= timeForWay)
 		{
-			pos = end.clone();
+			px = end.x;
+			py = end.y;
+			pz = end.z;
 		}else
 		{
-			pos.incrementBy(vector.scale((t % timeForWay) * timeFactor));
+			var sl:Float = (t % timeForWay) * timeFactor;
+			px += vector.x * sl;
+			py += vector.y * sl;
+			pz += vector.z * sl;
 		}
-		node.setPosition(pos);
+		
+		node.x = px;
+		node.y = py;
+		node.z = pz;
 	}
 	
 }

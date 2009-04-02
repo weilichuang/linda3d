@@ -1,6 +1,8 @@
 package linda.math;
+import linda.video.ILineRenderer;
 
-/** The vector3d class is used for three main purposes: 
+/** 
+ * The vector3d class is used for three main purposes: 
  *	1) As a direction vector (most of the methods assume this).
  *	2) As a position in 3d space (which is synonymous with a direction vector from the origin to this position).
  *	3) To hold three Euler rotations, where X is pitch, Y is yaw and Z is roll.
@@ -13,25 +15,31 @@ class Vector3
 
 		public function new(?x:Float=0.,?y:Float=0.,?z:Float=0.)
 		{
-			this.x=x;
-			this.y=y;
-			this.z=z;
+			this.x = x;
+			this.y = y;
+			this.z = z;
+		}
+		public inline function setXYZ(x:Float, y:Float, z:Float):Void 
+		{
+			this.x = x;
+			this.y = y;
+			this.z = z;
 		}
 		public inline function subtract(other:Vector3):Vector3
 		{
-			return new Vector3(x-other.x,y-other.y,z-other.z);
+			return new Vector3(x - other.x, y - other.y, z - other.z);
 		}
 		public inline function add(other:Vector3):Vector3
 		{
-			return new Vector3(x+other.x,y+other.y,z+other.z);
+			return new Vector3(x + other.x, y + other.y, z + other.z);
 		}
-		public inline function decrementBy(other:Vector3):Void
+		public inline function subtractBy(other:Vector3):Void
 		{
 			x -= other.x;
 			y -= other.y;
 			z -= other.z;
 		}
-		public inline function incrementBy(other:Vector3):Void
+		public inline function addBy(other:Vector3):Void
 		{
 			x += other.x;
 			y += other.y;
@@ -49,7 +57,7 @@ class Vector3
 		}
 		public inline function scale(s:Float):Vector3
 		{
-			return new Vector3(s*x,s*y,s*z); 
+			return new Vector3(s * x, s * y, s * z);
 		}
 		public inline function scaleBy(s:Float):Void
 		{
@@ -57,6 +65,20 @@ class Vector3
 			y *= s;
 			z *= s;
 		}
+
+		/** 
+		 * Returns if this vector interpreted as a point is on a line between two other points.
+		 * It is assumed that the point is on the line.
+		 * @param begin Beginning vector to compare between.
+		 * @param end Ending vector to compare between.
+		 * @return True if this vector is between begin and end, false if not.
+		 */
+		public inline function isBetweenPoints(begin:Vector3, end:Vector3):Bool
+		{
+			var f:Float = Vector3.distanceSquared(begin, end);
+			return getDistanceFromSquared(begin) <= f && getDistanceFromSquared(end) <= f;
+		}
+		
 		/**Normalizes the vector.
 		 * In case of the 0 vector the result is still 0, otherwise
 		 * the length of the vector will be 1.
@@ -64,8 +86,7 @@ class Vector3
 		 */
 		public inline function normalize():Vector3
 		{
-			var sq:Float = getLengthSquared();
-			if ( sq < MathUtil.ROUNDING_ERROR ) sq = 0 else sq = MathUtil.invSqrt(sq);
+			var sq:Float = MathUtil.invSqrt(getLengthSquared());
 			x *= sq;
 			y *= sq;
 			z *= sq;
@@ -97,6 +118,27 @@ class Vector3
 		{
 			return (x * x + y * y + z * z);
 		}
+		
+		//! Get distance from another point.
+		/** Here, the vector is interpreted as point in 3 dimensional space. */
+		public inline function getDistanceFrom(other:Vector3):Float
+		{
+			var vx : Float = x - other.x;
+			var vy : Float = y - other.y;
+			var vz : Float = z - other.z;
+			return MathUtil.sqrt(vx * vx + vy * vy + vz * vz);
+		}
+
+		//! Returns squared distance from another point.
+		/** Here, the vector is interpreted as point in 3 dimensional space. */
+		public inline function getDistanceFromSquared(other:Vector3):Float
+		{
+			var vx : Float = x - other.x;
+			var vy : Float = y - other.y;
+			var vz : Float = z - other.z;
+			return (vx * vx + vy * vy + vz * vz);
+		}
+		
 		public static inline function distance(v0:Vector3,v1:Vector3):Float
 		{
 			var vx : Float = v0.x - v1.x;
@@ -111,6 +153,22 @@ class Vector3
 			var vz : Float = v0.z - v1.z;
 			return (vx * vx + vy * vy + vz * vz);
 		}
+
+		/** 
+		 * Get the rotations that would make a (0,0,1) direction vector point in the same direction as this direction vector.
+		 * Thanks to Arras on the Irrlicht forums for this method.  This utility method is very useful for
+		 *orienting scene nodes towards specific targets.  For example, if this vector represents the difference
+		 *between two scene nodes, then applying the result of getHorizontalAngle() to one scene node will point
+		 *it at the other one.
+		 *Example code:
+		 *Where target and seeker are of type ISceneNode
+		 *var toTarget:Vector3=(target.getAbsolutePosition() - seeker.getAbsolutePosition());
+		 *var requiredRotation:Vector3 = toTarget.getHorizontalAngle();
+		 *seeker.setRotation(requiredRotation); 
+		 *@return A rotation vector containing the X (pitch) and Y (raw) rotations (in degrees) that when applied to a 
+		 *+Z (e.g. 0, 0, 1) direction vector would make it point in the same direction as this vector. The Z (roll) rotation 
+		 *is always 0, since two Euler rotations are sufficient to point in any given direction. 
+		 */
 		public inline function getHorizontalAngle():Vector3
 		{
 			var angle:Vector3=new Vector3();
@@ -132,6 +190,105 @@ class Vector3
 				angle.x -= MathUtil.TWO_PI;
 
 			return angle;
+		}
+		
+		
+		
+		/**Rotates the vector by a specified number of degrees around the Y axis and the specified center. 
+		 * @param degrees Number of degrees to rotate around the Y axis.
+		 * @param center The center of the rotation. 
+		 */
+		public inline function rotateXZBy(degrees:Float, center:Vector3):Void
+		{
+			degrees *= MathUtil.DEGTORAD;
+			var cs:Float = MathUtil.cos(degrees);
+			var sn:Float = MathUtil.sin(degrees);
+			x -= center.x;
+			z -= center.z;
+			setXYZ((x * cs - z * sn), y, (x * sn + z * cs));
+			x += center.x;
+			z += center.z;
+		}
+
+		/** 
+		 * Rotates the vector by a specified number of degrees around the Z axis and the specified center.
+		 * @param degrees: Number of degrees to rotate around the Z axis.
+		 * @param center: The center of the rotation. 
+		 */
+		public inline function  rotateXYBy(degrees:Float, center:Vector3):Void
+		{
+			degrees *= MathUtil.DEGTORAD;
+			var cs:Float = MathUtil.cos(degrees);
+			var sn:Float = MathUtil.sin(degrees);
+			x -= center.x;
+			y -= center.y;
+			setXYZ((x*cs - y*sn), (x*sn + y*cs), z);
+			x += center.x;
+			y += center.y;
+		}
+
+		/** 
+		 * Rotates the vector by a specified number of degrees around the X axis and the specified center.
+		 * @param degrees: Number of degrees to rotate around the X axis.
+		 * @param center: The center of the rotation. 
+		 */
+		public inline function  rotateYZBy(degrees:Float, center:Vector3):Void
+		{
+			degrees *= MathUtil.DEGTORAD;
+			var cs:Float = MathUtil.cos(degrees);
+			var sn:Float = MathUtil.sin(degrees);
+			z -= center.z;
+			y -= center.y;
+			setXYZ(x, (y*cs - z*sn), (y*sn + z*cs));
+			z += center.z;
+			y += center.y;
+		}
+
+		//! Creates an interpolated vector between this vector and another vector.
+		/** 
+		 * \param other The other vector to interpolate with.
+		 * \param d Interpolation value between 0.0f (all the other vector) and 1.0f (all this vector).
+		 * Note that this is the opposite direction of interpolation to getInterpolated_quadratic()
+		 * \return An interpolated vector.  This vector is not modified. 
+		 */
+		public inline function getInterpolated(other:Vector3,d:Float):Vector3
+		{
+			var inv:Float = 1.0 - d;
+			return new Vector3((other.x*inv + x*d), (other.y*inv + y*d), (other.z*inv + z*d));
+		}
+
+		/** 
+		 * Creates a quadratically interpolated vector between this and two other vectors.
+		 * @param v2 Second vector to interpolate with.
+		 * @param v3 Third vector to interpolate with (maximum at 1.0f)
+		 * @param d Interpolation value between 0.0f (all this vector) and 1.0f (all the 3rd vector).
+		 * Note that this is the opposite direction of interpolation to getInterpolated() and interpolate()
+		 * @return An interpolated vector. This vector is not modified. 
+		 */
+		public inline function getQuadraticInterpolated(v2:Vector3,v3:Vector3,d:Float):Vector3
+		{
+			// this*(1-d)*(1-d) + 2 * v2 * (1-d) + v3 * d * d;
+			var inv:Float = 1.0 - d;
+			var mul0:Float = inv * inv;
+			var mul1:Float = 2.0 * d * inv;
+			var mul2:Float = d * d;
+
+			return new Vector3((x * mul0 + v2.x * mul1 + v3.x * mul2),
+					           (y * mul0 + v2.y * mul1 + v3.y * mul2),
+					           (z * mul0 + v2.z * mul1 + v3.z * mul2));
+		}
+
+		//! Sets this vector to the linearly interpolated vector between a and b.
+		/** \param a first vector to interpolate with, maximum at 1.0f
+		\param b second vector to interpolate with, maximum at 0.0f
+		\param d Interpolation value between 0.0f (all vector b) and 1.0f (all vector a)
+		Note that this is the opposite direction of interpolation to getInterpolated_quadratic()
+		*/
+		public inline function interpolate(a:Vector3,b:Vector3,d:Float):Void
+		{
+			x = (b.x + ( a.x - b.x ) * d );
+			y = (b.y + ( a.y - b.y ) * d );
+			z = (b.z + ( a.z - b.z ) * d );
 		}
 
 		/**

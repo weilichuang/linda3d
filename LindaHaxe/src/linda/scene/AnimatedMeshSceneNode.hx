@@ -218,7 +218,7 @@
 			}
 		}
 		
-		private inline function setMaterials(m:IMesh,value:Bool):Void 
+		private function setMaterials(m:IMesh,value:Bool):Void 
 		{
 			materials.length = 0;
 			if (m!=null)
@@ -238,7 +238,7 @@
 				}
 			}
 		}
-		public inline function setUseDefaultMaterial(value:Bool):Void 
+		public function setUseDefaultMaterial(value:Bool):Void 
 		{
 			useDefaultMaterial = value;
 			
@@ -246,7 +246,7 @@
 			
 			setMaterials(m, useDefaultMaterial);
 		}
-		public inline function getUseDefaultMaterial():Bool 
+		public function isUseDefaultMaterial():Bool 
 		{
 			return useDefaultMaterial;
 		}
