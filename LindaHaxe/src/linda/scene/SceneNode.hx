@@ -14,16 +14,18 @@
 	import linda.math.Color;
 	class SceneNode extends EventDispatcher
 	{
-		public static inline var CAMERA      : Int = 0;
-		public static inline var LIGHT       : Int = 1;
-		public static inline var SKYBOX      : Int = 2;
-		public static inline var SOLID       : Int = 3;
-		public static inline var TRANSPARENT : Int = 4;
-		public static inline var SHADOW      : Int = 5;
+		public static var CAMERA      : Int = 0;
+		public static var LIGHT       : Int = 1;
+		public static var SKYBOX      : Int = 2;
+		public static var SOLID       : Int = 3;
+		public static var TRANSPARENT : Int = 4;
+		public static var SHADOW      : Int = 5;
 		
 		private var _parent : SceneNode;
 		private var _children : Vector<SceneNode> ;
+		private var _numChildren:Int;
 		private var _animators : Vector<IAnimator> ;
+		private var _animatorCount:Int;
 		
 		private var _absoluteMatrix : Matrix4;
 		private var _relativeMatrix : Matrix4;
@@ -62,29 +64,33 @@
 		
 		public var parent(getParent, setParent):SceneNode;
 		
-		public function new (mgr:SceneManager)
+		public var numChildren(getNumChildren, null):Int;
+		
+		public function new (mgr:SceneManager,?name:String="")
 		{
 			super();
-			sceneManager=mgr;
+			sceneManager = mgr;
+			this.name = name;
 			
-			_relativeTranslation = new Vector3(0.,0.,0.);
-			_relativeRotation = new Vector3(0.,0.,0.);
-			_relativeScale = new Vector3(1.,1.,1.);
+			_relativeTranslation = new Vector3(0., 0., 0.);
+			_relativeRotation = new Vector3(0., 0., 0.);
+			_relativeScale = new Vector3(1., 1., 1.);
 			
-			_absoluteMatrix=new Matrix4();
-			_relativeMatrix=new Matrix4();
+			_absoluteMatrix = new Matrix4();
+			_relativeMatrix = new Matrix4();
 			
-			_children=new Vector<SceneNode>();
-			_animators=new Vector<IAnimator>();
+			_children = new Vector<SceneNode>();
+			_animators = new Vector<IAnimator>();
+			_numChildren = 0;
+			_animatorCount = 0;
 			
 			updateAbsoluteMatrix ();
 			
-			debug=false;
-			distance=0.;
-			visible=true;
-			hasShadow=false;
-			autoCulling=true;
-			name="";
+			debug = false;
+			distance = 0.;
+			visible = true;
+			hasShadow = false;
+			autoCulling = true;
 		}
 		public function destroy():Void
 		{
@@ -118,6 +124,7 @@
 				child.remove(); // remove from old parent
 				child._parent = this;
 				_children.push(child);
+				_numChildren++;
 
 				// change scene manager?
 				if (sceneManager != child.sceneManager)
@@ -135,6 +142,8 @@
 			child._parent=null;
 			
 			_children.splice (i, 1);
+			
+			_numChildren--;
 
 			return true;
 		}
@@ -146,6 +155,7 @@
 				_children[i]._parent = null;
 			}
 			_children.length = 0;
+			_numChildren = 0;
 		}
 		public function remove () : Void
 		{
@@ -161,7 +171,7 @@
 
 		public function getChildAt (i : Int) : SceneNode
 		{
-			if (i < 0 || i >= _children.length) return null;
+			if (i < 0 || i >= _numChildren) return null;
 			return _children [i];
 		}
 		public function setParent (newParent : SceneNode) : SceneNode
@@ -190,6 +200,7 @@
 			if(animator!=null)
 			{
 				_animators.push(animator);
+				_animatorCount++;
 			}
 		}
 		public function removeAnimator (animator : IAnimator) : Bool
@@ -197,7 +208,9 @@
 			var idx:Int = _animators.indexOf(animator);
 			if(idx == -1) return false;
 			
-			_animators.splice(idx,1);
+			_animators.splice(idx, 1);
+			
+			_animatorCount--;
 			
 			return true;
 		}
@@ -205,6 +218,7 @@
 		public function removeAnimators () : Void
 		{
 			_animators.length = 0;
+			_animatorCount = 0;
 		}
 		public function getMaterial (?i : Int = 0) : Material
 		{
@@ -216,11 +230,11 @@
 		}
 		public function setMaterialFlag (flag : Int, value : Bool) : Void
 		{
-			var count:Int=this.getMaterialCount();
+			var count:Int = getMaterialCount();
 			var material:Material;
 			for (i in 0...count)
 			{
-				material=getMaterial(i);
+				material = getMaterial(i);
 				if(material!=null)
 				{
 					material.setFlag(flag, value);
@@ -231,11 +245,11 @@
 		public function setMaterialTexture (texture : Texture, ?textureLayer : Int = 1) : Void
 		{
 			if (textureLayer < 1 || textureLayer > 2) return;
-			var count:Int=this.getMaterialCount();
+			var count:Int = getMaterialCount();
 			var material:Material;
 			for (i in 0...count)
 			{
-				material=getMaterial(i);
+				material = getMaterial(i);
 				if(material!=null)
 				{
 					material.setTexture(texture, textureLayer);
@@ -247,11 +261,11 @@
 		*/
 		public function setMaterialAlpha (alpha : Float) : Void
 		{
-			var count:Int=this.getMaterialCount();
+			var count:Int = getMaterialCount();
 			var material:Material;
 			for (i in 0...count)
 			{
-				material=getMaterial (i);
+				material = getMaterial (i);
 				if(material!=null)
 				{
 					material.alpha = alpha;
@@ -260,7 +274,7 @@
 		}
 		public function setMaterialColor (?diffuse : UInt = 0xFFFFFF, ?ambient : UInt = 0xFFFFFF, ?emissive : UInt = 0x0000FF, ?specular : UInt = 0x0000FF) : Void
 		{
-			var count:Int=getMaterialCount();
+			var count:Int = getMaterialCount();
 			var material:Material;
 			for (i in 0...count)
 			{
@@ -276,11 +290,11 @@
 		}
 		public function setMaterialDiffuseColor (color : UInt) : Void
 		{
-			var count:Int=getMaterialCount();
+			var count:Int = getMaterialCount();
 			var material:Material;
 			for (i in 0...count)
 			{
-				material=getMaterial (i);
+				material = getMaterial (i);
 				if(material!=null)
 				{
 					material.diffuseColor.color = color;
@@ -289,11 +303,11 @@
 		}
 		public function setMaterialAmbientColor (color : UInt) : Void
 		{
-			var count:Int=getMaterialCount();
+			var count:Int = getMaterialCount();
 			var material:Material;
 			for (i in 0...count)
 			{
-				material=getMaterial (i);
+				material = getMaterial (i);
 				if(material!=null)
 				{
 					material.ambientColor.color = color;
@@ -302,11 +316,11 @@
 		}
 		public function setMaterialEmissiveColor (color : UInt) : Void
 		{
-			var count:Int=getMaterialCount();
+			var count:Int = getMaterialCount();
 			var material:Material;
 			for (i in 0...count)
 			{
-				material=getMaterial (i);
+				material = getMaterial(i);
 				if(material!=null)
 				{
 					material.emissiveColor.color = color;
@@ -315,7 +329,7 @@
 		}
 		public function setMaterialSpecularColor (color : UInt) : Void
 		{
-			var count:Int=this.getMaterialCount();
+			var count:Int = getMaterialCount();
 			var material:Material;
 			for (i in 0...count)
 			{
@@ -330,7 +344,7 @@
 		{
 			if (visible)
 			{
-				var len : Int = _children.length;
+				var len : Int = _numChildren;
 				for (i in 0...len)
 				{
 					_children[i].onRegisterSceneNode();
@@ -341,7 +355,7 @@
 		{
 			if (visible)
 			{
-				var len:Int=_animators.length;
+				var len:Int = _animatorCount;
 				for (i in 0...len)
 				{
 					_animators[i].animateNode (this, timeMs);
@@ -349,7 +363,7 @@
 				
 				updateAbsoluteMatrix ();
 				
-				len=_children.length;
+				len = _numChildren;
 				for (i in 0...len)
 				{
 					_children[i].onAnimate (timeMs);
@@ -399,11 +413,11 @@
 		}
 		public function getAbsoluteMatrix () : Matrix4
 		{
-			return _absoluteMatrix;
+			return _absoluteMatrix.clone();
 		}
 		public function getRelativeMatrix () : Matrix4
 		{
-			return _relativeMatrix;
+			return _relativeMatrix.clone();
 		}
 		public function getX () : Float
 		{
@@ -463,28 +477,28 @@
 		{
 			return _relativeScale.x;
 		}
-		public function setScaleX (rx : Float) : Float
+		public function setScaleX (sx : Float) : Float
 		{
-			_relativeScale.x = rx;
-			return rx;
+			_relativeScale.x = sx;
+			return sx;
 		}
 		public function getScaleY () : Float
 		{
 			return _relativeScale.y;
 		}
-		public function setScaleY (ry : Float) : Float
+		public function setScaleY (sy : Float) : Float
 		{
-			_relativeScale.y = ry;
-			return ry;
+			_relativeScale.y = sy;
+			return sy;
 		}
 		public function getScaleZ () : Float
 		{
 			return _relativeScale.z;
 		}
-		public function setScaleZ (rz : Float) : Float
+		public function setScaleZ (sz : Float) : Float
 		{
-			_relativeScale.z = rz;
-			return rz;
+			_relativeScale.z = sz;
+			return sz;
 		}
 		public function getPosition () : Vector3
 		{
@@ -548,15 +562,21 @@
 		{
 			return name;
 		}
+		
+		public function getNumChildren():Int
+		{
+			return _numChildren;
+		}
+		
 		//read only
 		public function getChildren():Vector<SceneNode>
 		{
-	           return _children;
+	        return _children;
 		}
 		
 		public function getAnimators():Vector<IAnimator>
 		{
-	           return _animators;
+	        return _animators;
 		}
 		
 		/**

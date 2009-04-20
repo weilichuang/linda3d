@@ -227,7 +227,8 @@ class SkyBoxSceneNode extends SceneNode
 	    }
 	    override public function getMaterial(?i:Int=0):Material
 	    {
-	    	if(i<0 || i>=6) return null;
+	    	if (i < 0) i = 0;
+			if (i >= 5) i = 5;
 	    	return materials[i];
 	    }
 	    override public function getMaterialCount():Int

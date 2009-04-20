@@ -47,9 +47,9 @@
 			y = v1.y + (v0.y - v1.y) * t ;
 			z = v1.z + (v0.z - v1.z) * t ;
 			w = v1.w + (v0.w - v1.w) * t ;
-			r = Std.int(v1.r + (v0.r - v1.r) * t) ;
-			g = Std.int(v1.g + (v0.g - v1.g) * t) ;
-			b = Std.int(v1.b + (v0.b - v1.b) * t) ;
+			r = Std.int(v1.r + (v0.r - v1.r) * t);
+			g = Std.int(v1.g + (v0.g - v1.g) * t);
+			b = Std.int(v1.b + (v0.b - v1.b) * t);
 			if (useUV)
 			{
 			   u = v1.u + (v0.u - v1.u) * t ;

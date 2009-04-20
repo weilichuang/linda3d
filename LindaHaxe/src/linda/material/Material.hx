@@ -72,12 +72,10 @@
 		}
 		public function setTexture(texture:Texture,?layer:Int=1):Void
 		{
-			if(layer == 1)
-			{
+			if(layer == 1){
 				this.texture = texture;
 				return;
-			}else 
-			{
+			}else {
 				texture1=texture;
 			}
 		}
@@ -125,7 +123,7 @@
 			mat.diffuseColor.copy(diffuseColor);
 			mat.emissiveColor.copy(emissiveColor);
 			
-			mat._alpha = _alpha;
+			mat.alpha = alpha;
 			mat.shininess = shininess;
 			
 			mat.texture = texture;

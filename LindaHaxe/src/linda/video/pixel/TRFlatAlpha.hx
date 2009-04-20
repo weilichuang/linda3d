@@ -215,9 +215,10 @@ class TRFlatAlpha extends TriangleRenderer,implements ITriangleRenderer
 				if( zi > buffer[pos] )
 				{
 					bgColor = target[pos];
-					target[pos]=(((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
-						  		 ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
-						  		 ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8));
+					target[pos] = (  0xFF000000 |
+					                ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
+						  		    ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
+						  		    ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8));
 				}
 				zi += dzdx;
 				xs++;

@@ -99,7 +99,7 @@ class TRFlat extends TriangleRenderer,implements ITriangleRenderer
 			z2  = v2.z;
 			z3  = v3.z;
 
-			color = v1.r << 16 | v1.g << 8 | v1.b ;
+			color = 0xFF000000 | v1.r << 16 | v1.g << 8 | v1.b ;
 			
 			y1i = Std.int(y1);
 			y2i = Std.int(y2);
@@ -202,7 +202,7 @@ class TRFlat extends TriangleRenderer,implements ITriangleRenderer
 			xs = Std.int(xa);
 			xe = Std.int(xb);
 
-			zi = za + (1-(xa-xs)) * dzdx;			
+			zi = za + (1 - (xa - xs)) * dzdx;			
 			while( xs < xe )
 			{
 				pos = xs + ys * width;

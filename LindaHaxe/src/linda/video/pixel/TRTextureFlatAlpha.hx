@@ -81,9 +81,11 @@ class TRTextureFlatAlpha extends TriangleRenderer,implements ITriangleRenderer
 	private var tw:Int;
 	private var th:Int;
 	
-	private var bgColor:UInt;
+	private var textel:Int;
 	
-	private var textel:UInt;
+	private var aT:Int;//贴图某点的透明度
+	
+	private var bgColor:UInt;
 
 	public function new() 
 	{
@@ -288,11 +290,26 @@ class TRTextureFlatAlpha extends TriangleRenderer,implements ITriangleRenderer
 					{
 						textel = texVector[Std.int(ui) + Std.int(vi) * texWidth];
 					}
-					target[pos] =(
+					
+					var aT:Int = (textel >> 24 & 0xFF);
+					if (aT < 255)
+					{
+						var a1:Int = alpha * aT >> 8;
+						var invA1:Int = 255 - a1;
+						
+						target[pos] = (0xFF000000 |
+		                  			((a1 * (textel >> 16 & 0xFF) >> 8) + (invA1 * (bgColor >> 16 & 0xFF) >> 8))  << 16 | 
+						  			((a1 * (textel >> 8 & 0xFF)  >> 8) + (invA1 * (bgColor >> 8 & 0xFF) >> 8))  << 8  | 
+						  			((a1 * (textel & 0xFF)       >> 8) + (invA1 * (bgColor & 0xFF) >> 8)     )
+						          );
+					}else
+					{
+						target[pos] =(0xFF000000 |
 		                  			((alpha * (textel >> 16 & 0xFF) + invAlpha * (bgColor >> 16 & 0xFF)) >> 8)  << 16 | 
 						  			((alpha * (textel >> 8 & 0xFF)  + invAlpha * (bgColor >> 8 & 0xFF))  >> 8)  << 8  | 
 						  			((alpha * (textel & 0xFF)       + invAlpha * (bgColor & 0xFF))       >> 8)
-						          );				
+						          );
+					}
 				}
 				zi += dzdx;
 				ui += dudx;

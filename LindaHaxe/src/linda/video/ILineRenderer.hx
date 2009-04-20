@@ -7,5 +7,6 @@ interface ILineRenderer
 {
     function setVector (target : Vector<UInt>, buffer : Vector<Float>) : Void;
 	function setWidth(width:Int):Void;
+	function setHeight(height:Int):Void;
 	function drawIndexedLineList (vertices :Vector<Vertex4D>, vertexCount : Int, indexList : Vector<Int>, indexCount : Int) : Void;
 }

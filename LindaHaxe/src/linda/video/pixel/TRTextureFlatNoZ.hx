@@ -83,6 +83,12 @@ class TRTextureFlatNoZ extends TriangleRenderer,implements ITriangleRenderer
 	
 	private var tw:Int;
 	private var th:Int;
+	
+	private var textel:Int;
+	
+	private var aT:Int;//贴图某点的透明度
+	
+	private var bgColor:UInt;
 
 	public function new() 
 	{
@@ -267,9 +273,26 @@ class TRTextureFlatNoZ extends TriangleRenderer,implements ITriangleRenderer
 			while( xs < xe )
 			{
 				pos = xs + ys * width;
-				
-				target[pos] = texVector[Std.int(ui/zi) + Std.int(vi/zi) * texWidth];
 
+				bgColor = target[pos];
+				
+				textel = texVector[Std.int(ui/zi) + Std.int(vi/zi) * texWidth];
+					
+				aT = (textel >> 24 & 0xFF);
+				if (aT < 255)
+				{
+					var invA1:Int = 255 - aT;
+						
+					target[pos] = (0xFF000000 |
+		                  			((aT * (textel >> 16 & 0xFF) >> 8) + (invA1 * (bgColor >> 16 & 0xFF) >> 8))  << 16 | 
+						  			((aT * (textel >> 8 & 0xFF)  >> 8) + (invA1 * (bgColor >> 8 & 0xFF) >> 8))  << 8  | 
+						  			((aT * (textel & 0xFF)       >> 8) + (invA1 * (bgColor & 0xFF) >> 8)     )
+						          );
+				}else
+				{
+					target[pos] = textel;
+				}
+				
 				zi += dzdx;
 				ui += dudx;
 				vi += dvdx;

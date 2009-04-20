@@ -115,6 +115,10 @@ class TRTextureGouraud extends TriangleRenderer,implements ITriangleRenderer
 	
 	private var textel:Int;
 
+	private var aT:Int;//贴图某点的透明度
+	
+	private var bgColor:UInt;
+
 	public function new() 
 	{
 		super();
@@ -341,6 +345,7 @@ class TRTextureGouraud extends TriangleRenderer,implements ITriangleRenderer
 				pos = xs + ys * width;
 				if( zi > buffer[pos] )
 				{
+					bgColor = target[pos];
 					if(perspectiveCorrect)
 					{
 						textel = texVector[Std.int(ui/zi) + Std.int(vi/zi) * texWidth];
@@ -348,10 +353,25 @@ class TRTextureGouraud extends TriangleRenderer,implements ITriangleRenderer
 					{
 						textel = texVector[Std.int(ui) + Std.int(vi) * texWidth];
 					}
-					target[pos] = ((((textel >> 16 & 0xFF) * Std.int(ri)) >> 8) << 16 |
-								   (((textel >> 8 & 0xFF) * Std.int(gi)) >> 8)  << 8  |
-								   ((textel & 0xFF) * Std.int(bi)) >> 8);
-					buffer[pos] = zi;
+					
+					aT = (textel >> 24 & 0xFF);
+					if (aT < 255)
+					{
+						var invA1:Int = 255 - aT;
+						
+						target[pos] = (0xFF000000 |
+		                  			   ((aT * Std.int(ri) * (textel >> 16 & 0xFF) >> 16) + (invA1 * (bgColor >> 16 & 0xFF) >> 8))  << 16 | 
+						  			   ((aT * Std.int(gi) * (textel >> 8 & 0xFF)  >> 16) + (invA1 * (bgColor >> 8 & 0xFF) >> 8))  << 8  | 
+						  			   ((aT * Std.int(bi) * (textel & 0xFF)       >> 16) + (invA1 * (bgColor & 0xFF) >> 8)     )
+						          );
+					}else
+					{
+						target[pos] = (0xFF000000 |
+						               (((textel >> 16 & 0xFF) * Std.int(ri)) >> 8) << 16 |
+								       (((textel >> 8 & 0xFF) * Std.int(gi)) >> 8)  << 8  |
+								       ((textel & 0xFF) * Std.int(bi)) >> 8);
+						buffer[pos] = zi;
+					}
 				}
 				zi += dzdx;
 				ri += drdx;

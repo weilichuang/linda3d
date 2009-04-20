@@ -21,7 +21,7 @@ class AnimatedMesh implements IAnimateMesh
 	}
 	public function getFrameCount () : Int
 	{
-			return meshes.length;
+		return meshes.length;
 	}
 	public function getMesh (frame : Int, ?detailLevel : Int = 255, ?startFrameLoop : Int = - 1, ?endFrameLoop : Int = - 1) : IMesh
 	{

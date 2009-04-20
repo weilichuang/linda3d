@@ -15,12 +15,16 @@
 	class MeshSceneNode extends SceneNode
 	{
 		private var materials : Vector<Material>;
+		private var materialCount:Int;
 		private var mesh : IMesh;
 		private var useDefaultMaterial:Bool ;
 		public function new (mgr:SceneManager,?mesh : IMesh = null,?useDefaultMaterial:Bool=true)
 		{
 			super (mgr);
+			
 			materials = new Vector<Material> ();
+			materialCount = 0;
+			
 			this.useDefaultMaterial = useDefaultMaterial;
 			setMesh (mesh);
 		}
@@ -30,7 +34,7 @@
 			materials=null;
 			mesh=null;
 		}
-		public inline function setMesh (m : IMesh) : Void
+		public function setMesh (m : IMesh) : Void
 		{
 			mesh = m;
 			setMaterials(useDefaultMaterial);
@@ -39,8 +43,9 @@
 		{
 			return mesh;
 		}
-		private inline function setMaterials(value:Bool):Void 
+		private function setMaterials(value:Bool):Void 
 		{
+			materialCount = 0;
 			materials.length = 0;
 			if (mesh!=null)
 			{
@@ -57,15 +62,17 @@
 						materials[i]=mb.material.clone();
 					}
 				}
+				
+				materialCount += count;
 			}
 		}
-		public inline function setUseDefaultMaterial(value:Bool):Void 
+		public function setUseDefaultMaterial(value:Bool):Void 
 		{
 			useDefaultMaterial = value;
 				
 			setMaterials(useDefaultMaterial);
 		}
-		public inline function getUseDefaultMaterial():Bool 
+		public function getUseDefaultMaterial():Bool 
 		{
 			return useDefaultMaterial;
 		}
@@ -73,11 +80,10 @@
 		{
 			if (visible)
 			{
-				var len:Int = materials.length;
 				var mt : Material;
 				var transparentCount:Int = 0;
 				var solidCount:Int = 0;
-				for ( i in 0...len)
+				for ( i in 0...materialCount)
 				{
 					mt = materials[i];
 					if (mt.transparenting) 
@@ -137,11 +143,11 @@
 		}
 		override  public function getMaterial (?i : Int = 0) : Material
 		{
-			if (i < 0 || i >= materials.length) return null;
+			if (i < 0 || i >= materialCount) return null;
 			return materials[i];
 		}
 		override  public function getMaterialCount () : Int
 		{
-			return materials.length;
+			return materialCount;
 		}
 	}

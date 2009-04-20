@@ -30,6 +30,7 @@
 		private var invAlpha:Int;
 		
 		public var width:Int;
+		public var height:Int;
 		
 		public var distance:Float;
 		
@@ -55,6 +56,10 @@
 		{
 			this.width=width;
 		}
+		public function setHeight(height:Int):Void
+		{
+			this.height=height;
+		}
 		public function setPerspectiveCorrectDistance(?distance:Float=400.):Void
 		{
 			perspectiveDistance=distance;
@@ -68,11 +73,27 @@
 			material = mat;
 			if(material.transparenting)
 			{
-				alpha = Std.int(material.alpha*0xFF);
-				invAlpha = 0xFF - alpha;
+				alpha = Std.int(material.alpha*255);
+				invAlpha = 255 - alpha;
 			}
 			texture = material.getTexture();
 			texture1 = material.getTexture1();
+		}
+		
+		public inline function setPixel(x:Int, y:Int, color:UInt):Void 
+		{
+			if (x >= 0 && x <= width && y >= 0 && y <= height)
+			{
+				target[x + y * width] = color;
+			}
+		}
+		
+		public inline function setBuffer(x:Int, y:Int, z:Float):Void 
+		{
+			if (x >= 0 && x <= width && y >= 0 && y <= height)
+			{
+				buffer[x + y * width] = z;
+			}
 		}
 	}
 

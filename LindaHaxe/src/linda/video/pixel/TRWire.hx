@@ -36,11 +36,11 @@
 					
 					i += 3;
 
-					color = (vt0.r << 16 | vt0.g << 8 | vt0.b );
+					color = (0xFF000000 | vt0.r << 16 | vt0.g << 8 | vt0.b );
 					bresenham (Std.int(vt0.x), Std.int(vt0.y),vt0.z, Std.int(vt1.x), Std.int(vt1.y),vt1.z, color);
-					color = (vt1.r << 16 | vt1.g << 8 | vt1.b );
+					color = (0xFF000000 | vt1.r << 16 | vt1.g << 8 | vt1.b );
 					bresenham (Std.int(vt1.x), Std.int(vt1.y),vt1.z, Std.int(vt2.x), Std.int(vt2.y),vt2.z, color);
-					color = (vt2.r << 16 | vt2.g << 8 | vt2.b );
+					color = (0xFF000000 | vt2.r << 16 | vt2.g << 8 | vt2.b );
 					bresenham (Std.int(vt2.x), Std.int(vt2.y),vt2.z, Std.int(vt0.x), Std.int(vt0.y),vt0.z, color);
 				}
 			} else
@@ -182,7 +182,7 @@
 					if (z1 > buffer[pos])
 					{
 						bgColor = target[pos];
-						target[pos] = (
+						target[pos] = (0xFF000000 |
 						               ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
 						  			   ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
 						  			   ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)
@@ -207,7 +207,7 @@
 					if (z0 > buffer[pos])
 					{
 						bgColor = target[pos];
-						target[pos] = (
+						target[pos] = (0xFF000000 |
 						               ((alpha * r + invAlpha * (bgColor >> 16 & 0xFF)) >> 8) << 16 | 
 						  			   ((alpha * g + invAlpha * (bgColor >> 8 & 0xFF)) >> 8)  << 8  | 
 						  			   ((alpha * b + invAlpha * (bgColor & 0xFF)) >> 8)

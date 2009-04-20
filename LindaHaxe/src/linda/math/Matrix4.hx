@@ -35,21 +35,21 @@
 		public var m32 : Float;
 		public var m33 : Float;
 		
-		public function new (?v:Vector<Float>=null)
+		public function new (?v:Array<Float>=null)
 		{
 			if (v == null || v.length<16)
 			{
 				makeIdentity();
 			}else
 			{
-				setVector(v);
+				setArray(v);
 			}
 		}
 		/**
 		 * 
 		 * @param	vec vec.length==16;
 		 */
-		public inline function setVector(v:Vector<Float>):Void 
+		public inline function setArray(v:Array<Float>):Void 
 		{
 			m00 = v[0];
 			m01 = v[1];
@@ -67,27 +67,6 @@
 			m31 = v[13];
 			m32 = v[14];
 			m33 = v[15];
-		}
-		public inline function getVector():Vector<Float>
-		{
-			var v:Vector<Float> = new Vector<Float>(16);
-			v[0]  = m00;
-			v[1]  = m01;
-			v[2]  = m02;
-			v[3]  = m03;
-			v[4]  = m10;
-			v[5]  = m11;
-			v[6]  = m12;
-			v[7]  = m13;
-			v[8]  = m20;
-			v[9]  = m21;
-			v[10] = m22;
-			v[11] = m23;
-			v[12] = m30;
-			v[13] = m31;
-			v[14] = m32;
-			v[15] = m33;
-			return v;
 		}
 		public inline function pointAt (position : Vector3, target : Vector3, upVector : Vector3) : Void
 		{

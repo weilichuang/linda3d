@@ -16,7 +16,7 @@
 			meshes[meshCount] = mesh;
 			meshCount++;
 		}
-		public inline function removeMesh (mesh : IMesh) :Bool
+		public function removeMesh (mesh : IMesh) :Bool
 		{
 			var i:Int=meshes.indexOf(mesh);			
 			if (i == -1)
@@ -32,12 +32,13 @@
 		public function removeAll () : Void
 		{
 			meshes.length = 0;
+			meshCount = 0;
 		}
-		public inline function getMeshCount () : Int
+		public function getMeshCount () : Int
 		{
 			return meshCount;
 		}
-		public inline function getMesh(num : Int) : IMesh
+		public function getMesh(num : Int) : IMesh
 		{
 			if ( num<0 || num >=meshCount) return null;
 			return meshes[num];

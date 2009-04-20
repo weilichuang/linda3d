@@ -92,36 +92,31 @@
 		{
 			switch (type)
 			{
-				case SceneNode.LIGHT :
-				{
-					_lightList.push(node);
-					_lightCount++;
-				}
-				case SceneNode.SKYBOX:
-				{
-					_skyboxList.push(node);
-					_skyboxCount++;
-				}
 				case SceneNode.SOLID :
 				{
 					if (!isCulled(node))
 					{
-						_solidList.push(node);
-						_solidCount++;
+						_solidList[_solidCount++] = node;
 					}
 				}
 				case SceneNode.TRANSPARENT :
 				{
 					if (!isCulled(node))
 					{
-						_transparentList.push(node);
-						_transparentCount++;
+						_transparentList[_transparentCount++] = node;
 					}
+				}
+				case SceneNode.LIGHT :
+				{
+					_lightList[_lightCount++] = node;
+				}
+				case SceneNode.SKYBOX:
+				{
+					_skyboxList[_skyboxCount++] = node;
 				}
 				case SceneNode.SHADOW:
 				{
-				    _shadowList.push(node); 
-					_shadowCount++;
+					_shadowList[_shadowCount++] = node;
 				}
 			}
 		}
@@ -144,6 +139,7 @@
 				_skyboxList[i].render();
 			}
 			
+			//先渲染近的，减少重复渲染同一点
             //render solidList
 			_solidList.sort(sortSceneNode);
 			for (i in 0..._solidCount)
@@ -156,8 +152,9 @@
 				_shadowList[i].render();
 			}
 
+			//先渲染远处的，避免透明度错误
 			//render transparentList
-			_transparentList.sort(sortSceneNode);
+			_transparentList.sort(sortTransparentSceneNode);
 			for (i in 0..._transparentCount)
 			{
 				_transparentList[i].render();
@@ -177,6 +174,20 @@
 			_skyboxCount = 0;
 			_shadowCount = 0;
 		}
+		private inline function sortTransparentSceneNode(a:SceneNode, b:SceneNode):Int 
+		{
+			if (a.distance > b.distance)
+			{
+				return -1;
+			}else if (a.distance < b.distance)
+			{
+				return 1;
+			}else
+			{
+				return 0;
+			}
+		}
+		
 		private inline function sortSceneNode(a:SceneNode, b:SceneNode):Int 
 		{
 			if (a.distance > b.distance)

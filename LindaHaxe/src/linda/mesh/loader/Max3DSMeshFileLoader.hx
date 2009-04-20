@@ -247,7 +247,7 @@
 			{
 				var buffer : MeshBuffer = mesh.getMeshBuffer(j);
 				buffer.recalculateBoundingBox ();
-				buffer.recalculateNormals(true,true);
+				MeshManipulator.recalculateBufferNormals(buffer, true, true);
 			}
 			mesh.recalculateBoundingBox ();
 			return mesh;

@@ -81,6 +81,14 @@ class TRTextureFlat32 extends TriangleRenderer,implements ITriangleRenderer
 	
 	private var tw:Int;
 	private var th:Int;
+	
+	private var textel:UInt;
+	
+	private var bgColor:UInt;
+	
+	private var bga:Int;
+	
+	private var aT:Int;
 
 	public function new() 
 	{
@@ -279,12 +287,29 @@ class TRTextureFlat32 extends TriangleRenderer,implements ITriangleRenderer
 				{
 					if(perspectiveCorrect)
 					{
-						target[pos] = texVector[Std.int(ui/zi) + Std.int(vi/zi) * texWidth];
+						textel = texVector[Std.int(ui/zi) + Std.int(vi/zi) * texWidth];
 					}else
 					{
-						target[pos] = texVector[Std.int(ui) + Std.int(vi) * texWidth];
+						textel = texVector[Std.int(ui) + Std.int(vi) * texWidth];
 					}
-					buffer[pos] = zi;
+					
+					aT = (textel >> 24 & 0xFF);
+					if (aT < 255)
+					{
+						bgColor = target[pos];
+						
+						var invA1:Int = 255 - aT;
+						
+						target[pos] = ( (aT + invA1*bga >> 8)                                                      << 24 |
+		                  			    ((aT * (textel >> 16 & 0xFF) >> 8) +(invA1 * (bgColor >> 16 & 0xFF)>> 8))  << 16 | 
+						  			    ((aT * (textel >> 8 & 0xFF)  >> 8) + (invA1 * (bgColor >> 8 & 0xFF) >> 8)) << 8  | 
+						  			    ((aT * (textel & 0xFF)       >> 8) + (invA1 * (bgColor & 0xFF)      >> 8) )
+						              );
+					}else
+					{
+						target[pos] = textel;
+						buffer[pos] = zi;
+					}
 				}
 				zi += dzdx;
 				ui += dudx;

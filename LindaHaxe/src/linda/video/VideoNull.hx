@@ -154,7 +154,7 @@
 			draw3DLine (edges [5] , edges [4] , color);
 		}
 		
-		public  function draw3DLine (start : Vector3, end : Vector3, color : UInt) : Void
+		public function draw3DLine (start : Vector3, end : Vector3, color : UInt) : Void
 		{
 			var vertex : Vertex = _tmp_lines[0];
 			vertex.x = start.x;

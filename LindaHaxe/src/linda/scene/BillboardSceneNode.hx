@@ -1,5 +1,6 @@
 ﻿package linda.scene;
 
+	import flash.Lib;
 	import flash.Vector;
 
 	import linda.material.Material;
@@ -14,17 +15,19 @@
 
 	class BillboardSceneNode extends SceneNode
 	{
+		private var size : Dimension2D;
+		private var vertices : Vector<Vertex>;
+		private var indices : Vector<Int>;
+		private var box : AABBox3D;
+		private var material : Material;
+		
+		
 		public function new (mgr:SceneManager,?size :Dimension2D = null)
 		{
 			super (mgr);
+			
 			//indices and vertices
-			indices = new Vector<Int>(6,true);
-			indices[0] = 0;
-			indices[1] = 2;
-			indices[2] = 1;
-			indices[3] = 0;
-			indices[4] = 3;
-			indices[5] = 2;
+			indices = Lib.vectorOfArray([0, 2, 1, 0, 3, 2]);
 			
 			vertices = new Vector<Vertex>(4,true);
 			var vertex : Vertex = new Vertex ();
@@ -68,7 +71,7 @@
 				super.onRegisterSceneNode ();
 			}
 		}
-		private var _tmpMatrix:Matrix4=new Matrix4();
+		private static var _tmpMatrix:Matrix4=new Matrix4();
 		override public function render () : Void
 		{
 			var driver : IVideoDriver = sceneManager.getVideoDriver ();
@@ -99,8 +102,7 @@
 			var vertical : Vector3 = horizontal.crossProduct (view);
 			vertical.normalize ();
 			vertical.scaleBy (0.5 * size.height);
-			
-			
+
 			view.scaleBy ( - 1);
 			
 			var vertex : Vertex;
@@ -165,9 +167,4 @@
 		{
 			return box;
 		}
-		private var size : Dimension2D;
-		private var vertices : Vector<Vertex>;
-		private var indices : Vector<Int>;
-		private var box : AABBox3D;
-		private var material : Material;
 	}

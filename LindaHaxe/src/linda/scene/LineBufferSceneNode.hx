@@ -55,6 +55,7 @@ class LineBufferSceneNode extends SceneNode
 			super.onRegisterSceneNode();
 		}
 	}
+	
 	override public function render() : Void
 	{
 		if (lineBuffer == null) return;
@@ -62,11 +63,13 @@ class LineBufferSceneNode extends SceneNode
 		var driver : IVideoDriver = sceneManager.getVideoDriver();
 		driver.setTransformWorld(_absoluteMatrix);
         driver.drawIndexedLineList(lineBuffer.vertices, lineBuffer.vertices.length, lineBuffer.indices, lineBuffer.indices.length);
+		
 		if(debug)
 		{
 			driver.draw3DBox(lineBuffer.boundingBox,driver.getDebugColor());
 		}
 	}
+	
 	override  public function getBoundingBox () : AABBox3D
 	{
 		return lineBuffer.boundingBox;

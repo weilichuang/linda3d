@@ -283,7 +283,7 @@ class TRGouraud extends TriangleRenderer,implements ITriangleRenderer
 				pos = xs + ys * width;
 				if( zi > buffer[pos] )
 				{
-					target[pos]=(Std.int(ri) << 16 | Std.int(gi) << 8 | Std.int(bi) );
+					target[pos]=(0xFF000000 | Std.int(ri) << 16 | Std.int(gi) << 8 | Std.int(bi) );
 					buffer[pos]=zi;
 				}
 				zi += dzdx;

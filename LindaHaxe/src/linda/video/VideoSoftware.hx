@@ -336,6 +336,7 @@
 			bufferVector.length=len;
 			
 			setWidth(screenSize.width);
+			setHeight(screenSize.height);
 		}
 		public override function setRenderTarget (sp : Sprite) : Void
 		{
@@ -820,15 +821,15 @@
 					tv2.r = v2.r + memi.r; tv2.g = v2.g + memi.g; tv2.b = v2.b + memi.b;
 				}
 				
-				if (tv0.r > 0xFF) tv0.r = 0xFF;
-				if (tv0.g > 0xFF) tv0.g = 0xFF;
-				if (tv0.b > 0xFF) tv0.b = 0xFF;
-				if (tv1.r > 0xFF) tv1.r = 0xFF;
-				if (tv1.g > 0xFF) tv1.g = 0xFF;
-				if (tv1.b > 0xFF) tv1.b = 0xFF;
-				if (tv2.r > 0xFF) tv2.r = 0xFF;
-				if (tv2.g > 0xFF) tv2.g = 0xFF;
-				if (tv2.b > 0xFF) tv2.b = 0xFF;
+				if (tv0.r > 255) tv0.r = 255;
+				if (tv0.g > 255) tv0.g = 255;
+				if (tv0.b > 255) tv0.b = 255;
+				if (tv1.r > 255) tv1.r = 255;
+				if (tv1.g > 255) tv1.g = 255;
+				if (tv1.b > 255) tv1.b = 255;
+				if (tv2.r > 255) tv2.r = 255;
+				if (tv2.g > 255) tv2.g = 255;
+				if (tv2.b > 255) tv2.b = 255;
 
 				// texture coords
 				if (hasTexture)
@@ -844,20 +845,17 @@
 				if (clipcount == 0) // no clipping required
 				{
 					//tv0
-					var tmp : Float = 1 / tv0.w ;
-					tv0.x = tv0.x * sm00 * tmp + sm30;
-					tv0.y = tv0.y * sm11 * tmp + sm31;
-					tv0.z = tmp;
+					tv0.z = 1 / tv0.w ;
+					tv0.x = tv0.x * sm00 * tv0.z + sm30;
+					tv0.y = tv0.y * sm11 * tv0.z + sm31;
 					//tv1
-					tmp = 1 / tv1.w ;
-					tv1.x = tv1.x * sm00 * tmp + sm30;
-					tv1.y = tv1.y * sm11 * tmp + sm31;
-					tv1.z = tmp;
+					tv1.z = 1 / tv1.w ;
+					tv1.x = tv1.x * sm00 * tv1.z + sm30;
+					tv1.y = tv1.y * sm11 * tv1.z + sm31;
 					//tv2
-					tmp = 1 / tv2.w ;
-					tv2.x = tv2.x * sm00 * tmp + sm30;
-					tv2.y = tv2.y * sm11 * tmp + sm31;
-					tv2.z = tmp;
+					tv2.z = 1 / tv2.w ;
+					tv2.x = tv2.x * sm00 * tv2.z + sm30;
+					tv2.y = tv2.y * sm11 * tv2.z + sm31;
 					
 					// add to _clippedIndices
 					_clippedIndices  [iCount++] = vCount;
@@ -886,16 +884,18 @@
 				{
 					inCount = outCount;
 					outCount = 0;
-					plane = _clipPlanes[1];
+					//plane = _clipPlanes[1];
 					b = source[0];
-					bdot = b.z * plane.z + b.w * plane.w;
+					//bdot = b.z * plane.z + b.w * plane.w;
+					bdot = -b.z  - b.w;
 					var i:Int = 1;
 					while (i <= inCount)
 					{
 						a = source [i % inCount];
 						i++;
 						
-						adot = a.z * plane.z + a.w * plane.w;
+						//adot = a.z * plane.z + a.w * plane.w;
+						adot = -a.z - a.w;
 						// current point inside
 						if (adot <= 0.0 )
 						{
@@ -904,7 +904,8 @@
 							{
 								out = _transformedVertexes [tCount++];
 								_clippedVertices4 [outCount++] = out;
-								t = bdot / ((b.z - a.z) * plane.z + (b.w - a.w) * plane.w);
+								//t = bdot / ((b.z - a.z) * plane.z + (b.w - a.w) * plane.w);
+								t = bdot / (-(b.z - a.z) - (b.w - a.w));
 								out.interpolate(a, b, t,hasTexture);
 							}
 							// add a to out
@@ -916,7 +917,8 @@
 							{
 								out = _transformedVertexes [tCount++];
 								_clippedVertices4 [outCount ++] = out;
-								t = bdot / ((b.z - a.z) * plane.z + (b.w - a.w) * plane.w);
+								//t = bdot / ((b.z - a.z) * plane.z + (b.w - a.w) * plane.w);
+								t = bdot / (-(b.z - a.z) - (b.w - a.w));
 								out.interpolate(a, b, t,hasTexture);
 							}
 						}
@@ -936,22 +938,25 @@
 				{
 					inCount = outCount;
 					outCount = 0;
-					plane = _clipPlanes [2];
+					//plane = _clipPlanes [2];
 					b = source [0];
-					bdot = b.x * plane.x + b.w * plane.w;
+					//bdot = b.x * plane.x + b.w * plane.w;
+					bdot = b.x  - b.w ;
 					var i:Int = 1;
 					while (i <= inCount)
 					{
 						a = source [i % inCount];
 						i++;
-						adot = a.x * plane.x + a.w * plane.w;
+						//adot = a.x * plane.x + a.w * plane.w;
+						adot = a.x  - a.w;
 						if (adot <= 0.0 )
 						{
 							if (bdot > 0.0 )
 							{
 								out = _transformedVertexes [tCount++];
 								_clippedVertices3 [outCount++] = out;
-								t = bdot / ((b.x - a.x) * plane.x + (b.w - a.w) * plane.w);
+								//t = bdot / ((b.x - a.x) * plane.x + (b.w - a.w) * plane.w);
+								t = bdot / ((b.x - a.x) - (b.w - a.w));
 								out.interpolate(a, b, t,hasTexture);
 							}
 							// add a to out
@@ -963,7 +968,8 @@
 							{
 								out = _transformedVertexes [tCount++];
 								_clippedVertices3 [outCount++] = out;
-								t = bdot / ((b.x - a.x) * plane.x + (b.w - a.w) * plane.w);
+								//t = bdot / ((b.x - a.x) * plane.x + (b.w - a.w) * plane.w);
+								t = bdot / ((b.x - a.x) - (b.w - a.w));
 								out.interpolate(a, b, t,hasTexture);
 							}
 						}
@@ -982,22 +988,25 @@
 				{
 					inCount = outCount;
 					outCount = 0;
-					plane = _clipPlanes[3];
+					//plane = _clipPlanes[3];
 					b = source[0];
-					bdot = b.x * plane.x + b.w * plane.w;
+					//bdot = b.x * plane.x + b.w * plane.w;
+					bdot = -b.x  - b.w;
 					var i:Int = 1;
 					while (i <= inCount)
 					{
 						a = source [i % inCount];
 						i++;
-						adot = a.x * plane.x + a.w * plane.w;
+						//adot = a.x * plane.x + a.w * plane.w;
+						adot = -a.x  - a.w;
 						if (adot <= 0.0 )
 						{
 							if (bdot > 0.0 )
 							{
 								out = _transformedVertexes [tCount++];
 								_clippedVertices2 [outCount++] = out;
-								t = bdot / ((b.x - a.x) * plane.x + (b.w - a.w) * plane.w);
+								//t = bdot / ((b.x - a.x) * plane.x + (b.w - a.w) * plane.w);
+								t = bdot / (-(b.x - a.x)  - (b.w - a.w));
 								out.interpolate(a, b, t,hasTexture);
 							}
 							_clippedVertices2 [outCount++] = a;
@@ -1008,7 +1017,8 @@
 							{
 								out = _transformedVertexes [tCount++];
 								_clippedVertices2 [outCount++] = out;
-								t = bdot / ((b.x - a.x) * plane.x + (b.w - a.w) * plane.w);
+								//t = bdot / ((b.x - a.x) * plane.x + (b.w - a.w) * plane.w);
+								t = bdot / ( -(b.x - a.x)  - (b.w - a.w));
 								out.interpolate(a, b, t,hasTexture);
 							}
 						}
@@ -1026,22 +1036,25 @@
 				{
 					inCount = outCount;
 					outCount = 0;
-					plane = _clipPlanes [4];
+					//plane = _clipPlanes [4];
 					b = source [0];
-					bdot = b.y * plane.y + b.w * plane.w;
+					//bdot = b.y * plane.y + b.w * plane.w;
+					bdot = b.y  - b.w ;
 					var i:Int = 1;
 					while (i <= inCount)
 					{
 						a = source [i % inCount];
 						i++;
-						adot = a.y * plane.y + a.w * plane.w;
+						//adot = a.y * plane.y + a.w * plane.w;
+						adot = a.y - a.w;
 						if (adot <= 0.0 )
 						{
 							if (bdot > 0.0 )
 							{
 								out = _transformedVertexes [tCount++];
 								_clippedVertices1 [outCount++] = out;
-								t = bdot / ((b.y - a.y) * plane.y + (b.w - a.w) * plane.w);
+								//t = bdot / ((b.y - a.y) * plane.y + (b.w - a.w) * plane.w);
+								t = bdot / ((b.y - a.y) - (b.w - a.w));
 								out.interpolate(a, b, t,hasTexture);
 							}
 							_clippedVertices1 [outCount++] = a;
@@ -1052,7 +1065,8 @@
 							{
 								out = _transformedVertexes [tCount++];
 								_clippedVertices1 [outCount++] = out;
-								t = bdot / ((b.y - a.y) * plane.y + (b.w - a.w) * plane.w);
+								//t = bdot / ((b.y - a.y) * plane.y + (b.w - a.w) * plane.w);
+								t = bdot / ((b.y - a.y) - (b.w - a.w));
 								out.interpolate(a, b, t,hasTexture);
 							}
 						}
@@ -1070,22 +1084,25 @@
 				{
 					inCount = outCount;
 					outCount = 0;
-					plane = _clipPlanes[5];
+					//plane = _clipPlanes[5];
 					b = source[0];
-					bdot = b.y * plane.y + b.w * plane.w;
+					//bdot = b.y * plane.y + b.w * plane.w;
+					bdot = -b.y  - b.w;
 					var i:Int = 1;
 					while (i <= inCount)
 					{
 						a = source [i % inCount];
 						i++;
-						adot = a.y * plane.y + a.w * plane.w;
+						//adot = a.y * plane.y + a.w * plane.w;
+						adot = -a.y  - a.w ;
 						if (adot <= 0.0 )
 						{
 							if (bdot > 0.0 )
 							{
 								out = _transformedVertexes [tCount++];
 								_clippedVertices0 [outCount++] = out;
-								t = bdot / ((b.y - a.y) * plane.y + (b.w - a.w) * plane.w);
+								//t = bdot / ((b.y - a.y) * plane.y + (b.w - a.w) * plane.w);
+								t = bdot / (-(b.y - a.y) - (b.w - a.w));
 								out.interpolate(a, b, t,hasTexture);
 							}
 							_clippedVertices0 [outCount++] = a;
@@ -1096,7 +1113,8 @@
 							{
 								out = _transformedVertexes [tCount++];
 								_clippedVertices0 [outCount++] = out;
-								t = bdot / ((b.y - a.y) * plane.y + (b.w - a.w) * plane.w);
+								//t = bdot / ((b.y - a.y) * plane.y + (b.w - a.w) * plane.w);
+								t = bdot / (-(b.y - a.y) - (b.w - a.w));
 								out.interpolate(a, b, t,hasTexture);
 							}
 						}
@@ -1115,10 +1133,10 @@
 				for (g in 0...outCount)
 				{
 					tv0 = source [g];
-					var tmp:Float = 1 / tv0.w ;
-					tv0.x = tv0.x * sm00 * tmp + sm30;
-					tv0.y = tv0.y * sm11 * tmp + sm31;
-					tv0.z = tmp;
+					tv0.z = 1 / tv0.w ;
+					tv0.x = tv0.x * sm00 * tv0.z + sm30;
+					tv0.y = tv0.y * sm11 * tv0.z + sm31;
+					//tv0.z = tmp;
 					_clippedVertices [vCount++] = tv0;
 				}
 				// re-tesselate ( triangle-fan, 0-1-2,0-2-3.. )
@@ -1253,14 +1271,12 @@
 				tv1.r = v1.r;
 				tv1.g = v1.g;
 				tv1.b = v1.b;
-                
 				
 				if (clipcount != 0) //clipping required
 				{
 					// put into list for clipping
 					a = tv0;
 					b = tv1;
-					
 					// clip in NDC Space to Frustum
 					//near
 					if ((clipcount & 2) == 2)
@@ -1268,24 +1284,26 @@
 						plane = _clipPlanes[1];
 						adot = (a.z * plane.z) + (a.w * plane.w);
 						bdot = (b.z * plane.z) + (b.w * plane.w);
+						
+						
 						// current point inside
-						if (adot <= 0.0 )
-						{
-							if (bdot > 0)
-							{
-								t = bdot / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
-								_tmpVertex.interpolate(a, b, t,false);
-								b.copy(_tmpVertex);
-							}
-						} 
-						else
-						{
-							if (bdot <= 0)
-							{
-								t = bdot / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
-								_tmpVertex.interpolate(a, b, t,false);
-								a.copy(_tmpVertex);
-							}
+						if (adot <= 0.0 ) {
+						
+							t = bdot / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
+						    _tmpVertex.interpolate(a, b, t, false);
+						
+							b.x = _tmpVertex.x;
+							b.y = _tmpVertex.y;
+							b.z = _tmpVertex.z;
+							b.w = _tmpVertex.w;
+						}else {
+						
+							t = adot / (((a.z - b.z) * plane.z) + ((a.w - b.w) * plane.w));
+						    _tmpVertex.interpolate(b, a, t, false);
+							a.x = _tmpVertex.x;
+							a.y = _tmpVertex.y;
+							a.z = _tmpVertex.z;
+							a.w = _tmpVertex.w;
 						}
 					}
 
@@ -1295,23 +1313,25 @@
 						plane = _clipPlanes[2];
 						adot = (a.x * plane.x) + (a.w * plane.w);
 						bdot = (b.x * plane.x) + (b.w * plane.w);
-						if (adot <= 0.0 )
-						{
-							if (bdot > 0)
-							{
-								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w));
-								_tmpVertex.interpolate(a, b, t,false);
-								b.copy(_tmpVertex);
-							}
-						} 
-						else
-						{
-							if (bdot <= 0)
-							{
-								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w));
-								_tmpVertex.interpolate(a, b, t,false);
-								a.copy(_tmpVertex);
-							}
+						
+						// current point inside
+						if (adot <= 0.0 ) {
+						
+							t = bdot / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
+						    _tmpVertex.interpolate(a, b, t, false);
+						
+							b.x = _tmpVertex.x;
+							b.y = _tmpVertex.y;
+							b.z = _tmpVertex.z;
+							b.w = _tmpVertex.w;
+						}else {
+						
+							t = adot / (((a.z - b.z) * plane.z) + ((a.w - b.w) * plane.w));
+						    _tmpVertex.interpolate(b, a, t, false);
+							a.x = _tmpVertex.x;
+							a.y = _tmpVertex.y;
+							a.z = _tmpVertex.z;
+							a.w = _tmpVertex.w;
 						}
 					}
 					//new Vector4 ( - 1.0, 0.0, 0.0, - 1.0 )  right
@@ -1320,23 +1340,25 @@
 						plane = _clipPlanes[3];
 						bdot = (b.x * plane.x) + (b.w * plane.w);
 						adot = (a.x * plane.x) + (a.w * plane.w);
-						if (adot <= 0.0 )
-						{
-							if (bdot > 0)
-							{
-								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w));
-								_tmpVertex.interpolate(a, b, t,false);
-								b.copy(_tmpVertex);
-							}
-						} 
-						else
-						{
-							if (bdot <= 0)
-							{
-								t = bdot / (((b.x - a.x) * plane.x) + ((b.w - a.w) * plane.w));
-								_tmpVertex.interpolate(a, b, t,false);
-								a.copy(_tmpVertex);
-							}
+						
+						// current point inside
+						if (adot <= 0.0 ) {
+						
+							t = bdot / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
+						    _tmpVertex.interpolate(a, b, t, false);
+						
+							b.x = _tmpVertex.x;
+							b.y = _tmpVertex.y;
+							b.z = _tmpVertex.z;
+							b.w = _tmpVertex.w;
+						}else {
+						
+							t = adot / (((a.z - b.z) * plane.z) + ((a.w - b.w) * plane.w));
+						    _tmpVertex.interpolate(b, a, t, false);
+							a.x = _tmpVertex.x;
+							a.y = _tmpVertex.y;
+							a.z = _tmpVertex.z;
+							a.w = _tmpVertex.w;
 						}
 					}
 					//new Vector4 (0.0, 1.0, 0.0, - 1.0 ) bottom
@@ -1345,23 +1367,24 @@
 						plane = _clipPlanes[4];
 						bdot = (b.y * plane.y) + (b.w * plane.w);
 						adot = (a.y * plane.y) + (a.w * plane.w);
-						if (adot <= 0.0 )
-						{
-							if (bdot > 0)
-							{
-								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
-								_tmpVertex.interpolate(a, b, t,false);
-								b.copy(_tmpVertex);
-							}
-						} 
-						else
-						{
-							if (bdot <= 0)
-							{
-								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
-								_tmpVertex.interpolate(a, b, t,false);
-								a.copy(_tmpVertex);
-							}
+						// current point inside
+						if (adot <= 0.0 ) {
+						
+							t = bdot / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
+						    _tmpVertex.interpolate(a, b, t, false);
+						
+							b.x = _tmpVertex.x;
+							b.y = _tmpVertex.y;
+							b.z = _tmpVertex.z;
+							b.w = _tmpVertex.w;
+						}else {
+						
+							t = adot / (((a.z - b.z) * plane.z) + ((a.w - b.w) * plane.w));
+						    _tmpVertex.interpolate(b, a, t, false);
+							a.x = _tmpVertex.x;
+							a.y = _tmpVertex.y;
+							a.z = _tmpVertex.z;
+							a.w = _tmpVertex.w;
 						}
 					}
 					//new Vector4 (0.0, - 1.0, 0.0, - 1.0 ) top
@@ -1370,37 +1393,35 @@
 						plane = _clipPlanes[5];
 						bdot = (b.y * plane.y) + (b.w * plane.w);
 						adot = (a.y * plane.y) + (a.w * plane.w);
-						if (adot <= 0.0 )
-						{
-							if (bdot > 0)
-							{
-								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
-								_tmpVertex.interpolate(a, b, t,false);
-								b.copy(_tmpVertex);
-							}
-						} 
-						else
-						{
-							if (bdot <= 0)
-							{
-								t = bdot / (((b.y - a.y) * plane.y) + ((b.w - a.w) * plane.w));
-								_tmpVertex.interpolate(a, b, t,false);
-								a.copy(_tmpVertex);
-							}
+						// current point inside
+						if (adot <= 0.0 ) {
+						
+							t = bdot / (((b.z - a.z) * plane.z) + ((b.w - a.w) * plane.w));
+						    _tmpVertex.interpolate(a, b, t, false);
+						
+							b.x = _tmpVertex.x;
+							b.y = _tmpVertex.y;
+							b.z = _tmpVertex.z;
+							b.w = _tmpVertex.w;
+						}else {
+						
+							t = adot / (((a.z - b.z) * plane.z) + ((a.w - b.w) * plane.w));
+						    _tmpVertex.interpolate(b, a, t, false);
+							a.x = _tmpVertex.x;
+							a.y = _tmpVertex.y;
+							a.z = _tmpVertex.z;
+							a.w = _tmpVertex.w;
 						}
 					}
 				}
-                
 				//tv0
-				var tmp : Float = 1 / tv0.w ;
-				tv0.x = (tv0.x * csm00) * tmp + csm30;
-				tv0.y = (tv0.y * csm11) * tmp + csm31;
-				tv0.z = tmp;
+				tv0.z = 1 / tv0.w ;
+				tv0.x = (tv0.x * csm00) * tv0.z + csm30;
+				tv0.y = (tv0.y * csm11) * tv0.z + csm31;
 				//tv1
-				tmp = 1 / tv1.w ;
-				tv1.x = (tv1.x * csm00) * tmp + csm30;
-				tv1.y = (tv1.y * csm11) * tmp + csm31;
-				tv1.z = tmp;
+				tv1.z = 1 / tv1.w ;
+				tv1.x = (tv1.x * csm00) * tv1.z + csm30;
+				tv1.y = (tv1.y * csm11) * tv1.z + csm31;
 
 				// add to _clippedLineIndices
 				_clippedLineIndices [iCount++]  = vCount;
@@ -1454,6 +1475,14 @@
 				renderers[i].setWidth(width);
 			}
 			lineRender.setWidth(width);
+		}
+		public function setHeight(height:Int) : Void
+		{
+			for ( i in 0...TRType.COUNT)
+			{
+				renderers[i].setHeight(height);
+			}
+			lineRender.setHeight(height);
 		}
 		public function setVector(tv : Vector<UInt>, bv : Vector<Float>) : Void
 		{

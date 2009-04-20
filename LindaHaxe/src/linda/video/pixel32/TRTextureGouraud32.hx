@@ -114,7 +114,13 @@ class TRTextureGouraud32 extends TriangleRenderer,implements ITriangleRenderer
 	private var tw:Int;
 	private var th:Int;
 	
-	private var textel:Int;
+	private var textel:UInt;
+	
+	private var bgColor:UInt;
+	
+	private var bga:Int;
+	
+	private var aT:Int;
 
 	public function new() 
 	{
@@ -344,16 +350,31 @@ class TRTextureGouraud32 extends TriangleRenderer,implements ITriangleRenderer
 				{
 					if(perspectiveCorrect)
 					{
-									textel = texVector[Std.int(ui/zi) + Std.int(vi/zi) * texWidth];
+						textel = texVector[Std.int(ui/zi) + Std.int(vi/zi) * texWidth];
 					}else
 					{
 						textel = texVector[Std.int(ui) + Std.int(vi) * texWidth];
 					}
-					target[pos] = (0xFF000000 |
-								    (((textel >> 16 & 0xFF) * Std.int(ri)) >> 8) << 16 |
-									(((textel >> 8 & 0xFF) * Std.int(gi)) >> 8)  << 8  |
-									((textel & 0xFF) * Std.int(bi)) >> 8);
-					buffer[pos] = zi;
+					
+					aT = (textel >> 24 & 0xFF);
+					if (aT < 255)
+					{
+						bgColor = target[pos];
+						var invA1:Int = 255 - aT;
+						
+						target[pos] = ( (aT + invA1*bga >> 8)                                             << 24 |
+		                  			    ((aT * Std.int(ri)* (textel >> 16 & 0xFF) >> 16) +(invA1 * (bgColor >> 16 & 0xFF)  >> 8))  << 16 | 
+						  			    ((aT * Std.int(gi)* (textel >> 8 & 0xFF)  >> 16) + (invA1 * (bgColor >> 8 & 0xFF)   >> 8)) << 8  | 
+						  			    ((aT * Std.int(bi)* (textel & 0xFF)       >> 16) + (invA1 * (bgColor & 0xFF)      >> 8) )
+						              );
+					}else
+					{
+						target[pos] = (0xFF000000 |
+								       (((textel >> 16 & 0xFF) * Std.int(ri)) >> 8) << 16 |
+									   (((textel >> 8 & 0xFF) * Std.int(gi)) >> 8)  << 8  |
+									   ((textel & 0xFF) * Std.int(bi)) >> 8);
+						buffer[pos] = zi;
+					}
 				}
 				zi += dzdx;
 				ri += drdx;

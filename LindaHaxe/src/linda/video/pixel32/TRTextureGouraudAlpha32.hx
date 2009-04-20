@@ -114,11 +114,13 @@ class TRTextureGouraudAlpha32 extends TriangleRenderer,implements ITriangleRende
 	private var tw:Int;
 	private var th:Int;
 	
-	private var textel:Int;
+	private var textel:UInt;
 	
 	private var bgColor:UInt;
 	
 	private var bga:Int;
+	
+	private var aT:Int;
 
 	public function new() 
 	{
@@ -346,7 +348,7 @@ class TRTextureGouraudAlpha32 extends TriangleRenderer,implements ITriangleRende
 				pos = xs + ys * width;
 				bgColor = target[pos];
 				bga = bgColor >> 24 & 0xFF ;
-				if (bga < 0xFF)
+				if (bga < 255 || zi > buffer[pos])
 				{
 					if(perspectiveCorrect)
 					{
@@ -355,25 +357,26 @@ class TRTextureGouraudAlpha32 extends TriangleRenderer,implements ITriangleRende
 					{
 						textel = texVector[Std.int(ui) + Std.int(vi) * texWidth];
 					}
-					target[pos] = (((alpha*alpha + invAlpha* bga) >> 8)                                                       << 24 |
-		                  			((alpha * Std.int(ri) + invAlpha * (bgColor >> 16 & 0xFF)) * (textel >> 16 & 0xFF) >> 16)  << 16 | 
-						  			((alpha * Std.int(gi) + invAlpha * (bgColor >> 8 & 0xFF))  * (textel >> 8 & 0xFF)  >> 16)  << 8  | 
-						  			((alpha * Std.int(bi) + invAlpha * (bgColor & 0xFF))       * (textel & 0xFF)       >> 16)
-						           );
-				}else if (zi > buffer[pos])
-				{ 
-					if(perspectiveCorrect)
+					
+					aT = (textel >> 24 & 0xFF);
+					if (aT < 255)
 					{
-						textel = texVector[Std.int(ui/zi) + Std.int(vi/zi) * texWidth];
+						var a1:Int = alpha * aT >> 8;
+						var invA1:Int = 255 - a1;
+						
+						target[pos] = ( (a1 + invA1*bga >> 8)                                             << 24 |
+		                  			    ((a1 * Std.int(ri)* (textel >> 16 & 0xFF) >> 16) + (invA1 * (bgColor >> 16 & 0xFF)  >> 8))  << 16 | 
+						  			    ((a1 * Std.int(gi)* (textel >> 8 & 0xFF)  >> 16) + (invA1 * (bgColor >> 8 & 0xFF)   >> 8)) << 8  | 
+						  			    ((a1 * Std.int(bi)* (textel & 0xFF)       >> 16) + (invA1 * (bgColor & 0xFF)      >> 8) )
+						           );
 					}else
 					{
-						textel = texVector[Std.int(ui) + Std.int(vi) * texWidth];
-					}                                                     
-		            target[pos] = ( 0xFF000000                                                                                      |
-		                  			((alpha * Std.int(ri) + invAlpha * (bgColor >> 16 & 0xFF)) * (textel >> 16 & 0xFF) >> 16)  << 16 | 
-						  			((alpha * Std.int(gi) + invAlpha * (bgColor >> 8 & 0xFF))  * (textel >> 8 & 0xFF)  >> 16)  << 8  | 
-						  			((alpha * Std.int(bi) + invAlpha * (bgColor & 0xFF))       * (textel & 0xFF)       >> 16)
+						target[pos] = ( ((alpha*aT + invAlpha* bga) >> 8)                                             << 24 |
+		                  			    ((alpha * Std.int(ri)* (textel >> 16 & 0xFF) >> 16) + (invAlpha * (bgColor >> 16 & 0xFF)  >> 8))  << 16 | 
+						  			    ((alpha * Std.int(gi)* (textel >> 8 & 0xFF)  >> 16) + (invAlpha * (bgColor >> 8 & 0xFF)   >> 8)) << 8  | 
+						  			    ((alpha * Std.int(bi)* (textel & 0xFF)       >> 16) + (invAlpha * (bgColor & 0xFF)      >> 8) )
 						           );
+					}
 				}
 				zi += dzdx;
 				ri += drdx;

@@ -18,6 +18,7 @@
 	class AnimatedMeshSceneNode extends SceneNode
 	{
 		private var materials : Vector<Material>;
+		private var materialCount:Int;
 		private var useDefaultMaterial:Bool ;
 		
 		private var animateMesh : IAnimatedMesh;
@@ -31,6 +32,7 @@
 		public function new (mgr:SceneManager,?mesh : IAnimatedMesh = null,?useDefaultMaterial:Bool=true)
 		{
 			super (mgr);
+			
 			beginFrameTime = Lib.getTimer ();
 			startFrame = 0;
 			endFrame = 0;
@@ -38,13 +40,16 @@
 			looping = true;
 			
 			materials = new Vector<Material> ();
+			materialCount = 0;
+			
+			
 			this.useDefaultMaterial = useDefaultMaterial;
 			setAnimateMesh(mesh);
 		}
 		override public function destroy():Void
 		{
 			materials=null;
-			this.animateMesh=null;
+			animateMesh=null;
 			super.destroy();	
 		}
 		public function setCurrentFrame (frame : Float) : Void
@@ -80,11 +85,10 @@
 		{
 			if (visible)
 			{
-				var len:Int = materials.length;
 				var mt : Material;
 				var transparentCount:Int = 0;
 				var solidCount:Int = 0;
-				for ( i in 0...len)
+				for ( i in 0...materialCount)
 				{
 					mt = materials[i];
 					if (mt.transparenting) 
@@ -176,12 +180,12 @@
 		}
 		override public function getMaterial (i : Int = 0) : Material
 		{
-			if (i < 0 || i >= materials.length) return null;
+			if (i < 0 || i >= materialCount) return null;
 			return materials [i];
 		}
 		override public function getMaterialCount () : Int
 		{
-			return materials.length;
+			return materialCount;
 		}
 		public function setMD2Animation (data : MD2Frame) : Bool
 		{
@@ -220,6 +224,7 @@
 		
 		private function setMaterials(m:IMesh,value:Bool):Void 
 		{
+			materialCount = 0;
 			materials.length = 0;
 			if (m!=null)
 			{
@@ -236,6 +241,7 @@
 						materials[i]=mb.material.clone();
 					}
 				}
+				materialCount += count;
 			}
 		}
 		public function setUseDefaultMaterial(value:Bool):Void 

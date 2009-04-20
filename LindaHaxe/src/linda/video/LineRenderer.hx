@@ -8,6 +8,7 @@ class LineRenderer implements ILineRenderer
 	private var buffer : Vector<Float>;
 	
 	public var width:Int;
+	public var height:Int;
 
 	//alpha
 	private var alpha:Int;
@@ -31,6 +32,10 @@ class LineRenderer implements ILineRenderer
 	public function setWidth(width:Int):Void
 	{
 		this.width=width;
+	}
+	public function setHeight(height:Int):Void
+	{
+			this.height=height;
 	}
 	public function setAlpha(value:Float):Void 
 	{
@@ -68,7 +73,7 @@ class LineRenderer implements ILineRenderer
 				i += 2;
 
 				color = (v0.r << 16 | v0.g << 8 | v0.b );
-				bresenham (Std.int(v0.x), Std.int(v0.y),v0.z, Std.int(v1.x), Std.int(v1.y),v1.z, color);
+				bresenham (Std.int(v0.x+0.5), Std.int(v0.y+0.5),v0.z, Std.int(v1.x+0.5), Std.int(v1.y+0.5),v1.z, color);
 			} 
 		}else
 		{
@@ -79,7 +84,7 @@ class LineRenderer implements ILineRenderer
 				v1 = vertices [indexList [i + 1]];
 				i += 2;
 
-				bresenhamAlpha (Std.int(v0.x), Std.int(v0.y),v0.z, Std.int(v1.x), Std.int(v1.y),v1.z, v0.r, v0.g, v0.b);
+				bresenhamAlpha (Std.int(v0.x+0.5), Std.int(v0.y+0.5),v0.z, Std.int(v1.x+0.5), Std.int(v1.y+0.5),v1.z, v0.r, v0.g, v0.b);
 			}
 		}
 	}		
