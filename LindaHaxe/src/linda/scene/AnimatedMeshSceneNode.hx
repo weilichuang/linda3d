@@ -12,7 +12,7 @@
 	import linda.mesh.md2.AnimatedMeshMD2;
 	import linda.mesh.AnimatedMeshType;
 	import linda.mesh.IAnimatedMesh;
-	import linda.mesh.md2.MD2Frame;
+	import linda.mesh.md2.AnimationData;
 	import linda.video.IVideoDriver;
 
 	class AnimatedMeshSceneNode extends SceneNode
@@ -187,14 +187,14 @@
 		{
 			return materialCount;
 		}
-		public function setMD2Animation (data : MD2Frame) : Bool
+		public function setMD2Animation (data : AnimationData) : Bool
 		{
 			if ( animateMesh==null || animateMesh.getMeshType () != AnimatedMeshType.AMT_MD2) return false;
 			
 			var m : AnimatedMeshMD2 = Lib.as(animateMesh,AnimatedMeshMD2);
 			if (m == null) return false;
 			
-            var frameData : MD2Frame = m.getFrame(data);
+            var frameData : AnimationData = m.getFrame(data);
 			if (frameData!=null)
 			{
 				setAnimationSpeed (frameData.fps);

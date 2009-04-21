@@ -25,4 +25,9 @@ class AnimatorRotation implements IAnimator
 			startTime = timeMs;
 		}
 	}
+	
+	public function hasFinished():Bool
+	{
+		return false;
+	}
 }

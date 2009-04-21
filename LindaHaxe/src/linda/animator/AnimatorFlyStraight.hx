@@ -65,4 +65,9 @@ class AnimatorFlyStraight implements IAnimator
 		node.z = pz;
 	}
 	
+	public function hasFinished():Bool
+	{
+		return false;
+	}
+	
 }

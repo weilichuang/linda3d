@@ -595,4 +595,14 @@
 				_children[i].setSceneManager(newManager);
 			}
 		}
+		
+		
+		public function isTrulyVisible():Bool
+		{
+			if(!visible) return false;
+
+			if(parent==null) return true;
+
+			return parent.isTrulyVisible();
+		}
 	}

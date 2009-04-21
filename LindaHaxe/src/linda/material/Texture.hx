@@ -51,7 +51,7 @@
 				{
 					var display:DisplayObject=Lib.as(drawable, DisplayObject);
 					image = new BitmapData(Std.int(display.width), Std.int(display.height), true, 0x0);
-					image.draw(display);
+					image.draw(display,null,null,null,null,true);
 					display = null;
 				}
 
@@ -105,7 +105,7 @@
 			var i:Int = Std.int(min >> 1);
 			while ( i >= level)
 			{
-				var data:BitmapData = scale(image, 1 / Math.pow(2, vectorCount));
+				var data:BitmapData = scale(image, 1 / MathUtil.pow(2, vectorCount));
 
 				vectors[vectorCount] = data.getVector(data.rect);
 				
@@ -129,22 +129,29 @@
 		{
 			var data:BitmapData=new BitmapData(Std.int(image.width*value),Std.int(image.height*value),true,0x0);
 			matrix.a = value;
+			matrix.b = 0;
+			matrix.c = 0;
 			matrix.d = value;
-			//Lib.current.stage.quality = StageQuality.LOW;
-			data.draw(image, matrix);
-			//Lib.current.stage.quality = StageQuality.HIGH;
-			//matrix = null;
+			data.draw(image, matrix,null,null,null,true);
             return data;
 		}
 		
 		public inline function clear() : Void
 		{	
+			for ( i in 0...vectorCount)
+			{
+				vectors[i].length = 0;
+			}
 			vectors.length = 0;
 			vectorCount = 0;
 		}
 		
 		public function dispose():Void 
 		{
+			for ( i in 0...vectorCount)
+			{
+				vectors[i].length = 0;
+			}
 			vectors.length = 0;
 			vectors = null;
 			vectorCount = 0;

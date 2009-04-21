@@ -52,4 +52,9 @@ package linda.animator;
 			timePerFrame=per;
 		}
 		
+		public function hasFinished():Bool
+		{
+			return false;
+		}
+		
 	}

@@ -48,4 +48,9 @@ package linda.animator;
 			node.y = center.y + radius * (cos * vecU.y + sin * vecV.y);
 			node.z = center.z + radius * (cos * vecU.z + sin * vecV.z);
 		}
+		
+		public function hasFinished():Bool
+		{
+			return false;
+		}
 	}
